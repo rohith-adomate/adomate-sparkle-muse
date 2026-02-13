@@ -1,7 +1,7 @@
 import {
   Home, Database, Megaphone, Lightbulb, Palette, FileText, CalendarDays,
   BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Search,
-  ChevronRight,
+  ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const mainNav = [
   { title: "Home", url: "/", icon: Home },
@@ -26,19 +27,22 @@ const dataRoomSubs = [
   { title: "Custom Keywords", url: "/brand-data-room/keywords", icon: Search },
 ];
 
-const bottomNav = [
+const coreNav = [
   { title: "Campaigns", url: "/campaigns", icon: Megaphone },
   { title: "Concepts", url: "/concepts", icon: Lightbulb },
   { title: "Studio", url: "/studio", icon: Palette },
   { title: "Content", url: "/content", icon: FileText },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
+];
+
+const bottomNav = [
   { title: "Performance", url: "/performance", icon: BarChart3 },
   { title: "Workflows", url: "/workflows", icon: Workflow },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-const linkCls = "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent";
-const activeCls = "bg-accent text-accent-foreground font-medium";
+const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground";
+const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm";
 
 export function AppSidebar() {
   const { pathname } = useLocation();
@@ -46,7 +50,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r">
-      <SidebarContent className="py-2">
+      <SidebarContent className="py-3 flex flex-col h-full">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -64,23 +68,23 @@ export function AppSidebar() {
               {/* Brand Data Room with collapsible sub-menu */}
               <li>
                 <Collapsible defaultOpen={inDataRoom}>
-                  <CollapsibleTrigger className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-accent-foreground font-medium")}>
-                    <span className="flex items-center gap-2">
+                  <CollapsibleTrigger className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}>
+                    <span className="flex items-center gap-2.5">
                       <Database className="h-4 w-4" />
                       <span>Brand Data Room</span>
                     </span>
-                    <ChevronRight className="h-3.5 w-3.5 transition-transform group-data-[state=open]/dr:rotate-90" />
+                    <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dr:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <ul className="ml-4 mt-0.5 space-y-0.5 border-l pl-2">
+                    <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-sidebar-border pl-3">
                       <li>
-                        <NavLink to="/brand-data-room" end className={cn(linkCls, "text-xs")} activeClassName={activeCls}>
+                        <NavLink to="/brand-data-room" end className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
                           Overview
                         </NavLink>
                       </li>
                       {dataRoomSubs.map((sub) => (
                         <li key={sub.url}>
-                          <NavLink to={sub.url} className={cn(linkCls, "text-xs")} activeClassName={activeCls}>
+                          <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
                             <sub.icon className="h-3.5 w-3.5" />
                             <span>{sub.title}</span>
                           </NavLink>
@@ -90,7 +94,34 @@ export function AppSidebar() {
                   </CollapsibleContent>
                 </Collapsible>
               </li>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
+        <Separator className="mx-3 w-auto my-1" />
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {coreNav.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={linkCls} activeClassName={activeCls}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="mx-3 w-auto my-1" />
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {bottomNav.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild>
@@ -104,6 +135,19 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* User avatar at bottom */}
+        <div className="mt-auto px-3 py-3 border-t border-sidebar-border">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
+              <User className="h-4 w-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">John Doe</p>
+              <p className="text-[11px] text-muted-foreground truncate">john@acmeco.com</p>
+            </div>
+          </div>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
