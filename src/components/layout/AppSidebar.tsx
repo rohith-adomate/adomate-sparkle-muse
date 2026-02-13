@@ -50,20 +50,18 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r">
-      <SidebarContent className="py-3 flex flex-col h-full">
+      <SidebarContent className="pt-[3.75rem] pb-3 flex flex-col h-full">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNav.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} end className={linkCls} activeClassName={activeCls}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/" end className={linkCls} activeClassName={activeCls}>
+                    <Home className="h-4 w-4" />
+                    <span>Home</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Brand Data Room with collapsible sub-menu */}
               <li>
