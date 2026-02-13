@@ -5,8 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Settings2, Play, Plus, Trash2 } from "lucide-react";
+import { Settings2, Play, Plus, Trash2, Zap, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const templates = [
   { name: "Weekly Ad Sprint", desc: "Fast iteration cycle for weekly creatives", outputs: "8-12 concepts", inputs: "Brand knowledge, recent performance", runtime: "~1 hour" },
@@ -33,32 +34,45 @@ export default function Workflows() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Workflows</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Workflows</h1>
         <p className="text-muted-foreground text-sm">Manage and customize your creative workflows.</p>
       </div>
 
-      {/* Current workflow */}
-      <Card className="border-primary/30 bg-accent/30">
-        <CardContent className="flex items-center justify-between py-4">
-          <div>
-            <p className="text-xs text-muted-foreground">Current Workflow</p>
-            <p className="text-lg font-bold">Weekly Ad Sprint</p>
+      {/* Current workflow hero */}
+      <Card className="overflow-hidden">
+        <div className="gradient-primary p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-white/70 uppercase tracking-wider">Current Workflow</p>
+              <p className="text-2xl font-bold tracking-tight mt-1">Weekly Ad Sprint</p>
+              <p className="text-sm text-white/80 mt-1">Fast iteration cycle · ~1 hour runtime</p>
+            </div>
+            <Button variant="secondary" size="sm" className="gap-1.5" onClick={() => setShowCustomize(true)}>
+              <Settings2 className="h-4 w-4" /> Customize
+            </Button>
           </div>
-          <Button size="sm" variant="outline" onClick={() => setShowCustomize(true)}>
-            <Settings2 className="h-4 w-4 mr-1" /> Customize
-          </Button>
-        </CardContent>
+        </div>
       </Card>
 
       {/* Templates */}
       <div>
-        <h2 className="text-sm font-semibold mb-3">Or pick from templates</h2>
+        <h2 className="text-sm font-semibold mb-3 section-header">Or pick from templates</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((t) => (
-            <Card key={t.name} className="cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all" onClick={() => setSelectedTemplate(t.name)}>
+            <Card key={t.name} className="cursor-pointer card-hover group" onClick={() => setSelectedTemplate(t.name)}>
               <CardContent className="p-4 space-y-2">
-                <p className="font-semibold text-sm">{t.name}</p>
+                <div className="flex items-center gap-2">
+                  <div className="icon-badge rounded-lg bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Zap className="h-4 w-4 text-primary" />
+                  </div>
+                  <p className="font-semibold text-sm">{t.name}</p>
+                </div>
                 <p className="text-xs text-muted-foreground">{t.desc}</p>
+                <div className="flex items-center gap-3 text-[10px] text-muted-foreground pt-1">
+                  <span>{t.outputs}</span>
+                  <span>·</span>
+                  <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{t.runtime}</span>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -67,18 +81,25 @@ export default function Workflows() {
 
       {/* Run history */}
       <Card>
-        <CardHeader><CardTitle className="text-base">Run History</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base section-header">Run History</CardTitle></CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="space-y-0">
             {runHistory.map((r, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
-                <div className="space-y-0.5">
-                  <p className="text-sm font-medium">{r.workflow}</p>
-                  <p className="text-xs text-muted-foreground">{r.date}</p>
+              <div key={i} className={`flex items-center justify-between py-3 border-b last:border-0 ${i % 2 === 0 ? "bg-muted/20" : ""} px-3 -mx-3 first:rounded-t-lg last:rounded-b-lg`}>
+                <div className="flex items-center gap-3">
+                  {r.status === "Completed" ? (
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  ) : (
+                    <XCircle className="h-4 w-4 text-red-500" />
+                  )}
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-medium">{r.workflow}</p>
+                    <p className="text-xs text-muted-foreground">{r.date}</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground">{r.duration}</span>
-                  <Badge variant={r.status === "Completed" ? "secondary" : "destructive"} className="text-xs">{r.status}</Badge>
+                  <Badge variant="outline" className={`text-[10px] border ${r.status === "Completed" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"}`}>{r.status}</Badge>
                 </div>
               </div>
             ))}
@@ -95,15 +116,24 @@ export default function Workflows() {
               <>
                 <DialogHeader><DialogTitle>{t.name}</DialogTitle></DialogHeader>
                 <p className="text-sm text-muted-foreground">{t.desc}</p>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-muted-foreground text-xs block">Outputs</span>{t.outputs}</div>
-                  <div><span className="text-muted-foreground text-xs block">Inputs</span>{t.inputs}</div>
-                  <div><span className="text-muted-foreground text-xs block">Runtime</span>{t.runtime}</div>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: "Outputs", value: t.outputs },
+                    { label: "Inputs", value: t.inputs },
+                    { label: "Runtime", value: t.runtime },
+                  ].map((item) => (
+                    <div key={item.label} className="p-3 rounded-lg bg-muted/50 text-center">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                      <p className="text-sm font-medium mt-0.5">{item.value}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="flex gap-2">
-                  <Button className="flex-1"><Play className="h-4 w-4 mr-1" /> Use Template</Button>
-                  <Button variant="outline" className="flex-1" onClick={() => { setSelectedTemplate(null); setShowCustomize(true); }}>
-                    <Settings2 className="h-4 w-4 mr-1" /> Customize
+                  <Button className="flex-1 gap-1.5" onClick={() => { setSelectedTemplate(null); toast.success(`Switched to "${t.name}"`); }}>
+                    <Play className="h-4 w-4" /> Use Template
+                  </Button>
+                  <Button variant="outline" className="flex-1 gap-1.5" onClick={() => { setSelectedTemplate(null); setShowCustomize(true); }}>
+                    <Settings2 className="h-4 w-4" /> Customize
                   </Button>
                 </div>
               </>
@@ -117,14 +147,28 @@ export default function Workflows() {
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Customize Workflow</DialogTitle></DialogHeader>
           <div className="flex gap-6">
-            <div className="w-48 space-y-1 shrink-0">
+            {/* Vertical stepper */}
+            <div className="w-48 shrink-0 space-y-0">
               {allSteps.map((s, i) => (
-                <button key={s} onClick={() => setActiveStep(i)} className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${activeStep === i ? "bg-accent text-accent-foreground font-medium" : "text-muted-foreground hover:bg-muted"}`}>
-                  Step {i + 1}: {s}
-                </button>
+                <div key={s} className="flex items-start gap-2">
+                  <div className="flex flex-col items-center">
+                    <button
+                      onClick={() => setActiveStep(i)}
+                      className={`h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${activeStep === i ? "gradient-primary text-white shadow-lg shadow-primary/25" : "bg-muted text-muted-foreground hover:bg-muted-foreground/10"}`}
+                    >
+                      {i + 1}
+                    </button>
+                    {i < allSteps.length - 1 && <div className={`w-0.5 h-6 ${i < activeStep ? "bg-primary/40" : "bg-border"}`} />}
+                  </div>
+                  <button onClick={() => setActiveStep(i)} className={`text-sm pt-1 text-left transition-colors ${activeStep === i ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                    {s}
+                  </button>
+                </div>
               ))}
-              <Button variant="outline" size="sm" className="w-full mt-3 gap-1"><Plus className="h-3 w-3" /> Add Step</Button>
-              <Button variant="ghost" size="sm" className="w-full text-destructive gap-1"><Trash2 className="h-3 w-3" /> Remove Step</Button>
+              <div className="pt-3 space-y-1.5 ml-9">
+                <Button variant="outline" size="sm" className="w-full gap-1"><Plus className="h-3 w-3" /> Add Step</Button>
+                <Button variant="ghost" size="sm" className="w-full text-destructive gap-1"><Trash2 className="h-3 w-3" /> Remove</Button>
+              </div>
             </div>
             <div className="flex-1 space-y-4">
               <h3 className="font-semibold">{allSteps[activeStep]} Settings</h3>
@@ -132,14 +176,14 @@ export default function Workflows() {
                 <>
                   <p className="text-sm text-muted-foreground">Configure which knowledge sources to use.</p>
                   {["Brand Knowledge", "Products", "Personas", "Meta Data", "Keywords"].map((s) => (
-                    <div key={s} className="flex items-center justify-between"><span className="text-sm">{s}</span><Switch defaultChecked /></div>
+                    <div key={s} className="flex items-center justify-between py-1"><span className="text-sm">{s}</span><Switch defaultChecked /></div>
                   ))}
                 </>
               )}
               {activeStep === 1 && (
                 <>
-                  <div className="space-y-1.5"><Label>Custom Prompt</Label><Input placeholder="Focus on…" /></div>
-                  <div className="space-y-1.5"><Label>Requirements</Label><Input placeholder="Must include…" /></div>
+                  <div className="space-y-1.5"><Label>Custom Prompt</Label><Input placeholder="Focus on..." /></div>
+                  <div className="space-y-1.5"><Label>Requirements</Label><Input placeholder="Must include..." /></div>
                 </>
               )}
               {activeStep === 2 && (
@@ -151,7 +195,7 @@ export default function Workflows() {
               {activeStep === 3 && (
                 <>
                   <p className="text-sm text-muted-foreground">Configure studio output formats.</p>
-                  {["Feed (1080×1080)", "Story (1080×1920)", "Reels (1080×1920)"].map((f) => (
+                  {["Feed (1080x1080)", "Story (1080x1920)", "Reels (1080x1920)"].map((f) => (
                     <div key={f} className="flex items-center justify-between"><span className="text-sm">{f}</span><Switch defaultChecked /></div>
                   ))}
                 </>
@@ -171,7 +215,7 @@ export default function Workflows() {
                 </>
               )}
               <div className="pt-4 border-t">
-                <Button onClick={() => setShowCustomize(false)}>Save Workflow</Button>
+                <Button className="gradient-primary text-white border-0" onClick={() => { setShowCustomize(false); toast.success("Workflow saved"); }}>Save Workflow</Button>
               </div>
             </div>
           </div>
