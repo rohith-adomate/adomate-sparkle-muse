@@ -1,163 +1,159 @@
 
 
-# Adomate — Self-Serve Creative Ad Platform (UI Prototype)
+# V1 Visual and Flow Upgrade for Adomate
 
-A fully clickable, UI-only prototype of the Adomate platform covering all post-onboarding screens. No backend — all data is hardcoded/mock. The goal is to visualize screen layouts, navigation flows, and key interactions.
-
----
-
-## Global Shell
-
-- **Top Nav Bar**: Brand switcher dropdown (e.g. "Acme Co" → "Beta Brand"), notification bell icon, help icon
-- **Side Nav Bar**: Collapsible sidebar with icons + labels for: Home, Brand Data Room (with hoverable sub-menu showing card names), Campaigns, Concepts, Studio, Content, Calendar, Performance, Workflows, Settings
-- Brand Data Room side nav item shows a fly-out sub-menu on hover listing: Brand Knowledge, Products, Customer Personas, Meta Integration, Custom Keywords
+This upgrade focuses on two things: (1) making every screen visually distinctive and polished rather than generic, and (2) ensuring all flows between screens are coherent and connected.
 
 ---
 
-## 1. Home Dashboard
+## Part 1: Visual Overhaul (All Screens)
 
-A visual overview page with summary cards/widgets:
-- **This Week's Insights** — short text blurb
-- **Concepts Ready** — count badge (e.g. "7 concepts ready")
-- **Studio Assets** — "21 generated"
-- **Calendar** — "3 scheduled"
-- **Performance Snapshot** — key metrics (CTR, spend, ROAS)
-- **Next Scheduled Run** — date/time
-- **Recent Activity** — feed of recent actions
-- **Setup Health** — checklist-style progress indicator
+### Global Design System Refinements
 
----
+- **Sidebar**: Add a subtle gradient background, user avatar at bottom, section dividers between nav groups (Home, Data Room, Campaigns group, Settings), and a refined logo mark at top
+- **Top Nav**: Add a subtle frosted-glass/backdrop-blur effect, improve brand switcher with colored avatar initials, add a search command bar (Cmd+K style)
+- **Cards**: Add subtle gradient overlays, hover lift animations (translate-y + shadow), and colored left-border accents for different statuses
+- **Typography**: Use varied font weights more deliberately -- large display numbers, tighter tracking on headings, softer muted descriptions
+- **Color accents**: Use distinct accent colors per module (indigo for Home, blue for Data Room, orange for Campaigns, green for Performance, purple for Concepts/Studio) via colored icon backgrounds and section headers
+- **Replace all emoji placeholders** with styled gradient placeholder boxes using the module's accent color
 
-## 2. Brand Data Room
+### Screen-by-Screen Visual Improvements
 
-### 2a. Overview Page
-Grid of clickable summary cards, one per data source:
-- Brand Knowledge, Products, Customer Personas, Meta Integration, Custom Keywords
-- Each card shows a brief summary and a "View Details" action
+**Home Dashboard**
+- Hero greeting area with a subtle gradient banner behind the welcome message
+- Summary widget cards get colored icon backgrounds (small pill-shaped badges) instead of bare icons
+- Performance Snapshot section: add a mini sparkline chart visual (a styled SVG or a decorative bar)
+- Setup Health: use a progress ring/bar showing "3 of 5 complete" with a percentage
+- Recent Activity: add timestamps and small avatar dots
+- Add a "Quick Actions" strip with shortcut buttons (New Campaign, Review Concepts, Open Studio)
 
-### 2b. Brand Knowledge Detail
-- Displays brand name, mission, tone of voice, visual style (colors, fonts, imagery guidelines)
-- Inline editable fields
+**Brand Data Room Overview**
+- Cards get large icon areas with colored gradient backgrounds
+- Add a completion indicator (progress bar or checkmark) on each card
+- Add "Last updated" timestamps on each card
+- Overview stats row at top (total products, personas, keywords tracked)
 
-### 2c. Products Detail
-- List/grid of product cards with name, description, hypothesis, problem, solution, competitor info
-- Actions: Add Product, Edit, Delete
+**Brand Knowledge**
+- Visual color swatches rendered as larger, clickable pill chips
+- Section headers with decorative left-border accents
+- Add a visual "Brand Identity Preview" card that mocks up how the brand would look in an ad
 
-### 2d. Customer Personas Detail
-- List of persona cards (name, age range, income, lifestyle, pain points)
-- Actions: Add Persona, Edit, Delete, Link Persona ↔ Product
+**Products**
+- Product cards get a colored left accent bar based on status
+- Add a visual product image placeholder area
+- Competitor badges styled as colored pills with different colors
+- Add product-to-persona linking indicator
 
-### 2e. Meta Integration Detail
-- Connection status card, "Connect Meta Account" button
-- If connected: summary of ad accounts, pages, spend overview
+**Personas**
+- Persona cards styled with an avatar/icon area at top
+- Visual demographic bars (age range shown as a range slider visual, income as a scale)
+- Product links shown as connected pill tags
 
-### 2f. Custom Keywords Detail
-- Tag-style list of keywords, add/remove functionality
+**Meta Integration**
+- Add a visual Meta logo/brand mark area
+- Sync status with an animated pulse indicator
+- Account cards styled as a mini dashboard with spend mini-charts
+- Add sync history timeline
 
----
+**Custom Keywords**
+- Keywords styled as interactive tag cloud with size variation by importance
+- Category sections with colored headers
+- Add a "trending" indicator on certain keywords
 
-## 3. Campaigns
+**Campaigns**
+- Campaign cards redesigned as horizontal strips with a colored status indicator bar on the left, mini progress indicator, and metrics preview
+- "Start New Campaign" button styled as a prominent gradient CTA
+- New Campaign modal: add visual step indicator (numbered circles connected by a line) at the top
+- Template cards get gradient icon areas and "Popular" / "New" badges
 
-### 3a. Campaigns List
-- Table/card list of existing campaigns: name, workflow used, last run date, status, summary metrics
-- "Start New Campaign" button
+**Campaign Detail**
+- Timeline redesigned as a vertical stepper with connecting lines, colored step icons, and duration bars
+- Add a header banner area with campaign status (color-coded)
+- Output section styled with a mini concept grid preview
 
-### 3b. New Campaign Modal Flow
-**Step 1 — Choose Workflow:**
-- Recommended: "Standard Weekly Sprint" (highlighted)
-- Templates grid: Weekly Ad Sprint, Ads from Twitter Data, Retail Ads, Christmas Special, Unspecified Ads, etc.
-- Option: "Create Your Own Workflow"
-- Hovering/clicking a template shows a detail card: description, outputs, inputs required, typical runtime
+**Concepts**
+- Concept cards get gradient placeholder images with varied colors per campaign
+- Add a shimmer/glass effect on card hover
+- Status badges use colored dots instead of text badges
+- Expanded view: masonry-style grid instead of rigid 3-column
+- Detail dialog: larger preview with rounded corners, action buttons styled as large icon buttons with labels below
 
-**Step 2 — Name Your Campaign:**
-- Text input for campaign name
+**Studio**
+- Concept queue cards get subtle color coding by status (green border for Ready, yellow for In Progress, blue for Approved)
+- Preview canvas gets a device frame mockup (phone frame for Story/Reels, monitor frame for Feed)
+- Action buttons styled as a floating toolbar below the canvas
+- QA checklist items get green check animations when toggled
+- Add a "compliance score" indicator (e.g., "4/5 checks passed")
 
-**Step 3 — Workflow Settings (3-step wizard):**
-- Left panel: step list (Knowledge → Insights/Agent → Concepts)
-- Right panel: settings for selected step
-  - Knowledge: toggle data sources on/off, set focus areas
-  - Insights/Agent: customize prompt, requirements
-  - Concepts: iteration settings
-- "Save Workflow & Create Campaign" button
+**Content Library**
+- Content cards styled with a subtle gradient overlay on the thumbnail area
+- Tab indicators styled with underline animation
+- Action buttons get tooltips on hover
+- Add a "Favorites" section at the top for starred items
 
-### 3c. Campaign Detail Page
-- Campaign header with name, status, "Start Campaign" button
-- Timeline/progress of the campaign run
-- Outputs summary linking to Concepts
+**Calendar**
+- Draft cards styled with a grab cursor and subtle shadow lift
+- Calendar grid cells get hover highlights and drop zone indicators
+- Published items styled with a green left-border, Scheduled with blue
+- Add week navigation arrows and a "Today" button
+- Campaign labels get colored dots
 
----
+**Performance**
+- KPI cards styled with colored top borders matching their trend direction (green for up, amber for down)
+- Add decorative mini-chart icons inside KPI cards
+- Creative performance section: cards styled as a ranked leaderboard with position numbers
+- "Generate More Like This" button styled as a gradient accent button
+- Learnings section: cards styled as alert-style banners with icons and distinct success/warning coloring
 
-## 4. Concepts (Tinder/Pinterest Style)
+**Workflows**
+- Current workflow card styled as a hero banner with gradient background
+- Template cards get descriptive icons and visual distinctiveness
+- Run history styled as a proper table with alternating row colors and status dots
+- Customize modal: step navigator styled with a vertical stepper with connecting lines and step status icons
 
-### 4a. Concepts Gallery
-- Top filter bar: This Week, Product, Campaign, Status
-- Rows of horizontal carousels, each row = one campaign's outputs
-- Each card = a generated ad concept thumbnail
-
-### 4b. Campaign Concepts Expanded View
-- Full-screen view of a campaign's concepts grouped by source (e.g. "Based on Competitor Ad A" → 3 concepts)
-- Each concept is a clickable card
-
-### 4c. Concept Detail
-- Large preview of the concept
-- Action buttons: ✅ Accept, ❌ Reject, 💬 Iterate (feedback text input)
-- Concept metadata (source, campaign, product)
-
----
-
-## 5. Studio
-
-- **Left Panel — Concept Queue**: Cards grouped by status (Ready, In Progress, Approved), each showing thumbnail, name, format
-- **Center — Preview Canvas**: Large ad preview with placement toggle (Feed, Story, Reels). Below: "Add to Calendar", "Send to Approval", "Send to Designer" buttons. Export/download option.
-- **Right Panel — Controls**: Regenerate Image button, Regenerate Copy button, QA Checklist (spacing OK, text length OK, no restricted claims, etc.)
-
----
-
-## 6. Content
-
-### 6a. Content Library
-- Tabs: Ads, Hooks, Primary Text, CTAs, Headlines
-- Each tab shows a grid of content cards with thumbnail/text preview, tags, actions (Copy, Send to Calendar, Add to Favorite)
-
-### 6b. Calendar (sub-section or navigated via "Send to Calendar")
-- **Top: Draft to Schedule** — row of ad cards pending scheduling, draggable
-- **Below: Weekly Calendar Grid** — columns: Campaign label + Sun–Sat. Rows = campaigns (Google Calendar style)
-- Calendar items show: creative thumbnail, status (Scheduled/Published), actions (Republish, Swap, Remove)
-- Drag-and-drop from drafts to calendar slots
-
----
-
-## 7. Performance & Learnings
-
-- **KPI Strip** — horizontal row of key metrics (impressions, CTR, ROAS, spend, conversions)
-- **Creative Performance** — grid of ad thumbnails with performance stats + "Generate More Like This" button
-- **Learnings** — insight cards (e.g. "This claim triggers drop-off — avoid", "UGC-style outperforms polished by 2x")
+**Settings**
+- Tab content areas with cleaner form spacing
+- Team members shown with avatar circles and role badges
+- Billing section with a visual plan comparison card
+- Integration cards with service logos/icons
 
 ---
 
-## 8. Workflows
+## Part 2: Flow Coherence Fixes
 
-- **Current Workflow Card** — shows active workflow name (e.g. "Weekly Ad Sprint") + "Customize" button
-- **Template Gallery** — grid of predefined workflow template cards
-- **Run History** — table of past runs with date, status, duration
-- Clicking a template → template detail popup (outputs, inputs, runtime, "Use Template", "Customize")
-- Customize opens a **6-step workflow settings modal**:
-  - Steps: Knowledge → Insights/Agent → Concepts → Studio → Calendar → Learnings
-  - Left: step navigator. Right: step-specific settings
-  - Actions: Add Step, Remove Step, Save Workflow
+These ensure clicking through the app feels connected and logical:
+
+1. **Content "Send to Calendar" action**: Currently the Content page has calendar icon buttons but they don't navigate to the Calendar page. Wire these up to navigate to `/calendar` with a toast confirmation.
+
+2. **Studio "Add to Calendar" button**: Wire this to navigate to `/calendar` with a toast.
+
+3. **Studio "Send to Approval" button**: Show a toast confirmation with the concept name.
+
+4. **Campaign creation completion**: After "Save & Create Campaign" in the modal, show a toast and briefly highlight the new campaign in the list.
+
+5. **Concept Accept/Reject/Iterate actions**: Show a toast feedback message and update the badge status visually (local state change).
+
+6. **Brand Data Room cards**: Add breadcrumb navigation on detail pages (Brand Data Room > Brand Knowledge) so users can navigate back.
+
+7. **Performance "Generate More Like This"**: Navigate to `/concepts` or show a toast saying "Queued for next campaign run."
+
+8. **Workflows "Use Template"**: Show a toast and set the current workflow, closing the dialog.
+
+9. **Home quick actions**: Add clickable shortcuts that navigate to the relevant pages.
+
+10. **Calendar item actions**: Republish/Swap/Remove buttons show toast confirmations.
 
 ---
 
-## 9. Settings
+## Technical Approach
 
-- Standard settings layout with sections: Profile, Team Members, Billing, Integrations, Notifications Preferences
-- Clean form-based UI
+- All changes are purely visual/UX -- no backend, just UI refinements
+- Add CSS utility classes and animations in `index.css` (subtle transitions, gradient utilities)
+- Refactor each page file with improved layouts, hover states, and color accents
+- Add `sonner` toast calls for action feedback throughout
+- Add breadcrumbs as a small shared component
+- Use `useNavigate` and `toast` from sonner for flow connections
+- Each page gets touched with refined spacing, card styles, and visual hierarchy
 
----
-
-## Design Approach
-- Clean, modern SaaS aesthetic using the existing shadcn/ui component library
-- All data is hardcoded mock data — no API calls or backend
-- All screens are linked via React Router for a fully navigable prototype
-- Emphasis on layout and flow clarity over pixel-perfect polish
+All 16 page files, the 3 layout files, and `index.css` will be updated. No new dependencies needed -- everything uses existing shadcn/ui components, Tailwind, and lucide-react.
 
