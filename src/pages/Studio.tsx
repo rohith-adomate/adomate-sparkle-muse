@@ -53,10 +53,13 @@ export default function Studio() {
 
   return (
     <div className="flex gap-5 h-[calc(100vh-8rem)]">
-      {/* Left — Concept Queue (THIS WHOLE PAGE IS JUST A PLACEHOLDER - FOR THE MVP VERSION, JUST TAKE THE STUDIO THAT IS IN THE LEGACY APP AND USE THAT SCREEN ITSELF DIRECTLY)*/}
+      {/* Left — Concept Queue */}
       <div className="w-56 shrink-0 overflow-y-auto space-y-1">
         <HoverExplainer text="Concept Queue: Lists all accepted concepts grouped by status (Ready, In Progress, Approved). Clicking a concept loads it in the preview canvas. Backend: studio_queue table (id, concept_id, status, format, created_at). Status transitions: Ready → In Progress (when AI starts generating) → Approved (after QA passes and user approves).">
-          <h2 className="text-sm font-semibold mb-3 section-header">Concept Queue</h2>
+          <h2 className="text-sm font-semibold mb-3 section-header">
+            Concept Queue - (THIS WHOLE PAGE IS JUST A PLACEHOLDER - FOR THE MVP VERSION, JUST TAKE THE STUDIO THAT IS
+            IN THE LEGACY APP AND USE THAT SCREEN ITSELF DIRECTLY)
+          </h2>
         </HoverExplainer>
         {["Ready", "In Progress", "Approved"].map((status) => {
           const items = queue.filter((q) => q.status === status);
