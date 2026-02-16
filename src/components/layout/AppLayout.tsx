@@ -6,7 +6,7 @@ import { AppSidebar } from "./AppSidebar";
 export function AppLayout() {
   return (
     <SidebarProvider>
-      <div className="flex flex-col min-h-screen w-full">
+      <div className="flex flex-col h-screen w-full">
         <TopNav />
         <div className="flex flex-1 w-full overflow-hidden">
           <AppSidebar />

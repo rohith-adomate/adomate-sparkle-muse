@@ -7,6 +7,7 @@ import { CalendarDays, Send, User, Download, RefreshCw, CheckCircle2, Smartphone
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { HoverExplainer } from "@/components/HoverExplainer";
 
 const queue = [
   { name: "Beach Vibes UGC", format: "1080x1080", status: "Ready", gradient: "from-indigo-400/30 to-violet-500/20" },
@@ -45,7 +46,9 @@ export default function Studio() {
     <div className="flex gap-5 h-[calc(100vh-8rem)]">
       {/* Left — Concept Queue */}
       <div className="w-56 shrink-0 overflow-y-auto space-y-1">
+        <HoverExplainer text="Concept Queue: Lists all accepted concepts grouped by status (Ready, In Progress, Approved). Clicking a concept loads it in the preview canvas. Backend: studio_queue table (id, concept_id, status, format, created_at). Status transitions: Ready → In Progress (when AI starts generating) → Approved (after QA passes and user approves).">
         <h2 className="text-sm font-semibold mb-3 section-header">Concept Queue</h2>
+        </HoverExplainer>
         {["Ready", "In Progress", "Approved"].map((status) => {
           const items = queue.filter((q) => q.status === status);
           if (!items.length) return null;
@@ -128,6 +131,7 @@ export default function Studio() {
 
       {/* Right — Controls */}
       <div className="w-60 shrink-0 space-y-4 overflow-y-auto">
+        <HoverExplainer text="Controls: Regenerate Image calls the AI image generation pipeline with updated parameters. Regenerate Copy calls the LLM to produce new ad copy while keeping the same concept brief. Backend: POST /api/studio/regenerate { asset_id, type: 'image'|'copy' }. Triggers async generation, updates studio_queue.status to 'generating'.">
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm section-header">Controls</CardTitle></CardHeader>
           <CardContent className="space-y-2">
@@ -135,6 +139,8 @@ export default function Studio() {
             <Button size="sm" variant="outline" className="w-full gap-1.5"><RefreshCw className="h-3.5 w-3.5" /> Regenerate Copy</Button>
           </CardContent>
         </Card>
+        </HoverExplainer>
+        <HoverExplainer text="QA Checklist: Automated checks run against the creative asset. Spacing validates safe zone compliance. Text length checks character count (Meta recommends ≤125). Restricted claims scans for prohibited health/financial claims. Logo placement verifies brand mark position. CTA check ensures call-to-action is present and clear. Backend: POST /api/studio/qa { asset_id } returns array of { check_name, passed, details }. All checks must pass before 'Send to Approval' is enabled.">
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -156,6 +162,7 @@ export default function Studio() {
             ))}
           </CardContent>
         </Card>
+        </HoverExplainer>
       </div>
     </div>
   );
