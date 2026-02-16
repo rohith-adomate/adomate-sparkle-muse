@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const brands = [
@@ -17,9 +18,10 @@ const brands = [
 
 export function TopNav() {
   const [activeBrand, setActiveBrand] = useState(brands[0]);
+  const nav = useNavigate();
 
   return (
-    <header className="h-14 border-b glass flex items-center justify-between px-4 shrink-0 sticky top-0 z-50">
+    <header className="h-14 border-b glass flex items-center justify-between px-4 shrink-0 sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
       <div className="flex items-center gap-3">
         <SidebarTrigger />
         <div className="flex items-center gap-1.5">
@@ -63,7 +65,7 @@ export function TopNav() {
           <span>Search...</span>
           <kbd className="ml-3 inline-flex h-5 items-center rounded border bg-muted px-1.5 text-[10px] font-mono text-muted-foreground">⌘K</kbd>
         </Button>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative" onClick={() => nav("/notifications-spec")}>
           <Bell className="h-4 w-4" />
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-card" />
         </Button>

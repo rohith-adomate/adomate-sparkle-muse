@@ -4,7 +4,7 @@ import {
   ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem,
@@ -14,10 +14,6 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-
-const mainNav = [
-  { title: "Home", url: "/", icon: Home },
-];
 
 const dataRoomSubs = [
   { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
@@ -46,6 +42,7 @@ const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium 
 
 export function AppSidebar() {
   const { pathname } = useLocation();
+  const nav = useNavigate();
   const inDataRoom = pathname.startsWith("/brand-data-room");
 
   return (
@@ -63,10 +60,16 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              {/* Brand Data Room with collapsible sub-menu */}
+              {/* Brand Data Room — clicking label navigates to overview */}
               <li>
                 <Collapsible defaultOpen={inDataRoom}>
-                  <CollapsibleTrigger className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}>
+                  <CollapsibleTrigger
+                    className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}
+                    onClick={(e) => {
+                      // Navigate to overview on click, but still toggle collapse
+                      nav("/brand-data-room");
+                    }}
+                  >
                     <span className="flex items-center gap-2.5">
                       <Database className="h-4 w-4" />
                       <span>Brand Data Room</span>
@@ -75,11 +78,6 @@ export function AppSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-sidebar-border pl-3">
-                      <li>
-                        <NavLink to="/brand-data-room" end className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
-                          Overview
-                        </NavLink>
-                      </li>
                       {dataRoomSubs.map((sub) => (
                         <li key={sub.url}>
                           <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>

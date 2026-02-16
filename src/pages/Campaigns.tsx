@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { HoverExplainer } from "@/components/HoverExplainer";
 
 const campaigns = [
   { id: "1", name: "Summer Kickoff", workflow: "Weekly Ad Sprint", lastRun: "Feb 10, 2026", status: "Completed", concepts: 12, statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200" },
@@ -39,6 +40,7 @@ export default function Campaigns() {
 
   return (
     <div className="space-y-6">
+      <HoverExplainer text="Campaigns List: Shows all campaigns with status, workflow type, last run date, and concept count. Each campaign card navigates to its detail page. 'Start New Campaign' opens a 3-step modal: Choose Workflow → Name → Configure Settings. Backend: campaigns table (id, brand_id, name, workflow_id, status, created_at, last_run_at). Status: draft, running, completed, failed.">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Campaigns</h1>
@@ -49,6 +51,7 @@ export default function Campaigns() {
         </Button>
       </div>
 
+      </HoverExplainer>
       <div className="grid gap-3">
         {campaigns.map((c) => (
           <Card key={c.id} className="card-hover cursor-pointer group overflow-hidden" onClick={() => nav(`/campaigns/${c.id}`)}>
