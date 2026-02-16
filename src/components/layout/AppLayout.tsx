@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TopNav } from "./TopNav";
 import { AppSidebar } from "./AppSidebar";
+import { OnboardingOverlay } from "@/components/OnboardingOverlay";
 
 export function AppLayout() {
+  const [showOnboarding, setShowOnboarding] = useState(true);
+
   return (
     <SidebarProvider>
       <div className="flex flex-col h-screen w-full">
@@ -15,6 +19,7 @@ export function AppLayout() {
           </main>
         </div>
       </div>
+      {showOnboarding && <OnboardingOverlay onComplete={() => setShowOnboarding(false)} />}
     </SidebarProvider>
   );
 }
