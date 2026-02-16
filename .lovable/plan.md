@@ -1,159 +1,185 @@
 
 
-# V1 Visual and Flow Upgrade for Adomate
+# V1 Refinement: Landing Page, Notifications Spec, Navbar, Brand Data Room, and Concepts
 
-This upgrade focuses on two things: (1) making every screen visually distinctive and polished rather than generic, and (2) ensuring all flows between screens are coherent and connected.
-
----
-
-## Part 1: Visual Overhaul (All Screens)
-
-### Global Design System Refinements
-
-- **Sidebar**: Add a subtle gradient background, user avatar at bottom, section dividers between nav groups (Home, Data Room, Campaigns group, Settings), and a refined logo mark at top
-- **Top Nav**: Add a subtle frosted-glass/backdrop-blur effect, improve brand switcher with colored avatar initials, add a search command bar (Cmd+K style)
-- **Cards**: Add subtle gradient overlays, hover lift animations (translate-y + shadow), and colored left-border accents for different statuses
-- **Typography**: Use varied font weights more deliberately -- large display numbers, tighter tracking on headings, softer muted descriptions
-- **Color accents**: Use distinct accent colors per module (indigo for Home, blue for Data Room, orange for Campaigns, green for Performance, purple for Concepts/Studio) via colored icon backgrounds and section headers
-- **Replace all emoji placeholders** with styled gradient placeholder boxes using the module's accent color
-
-### Screen-by-Screen Visual Improvements
-
-**Home Dashboard**
-- Hero greeting area with a subtle gradient banner behind the welcome message
-- Summary widget cards get colored icon backgrounds (small pill-shaped badges) instead of bare icons
-- Performance Snapshot section: add a mini sparkline chart visual (a styled SVG or a decorative bar)
-- Setup Health: use a progress ring/bar showing "3 of 5 complete" with a percentage
-- Recent Activity: add timestamps and small avatar dots
-- Add a "Quick Actions" strip with shortcut buttons (New Campaign, Review Concepts, Open Studio)
-
-**Brand Data Room Overview**
-- Cards get large icon areas with colored gradient backgrounds
-- Add a completion indicator (progress bar or checkmark) on each card
-- Add "Last updated" timestamps on each card
-- Overview stats row at top (total products, personas, keywords tracked)
-
-**Brand Knowledge**
-- Visual color swatches rendered as larger, clickable pill chips
-- Section headers with decorative left-border accents
-- Add a visual "Brand Identity Preview" card that mocks up how the brand would look in an ad
-
-**Products**
-- Product cards get a colored left accent bar based on status
-- Add a visual product image placeholder area
-- Competitor badges styled as colored pills with different colors
-- Add product-to-persona linking indicator
-
-**Personas**
-- Persona cards styled with an avatar/icon area at top
-- Visual demographic bars (age range shown as a range slider visual, income as a scale)
-- Product links shown as connected pill tags
-
-**Meta Integration**
-- Add a visual Meta logo/brand mark area
-- Sync status with an animated pulse indicator
-- Account cards styled as a mini dashboard with spend mini-charts
-- Add sync history timeline
-
-**Custom Keywords**
-- Keywords styled as interactive tag cloud with size variation by importance
-- Category sections with colored headers
-- Add a "trending" indicator on certain keywords
-
-**Campaigns**
-- Campaign cards redesigned as horizontal strips with a colored status indicator bar on the left, mini progress indicator, and metrics preview
-- "Start New Campaign" button styled as a prominent gradient CTA
-- New Campaign modal: add visual step indicator (numbered circles connected by a line) at the top
-- Template cards get gradient icon areas and "Popular" / "New" badges
-
-**Campaign Detail**
-- Timeline redesigned as a vertical stepper with connecting lines, colored step icons, and duration bars
-- Add a header banner area with campaign status (color-coded)
-- Output section styled with a mini concept grid preview
-
-**Concepts**
-- Concept cards get gradient placeholder images with varied colors per campaign
-- Add a shimmer/glass effect on card hover
-- Status badges use colored dots instead of text badges
-- Expanded view: masonry-style grid instead of rigid 3-column
-- Detail dialog: larger preview with rounded corners, action buttons styled as large icon buttons with labels below
-
-**Studio**
-- Concept queue cards get subtle color coding by status (green border for Ready, yellow for In Progress, blue for Approved)
-- Preview canvas gets a device frame mockup (phone frame for Story/Reels, monitor frame for Feed)
-- Action buttons styled as a floating toolbar below the canvas
-- QA checklist items get green check animations when toggled
-- Add a "compliance score" indicator (e.g., "4/5 checks passed")
-
-**Content Library**
-- Content cards styled with a subtle gradient overlay on the thumbnail area
-- Tab indicators styled with underline animation
-- Action buttons get tooltips on hover
-- Add a "Favorites" section at the top for starred items
-
-**Calendar**
-- Draft cards styled with a grab cursor and subtle shadow lift
-- Calendar grid cells get hover highlights and drop zone indicators
-- Published items styled with a green left-border, Scheduled with blue
-- Add week navigation arrows and a "Today" button
-- Campaign labels get colored dots
-
-**Performance**
-- KPI cards styled with colored top borders matching their trend direction (green for up, amber for down)
-- Add decorative mini-chart icons inside KPI cards
-- Creative performance section: cards styled as a ranked leaderboard with position numbers
-- "Generate More Like This" button styled as a gradient accent button
-- Learnings section: cards styled as alert-style banners with icons and distinct success/warning coloring
-
-**Workflows**
-- Current workflow card styled as a hero banner with gradient background
-- Template cards get descriptive icons and visual distinctiveness
-- Run history styled as a proper table with alternating row colors and status dots
-- Customize modal: step navigator styled with a vertical stepper with connecting lines and step status icons
-
-**Settings**
-- Tab content areas with cleaner form spacing
-- Team members shown with avatar circles and role badges
-- Billing section with a visual plan comparison card
-- Integration cards with service logos/icons
+This plan covers all 5 areas requested, with detailed implementation specs for developers.
 
 ---
 
-## Part 2: Flow Coherence Fixes
+## 1. Home (Landing Page) Changes
 
-These ensure clicking through the app feels connected and logical:
+### Remove sections
+- Delete the "This Week's Insights" widget from the `widgets` array (first item)
+- Delete the "Recent Activity" card entirely (the middle card in the 3-column grid)
 
-1. **Content "Send to Calendar" action**: Currently the Content page has calendar icon buttons but they don't navigate to the Calendar page. Wire these up to navigate to `/calendar` with a toast confirmation.
+### Add "Assets In Progress" card
+- Add a new widget card showing count of assets currently being generated/in-progress (e.g., "5 assets in progress")
+- Uses a `Loader2` or `RefreshCw` icon with spinning animation
+- Clicking navigates to `/studio`
 
-2. **Studio "Add to Calendar" button**: Wire this to navigate to `/calendar` with a toast.
+### Make cards clickable with navigation
+- Each summary widget card gets an `onClick` handler:
+  - "Concepts Ready" navigates to `/concepts`
+  - "Studio Assets" navigates to `/studio`
+  - "Calendar" navigates to `/calendar`
+  - "Assets In Progress" navigates to `/studio`
+- "Next Scheduled Run" card: clicking navigates to `/campaigns/1` (the campaign detail for the relevant run)
+- "Setup Health" items that are incomplete: clicking "Set up" navigates to the relevant Brand Data Room sub-page
 
-3. **Studio "Send to Approval" button**: Show a toast confirmation with the concept name.
+### Performance Snapshot: Meta toggle
+- Add a toggle/switch inside the Performance Snapshot card
+- Two states:
+  - **Meta Connected** (default ON): Shows the current KPI data (CTR, Spend, ROAS, Impressions) with the mini chart
+  - **Meta Not Connected**: Shows a blurred/dimmed version of the metrics with an overlay CTA card saying "Connect your Meta account to unlock real-time performance data" with a "Connect Meta" button that navigates to `/brand-data-room/meta`
+- Use a `Switch` component labeled "Meta Ad Account" to toggle between views
 
-4. **Campaign creation completion**: After "Save & Create Campaign" in the modal, show a toast and briefly highlight the new campaign in the list.
-
-5. **Concept Accept/Reject/Iterate actions**: Show a toast feedback message and update the badge status visually (local state change).
-
-6. **Brand Data Room cards**: Add breadcrumb navigation on detail pages (Brand Data Room > Brand Knowledge) so users can navigate back.
-
-7. **Performance "Generate More Like This"**: Navigate to `/concepts` or show a toast saying "Queued for next campaign run."
-
-8. **Workflows "Use Template"**: Show a toast and set the current workflow, closing the dialog.
-
-9. **Home quick actions**: Add clickable shortcuts that navigate to the relevant pages.
-
-10. **Calendar item actions**: Republish/Swap/Remove buttons show toast confirmations.
+### On-Hover explainers (global)
+- Create a reusable `HoverExplainer` wrapper component that uses `Tooltip` from shadcn
+- Every card and interactive element across ALL pages gets a tooltip with a detailed description of its expected functionality
+- The tooltip text will be specific and developer-oriented, e.g.:
+  - Home > Concepts Ready: "Displays count of concepts in 'pending' status across all campaigns. Clicking navigates to /concepts filtered by status=pending. Backend: query concepts table WHERE status='pending' GROUP BY campaign."
+  - Home > Performance Snapshot: "Pulls KPIs from the connected Meta Ad Account via Meta Marketing API. Updates every hour. Shows CTR, Spend, ROAS, Impressions for the current week. If no Meta account connected, shows upsell CTA."
+  - Studio > QA Checklist: "Automated checks run against the creative asset: text overlay ratio, character count, restricted claims detection, safe zone compliance. Each check returns pass/fail. Must pass all checks before 'Send to Approval' is enabled."
+- This will be applied to every page: Home, Brand Data Room (overview + all 5 detail pages), Campaigns, Campaign Detail, Concepts, Studio, Content, Calendar, Performance, Workflows, Settings
 
 ---
 
-## Technical Approach
+## 2. Notifications Implementation Specification Document
 
-- All changes are purely visual/UX -- no backend, just UI refinements
-- Add CSS utility classes and animations in `index.css` (subtle transitions, gradient utilities)
-- Refactor each page file with improved layouts, hover states, and color accents
-- Add `sonner` toast calls for action feedback throughout
-- Add breadcrumbs as a small shared component
-- Use `useNavigate` and `toast` from sonner for flow connections
-- Each page gets touched with refined spacing, card styles, and visual hierarchy
+A new page/document will be created at `src/pages/NotificationsSpec.tsx` that renders a styled specification document accessible from the notification bell in TopNav. This will be a rich, readable spec page.
 
-All 16 page files, the 3 layout files, and `index.css` will be updated. No new dependencies needed -- everything uses existing shadcn/ui components, Tailwind, and lucide-react.
+### Notification Categories and Message Types:
+
+**Category 1: Campaign Lifecycle**
+- Campaign started: "Campaign '{name}' has started running. Estimated completion: {time}"
+- Campaign completed: "Campaign '{name}' completed. {count} concepts generated. [Review Concepts]"
+- Campaign failed: "Campaign '{name}' failed at step '{step}'. Error: {message}. [Retry] [View Details]"
+- Campaign step progress: "Campaign '{name}': Step {n}/{total} '{step_name}' completed"
+
+**Category 2: Concept Review**
+- New concepts ready: "{count} new concepts ready for review from campaign '{name}'. [Review Now]"
+- Concept auto-iterated: "Concept '{name}' was auto-iterated based on your feedback. [View Updated]"
+- Concept batch approved: "{count} concepts approved and moved to Studio queue. [Open Studio]"
+
+**Category 3: Studio and Creative**
+- Asset generation complete: "Asset '{name}' finished generating in {format} format. [Preview]"
+- QA check failed: "Asset '{name}' failed QA: {check_name}. [Fix Now]"
+- Asset sent to approval: "Asset '{name}' sent for approval to {approver}. [Track Status]"
+- Approval received: "Asset '{name}' approved by {approver}. [Add to Calendar]"
+- Approval rejected: "Asset '{name}' rejected by {approver}. Reason: {reason}. [Iterate]"
+
+**Category 4: Calendar and Publishing**
+- Ad scheduled: "Ad '{name}' scheduled for {date} on {platform}. [View Calendar]"
+- Ad published: "Ad '{name}' is now live on {platform}. [View Performance]"
+- Ad publish failed: "Failed to publish '{name}' to {platform}. Error: {message}. [Retry]"
+- Upcoming deadline: "Reminder: {count} ads scheduled for tomorrow. [Review Calendar]"
+
+**Category 5: Performance and Learnings**
+- Performance milestone: "Ad '{name}' hit {metric} = {value}, outperforming benchmark by {percent}. [Generate More]"
+- Performance alert: "Ad '{name}' ROAS dropped below {threshold}. Consider pausing. [View Details]"
+- New learning detected: "New insight: '{learning_summary}'. [View Learnings]"
+- Weekly digest: "Your weekly performance digest is ready. {highlights}. [View Report]"
+
+**Category 6: Data Room and Integration**
+- Meta sync complete: "Meta data synced successfully. {records} records updated. [View Details]"
+- Meta sync failed: "Meta sync failed. Error: {message}. [Retry] [Check Connection]"
+- Meta account disconnected: "Your Meta account has been disconnected. [Reconnect]"
+- Brand data updated: "Brand Knowledge updated by {user}. [View Changes]"
+- New product added: "Product '{name}' added to catalog. [Link Personas]"
+
+**Category 7: System and Account**
+- Workflow updated: "Workflow '{name}' settings updated. [View Workflow]"
+- Team member invited: "{name} joined your workspace. [Manage Team]"
+- Billing alert: "Usage approaching plan limit ({percent}%). [Upgrade Plan]"
+- Feature announcement: "New feature: {feature_name}. [Learn More]"
+
+**Notification UI Spec:**
+- Bell icon shows unread count badge (red dot with number)
+- Clicking bell opens a dropdown panel (not a full page) with tabs: All, Unread, Campaign, Performance, System
+- Each notification shows: icon (color-coded by category), title, description, timestamp, action buttons
+- Mark as read (individual + mark all), delete, mute category
+- Real-time via WebSocket/Supabase Realtime in production
+
+---
+
+## 3. Sticky Top Navbar
+
+- The TopNav already has `sticky top-0 z-50` but the `AppLayout` structure wraps it inside a flex column. The issue is the `overflow-hidden` on the flex container below it.
+- Fix: Change `AppLayout.tsx` so the TopNav is truly sticky by making the overall container use a proper sticky positioning context. Update the main content area to handle its own scrolling while the TopNav stays fixed at top.
+
+---
+
+## 4. Brand Data Room Changes
+
+### Remove "Overview" sub-menu item
+- In `AppSidebar.tsx`, remove the "Overview" `<li>` from the Brand Data Room collapsible sub-menu (lines 78-82)
+- Make clicking "Brand Data Room" label itself navigate to `/brand-data-room` (the overview page) by wrapping the CollapsibleTrigger in a NavLink or adding an onClick handler
+
+### Brand Knowledge - Redesign to match wireframe
+Based on the uploaded screenshot, the page needs 2 tabs: "Knowledge" and "Visual Style"
+
+**Knowledge Tab (default):**
+- Brand Name (text input)
+- Languages (text input)
+- Website URL (text input with "Refresh Knowledge" button next to it)
+- Description (textarea)
+- Tone of Voice (textarea)
+- Brand Positioning (textarea)
+
+**Visual Style Tab:**
+- Fonts (text input)
+- Logos (file upload area / placeholder)
+- Brand Guidelines (file upload area / placeholder)
+- Brand Colors (color picker / swatches with add/remove)
+- Visual Style (textarea for general guidelines)
+
+**Auto-save behavior:**
+- Top right corner shows a loading spinner when saving
+- Fields auto-save on blur/change with debounce (300ms)
+- Show "Saving..." spinner then "Saved" checkmark
+- No manual "Save" button -- everything auto-saves
+
+### Products - Add thumbnail and product images
+- Add a product image placeholder/thumbnail area at the top of each product card (a gradient rectangle with an image icon)
+- Add a "Product Images" sub-section or screen where users can upload multiple product images
+- In the product card grid, show a thumbnail preview in the card header area
+
+### Custom Keywords - "NOT FOR MVP" hover
+- Add a prominent tooltip/hover on the entire Custom Keywords card (both in Data Room overview and in the detail page) that says "NOT FOR MVP - DO NOT IMPLEMENT"
+- Style with a red/warning border or badge overlay
+
+---
+
+## 5. Concepts - Tinder-style Like/Dislike on Ad Click
+
+- When clicking a concept card, the detail dialog opens (already exists)
+- Redesign the action area to be more Tinder-like:
+  - Large swipeable card preview area
+  - Three large circular action buttons at the bottom: Red X (reject), Green Heart/Check (accept), Blue message bubble (iterate)
+  - Add swipe gesture hint text
+  - Show accept/reject animation (card slides left for reject, right for accept with color flash)
+- Keep the existing feedback textarea for the "Iterate" action
+
+---
+
+## Technical Summary
+
+Files to modify:
+1. `src/pages/Home.tsx` -- Remove sections, add assets card, make clickable, Meta toggle, hover explainers
+2. `src/components/layout/TopNav.tsx` -- Link notification bell to spec page or dropdown
+3. `src/components/layout/AppLayout.tsx` -- Fix sticky navbar
+4. `src/components/layout/AppSidebar.tsx` -- Remove Overview sub-item, make Data Room label clickable
+5. `src/pages/BrandKnowledge.tsx` -- Complete redesign with 2 tabs, auto-save
+6. `src/pages/Products.tsx` -- Add thumbnails, product images section
+7. `src/pages/CustomKeywords.tsx` -- Add "NOT FOR MVP" hover overlay
+8. `src/pages/Concepts.tsx` -- Tinder-style accept/reject UX
+9. `src/pages/NotificationsSpec.tsx` -- New file for notification spec document
+
+New file:
+- `src/pages/NotificationsSpec.tsx` -- Rendered spec document
+
+Files that get hover explainers added:
+- All 16 page files get `Tooltip` wrappers on key interactive elements
+
+No new dependencies needed.
 
