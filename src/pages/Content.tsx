@@ -9,22 +9,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 const tabs = ["Ads", "Hooks", "Primary Text", "CTAs", "Headlines"];
 
-const gradients = [
-  "from-indigo-400/20 to-violet-500/15",
-  "from-fuchsia-400/20 to-pink-500/15",
-  "from-amber-400/20 to-orange-500/15",
-  "from-emerald-400/20 to-teal-500/15",
-  "from-sky-400/20 to-blue-500/15",
-  "from-rose-400/20 to-red-500/15",
-];
-
 const adContent = [
-  { title: "Beach Vibes UGC", tags: ["UGC", "Summer"], preview: "Experience the freedom of effortless advertising...", fav: true },
-  { title: "Gift Guide Carousel", tags: ["Seasonal", "Retail"], preview: "Find the perfect gift for everyone on your list..." },
-  { title: "Feature Highlight", tags: ["Product", "Evergreen"], preview: "Discover how SmartWidget Pro saves you 10 hours a week..." },
-  { title: "Problem/Solution", tags: ["Pain Point", "Conversion"], preview: "Tired of spending hours on ad creative? There's a better way..." },
-  { title: "Social Proof Strip", tags: ["Testimonial", "Trust"], preview: "Join 2,000+ brands already using Adomate to scale creative..." },
-  { title: "Bold CTA Banner", tags: ["Direct Response", "CTA"], preview: "Start your free trial today. No credit card required." },
+  { title: "Beach Vibes UGC", tags: ["UGC", "Summer"], preview: "Experience the freedom of effortless advertising...", fav: true, imgSeed: "beach-ad" },
+  { title: "Gift Guide Carousel", tags: ["Seasonal", "Retail"], preview: "Find the perfect gift for everyone on your list...", imgSeed: "gift-ad" },
+  { title: "Feature Highlight", tags: ["Product", "Evergreen"], preview: "Discover how SmartWidget Pro saves you 10 hours a week...", imgSeed: "feature-ad" },
+  { title: "Problem/Solution", tags: ["Pain Point", "Conversion"], preview: "Tired of spending hours on ad creative? There's a better way...", imgSeed: "problem-ad" },
+  { title: "Social Proof Strip", tags: ["Testimonial", "Trust"], preview: "Join 2,000+ brands already using Adomate to scale creative...", imgSeed: "social-ad" },
+  { title: "Bold CTA Banner", tags: ["Direct Response", "CTA"], preview: "Start your free trial today. No credit card required.", imgSeed: "cta-ad" },
 ];
 
 const hookContent = [
@@ -65,7 +56,13 @@ export default function Content() {
         <div className="flex gap-3">
           <Card className="w-52 card-hover overflow-hidden">
             <CardContent className="p-0">
-              <div className={`h-20 bg-gradient-to-br ${gradients[0]}`} />
+              <div className="h-20 relative overflow-hidden bg-muted">
+                <img
+                  src="https://picsum.photos/seed/beach-ad/300/160"
+                  alt="Beach Vibes UGC"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </div>
               <div className="p-2.5">
                 <p className="text-xs font-medium">Beach Vibes UGC</p>
                 <p className="text-[10px] text-muted-foreground">UGC · Summer</p>
@@ -82,12 +79,19 @@ export default function Content() {
 
         <TabsContent value="Ads" className="mt-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {adContent.map((c, i) => (
+            {adContent.map((c) => (
               <Card key={c.title} className="card-hover overflow-hidden">
                 <CardContent className="p-0">
-                  <div className={`h-36 bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center relative`}>
-                    <div className="h-14 w-14 rounded-xl bg-white/20 backdrop-blur-sm" />
-                    {c.fav && <Star className="absolute top-2 right-2 h-4 w-4 text-amber-500 fill-amber-500" />}
+                  <div className="h-36 relative overflow-hidden bg-muted group">
+                    <img
+                      src={`https://picsum.photos/seed/${c.imgSeed}/400/240`}
+                      alt={c.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    {c.fav && (
+                      <Star className="absolute top-2 right-2 h-4 w-4 text-amber-400 fill-amber-400 drop-shadow" />
+                    )}
                   </div>
                   <div className="p-4 space-y-2">
                     <p className="font-semibold text-sm">{c.title}</p>

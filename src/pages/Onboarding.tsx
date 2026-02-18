@@ -6,7 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { HoverExplainer } from "@/components/HoverExplainer";
-import { Loader2, Globe, Palette, Type, Image, Upload, Sparkles, ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp, FileImage, Video, FileText, Check } from "lucide-react";
+import {
+  Loader2, Globe, Palette, Type, Image, Upload, Sparkles,
+  ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
+  FileImage, Video, FileText, Check, MessageSquare,
+} from "lucide-react";
 
 const industryTemplates: Record<string, { label: string; questions: string[] }> = {
   d2c: { label: "D2C / E-commerce", questions: ["What is your founder story?", "What makes your product unique vs alternatives?", "Who is your ideal customer? Describe them.", "What problem does your product solve?", "What is your price positioning? (Premium / Mid-range / Budget)"] },
@@ -49,6 +53,7 @@ interface OnboardingProps {
 export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeProgress, setScrapeProgress] = useState(0);
+  const [aiChatLink, setAiChatLink] = useState("");
 
   const [companyName, setCompanyName] = useState("");
   const [website, setWebsite] = useState("");
@@ -71,7 +76,6 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   const scrapeSteps = ["Extracting brand info...", "Detecting colors & fonts...", "Reading product pages...", "Analyzing tone of voice..."];
 
-  // Expose scraping state
   useEffect(() => { onScraping(isScraping); }, [isScraping, onScraping]);
 
   // Handle Continue on Step 1 → scrape simulation
@@ -90,7 +94,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             const tmpl = industryTemplates[industry] || industryTemplates["other"];
             setIndustryAnswers(new Array(tmpl.questions.length).fill(""));
             setIsScraping(false);
-            setStep(2);
+            setStep(2); // → AI Chat History (new step 2)
           }, 600);
         }
       }, 700);
@@ -98,9 +102,9 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     }
   }, [isScraping, step]);
 
-  // Step 6 reveal
+  // Step 7 (Wow Moment) reveal
   useEffect(() => {
-    if (step === 6) {
+    if (step === 7) {
       setRevealedTopics([]);
       const timers = mockTopics.map((_, i) =>
         setTimeout(() => setRevealedTopics(prev => [...prev, i]), 400 + i * 250)
@@ -116,40 +120,71 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   const currentTemplate = industryTemplates[industry] || industryTemplates["other"];
 
+  // ─── Step 1: Basic Info ────────────────────────────────────────────────────
   if (step === 1) {
     if (isScraping) {
       return (
-        <div className="flex flex-col items-center gap-6 py-12 max-w-lg mx-auto">
+        <div className="flex flex-col items-center gap-8 py-12 max-w-lg mx-auto">
+          {/* Animated logo with glow */}
           <div className="relative">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            <Globe className="h-5 w-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary" />
+            <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
+            <div className="relative h-20 w-20 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
+              <Globe className="h-9 w-9 text-white" />
+            </div>
+            <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            </div>
           </div>
-          <p className="text-lg font-semibold">Analyzing your website...</p>
+          <div className="text-center space-y-1">
+            <p className="text-xl font-bold tracking-tight">Analyzing your website...</p>
+            <p className="text-sm text-muted-foreground">We're reading your brand to pre-fill your setup</p>
+          </div>
           <div className="space-y-3 w-full max-w-xs">
             {scrapeSteps.map((s, i) => (
-              <div key={i} className={`flex items-center gap-2 text-sm transition-all duration-300 ${i <= scrapeProgress ? "opacity-100" : "opacity-30"}`}>
-                {i < scrapeProgress ? <Check className="h-4 w-4 text-green-500" /> : i === scrapeProgress ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <div className="h-4 w-4" />}
-                {s}
+              <div
+                key={i}
+                className={`flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]`}
+                style={{
+                  opacity: i <= scrapeProgress ? 1 : 0.2,
+                  transitionDelay: `${i * 150}ms`,
+                  transform: i <= scrapeProgress ? "translateX(0)" : "translateX(-8px)",
+                }}
+              >
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                  i < scrapeProgress ? "bg-emerald-100" : i === scrapeProgress ? "bg-primary/10" : "bg-muted"
+                }`}>
+                  {i < scrapeProgress
+                    ? <Check className="h-3.5 w-3.5 text-emerald-600" />
+                    : i === scrapeProgress
+                      ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                      : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
+                  }
+                </div>
+                <span className={i < scrapeProgress ? "text-foreground font-medium" : i === scrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
               </div>
             ))}
           </div>
         </div>
       );
     }
+
     return (
-      <div className="space-y-5 max-w-lg mx-auto">
+      <div className="space-y-5 max-w-lg mx-auto animate-scale-in">
         <div className="text-center mb-8">
+          <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+            <Sparkles className="h-7 w-7 text-white" />
+          </div>
           <h2 className="text-2xl font-bold tracking-tight">Welcome to Adomate</h2>
           <p className="text-muted-foreground mt-1">Tell us about your business to get started</p>
         </div>
-        <HoverExplainer text="Step 1 collects initial context. On submit, POST /api/onboarding/scrape { url, industry }. Backend uses Firecrawl to scrape website and LLM to extract brand data. Industry selection determines Step 2 questions.">
+        <HoverExplainer text="Step 1 collects initial context. On submit, POST /api/onboarding/scrape { url, industry }. Backend uses Firecrawl to scrape website and LLM to extract brand data. Industry selection determines Step 3 questions.">
           <div className="space-y-4">
-            <div><Label>Company Name</Label><Input placeholder="Acme Inc." value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
-            <div><Label>Website URL</Label><Input placeholder="https://acme.com" value={website} onChange={e => setWebsite(e.target.value)} /></div>
+            <div><Label>Company Name</Label><Input placeholder="Acme Inc." value={companyName} onChange={e => setCompanyName(e.target.value)} className="mt-1.5" /></div>
+            <div><Label>Website URL</Label><Input placeholder="https://acme.com" value={website} onChange={e => setWebsite(e.target.value)} className="mt-1.5" /></div>
             <div>
               <Label>Industry</Label>
               <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger><SelectValue placeholder="Select industry" /></SelectTrigger>
+                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select industry" /></SelectTrigger>
                 <SelectContent>
                   {Object.entries(industryTemplates).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
                 </SelectContent>
@@ -158,7 +193,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             <div>
               <Label>Your Role</Label>
               <Select value={role} onValueChange={setRole}>
-                <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select role" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="founder">Founder</SelectItem>
                   <SelectItem value="marketing">Marketing Manager</SelectItem>
@@ -172,7 +207,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             <div>
               <Label>Primary Goal</Label>
               <Select value={goal} onValueChange={setGoal}>
-                <SelectTrigger><SelectValue placeholder="Select goal" /></SelectTrigger>
+                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select goal" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="awareness">Grow brand awareness</SelectItem>
                   <SelectItem value="conversions">Increase conversions</SelectItem>
@@ -182,43 +217,102 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full mt-2" onClick={startScrape}>Continue</Button>
+            <Button className="w-full mt-2 shadow-sm" onClick={startScrape}>Continue</Button>
           </div>
         </HoverExplainer>
       </div>
     );
   }
 
+  // ─── Step 2: AI Chat History (NEW) ────────────────────────────────────────
   if (step === 2) {
     return (
-      <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-2">
+      <div className="max-w-lg mx-auto animate-scale-in">
+        <div className="text-center mb-8">
+          <div className="relative inline-flex items-center justify-center mb-4">
+            <div className="absolute inset-0 rounded-2xl bg-primary/15 scale-125 animate-glow" />
+            <div className="relative h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-violet-500/20 border border-primary/20 flex items-center justify-center shadow-lg">
+              <MessageSquare className="h-8 w-8 text-primary" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight">Have you already started thinking about your ads?</h2>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed max-w-sm mx-auto">
+            If you've worked with an AI assistant (ChatGPT, Claude, etc.) to brainstorm ad ideas, paste the shareable link below and we'll incorporate those insights.
+          </p>
+        </div>
+        <HoverExplainer text="Backend: POST /api/onboarding/parse-ai-chat { url }. The scraper fetches the public chat transcript and sends it to an LLM with a prompt to extract: preferred ad angles, rejected ideas, brand voice notes, competitor mentions. Output merged into brand_knowledge.ai_context JSON field.">
+          <div className="space-y-5">
+            <div>
+              <Label className="font-medium">Paste your AI chat link <span className="text-muted-foreground font-normal">(optional)</span></Label>
+              <Input
+                className="mt-1.5"
+                placeholder="https://chatgpt.com/share/... or https://claude.ai/share/..."
+                value={aiChatLink}
+                onChange={e => setAiChatLink(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                Supports ChatGPT and Claude public share links. We'll analyze the conversation to extract brand preferences, ad angles, and creative direction.
+              </p>
+            </div>
+
+            {/* Platform cards */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl border bg-card p-4 flex items-start gap-3 hover:border-primary/40 transition-colors cursor-pointer group">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#10a37f]/10 group-hover:bg-[#10a37f]/15 transition-colors">
+                  <span className="text-[#10a37f] font-bold text-sm">GP</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">ChatGPT</p>
+                  <p className="text-[11px] text-muted-foreground truncate">chatgpt.com/share/...</p>
+                </div>
+              </div>
+              <div className="rounded-xl border bg-card p-4 flex items-start gap-3 hover:border-primary/40 transition-colors cursor-pointer group">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-amber-500/10 group-hover:bg-amber-500/15 transition-colors">
+                  <span className="text-amber-600 font-bold text-sm">CL</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">Claude</p>
+                  <p className="text-[11px] text-muted-foreground truncate">claude.ai/share/...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </HoverExplainer>
+      </div>
+    );
+  }
+
+  // ─── Step 3: Brand Review (was 2) ─────────────────────────────────────────
+  if (step === 3) {
+    return (
+      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
         <div className="text-center mb-4">
           <h2 className="text-2xl font-bold tracking-tight">Brand Review</h2>
           <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
         </div>
-        <HoverExplainer text="Step 2 displays scraped results and industry-specific questions. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
+        <HoverExplainer text="Step 3 displays scraped results and industry-specific questions. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Brand Name</Label><Input value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
+              <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
               <div>
                 <Label>Detected Colors</Label>
-                <div className="flex gap-2 mt-1.5">
+                <div className="flex gap-2 mt-2">
                   {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform" style={{ backgroundColor: c }} />
+                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
                   ))}
                 </div>
               </div>
             </div>
-            <div><Label>Description</Label><Textarea value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
-            <div><Label>Tone of Voice</Label><Textarea value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
-            <div><Label>Brand Positioning</Label><Textarea value={positioning} onChange={e => setPositioning(e.target.value)} rows={2} /></div>
+            <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
+            <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
+            <div><Label>Brand Positioning</Label><Textarea className="mt-1.5" value={positioning} onChange={e => setPositioning(e.target.value)} rows={2} /></div>
             <div className="border-t pt-5">
               <h3 className="font-semibold text-lg mb-3">Tell us more about your {currentTemplate.label} brand</h3>
               <div className="space-y-4">
                 {currentTemplate.questions.map((q, i) => (
                   <div key={i}>
                     <Label className="text-muted-foreground">{q}</Label>
-                    <Textarea rows={2} value={industryAnswers[i] || ""} onChange={e => { const next = [...industryAnswers]; next[i] = e.target.value; setIndustryAnswers(next); }} placeholder="Type your answer..." />
+                    <Textarea className="mt-1.5" rows={2} value={industryAnswers[i] || ""} onChange={e => { const next = [...industryAnswers]; next[i] = e.target.value; setIndustryAnswers(next); }} placeholder="Type your answer..." />
                   </div>
                 ))}
               </div>
@@ -229,53 +323,79 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  if (step === 3) {
+  // ─── Step 4: Connect Meta (was 3) ─────────────────────────────────────────
+  if (step === 4) {
     return (
-      <div className="flex flex-col items-center gap-8 py-4">
+      <div className="flex flex-col items-center gap-8 py-4 animate-scale-in">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight">Connect your Meta Ad Account</h2>
           <p className="text-muted-foreground mt-1">Supercharge your AI ads with real performance data</p>
         </div>
-        <HoverExplainer text="Step 3 initiates Meta OAuth. Backend: GET /api/auth/meta/connect. On callback, store access_token, ad_account_id in meta_integrations. Triggers async pull of top 50 ads for LLM topic generation in Step 6.">
+        <HoverExplainer text="Step 4 initiates Meta OAuth. Backend: GET /api/auth/meta/connect. On callback, store access_token, ad_account_id in meta_integrations. Triggers async pull of top 50 ads for LLM topic generation in Step 7.">
           <div className="grid grid-cols-3 gap-4 max-w-xl">
             {[
               { icon: BarChart3, title: "Import best-performing ads", desc: "We analyze what already works for your brand" },
               { icon: Users, title: "Audience insights", desc: "Understand who engages with your content" },
               { icon: TrendingUp, title: "Performance benchmarks", desc: "Compare AI ads against your history" },
             ].map(({ icon: Icon, title, desc }) => (
-              <Card key={title} className="p-4 text-center card-hover">
-                <div className="mx-auto mb-3 w-10 h-10 rounded-full bg-accent flex items-center justify-center"><Icon className="h-5 w-5 text-primary" /></div>
+              <Card key={title} className="p-4 text-center card-hover border-border/60">
+                <div className="mx-auto mb-3 w-11 h-11 rounded-xl bg-accent flex items-center justify-center shadow-sm">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
                 <p className="font-semibold text-sm">{title}</p>
                 <p className="text-xs text-muted-foreground mt-1">{desc}</p>
               </Card>
             ))}
           </div>
         </HoverExplainer>
-        <Button className="gap-2 px-8" size="lg"><Facebook className="h-5 w-5" /> Connect with Meta</Button>
+        <Button className="gap-2 px-8 shadow-sm" size="lg"><Facebook className="h-5 w-5" /> Connect with Meta</Button>
         <p className="text-xs text-muted-foreground">You can always connect later from Brand Data Room → Meta Integration</p>
       </div>
     );
   }
 
-  if (step === 4) {
+  // ─── Step 5: Upload Assets (was 4) ────────────────────────────────────────
+  if (step === 5) {
+    const assetExamples = [
+      { src: "https://picsum.photos/seed/brand-kit/200/140", label: "Brand Kit" },
+      { src: "https://picsum.photos/seed/product-img/200/140", label: "Product Photos" },
+      { src: "https://picsum.photos/seed/video-thumb/200/140", label: "Videos" },
+      { src: "https://picsum.photos/seed/other-asset/200/140", label: "Other Assets" },
+    ];
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 animate-scale-in">
         <div className="text-center mb-4">
           <h2 className="text-2xl font-bold tracking-tight">Upload your assets</h2>
           <p className="text-muted-foreground mt-1">Brand kits, product photos, and videos help us create on-brand ads</p>
         </div>
-        <HoverExplainer text="Step 4 uploads files to Supabase Storage 'brand-assets' bucket. Each upload creates a record in asset_library table. Max 20MB per file, 50 files total.">
+        <HoverExplainer text="Step 5 uploads files to Supabase Storage 'brand-assets' bucket. Each upload creates a record in asset_library table. Max 20MB per file, 50 files total.">
           <div className="grid grid-cols-2 gap-4">
             {[
-              { icon: FileText, label: "Brand Kit", desc: "Guidelines, style guides" },
-              { icon: FileImage, label: "Product Photos", desc: "Product images" },
-              { icon: Video, label: "Videos", desc: "Video assets" },
-              { icon: Image, label: "Other Assets", desc: "Logos, icons, textures" },
-            ].map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="border-2 border-dashed rounded-xl p-8 flex flex-col items-center gap-3 text-center hover:border-primary/50 hover:bg-accent/30 transition-colors cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center"><Icon className="h-6 w-6 text-primary" /></div>
-                <div><p className="font-semibold text-sm">{label}</p><p className="text-xs text-muted-foreground">{desc}</p></div>
-                <Upload className="h-4 w-4 text-muted-foreground" />
+              { icon: FileText, label: "Brand Kit", desc: "Guidelines, style guides", seed: "brand-kit" },
+              { icon: FileImage, label: "Product Photos", desc: "Product images", seed: "product-img" },
+              { icon: Video, label: "Videos", desc: "Video assets", seed: "video-thumb" },
+              { icon: Image, label: "Other Assets", desc: "Logos, icons, textures", seed: "other-asset" },
+            ].map(({ icon: Icon, label, desc, seed }) => (
+              <div key={label} className="border-2 border-dashed rounded-xl overflow-hidden hover:border-primary/50 hover:bg-accent/20 transition-all duration-200 cursor-pointer group">
+                <div className="relative h-28 bg-muted overflow-hidden">
+                  <img
+                    src={`https://picsum.photos/seed/${seed}/400/220`}
+                    alt={label}
+                    className="w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center shadow">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3 flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-sm">{label}</p>
+                    <p className="text-xs text-muted-foreground">{desc}</p>
+                  </div>
+                  <Upload className="h-4 w-4 text-muted-foreground" />
+                </div>
               </div>
             ))}
           </div>
@@ -284,20 +404,21 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  if (step === 5) {
+  // ─── Step 6: Visual Style + Live Preview (was 5) ──────────────────────────
+  if (step === 6) {
     const preset = stylePresets.find(s => s.id === selectedStyle) || stylePresets[0];
     const isDarkText = selectedStyle === "minimalist" || selectedStyle === "editorial";
     return (
-      <div className="grid grid-cols-2 gap-6 h-[60vh]">
+      <div className="grid grid-cols-2 gap-6 h-[58vh] animate-scale-in">
         <div className="space-y-5 overflow-y-auto pr-3">
           <h2 className="text-xl font-bold tracking-tight">Visual Style</h2>
-          <HoverExplainer text="Step 5 saves visual preferences as brand_knowledge.visual_preset. Live preview is pure frontend React state. Topic generation LLM call from Step 1 completes in background.">
+          <HoverExplainer text="Step 6 saves visual preferences as brand_knowledge.visual_preset. Live preview is pure frontend React state. Topic generation LLM call from Step 1 completes in background.">
             <div className="space-y-5">
               <div>
                 <Label className="mb-2 block">Style Preset</Label>
                 <div className="grid grid-cols-4 gap-2">
                   {stylePresets.map(s => (
-                    <button key={s.id} onClick={() => setSelectedStyle(s.id)} className={`rounded-lg p-0.5 border-2 transition-all ${selectedStyle === s.id ? "border-primary ring-2 ring-primary/30" : "border-transparent hover:border-muted-foreground/30"}`}>
+                    <button key={s.id} onClick={() => setSelectedStyle(s.id)} className={`rounded-lg p-0.5 border-2 transition-all duration-200 ${selectedStyle === s.id ? "border-primary ring-2 ring-primary/30 shadow-md" : "border-transparent hover:border-muted-foreground/30"}`}>
                       <div className={`h-12 rounded-md bg-gradient-to-br ${s.gradient}`} />
                       <p className="text-[10px] font-medium mt-1">{s.label}</p>
                     </button>
@@ -307,7 +428,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               <div>
                 <Label>Font</Label>
                 <Select value={adFont} onValueChange={setAdFont}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {["DM Sans", "Space Grotesk", "Inter", "Poppins", "Playfair Display", "Montserrat"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
                   </SelectContent>
@@ -315,28 +436,40 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               </div>
               <div>
                 <Label>Brand Colors</Label>
-                <div className="flex gap-2 mt-1">{["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform" style={{ backgroundColor: c }} />)}</div>
+                <div className="flex gap-2 mt-1.5">
+                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
+                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
               </div>
-              <div><Label>Headline</Label><Input value={adHeadline} onChange={e => setAdHeadline(e.target.value)} /></div>
-              <div><Label>Body Copy</Label><Textarea rows={2} value={adBody} onChange={e => setAdBody(e.target.value)} /></div>
-              <div><Label>CTA Text</Label><Input value={adCta} onChange={e => setAdCta(e.target.value)} /></div>
+              <div><Label>Headline</Label><Input className="mt-1.5" value={adHeadline} onChange={e => setAdHeadline(e.target.value)} /></div>
+              <div><Label>Body Copy</Label><Textarea className="mt-1.5" rows={2} value={adBody} onChange={e => setAdBody(e.target.value)} /></div>
+              <div><Label>CTA Text</Label><Input className="mt-1.5" value={adCta} onChange={e => setAdCta(e.target.value)} /></div>
             </div>
           </HoverExplainer>
         </div>
+
+        {/* Live Ad Preview */}
         <div className="flex items-center justify-center">
-          <div className="w-[280px] bg-background border-2 border-muted rounded-[2rem] p-3 shadow-xl">
-            <div className="rounded-[1.5rem] overflow-hidden border bg-card">
-              <div className="flex items-center gap-2 px-3 py-2 border-b">
+          <div className="w-[270px] bg-foreground/90 rounded-[2.5rem] p-3 shadow-2xl ring-1 ring-white/10">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 h-4 w-16 rounded-full bg-foreground/80 z-10" />
+            <div className="rounded-[2rem] overflow-hidden border border-white/10 bg-card">
+              <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50">
                 <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">{companyName?.[0] || "A"}</div>
                 <span className="text-xs font-semibold">{companyName || "yourbrand"}</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">Sponsored</span>
               </div>
-              <div className={`aspect-square bg-gradient-to-br ${preset.gradient} flex items-center justify-center p-6`}>
-                <p className="text-center font-bold text-lg leading-tight" style={{ fontFamily: adFont, color: isDarkText ? "hsl(var(--foreground))" : "hsl(var(--primary-foreground))" }}>{adHeadline}</p>
+              <div className={`aspect-square bg-gradient-to-br ${preset.gradient} flex items-center justify-center p-6 relative overflow-hidden`}>
+                <img
+                  src="https://picsum.photos/seed/ad-preview/300/300"
+                  alt="Ad preview"
+                  className="absolute inset-0 w-full h-full object-cover opacity-20"
+                />
+                <p className="text-center font-bold text-lg leading-tight relative z-10" style={{ fontFamily: adFont, color: isDarkText ? "hsl(var(--foreground))" : "hsl(var(--primary-foreground))" }}>{adHeadline}</p>
               </div>
               <div className="px-3 py-2 text-[10px] text-muted-foreground flex gap-4"><span>♡ 1,243</span><span>💬 89</span><span>↗ 342</span></div>
               <div className="px-3 pb-2"><p className="text-[11px] leading-snug" style={{ fontFamily: adFont }}>{adBody}</p></div>
-              <div className="px-3 pb-3"><button className="w-full py-1.5 rounded-md text-xs font-semibold bg-primary text-primary-foreground">{adCta}</button></div>
+              <div className="px-3 pb-3"><button className="w-full py-1.5 rounded-md text-xs font-semibold bg-primary text-primary-foreground shadow-sm">{adCta}</button></div>
             </div>
           </div>
         </div>
@@ -344,24 +477,41 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  if (step === 6) {
+  // ─── Step 7: Wow Moment (was 6) ────────────────────────────────────────────
+  if (step === 7) {
     return (
-      <div className="space-y-6 text-center">
+      <div className="space-y-6 text-center animate-scale-in">
         <div className="py-4">
-          <Sparkles className="h-10 w-10 text-primary mx-auto mb-3 animate-pulse" />
+          <div className="relative inline-flex items-center justify-center mb-4">
+            <div className="absolute inset-0 rounded-2xl bg-primary/20 scale-150 animate-glow" />
+            <Sparkles className="relative h-12 w-12 text-primary animate-float" />
+          </div>
           <h2 className="text-2xl font-bold tracking-tight">Based on everything we know about your brand...</h2>
           <p className="text-muted-foreground mt-1">Here are 7 ad topics we think will crush it this week</p>
         </div>
-        <HoverExplainer text="Step 6 displays LLM-generated topics. Backend async job calls POST /api/ai/generate-topics. Returns 7 structured topic objects stored in campaign_topics table. Thumbs up/down saves to topic_feedback for reinforcement learning.">
+        <HoverExplainer text="Step 7 displays LLM-generated topics. Backend async job calls POST /api/ai/generate-topics. Returns 7 structured topic objects stored in campaign_topics table. Thumbs up/down saves to topic_feedback for reinforcement learning.">
           <div className="grid grid-cols-1 gap-3 max-w-2xl mx-auto text-left">
             {mockTopics.map((topic, i) => (
-              <Card key={i} className={`p-4 transition-all duration-500 ${revealedTopics.includes(i) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+              <Card
+                key={i}
+                className={`p-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-border/60 ${
+                  revealedTopics.includes(i)
+                    ? "opacity-100 translate-y-0 scale-100"
+                    : "opacity-0 translate-y-4 scale-95"
+                }`}
+              >
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><span className="text-sm font-bold text-primary">{i + 1}</span></div>
+                  <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center shrink-0 shadow-sm">
+                    <span className="text-xs font-bold text-white">{i + 1}</span>
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm">{topic.title}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{topic.desc}</p>
-                    <div className="flex gap-1.5 mt-2">{topic.tags.map(t => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground">{t}</span>)}</div>
+                    <div className="flex gap-1.5 mt-2">
+                      {topic.tags.map(t => (
+                        <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-medium">{t}</span>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex gap-1 shrink-0">
                     <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsUp className="h-3.5 w-3.5 text-muted-foreground" /></button>
