@@ -33,7 +33,6 @@ const coreNav = [
 
 const bottomNav = [
   { title: "Performance", url: "/performance", icon: BarChart3 },
-  { title: "Workflows", url: "/workflows", icon: Workflow },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
@@ -48,6 +47,8 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" className="border-r">
       <SidebarContent className="pt-[3.75rem] pb-3 flex flex-col h-full">
+
+        {/* Top group: Home + Workflows */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -59,16 +60,59 @@ export function AppSidebar() {
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/workflows" className={linkCls} activeClassName={activeCls}>
+                    <Workflow className="h-4 w-4" />
+                    <span>Workflows</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-              {/* Brand Data Room — clicking label navigates to overview */}
+        <Separator className="mx-3 w-auto my-1" />
+
+        {/* Core nav */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {coreNav.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={linkCls} activeClassName={activeCls}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="mx-3 w-auto my-1" />
+
+        {/* Bottom group: Performance + Brand Data Room (collapsible) + Settings */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/performance" className={linkCls} activeClassName={activeCls}>
+                    <BarChart3 className="h-4 w-4" />
+                    <span>Performance</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Brand Data Room — collapsible, moved to bottom */}
               <li>
                 <Collapsible defaultOpen={inDataRoom}>
                   <CollapsibleTrigger
                     className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}
-                    onClick={(e) => {
-                      // Navigate to overview on click, but still toggle collapse
-                      nav("/brand-data-room");
-                    }}
+                    onClick={() => nav("/brand-data-room")}
                   >
                     <span className="flex items-center gap-2.5">
                       <Database className="h-4 w-4" />
@@ -90,44 +134,15 @@ export function AppSidebar() {
                   </CollapsibleContent>
                 </Collapsible>
               </li>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
-        <Separator className="mx-3 w-auto my-1" />
-
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {coreNav.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={linkCls} activeClassName={activeCls}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="mx-3 w-auto my-1" />
-
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {bottomNav.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={linkCls} activeClassName={activeCls}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/settings" className={linkCls} activeClassName={activeCls}>
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -135,7 +150,7 @@ export function AppSidebar() {
         {/* User avatar at bottom */}
         <div className="mt-auto px-3 py-3 border-t border-sidebar-border">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
+            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center shadow-sm">
               <User className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">

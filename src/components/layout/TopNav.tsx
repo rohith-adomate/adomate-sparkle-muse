@@ -1,4 +1,5 @@
-import { Bell, HelpCircle, ChevronDown, Search, Sparkles } from "lucide-react";
+import { Bell, HelpCircle, ChevronDown, Search } from "lucide-react";
+import adomateLogoSrc from "@/assets/adomate-logo.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,10 +26,7 @@ export function TopNav() {
       <div className="flex items-center gap-3">
         <SidebarTrigger />
         <div className="flex items-center gap-1.5">
-          <div className="h-7 w-7 rounded-lg gradient-primary flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-lg font-bold tracking-tight font-['Space_Grotesk']">Adomate</span>
+          <img src={adomateLogoSrc} alt="Adomate" className="h-7 w-auto" />
         </div>
         <span className="mx-1 h-5 w-px bg-border" />
         <DropdownMenu>

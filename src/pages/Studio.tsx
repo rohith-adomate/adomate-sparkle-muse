@@ -10,15 +10,10 @@ import { toast } from "sonner";
 import { HoverExplainer } from "@/components/HoverExplainer";
 
 const queue = [
-  { name: "Beach Vibes UGC", format: "1080x1080", status: "Ready", gradient: "from-indigo-400/30 to-violet-500/20" },
-  { name: "Gift Guide Carousel", format: "1080x1920", status: "Ready", gradient: "from-fuchsia-400/30 to-pink-500/20" },
-  {
-    name: "Feature Highlight",
-    format: "1080x1080",
-    status: "In Progress",
-    gradient: "from-amber-400/30 to-orange-500/20",
-  },
-  { name: "Bold CTA Banner", format: "1200x628", status: "Approved", gradient: "from-emerald-400/30 to-teal-500/20" },
+  { name: "Beach Vibes UGC", format: "1080x1080", status: "Ready", imgSeed: "beach-studio" },
+  { name: "Gift Guide Carousel", format: "1080x1920", status: "Ready", imgSeed: "gift-studio" },
+  { name: "Feature Highlight", format: "1080x1080", status: "In Progress", imgSeed: "feature-studio" },
+  { name: "Bold CTA Banner", format: "1200x628", status: "Approved", imgSeed: "cta-studio" },
 ];
 
 const statusBorder = {
@@ -72,14 +67,16 @@ export default function Studio() {
                 return (
                   <Card
                     key={globalIdx}
-                    className={`cursor-pointer transition-all border-l-[3px] ${statusBorder[item.status as keyof typeof statusBorder]} ${activeItem === globalIdx ? "ring-2 ring-primary shadow-md" : "card-hover"}`}
+                    className={`cursor-pointer transition-all border-l-[3px] overflow-hidden ${statusBorder[item.status as keyof typeof statusBorder]} ${activeItem === globalIdx ? "ring-2 ring-primary shadow-md" : "card-hover"}`}
                     onClick={() => setActiveItem(globalIdx)}
                   >
                     <CardContent className="p-2.5">
-                      <div
-                        className={`h-14 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-1.5`}
-                      >
-                        <div className="h-8 w-8 rounded-lg bg-white/20 backdrop-blur-sm" />
+                      <div className="h-14 rounded-lg overflow-hidden bg-muted mb-1.5 relative">
+                        <img
+                          src={`https://picsum.photos/seed/${item.imgSeed}/200/112`}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <p className="text-xs font-medium truncate">{item.name}</p>
                       <p className="text-[10px] text-muted-foreground">{item.format}</p>
@@ -111,23 +108,25 @@ export default function Studio() {
         {/* Device frame mockup */}
         <div className="relative">
           {isVertical ? (
-            /* Phone frame */
-            <div className="relative bg-foreground/90 rounded-[2.5rem] p-3 shadow-2xl">
+            <div className="relative bg-foreground/90 rounded-[2.5rem] p-3 shadow-2xl ring-1 ring-white/10">
               <div className="absolute top-3 left-1/2 -translate-x-1/2 h-5 w-20 rounded-full bg-foreground/80 z-10" />
-              <div
-                className={`bg-gradient-to-br ${queue[activeItem].gradient} rounded-[2rem] w-[260px] h-[480px] flex items-center justify-center overflow-hidden`}
-              >
-                <div className="h-24 w-24 rounded-2xl bg-white/20 backdrop-blur-sm" />
+              <div className="rounded-[2rem] w-[260px] h-[480px] overflow-hidden bg-muted">
+                <img
+                  src={`https://picsum.photos/seed/${queue[activeItem].imgSeed}-v/520/960`}
+                  alt={queue[activeItem].name}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           ) : (
-            /* Monitor frame */
             <div className="flex flex-col items-center">
-              <div className="bg-foreground/90 rounded-xl p-2 shadow-2xl">
-                <div
-                  className={`bg-gradient-to-br ${queue[activeItem].gradient} rounded-lg w-[380px] h-[380px] flex items-center justify-center`}
-                >
-                  <div className="h-24 w-24 rounded-2xl bg-white/20 backdrop-blur-sm" />
+              <div className="bg-foreground/90 rounded-xl p-2 shadow-2xl ring-1 ring-white/10">
+                <div className="rounded-lg w-[380px] h-[380px] overflow-hidden bg-muted">
+                  <img
+                    src={`https://picsum.photos/seed/${queue[activeItem].imgSeed}/760/760`}
+                    alt={queue[activeItem].name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
               <div className="h-4 w-20 bg-foreground/80 rounded-b-lg" />
@@ -143,10 +142,7 @@ export default function Studio() {
           <Button
             size="sm"
             className="gap-1.5"
-            onClick={() => {
-              nav("/calendar");
-              toast.success("Added to calendar");
-            }}
+            onClick={() => { nav("/calendar"); toast.success("Added to calendar"); }}
           >
             <CalendarDays className="h-3.5 w-3.5" /> Calendar
           </Button>
@@ -184,7 +180,7 @@ export default function Studio() {
             </CardContent>
           </Card>
         </HoverExplainer>
-        <HoverExplainer text="QA Checklist: Automated checks run against the creative asset. Spacing validates safe zone compliance. Text length checks character count (Meta recommends ≤125). Restricted claims scans for prohibited health/financial claims. Logo placement verifies brand mark position. CTA check ensures call-to-action is present and clear. Backend: POST /api/studio/qa { asset_id } returns array of { check_name, passed, details }. All checks must pass before 'Send to Approval' is enabled.">
+        <HoverExplainer text="QA Checklist: Automated checks run against the creative asset. Backend: POST /api/studio/qa { asset_id } returns array of { check_name, passed, details }. All checks must pass before 'Send to Approval' is enabled.">
           <Card>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">

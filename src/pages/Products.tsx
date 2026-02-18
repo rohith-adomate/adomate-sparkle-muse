@@ -17,19 +17,14 @@ const competitorColors: Record<string, string> = {
   "Omneky": "bg-indigo-100 text-indigo-700 border-indigo-200",
 };
 
-const productGradients = [
-  "from-indigo-400/20 to-violet-500/15",
-  "from-sky-400/20 to-blue-500/15",
-  "from-amber-400/20 to-orange-500/15",
-  "from-emerald-400/20 to-teal-500/15",
+const products = [
+  { name: "SmartWidget Pro", hypothesis: "SMBs need a plug-and-play ad tool", problem: "Ad creation is too complex for small teams", solution: "One-click AI ad generation", competitor: "Canva Ads, AdCreative.ai", personas: ["Busy Entrepreneur", "Data-Driven Marketer"], images: 3, imgSeed: "smartwidget" },
+  { name: "QuickLaunch", hypothesis: "Speed-to-market wins in seasonal campaigns", problem: "Campaign setup takes 2+ weeks", solution: "Template-based 1-day launch", competitor: "Smartly.io", personas: ["Busy Entrepreneur"], images: 1, imgSeed: "quicklaunch" },
+  { name: "InsightEngine", hypothesis: "Data-driven brands outperform gut-feel brands", problem: "No unified view of ad performance + brand data", solution: "Unified analytics dashboard", competitor: "Triple Whale, Northbeam", personas: ["Data-Driven Marketer"], images: 2, imgSeed: "insight" },
+  { name: "CreativeOS", hypothesis: "Creative teams waste time on repetitive variations", problem: "Manual asset resizing and copy tweaking", solution: "AI-powered creative variations at scale", competitor: "Pencil, Omneky", personas: ["Budget Shopper"], images: 4, imgSeed: "creativeos" },
 ];
 
-const products = [
-  { name: "SmartWidget Pro", hypothesis: "SMBs need a plug-and-play ad tool", problem: "Ad creation is too complex for small teams", solution: "One-click AI ad generation", competitor: "Canva Ads, AdCreative.ai", personas: ["Busy Entrepreneur", "Data-Driven Marketer"], images: 3 },
-  { name: "QuickLaunch", hypothesis: "Speed-to-market wins in seasonal campaigns", problem: "Campaign setup takes 2+ weeks", solution: "Template-based 1-day launch", competitor: "Smartly.io", personas: ["Busy Entrepreneur"], images: 1 },
-  { name: "InsightEngine", hypothesis: "Data-driven brands outperform gut-feel brands", problem: "No unified view of ad performance + brand data", solution: "Unified analytics dashboard", competitor: "Triple Whale, Northbeam", personas: ["Data-Driven Marketer"], images: 2 },
-  { name: "CreativeOS", hypothesis: "Creative teams waste time on repetitive variations", problem: "Manual asset resizing and copy tweaking", solution: "AI-powered creative variations at scale", competitor: "Pencil, Omneky", personas: ["Budget Shopper"], images: 0 },
-];
+const productImageSeeds = ["product1", "product2", "product3", "product4"];
 
 export default function Products() {
   const [showImages, setShowImages] = useState<string | null>(null);
@@ -47,16 +42,24 @@ export default function Products() {
 
       <HoverExplainer text="Product Cards: Each product represents a unit in the brand's catalog. Products are linked to Personas and used as context in campaign concept generation. Backend: products table with columns: id, brand_id, name, hypothesis, problem, solution, competitors (text[]), created_at. Product-Persona linking is a many-to-many via product_personas junction table.">
         <div className="grid gap-4 sm:grid-cols-2">
-          {products.map((p, i) => (
+          {products.map((p) => (
             <Card key={p.name} className="card-hover overflow-hidden">
               <div className="h-1 bg-gradient-to-r from-primary/60 to-primary/20" />
               {/* Product thumbnail */}
-              <div className={`h-36 bg-gradient-to-br ${productGradients[i % productGradients.length]} flex items-center justify-center relative`}>
-                <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <ImageIcon className="h-8 w-8 text-white/50" />
-                </div>
+              <div className="h-40 relative overflow-hidden bg-muted">
+                <img
+                  src={`https://picsum.photos/seed/${p.imgSeed}/600/320`}
+                  alt={p.name}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute bottom-2 right-2">
-                  <Button variant="secondary" size="sm" className="text-[10px] gap-1 h-6 bg-white/80 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); setShowImages(p.name); }}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="text-[10px] gap-1 h-6 bg-white/90 backdrop-blur-sm text-foreground hover:bg-white"
+                    onClick={(e) => { e.stopPropagation(); setShowImages(p.name); }}
+                  >
                     <ImageIcon className="h-3 w-3" /> {p.images} images
                   </Button>
                 </div>
@@ -111,8 +114,12 @@ export default function Products() {
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 {Array.from({ length: products.find(p => p.name === showImages)?.images || 0 }).map((_, i) => (
-                  <div key={i} className={`aspect-square rounded-xl bg-gradient-to-br ${productGradients[i % productGradients.length]} flex items-center justify-center`}>
-                    <ImageIcon className="h-8 w-8 text-white/40" />
+                  <div key={i} className="aspect-square rounded-xl overflow-hidden bg-muted">
+                    <img
+                      src={`https://picsum.photos/seed/${productImageSeeds[i % productImageSeeds.length]}/300/300`}
+                      alt={`Product ${i + 1}`}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
                 ))}
               </div>
