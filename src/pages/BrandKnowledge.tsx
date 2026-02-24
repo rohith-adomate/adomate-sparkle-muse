@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Loader2, Check, RefreshCw, Upload, Plus, X, Pencil } from "lucide-react";
 import { useState, useCallback } from "react";
@@ -34,12 +35,8 @@ export default function BrandKnowledge() {
   const [colors, setColors] = useState(initialColors);
   const [newColor, setNewColor] = useState("#000000");
   const [fields, setFields] = useState<KnowledgeField[]>(initialFields);
-
-  // Edit title modal
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
-
-  // Add new field modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
@@ -126,156 +123,158 @@ export default function BrandKnowledge() {
         </div>
       </div>
 
-      {/* Brand Name & Languages */}
-      <HoverExplainer text="Brand Name: The primary brand name used in all generated ad copy and creative. Stored in brand_knowledge.name. Auto-saved on blur with 300ms debounce. Max length: 100 characters.">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label>Brand Name</Label>
-              <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Languages</Label>
-              <Input defaultValue="English, Spanish" onBlur={handleFieldChange} placeholder="Comma-separated list of languages" />
-              <p className="text-[10px] text-muted-foreground">Languages the AI will generate ad copy in.</p>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
+      <Tabs defaultValue="knowledge">
+        <TabsList>
+          <TabsTrigger value="knowledge">Knowledge</TabsTrigger>
+          <TabsTrigger value="visual">Visual Style</TabsTrigger>
+        </TabsList>
 
-      {/* Website URL */}
-      <HoverExplainer text="Website URL: Used by the AI scraper to extract brand context, product info, and tone. 'Refresh Knowledge' triggers a web scrape of the URL and updates the brand context.">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label>Website URL</Label>
-              <div className="flex gap-2">
-                <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} className="flex-1" />
-                <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
-                  <RefreshCw className="h-3.5 w-3.5" /> Refresh Knowledge
-                </Button>
-              </div>
-              <p className="text-[10px] text-muted-foreground">We'll scrape your website to extract brand context automatically.</p>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
-
-      {/* Editable Knowledge Fields */}
-      <HoverExplainer text="Knowledge fields: Free-form brand context fields. Each is editable — hover a title to rename it, or add custom fields with the + button. Backend: brand_knowledge entries (JSONB).">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            {fields.map((field) => (
-              <div key={field.id} className="space-y-1.5">
-                <div className="flex items-center gap-1.5 group">
-                  <Label>{field.title}</Label>
-                  <button
-                    onClick={() => openEditTitle(field.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
-                    aria-label={`Edit ${field.title} title`}
-                  >
-                    <Pencil className="h-3 w-3 text-muted-foreground" />
-                  </button>
+        <TabsContent value="knowledge" className="mt-4 space-y-4">
+          <HoverExplainer text="Brand Name: The primary brand name used in all generated ad copy and creative. Stored in brand_knowledge.name. Auto-saved on blur with 300ms debounce. Max length: 100 characters.">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label>Brand Name</Label>
+                  <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
                 </div>
-                <Textarea
-                  value={field.value}
-                  onChange={(e) => updateFieldValue(field.id, e.target.value)}
-                  onBlur={handleFieldChange}
-                  rows={field.rows}
-                />
-              </div>
-            ))}
+                <div className="space-y-1.5">
+                  <Label>Languages</Label>
+                  <Input defaultValue="English, Spanish" onBlur={handleFieldChange} placeholder="Comma-separated list of languages" />
+                  <p className="text-[10px] text-muted-foreground">Languages the AI will generate ad copy in.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
 
-            {/* Add new field button */}
-            <div className="flex justify-center pt-2">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
-                aria-label="Add new knowledge field"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
+          <HoverExplainer text="Website URL: Used by the AI scraper to extract brand context, product info, and tone. 'Refresh Knowledge' triggers a web scrape of the URL and updates the brand context.">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label>Website URL</Label>
+                  <div className="flex gap-2">
+                    <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} className="flex-1" />
+                    <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
+                      <RefreshCw className="h-3.5 w-3.5" /> Refresh Knowledge
+                    </Button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">We'll scrape your website to extract brand context automatically.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
 
-      {/* Fonts */}
-      <HoverExplainer text="Fonts: Typography used in generated ad creative. Backend: brand_knowledge.fonts (TEXT). Expected format: comma-separated font names.">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label>Fonts</Label>
-              <Input defaultValue="Inter, DM Sans" onBlur={handleFieldChange} />
-              <p className="text-[10px] text-muted-foreground">Primary and secondary fonts used in ad creative.</p>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
-
-      {/* Logos */}
-      <HoverExplainer text="Logos: Brand logos uploaded for use in generated ad creative. Supports PNG, SVG, JPG. Backend: stored in storage bucket 'brand-assets'. Max file size: 5MB per file.">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label>Logos</Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
-                <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                <p className="text-sm font-medium">Upload logo files</p>
-                <p className="text-xs text-muted-foreground">PNG, SVG, or JPG · Max 5MB per file</p>
-                <p className="text-[10px] text-muted-foreground">Upload light, dark, and icon-only variants</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
-
-      {/* Brand Guidelines */}
-      <HoverExplainer text="Brand Guidelines: PDF or image files containing the brand's style guide. Backend: stored in storage bucket 'brand-assets'.">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-1.5">
-              <Label>Brand Guidelines</Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
-                <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                <p className="text-sm font-medium">Upload brand guidelines</p>
-                <p className="text-xs text-muted-foreground">PDF, PNG, or JPG · Max 20MB</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
-
-      {/* Brand Colors */}
-      <HoverExplainer text="Brand Colors: Hex color values used in generated ad creative. Backend: brand_knowledge.colors (JSONB array of {hex, name}).">
-        <Card>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-2">
-              <Label>Brand Colors</Label>
-              <div className="flex flex-wrap gap-3">
-                {colors.map((c) => (
-                  <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
-                    <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
-                    <div className="text-left">
-                      <p className="text-xs font-medium">{c.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{c.hex}</p>
+          <HoverExplainer text="Knowledge fields: Free-form brand context fields. Each is editable — hover a title to rename it, or add custom fields with the + button. Backend: brand_knowledge entries (JSONB).">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {fields.map((field) => (
+                  <div key={field.id} className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 group">
+                      <Label>{field.title}</Label>
+                      <button
+                        onClick={() => openEditTitle(field.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
+                        aria-label={`Edit ${field.title} title`}
+                      >
+                        <Pencil className="h-3 w-3 text-muted-foreground" />
+                      </button>
                     </div>
-                    <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="h-3 w-3" />
-                    </button>
+                    <Textarea
+                      value={field.value}
+                      onChange={(e) => updateFieldValue(field.id, e.target.value)}
+                      onBlur={handleFieldChange}
+                      rows={field.rows}
+                    />
                   </div>
                 ))}
-                <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
-                  <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
-                  <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
-                    <Plus className="h-3 w-3" /> Add
-                  </Button>
+                <div className="flex justify-center pt-2">
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
+                    aria-label="Add new knowledge field"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </HoverExplainer>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
+        </TabsContent>
+
+        <TabsContent value="visual" className="mt-4 space-y-4">
+          <HoverExplainer text="Fonts: Typography used in generated ad creative. Backend: brand_knowledge.fonts (TEXT). Expected format: comma-separated font names.">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label>Fonts</Label>
+                  <Input defaultValue="Inter, DM Sans" onBlur={handleFieldChange} />
+                  <p className="text-[10px] text-muted-foreground">Primary and secondary fonts used in ad creative.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
+
+          <HoverExplainer text="Logos: Brand logos uploaded for use in generated ad creative. Supports PNG, SVG, JPG. Backend: stored in storage bucket 'brand-assets'. Max file size: 5MB per file.">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label>Logos</Label>
+                  <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                    <p className="text-sm font-medium">Upload logo files</p>
+                    <p className="text-xs text-muted-foreground">PNG, SVG, or JPG · Max 5MB per file</p>
+                    <p className="text-[10px] text-muted-foreground">Upload light, dark, and icon-only variants</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
+
+          <HoverExplainer text="Brand Guidelines: PDF or image files containing the brand's style guide. Backend: stored in storage bucket 'brand-assets'.">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label>Brand Guidelines</Label>
+                  <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                    <p className="text-sm font-medium">Upload brand guidelines</p>
+                    <p className="text-xs text-muted-foreground">PDF, PNG, or JPG · Max 20MB</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
+
+          <HoverExplainer text="Brand Colors: Hex color values used in generated ad creative. Backend: brand_knowledge.colors (JSONB array of {hex, name}).">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-2">
+                  <Label>Brand Colors</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {colors.map((c) => (
+                      <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
+                        <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
+                        <div className="text-left">
+                          <p className="text-xs font-medium">{c.name}</p>
+                          <p className="text-[10px] text-muted-foreground">{c.hex}</p>
+                        </div>
+                        <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
+                      <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
+                      <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
+                        <Plus className="h-3 w-3" /> Add
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </HoverExplainer>
+        </TabsContent>
+      </Tabs>
 
       {/* Edit Title Dialog */}
       <Dialog open={!!editingField} onOpenChange={(open) => !open && setEditingField(null)}>
