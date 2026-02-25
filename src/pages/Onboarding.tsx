@@ -6,10 +6,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { HoverExplainer } from "@/components/HoverExplainer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
   Loader2, Globe, Sparkles,
   ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
-  Check, RefreshCw, Package, Plus, Trash2,
+  Check, RefreshCw, Package, Plus, Trash2, Pencil,
 } from "lucide-react";
 
 const mockTopics = [
@@ -38,6 +40,20 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   const [brandDesc, setBrandDesc] = useState("");
   const [tone, setTone] = useState("");
+
+  // Brand dynamic fields
+  const [brandFields, setBrandFields] = useState<{ id: string; title: string; value: string }[]>([
+    { id: "desc", title: "Description", value: "" },
+    { id: "tone", title: "Tone of Voice", value: "" },
+    { id: "mv1", title: "Marketing Valuable Field 1", value: "AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." },
+    { id: "mv2", title: "Marketing Valuable Field 2", value: "Small-to-medium business marketing teams looking to scale ad creative without hiring designers." },
+  ]);
+  const [editingBrandField, setEditingBrandField] = useState<string | null>(null);
+  const [editBrandTitle, setEditBrandTitle] = useState("");
+  const [showAddBrandField, setShowAddBrandField] = useState(false);
+  const [newBrandFieldTitle, setNewBrandFieldTitle] = useState("");
+  const [newBrandFieldValue, setNewBrandFieldValue] = useState("");
+  const [deletingBrandField, setDeletingBrandField] = useState<string | null>(null);
 
   // Product state
   const [productName, setProductName] = useState("");
@@ -77,7 +93,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             }
             setBrandDesc("An innovative company pushing the boundaries of modern advertising.");
             setTone("Professional yet approachable, with a focus on clarity and impact.");
-            // Pre-fill product from "scrape"
+            setBrandFields(prev => prev.map(f =>
+              f.id === "desc" ? { ...f, value: "An innovative company pushing the boundaries of modern advertising." } :
+              f.id === "tone" ? { ...f, value: "Professional yet approachable, with a focus on clarity and impact." } : f
+            ));
             setProductName("Pro Plan");
             setProductDesc("Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.");
             setProductImages([
@@ -210,6 +229,29 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   // ─── Step 2: Brand ────────────────────────────────────────────────────────
   if (step === 2) {
+    const openEditBrandTitle = (fieldId: string) => {
+      const field = brandFields.find(f => f.id === fieldId);
+      if (field) { setEditBrandTitle(field.title); setEditingBrandField(fieldId); }
+    };
+    const saveEditBrandTitle = () => {
+      if (editingBrandField && editBrandTitle.trim()) {
+        setBrandFields(prev => prev.map(f => f.id === editingBrandField ? { ...f, title: editBrandTitle.trim() } : f));
+        setEditingBrandField(null);
+      }
+    };
+    const addBrandField = () => {
+      if (newBrandFieldTitle.trim()) {
+        setBrandFields(prev => [...prev, { id: `custom-${Date.now()}`, title: newBrandFieldTitle.trim(), value: newBrandFieldValue }]);
+        setNewBrandFieldTitle(""); setNewBrandFieldValue(""); setShowAddBrandField(false);
+      }
+    };
+    const confirmDeleteBrandField = () => {
+      if (deletingBrandField) {
+        setBrandFields(prev => prev.filter(f => f.id !== deletingBrandField));
+        setDeletingBrandField(null);
+      }
+    };
+
     return (
       <div className="space-y-6 animate-scale-in">
         <div className="text-center mb-2">
@@ -257,19 +299,97 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               </div>
             </div>
 
-            <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
-            <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
+            {/* Dynamic brand fields with editable titles */}
+            {brandFields.map((field) => (
+              <div key={field.id} className="space-y-1.5">
+                <div className="flex items-center gap-1.5 group">
+                  <Label>{field.title}</Label>
+                  <button
+                    onClick={() => openEditBrandTitle(field.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
+                    aria-label={`Edit ${field.title} title`}
+                  >
+                    <Pencil className="h-3 w-3 text-muted-foreground" />
+                  </button>
+                  <div className="flex-1" />
+                  <button
+                    onClick={() => setDeletingBrandField(field.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                    aria-label={`Delete ${field.title}`}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-destructive/70" />
+                  </button>
+                </div>
+                <Textarea
+                  value={field.value}
+                  onChange={e => setBrandFields(prev => prev.map(f => f.id === field.id ? { ...f, value: e.target.value } : f))}
+                  rows={2}
+                />
+              </div>
+            ))}
 
-            <div>
-              <Label>Marketing Valuable Field 1</Label>
-              <Textarea className="mt-1.5" defaultValue="AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." rows={2} />
-            </div>
-            <div>
-              <Label>Marketing Valuable Field 2</Label>
-              <Textarea className="mt-1.5" defaultValue="Small-to-medium business marketing teams looking to scale ad creative without hiring designers." rows={2} />
+            {/* Add field button */}
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => setShowAddBrandField(true)}
+                className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
+                aria-label="Add new brand field"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </HoverExplainer>
+
+        {/* Edit Title Dialog */}
+        <Dialog open={!!editingBrandField} onOpenChange={(open) => !open && setEditingBrandField(null)}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader><DialogTitle>Edit Field Title</DialogTitle></DialogHeader>
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={editBrandTitle} onChange={e => setEditBrandTitle(e.target.value)} onKeyDown={e => e.key === "Enter" && saveEditBrandTitle()} autoFocus />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditingBrandField(null)}>Cancel</Button>
+              <Button onClick={saveEditBrandTitle}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Field Dialog */}
+        <Dialog open={showAddBrandField} onOpenChange={setShowAddBrandField}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader><DialogTitle>Add Knowledge Field</DialogTitle></DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Title</Label>
+                <Input value={newBrandFieldTitle} onChange={e => setNewBrandFieldTitle(e.target.value)} placeholder="e.g. Target Audience" autoFocus />
+              </div>
+              <div className="space-y-2">
+                <Label>Content</Label>
+                <Textarea value={newBrandFieldValue} onChange={e => setNewBrandFieldValue(e.target.value)} placeholder="Describe this aspect of your brand..." rows={4} />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddBrandField(false)}>Cancel</Button>
+              <Button onClick={addBrandField} disabled={!newBrandFieldTitle.trim()}>Add Field</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirm Dialog */}
+        <AlertDialog open={!!deletingBrandField} onOpenChange={(open) => !open && setDeletingBrandField(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete field?</AlertDialogTitle>
+              <AlertDialogDescription>This will permanently remove "{brandFields.find(f => f.id === deletingBrandField)?.title}" from your brand knowledge.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteBrandField}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   }
