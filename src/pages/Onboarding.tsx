@@ -211,66 +211,62 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
   // ─── Step 2: Brand ────────────────────────────────────────────────────────
   if (step === 2) {
     return (
-      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
-        <div className="text-center mb-4">
+      <div className="space-y-6 animate-scale-in">
+        <div className="text-center mb-2">
           <h2 className="text-2xl font-bold tracking-tight">Brand</h2>
           <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
         </div>
         <HoverExplainer text="Step 2 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
           <div className="space-y-5">
-            {/* Logo + Brand Name + Colors */}
-            <div className="flex items-start gap-6">
-              <div className="relative group shrink-0">
-                <div className="w-20 h-20 rounded-2xl border-2 border-border bg-muted flex items-center justify-center overflow-hidden shadow-sm">
-                  <span className="text-2xl font-bold text-primary">{companyName.charAt(0) || "A"}</span>
+            {/* Logo + Colors + Brand Name + Business Type */}
+            <div className="flex gap-6 items-start">
+              <div className="flex flex-col items-center gap-3 shrink-0">
+                <div className="relative group">
+                  <div className="w-20 h-20 rounded-2xl border-2 border-border bg-muted flex items-center justify-center overflow-hidden shadow-sm">
+                    <span className="text-2xl font-bold text-primary">{companyName.charAt(0) || "A"}</span>
+                  </div>
+                  <label className="absolute inset-0 rounded-2xl bg-foreground/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <RefreshCw className="h-5 w-5 text-white" />
+                    <input type="file" accept="image/*" className="hidden" />
+                  </label>
                 </div>
-                <label className="absolute inset-0 rounded-2xl bg-foreground/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                  <RefreshCw className="h-5 w-5 text-white" />
-                  <input type="file" accept="image/*" className="hidden" />
-                </label>
+                <div className="flex gap-1.5">
+                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
+                    <div key={c} className="w-6 h-6 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
               </div>
               <div className="flex-1 space-y-3">
-                <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
-                <div>
-                  <Label>Detected Colors</Label>
-                  <div className="flex gap-2 mt-2">
-                    {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                      <div key={c} className="w-8 h-8 rounded-lg border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
-                    ))}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Brand Name</Label>
+                    <Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Business Type</Label>
+                    <Select value={businessType} onValueChange={setBusinessType}>
+                      <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="saas">SaaS</SelectItem>
+                        <SelectItem value="service">Service Business</SelectItem>
+                        <SelectItem value="dtc">DTC Brand</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Business Type */}
-            <div>
-              <Label>Business Type</Label>
-              <Select value={businessType} onValueChange={setBusinessType}>
-                <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="dtc">Direct to Consumer</SelectItem>
-                  <SelectItem value="service">Service Business</SelectItem>
-                  <SelectItem value="saas">SaaS</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
             <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
 
-            {/* Marketing Key Terms */}
-            <div className="space-y-3">
-              <Label>Marketing Key Terms</Label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Input defaultValue="Unique Selling Point" className="text-xs font-semibold bg-muted/50 border-border/60" />
-                  <Textarea defaultValue="AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." rows={2} className="text-sm" />
-                </div>
-                <div className="space-y-1.5">
-                  <Input defaultValue="Target Audience" className="text-xs font-semibold bg-muted/50 border-border/60" />
-                  <Textarea defaultValue="Small-to-medium business marketing teams looking to scale ad creative without hiring designers." rows={2} className="text-sm" />
-                </div>
-              </div>
+            <div>
+              <Label>Marketing Valuable Field 1</Label>
+              <Textarea className="mt-1.5" defaultValue="AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." rows={2} />
+            </div>
+            <div>
+              <Label>Marketing Valuable Field 2</Label>
+              <Textarea className="mt-1.5" defaultValue="Small-to-medium business marketing teams looking to scale ad creative without hiring designers." rows={2} />
             </div>
           </div>
         </HoverExplainer>
@@ -286,7 +282,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
       setProductTerms(prev => prev.map((t, i) => i === idx ? { ...t, [field]: val } : t));
 
     return (
-      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
+      <div className="space-y-6 animate-scale-in">
         <div className="text-center mb-4">
           <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
             <Package className="h-7 w-7 text-white" />
