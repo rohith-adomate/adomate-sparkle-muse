@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, ChevronDown, Search, Rocket } from "lucide-react";
+import { Bell, HelpCircle, ChevronDown, Rocket } from "lucide-react";
 import adomateLogoSrc from "@/assets/adomate-logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,11 +58,6 @@ export function TopNav() {
         </DropdownMenu>
       </div>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="sm" className="hidden sm:flex gap-2 text-muted-foreground text-xs border border-border rounded-lg px-3 h-8">
-          <Search className="h-3.5 w-3.5" />
-          <span>Search...</span>
-          <kbd className="ml-3 inline-flex h-5 items-center rounded border bg-muted px-1.5 text-[10px] font-mono text-muted-foreground">⌘K</kbd>
-        </Button>
         <Button variant="ghost" size="sm" onClick={() => nav("/onboarding")} className="gap-1.5 text-muted-foreground hover:text-foreground">
           <Rocket className="h-4 w-4" />
           <span className="hidden sm:inline text-xs">Onboarding</span>
