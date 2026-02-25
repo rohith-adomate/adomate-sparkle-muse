@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Onboarding } from "@/pages/Onboarding";
 import { ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
 
-const stepLabels = ["Website", "Brand Review", "Connect Meta", "Visual Style", "Launch"];
+const stepLabels = ["Website", "Brand", "Product", "Connect Meta", "Launch"];
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);

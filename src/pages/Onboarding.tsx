@@ -7,21 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import {
-  Loader2, Globe, Palette, Type, Image, Upload, Sparkles,
+  Loader2, Globe, Sparkles,
   ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
-  FileImage, Video, FileText, Check, MessageSquare, RefreshCw,
+  Check, RefreshCw, Package, Plus, Trash2,
 } from "lucide-react";
-
-const stylePresets = [
-  { id: "minimalist", label: "Minimalist", gradient: "from-gray-100 to-white" },
-  { id: "bold", label: "Bold & Vibrant", gradient: "from-orange-400 to-pink-500" },
-  { id: "luxury", label: "Luxury", gradient: "from-amber-200 to-yellow-900" },
-  { id: "playful", label: "Playful", gradient: "from-cyan-300 to-purple-400" },
-  { id: "corporate", label: "Corporate", gradient: "from-blue-800 to-indigo-900" },
-  { id: "organic", label: "Organic", gradient: "from-green-300 to-emerald-600" },
-  { id: "editorial", label: "Editorial", gradient: "from-neutral-200 to-stone-400" },
-  { id: "retro", label: "Retro", gradient: "from-amber-400 to-red-600" },
-];
 
 const mockTopics = [
   { title: "Customer Success Story Spotlight", desc: "Showcase real results from your users. Social proof ads consistently outperform feature-focused ads by 2-3x.", tags: ["From website", "Industry trend"] },
@@ -42,26 +31,27 @@ interface OnboardingProps {
 export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeProgress, setScrapeProgress] = useState(0);
-  const [aiChatLink, setAiChatLink] = useState("");
 
   const [companyName, setCompanyName] = useState("");
   const [website, setWebsite] = useState("");
+  const [businessType, setBusinessType] = useState("dtc");
 
   const [brandDesc, setBrandDesc] = useState("");
   const [tone, setTone] = useState("");
-  const [positioning, setPositioning] = useState("");
 
-  const [selectedStyle, setSelectedStyle] = useState("minimalist");
-  const [adFont, setAdFont] = useState("DM Sans");
-  const [adHeadline, setAdHeadline] = useState("Transform Your Business Today");
-  const [adBody, setAdBody] = useState("Discover how AI-powered advertising can 10x your creative output.");
-  const [adCta, setAdCta] = useState("Get Started");
+  // Product state
+  const [productName, setProductName] = useState("");
+  const [productDesc, setProductDesc] = useState("");
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [productTerms, setProductTerms] = useState<{ key: string; value: string }[]>([
+    { key: "Key Feature", value: "" },
+    { key: "Price Point", value: "" },
+  ]);
 
   const [revealedTopics, setRevealedTopics] = useState<number[]>([]);
 
   const scrapeSteps = ["Extracting brand info...", "Detecting colors & fonts...", "Reading product pages...", "Analyzing tone of voice..."];
 
-  // Derive a screenshot URL from the entered website for the scraping animation
   const screenshotUrl = website
     ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
     : null;
@@ -78,7 +68,6 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
         if (i >= scrapeSteps.length) {
           clearInterval(interval);
           setTimeout(() => {
-            // Extract a company name from the URL
             try {
               const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
               const name = hostname.replace(/^www\./, "").split(".")[0];
@@ -88,9 +77,22 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             }
             setBrandDesc("An innovative company pushing the boundaries of modern advertising.");
             setTone("Professional yet approachable, with a focus on clarity and impact.");
-            setPositioning("The AI-first platform for modern marketing teams.");
+            // Pre-fill product from "scrape"
+            setProductName("Pro Plan");
+            setProductDesc("Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.");
+            setProductImages([
+              `https://picsum.photos/seed/${encodeURIComponent(website + "-p1")}/400/400`,
+              `https://picsum.photos/seed/${encodeURIComponent(website + "-p2")}/400/400`,
+              `https://picsum.photos/seed/${encodeURIComponent(website + "-p3")}/400/400`,
+            ]);
+            setProductTerms([
+              { key: "Key Feature", value: "AI-powered creative generation with 10x faster output" },
+              { key: "Price Point", value: "Starting at $49/mo" },
+            ]);
+            // Detect business type from domain heuristic
+            setBusinessType("saas");
             setIsScraping(false);
-            setStep(2); // → Brand Review
+            setStep(2);
           }, 600);
         }
       }, 700);
@@ -98,7 +100,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     }
   }, [isScraping, step]);
 
-  // Step 7 (Wow Moment) reveal
+  // Step 5 (Wow Moment) reveal
   useEffect(() => {
     if (step === 5) {
       setRevealedTopics([]);
@@ -120,7 +122,6 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
       return (
         <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-8 w-full">
-            {/* Screenshot preview */}
             {screenshotUrl && (
               <div className="relative w-full max-w-[320px] shrink-0">
                 <div className="rounded-xl overflow-hidden border border-border/60 shadow-xl bg-muted">
@@ -130,21 +131,14 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
                     <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
                     <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{website}</span>
                   </div>
-                  <img
-                    src={screenshotUrl}
-                    alt="Website preview"
-                    className="w-full aspect-[3/2] object-cover"
-                  />
+                  <img src={screenshotUrl} alt="Website preview" className="w-full aspect-[3/2] object-cover" />
                 </div>
-                {/* Scanning overlay */}
                 <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
                   <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse" />
                   <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
                 </div>
               </div>
             )}
-
-            {/* Progress steps */}
             <div className="flex flex-col items-center md:items-start gap-6">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
@@ -214,19 +208,18 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 2: Brand Review (was step 3) ────────────────────────────────────
+  // ─── Step 2: Brand ────────────────────────────────────────────────────────
   if (step === 2) {
     return (
       <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
         <div className="text-center mb-4">
-          <h2 className="text-2xl font-bold tracking-tight">Brand Review</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Brand</h2>
           <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
         </div>
         <HoverExplainer text="Step 2 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
           <div className="space-y-5">
             {/* Logo + Brand Name + Colors */}
             <div className="flex items-start gap-6">
-              {/* Logo with hover overlay */}
               <div className="relative group shrink-0">
                 <div className="w-20 h-20 rounded-2xl border-2 border-border bg-muted flex items-center justify-center overflow-hidden shadow-sm">
                   <span className="text-2xl font-bold text-primary">{companyName.charAt(0) || "A"}</span>
@@ -249,10 +242,23 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               </div>
             </div>
 
+            {/* Business Type */}
+            <div>
+              <Label>Business Type</Label>
+              <Select value={businessType} onValueChange={setBusinessType}>
+                <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="dtc">Direct to Consumer</SelectItem>
+                  <SelectItem value="service">Service Business</SelectItem>
+                  <SelectItem value="saas">SaaS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
             <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
 
-            {/* Marketing Key-Value Terms */}
+            {/* Marketing Key Terms */}
             <div className="space-y-3">
               <Label>Marketing Key Terms</Label>
               <div className="grid grid-cols-2 gap-4">
@@ -272,15 +278,116 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 3: Connect Meta ─────────────────────────────────────────────────
+  // ─── Step 3: Product ──────────────────────────────────────────────────────
   if (step === 3) {
+    const addTerm = () => setProductTerms(prev => [...prev, { key: "", value: "" }]);
+    const removeTerm = (idx: number) => setProductTerms(prev => prev.filter((_, i) => i !== idx));
+    const updateTerm = (idx: number, field: "key" | "value", val: string) =>
+      setProductTerms(prev => prev.map((t, i) => i === idx ? { ...t, [field]: val } : t));
+
+    return (
+      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
+        <div className="text-center mb-4">
+          <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+            <Package className="h-7 w-7 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight">Hero Product</h2>
+          <p className="text-muted-foreground mt-1">We found your most prominent {businessType === "service" ? "service" : businessType === "saas" ? "solution" : "product"} — refine the details</p>
+        </div>
+        <HoverExplainer text="Step 3 displays the hero product scraped from the website. Backend uses Firecrawl to find the most referenced product URL from the homepage, then scrapes that page for images and details.">
+          <div className="space-y-5">
+            {/* Product Name */}
+            <div>
+              <Label>Product Name</Label>
+              <Input className="mt-1.5" value={productName} onChange={e => setProductName(e.target.value)} />
+            </div>
+
+            {/* Product Images */}
+            <div>
+              <Label>Product Images</Label>
+              <p className="text-xs text-muted-foreground mt-0.5 mb-2">Scraped from the product page — click to remove, drag to reorder</p>
+              <div className="flex gap-3 flex-wrap">
+                {productImages.map((img, i) => (
+                  <div key={i} className="relative group w-24 h-24 rounded-xl overflow-hidden border border-border/60 shadow-sm">
+                    <img src={img} alt={`Product ${i + 1}`} className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => setProductImages(prev => prev.filter((_, idx) => idx !== i))}
+                      className="absolute inset-0 bg-foreground/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="h-4 w-4 text-white" />
+                    </button>
+                  </div>
+                ))}
+                <label className="w-24 h-24 rounded-xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary/40 hover:bg-accent/30 transition-colors">
+                  <Plus className="h-5 w-5 text-muted-foreground" />
+                  <span className="text-[10px] text-muted-foreground">Add</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setProductImages(prev => [...prev, url]);
+                    }
+                  }} />
+                </label>
+              </div>
+            </div>
+
+            {/* Product Description */}
+            <div>
+              <Label>Description</Label>
+              <Textarea className="mt-1.5" value={productDesc} onChange={e => setProductDesc(e.target.value)} rows={3} />
+            </div>
+
+            {/* Product Knowledge Key-Value Pairs */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Product Knowledge</Label>
+                <Button variant="ghost" size="sm" onClick={addTerm} className="gap-1 text-xs text-muted-foreground h-7">
+                  <Plus className="h-3.5 w-3.5" /> Add field
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {productTerms.map((term, i) => (
+                  <div key={i} className="flex gap-3 items-start">
+                    <div className="flex-1 space-y-1.5">
+                      <Input
+                        value={term.key}
+                        onChange={e => updateTerm(i, "key", e.target.value)}
+                        placeholder="Field name"
+                        className="text-xs font-semibold bg-muted/50 border-border/60"
+                      />
+                      <Textarea
+                        value={term.value}
+                        onChange={e => updateTerm(i, "value", e.target.value)}
+                        placeholder="Value..."
+                        rows={2}
+                        className="text-sm"
+                      />
+                    </div>
+                    {productTerms.length > 1 && (
+                      <button onClick={() => removeTerm(i)} className="mt-2 p-1.5 rounded-md hover:bg-accent transition-colors">
+                        <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </HoverExplainer>
+      </div>
+    );
+  }
+
+  // ─── Step 4: Connect Meta ─────────────────────────────────────────────────
+  if (step === 4) {
     return (
       <div className="flex flex-col items-center gap-8 py-4 animate-scale-in">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight">Connect your Meta Ad Account</h2>
           <p className="text-muted-foreground mt-1">Supercharge your AI ads with real performance data</p>
         </div>
-        <HoverExplainer text="Step 4 initiates Meta OAuth. Backend: GET /api/auth/meta/connect. On callback, store access_token, ad_account_id in meta_integrations. Triggers async pull of top 50 ads for LLM topic generation in Step 7.">
+        <HoverExplainer text="Step 4 initiates Meta OAuth. Backend: GET /api/auth/meta/connect. On callback, store access_token, ad_account_id in meta_integrations.">
           <div className="grid grid-cols-3 gap-4 max-w-xl">
             {[
               { icon: BarChart3, title: "Import best-performing ads", desc: "We analyze what already works for your brand" },
@@ -303,79 +410,6 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 4: Visual Style + Live Preview ──────────────────────────────────
-  if (step === 4) {
-    const preset = stylePresets.find(s => s.id === selectedStyle) || stylePresets[0];
-    const isDarkText = selectedStyle === "minimalist" || selectedStyle === "editorial";
-    return (
-      <div className="grid grid-cols-2 gap-6 h-[58vh] animate-scale-in">
-        <div className="space-y-5 overflow-y-auto pr-3">
-          <h2 className="text-xl font-bold tracking-tight">Visual Style</h2>
-          <HoverExplainer text="Step 6 saves visual preferences as brand_knowledge.visual_preset. Live preview is pure frontend React state.">
-            <div className="space-y-5">
-              <div>
-                <Label className="mb-2 block">Style Preset</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {stylePresets.map(s => (
-                    <button key={s.id} onClick={() => setSelectedStyle(s.id)} className={`rounded-lg p-0.5 border-2 transition-all duration-200 ${selectedStyle === s.id ? "border-primary ring-2 ring-primary/30 shadow-md" : "border-transparent hover:border-muted-foreground/30"}`}>
-                      <div className={`h-12 rounded-md bg-gradient-to-br ${s.gradient}`} />
-                      <p className="text-[10px] font-medium mt-1">{s.label}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <Label>Font</Label>
-                <Select value={adFont} onValueChange={setAdFont}>
-                  <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["DM Sans", "Space Grotesk", "Inter", "Poppins", "Playfair Display", "Montserrat"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Brand Colors</Label>
-                <div className="flex gap-2 mt-1.5">
-                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
-                  ))}
-                </div>
-              </div>
-              <div><Label>Headline</Label><Input className="mt-1.5" value={adHeadline} onChange={e => setAdHeadline(e.target.value)} /></div>
-              <div><Label>Body Copy</Label><Textarea className="mt-1.5" rows={2} value={adBody} onChange={e => setAdBody(e.target.value)} /></div>
-              <div><Label>CTA Text</Label><Input className="mt-1.5" value={adCta} onChange={e => setAdCta(e.target.value)} /></div>
-            </div>
-          </HoverExplainer>
-        </div>
-
-        {/* Live Ad Preview */}
-        <div className="flex items-center justify-center">
-          <div className="w-[270px] bg-foreground/90 rounded-[2.5rem] p-3 shadow-2xl ring-1 ring-white/10">
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 h-4 w-16 rounded-full bg-foreground/80 z-10" />
-            <div className="rounded-[2rem] overflow-hidden border border-white/10 bg-card">
-              <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50">
-                <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">{companyName?.[0] || "A"}</div>
-                <span className="text-xs font-semibold">{companyName || "yourbrand"}</span>
-                <span className="text-[10px] text-muted-foreground ml-auto">Sponsored</span>
-              </div>
-              <div className={`aspect-square bg-gradient-to-br ${preset.gradient} flex items-center justify-center p-6 relative overflow-hidden`}>
-                <img
-                  src="https://picsum.photos/seed/ad-preview/300/300"
-                  alt="Ad preview"
-                  className="absolute inset-0 w-full h-full object-cover opacity-20"
-                />
-                <p className="text-center font-bold text-lg leading-tight relative z-10" style={{ fontFamily: adFont, color: isDarkText ? "hsl(var(--foreground))" : "hsl(var(--primary-foreground))" }}>{adHeadline}</p>
-              </div>
-              <div className="px-3 py-2 text-[10px] text-muted-foreground flex gap-4"><span>♡ 1,243</span><span>💬 89</span><span>↗ 342</span></div>
-              <div className="px-3 pb-2"><p className="text-[11px] leading-snug" style={{ fontFamily: adFont }}>{adBody}</p></div>
-              <div className="px-3 pb-3"><button className="w-full py-1.5 rounded-md text-xs font-semibold bg-primary text-primary-foreground shadow-sm">{adCta}</button></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // ─── Step 5: Wow Moment ───────────────────────────────────────────────────
   if (step === 5) {
     return (
@@ -388,7 +422,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <h2 className="text-2xl font-bold tracking-tight">Based on everything we know about your brand...</h2>
           <p className="text-muted-foreground mt-1">Here are 7 ad topics we think will crush it this week</p>
         </div>
-        <HoverExplainer text="Step 7 displays LLM-generated topics. Backend async job calls POST /api/ai/generate-topics. Returns 7 structured topic objects stored in campaign_topics table. Thumbs up/down saves to topic_feedback for reinforcement learning.">
+        <HoverExplainer text="Step 5 displays LLM-generated topics. Backend async job calls POST /api/ai/generate-topics.">
           <div className="grid grid-cols-1 gap-3 max-w-2xl mx-auto text-left">
             {mockTopics.map((topic, i) => (
               <Card
