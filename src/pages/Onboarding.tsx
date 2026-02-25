@@ -100,7 +100,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   // Step 7 (Wow Moment) reveal
   useEffect(() => {
-    if (step === 7) {
+    if (step === 5) {
       setRevealedTopics([]);
       const timers = mockTopics.map((_, i) =>
         setTimeout(() => setRevealedTopics(prev => [...prev, i]), 400 + i * 250)
@@ -272,66 +272,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 3: AI Chat History (was step 2) ─────────────────────────────────
+  // ─── Step 3: Connect Meta ─────────────────────────────────────────────────
   if (step === 3) {
-    return (
-      <div className="max-w-lg mx-auto animate-scale-in">
-        <div className="text-center mb-8">
-          <div className="relative inline-flex items-center justify-center mb-4">
-            <div className="absolute inset-0 rounded-2xl bg-primary/15 scale-125 animate-glow" />
-            <div className="relative h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-violet-500/20 border border-primary/20 flex items-center justify-center shadow-lg">
-              <MessageSquare className="h-8 w-8 text-primary" />
-            </div>
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight">Have you already started thinking about your ads?</h2>
-          <p className="text-muted-foreground mt-2 text-sm leading-relaxed max-w-sm mx-auto">
-            If you've worked with an AI assistant (ChatGPT, Claude, etc.) to brainstorm ad ideas, paste the shareable link below and we'll incorporate those insights.
-          </p>
-        </div>
-        <HoverExplainer text="Backend: POST /api/onboarding/parse-ai-chat { url }. The scraper fetches the public chat transcript and sends it to an LLM with a prompt to extract: preferred ad angles, rejected ideas, brand voice notes, competitor mentions. Output merged into brand_knowledge.ai_context JSON field.">
-          <div className="space-y-5">
-            <div>
-              <Label className="font-medium">Paste your AI chat link <span className="text-muted-foreground font-normal">(optional)</span></Label>
-              <Input
-                className="mt-1.5"
-                placeholder="https://chatgpt.com/share/... or https://claude.ai/share/..."
-                value={aiChatLink}
-                onChange={e => setAiChatLink(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                Supports ChatGPT and Claude public share links. We'll analyze the conversation to extract brand preferences, ad angles, and creative direction.
-              </p>
-            </div>
-
-            {/* Platform cards */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border bg-card p-4 flex items-start gap-3 hover:border-primary/40 transition-colors cursor-pointer group">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#10a37f]/10 group-hover:bg-[#10a37f]/15 transition-colors">
-                  <span className="text-[#10a37f] font-bold text-sm">GP</span>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">ChatGPT</p>
-                  <p className="text-[11px] text-muted-foreground truncate">chatgpt.com/share/...</p>
-                </div>
-              </div>
-              <div className="rounded-xl border bg-card p-4 flex items-start gap-3 hover:border-primary/40 transition-colors cursor-pointer group">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-amber-500/10 group-hover:bg-amber-500/15 transition-colors">
-                  <span className="text-amber-600 font-bold text-sm">CL</span>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">Claude</p>
-                  <p className="text-[11px] text-muted-foreground truncate">claude.ai/share/...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </HoverExplainer>
-      </div>
-    );
-  }
-
-  // ─── Step 4: Connect Meta ─────────────────────────────────────────────────
-  if (step === 4) {
     return (
       <div className="flex flex-col items-center gap-8 py-4 animate-scale-in">
         <div className="text-center">
@@ -361,52 +303,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 5: Upload Assets ────────────────────────────────────────────────
-  if (step === 5) {
-    return (
-      <div className="space-y-6 animate-scale-in">
-        <div className="text-center mb-4">
-          <h2 className="text-2xl font-bold tracking-tight">Upload your assets</h2>
-          <p className="text-muted-foreground mt-1">Brand kits, product photos, and videos help us create on-brand ads</p>
-        </div>
-        <HoverExplainer text="Step 5 uploads files to Supabase Storage 'brand-assets' bucket. Each upload creates a record in asset_library table. Max 20MB per file, 50 files total.">
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { icon: FileText, label: "Brand Kit", desc: "Guidelines, style guides", seed: "brand-kit" },
-              { icon: FileImage, label: "Product Photos", desc: "Product images", seed: "product-img" },
-              { icon: Video, label: "Videos", desc: "Video assets", seed: "video-thumb" },
-              { icon: Image, label: "Other Assets", desc: "Logos, icons, textures", seed: "other-asset" },
-            ].map(({ icon: Icon, label, desc, seed }) => (
-              <div key={label} className="border-2 border-dashed rounded-xl overflow-hidden hover:border-primary/50 hover:bg-accent/20 transition-all duration-200 cursor-pointer group">
-                <div className="relative h-28 bg-muted overflow-hidden">
-                  <img
-                    src={`https://picsum.photos/seed/${seed}/400/220`}
-                    alt={label}
-                    className="w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-300"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center shadow">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-sm">{label}</p>
-                    <p className="text-xs text-muted-foreground">{desc}</p>
-                  </div>
-                  <Upload className="h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </HoverExplainer>
-      </div>
-    );
-  }
-
-  // ─── Step 6: Visual Style + Live Preview ──────────────────────────────────
-  if (step === 6) {
+  // ─── Step 4: Visual Style + Live Preview ──────────────────────────────────
+  if (step === 4) {
     const preset = stylePresets.find(s => s.id === selectedStyle) || stylePresets[0];
     const isDarkText = selectedStyle === "minimalist" || selectedStyle === "editorial";
     return (
@@ -478,8 +376,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 7: Wow Moment ───────────────────────────────────────────────────
-  if (step === 7) {
+  // ─── Step 5: Wow Moment ───────────────────────────────────────────────────
+  if (step === 5) {
     return (
       <div className="space-y-6 text-center animate-scale-in">
         <div className="py-4">
