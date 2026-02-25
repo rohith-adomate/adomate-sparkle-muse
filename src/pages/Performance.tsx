@@ -82,8 +82,8 @@ export default function Performance() {
                 <div className="absolute top-2 left-2 h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
                   <span className="text-[10px] font-bold text-primary">#{c.rank}</span>
                 </div>
-                <div className={`h-28 rounded-lg bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center`}>
-                  <div className="h-14 w-14 rounded-xl bg-white/20 backdrop-blur-sm" />
+                <div className="h-28 rounded-lg overflow-hidden">
+                  <img src={`https://picsum.photos/seed/perf${i + 1}/400/300`} alt={c.name} className="h-full w-full object-cover" />
                 </div>
                 <p className="text-sm font-semibold flex items-center gap-1.5">
                   {c.name}

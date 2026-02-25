@@ -56,8 +56,8 @@ export default function CalendarPage() {
           <div className="flex gap-3 overflow-x-auto pb-2">
             {drafts.map((d) => (
               <div key={d.name} className="shrink-0 w-40 p-2.5 border rounded-xl bg-card cursor-grab space-y-1.5 card-hover shadow-sm">
-                <div className={`h-20 rounded-lg bg-gradient-to-br ${d.gradient} flex items-center justify-center`}>
-                  <div className="h-8 w-8 rounded-lg bg-white/20 backdrop-blur-sm" />
+                <div className="h-20 rounded-lg overflow-hidden">
+                  <img src={`https://picsum.photos/seed/draft${drafts.indexOf(d)}/200/150`} alt={d.name} className="h-full w-full object-cover" />
                 </div>
                 <p className="text-xs font-medium truncate">{d.name}</p>
                 <p className="text-[10px] text-muted-foreground">{d.format}</p>
@@ -91,8 +91,8 @@ export default function CalendarPage() {
                   <div key={i} className={`bg-card p-1.5 min-h-[90px] transition-colors ${!item ? "hover:bg-muted/30" : ""}`}>
                     {item && (
                       <div className={`rounded-lg p-2 space-y-1.5 border-l-[3px] ${statusStyles[item.status]}`}>
-                        <div className="h-10 rounded bg-muted/50 flex items-center justify-center">
-                          <div className="h-5 w-5 rounded bg-primary/10" />
+                        <div className="h-10 rounded overflow-hidden">
+                          <img src={`https://picsum.photos/seed/cal${i}${campaign}/120/80`} alt={item.name} className="h-full w-full object-cover" />
                         </div>
                         <p className="text-[10px] font-medium truncate">{item.name}</p>
                         <Badge variant="outline" className={`text-[9px] border ${item.status === "Published" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}>{item.status}</Badge>

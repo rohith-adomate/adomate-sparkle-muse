@@ -24,7 +24,6 @@ const dataRoomSubs = [
 ];
 
 const coreNav = [
-  { title: "Campaigns", url: "/campaigns", icon: Megaphone },
   { title: "Concepts", url: "/concepts", icon: Lightbulb },
   { title: "Studio", url: "/studio", icon: Palette },
   { title: "Content", url: "/content", icon: FileText },
