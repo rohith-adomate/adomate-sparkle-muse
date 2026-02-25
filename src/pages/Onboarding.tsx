@@ -9,7 +9,7 @@ import { HoverExplainer } from "@/components/HoverExplainer";
 import {
   Loader2, Globe, Palette, Type, Image, Upload, Sparkles,
   ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
-  FileImage, Video, FileText, Check, MessageSquare,
+  FileImage, Video, FileText, Check, MessageSquare, RefreshCw,
 } from "lucide-react";
 
 const stylePresets = [
@@ -224,20 +224,48 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
         </div>
         <HoverExplainer text="Step 2 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
           <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
-              <div>
-                <Label>Detected Colors</Label>
-                <div className="flex gap-2 mt-2">
-                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
-                  ))}
+            {/* Logo + Brand Name + Colors */}
+            <div className="flex items-start gap-6">
+              {/* Logo with hover overlay */}
+              <div className="relative group shrink-0">
+                <div className="w-20 h-20 rounded-2xl border-2 border-border bg-muted flex items-center justify-center overflow-hidden shadow-sm">
+                  <span className="text-2xl font-bold text-primary">{companyName.charAt(0) || "A"}</span>
+                </div>
+                <label className="absolute inset-0 rounded-2xl bg-foreground/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  <RefreshCw className="h-5 w-5 text-white" />
+                  <input type="file" accept="image/*" className="hidden" />
+                </label>
+              </div>
+              <div className="flex-1 space-y-3">
+                <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
+                <div>
+                  <Label>Detected Colors</Label>
+                  <div className="flex gap-2 mt-2">
+                    {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
+                      <div key={c} className="w-8 h-8 rounded-lg border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
+
             <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
             <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
-            <div><Label>Brand Positioning</Label><Textarea className="mt-1.5" value={positioning} onChange={e => setPositioning(e.target.value)} rows={2} /></div>
+
+            {/* Marketing Key-Value Terms */}
+            <div className="space-y-3">
+              <Label>Marketing Key Terms</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Input defaultValue="Unique Selling Point" className="text-xs font-semibold bg-muted/50 border-border/60" />
+                  <Textarea defaultValue="AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." rows={2} className="text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Input defaultValue="Target Audience" className="text-xs font-semibold bg-muted/50 border-border/60" />
+                  <Textarea defaultValue="Small-to-medium business marketing teams looking to scale ad creative without hiring designers." rows={2} className="text-sm" />
+                </div>
+              </div>
+            </div>
           </div>
         </HoverExplainer>
       </div>
