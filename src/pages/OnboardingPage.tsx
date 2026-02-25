@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Onboarding } from "@/pages/Onboarding";
 import { ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
 
-const stepLabels = ["Website", "Brand Review", "AI History", "Connect Meta", "Upload Assets", "Visual Style", "Launch"];
+const stepLabels = ["Website", "Brand Review", "Connect Meta", "Visual Style", "Launch"];
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -14,10 +14,10 @@ export default function OnboardingPage() {
   const progress = (currentStep / stepLabels.length) * 100;
 
   const handleNext = () => {
-    if (currentStep === 7) {
+    if (currentStep === 5) {
       navigate("/");
     } else {
-      setCurrentStep(prev => Math.min(prev + 1, 7));
+      setCurrentStep(prev => Math.min(prev + 1, 5));
     }
   };
 
@@ -100,14 +100,14 @@ export default function OnboardingPage() {
             <ChevronLeft className="h-4 w-4" /> Back
           </Button>
           <div className="flex items-center gap-3">
-            {currentStep !== 7 && currentStep !== 1 && (
+            {currentStep !== 5 && currentStep !== 1 && (
               <Button variant="ghost" size="sm" onClick={handleNext} className="text-muted-foreground hover:text-foreground">
                 Skip
               </Button>
             )}
             {!isScraping && (
               <Button size="sm" onClick={handleNext} className="gap-1.5 px-6 shadow-sm">
-                {currentStep === 7 ? "Launch into Adomate ✨" : <>Continue <ChevronRight className="h-4 w-4" /></>}
+                {currentStep === 5 ? "Launch into Adomate ✨" : <>Continue <ChevronRight className="h-4 w-4" /></>}
               </Button>
             )}
           </div>
