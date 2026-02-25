@@ -12,17 +12,6 @@ import {
   FileImage, Video, FileText, Check, MessageSquare,
 } from "lucide-react";
 
-const industryTemplates: Record<string, { label: string; questions: string[] }> = {
-  d2c: { label: "D2C / E-commerce", questions: ["What is your founder story?", "What makes your product unique vs alternatives?", "Who is your ideal customer? Describe them.", "What problem does your product solve?", "What is your price positioning? (Premium / Mid-range / Budget)"] },
-  saas: { label: "SaaS / B2B", questions: ["How do you compare to your top 3 competitors?", "What is your unique value proposition in one sentence?", "What is the primary pain point you solve?", "What does your ideal customer's tech stack look like?", "What is your pricing model? (Freemium / Trial / Enterprise)"] },
-  retail: { label: "Retail", questions: ["What is your store experience like?", "What seasonal trends affect your business?", "What is your flagship product or collection?", "What drives repeat purchases?", "Do you sell online, in-store, or both?"] },
-  fnb: { label: "Food & Beverage", questions: ["What is your brand origin story?", "What dietary or lifestyle trends do you align with?", "What is your hero product?", "Where do customers find you? (Grocery / DTC / Restaurants)", "What certifications matter? (Organic, Non-GMO, etc.)"] },
-  health: { label: "Health & Wellness", questions: ["What health outcome do you help with?", "What certifications or clinical backing do you have?", "How do customers describe the transformation?", "What is your hero product or service?", "Are there any regulatory claims to avoid?"] },
-  finance: { label: "Finance", questions: ["What financial problem do you solve?", "Who is your target demographic?", "What compliance requirements affect your advertising?", "How do you differentiate from traditional banks/services?", "What is your trust signal? (FDIC, licensing, track record)"] },
-  education: { label: "Education", questions: ["What learning outcome do you deliver?", "What age group or professional level do you serve?", "Is it self-paced, live, or hybrid?", "What credential or certificate do learners receive?", "What is your completion/success rate?"] },
-  other: { label: "Other", questions: ["What makes your brand different?", "Who is your ideal customer?", "What problem do you solve?", "How would you describe your brand personality?", "What is your competitive advantage?"] },
-};
-
 const stylePresets = [
   { id: "minimalist", label: "Minimalist", gradient: "from-gray-100 to-white" },
   { id: "bold", label: "Bold & Vibrant", gradient: "from-orange-400 to-pink-500" },
@@ -57,14 +46,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   const [companyName, setCompanyName] = useState("");
   const [website, setWebsite] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [role, setRole] = useState("");
-  const [goal, setGoal] = useState("");
 
   const [brandDesc, setBrandDesc] = useState("");
   const [tone, setTone] = useState("");
   const [positioning, setPositioning] = useState("");
-  const [industryAnswers, setIndustryAnswers] = useState<string[]>([]);
 
   const [selectedStyle, setSelectedStyle] = useState("minimalist");
   const [adFont, setAdFont] = useState("DM Sans");
@@ -75,6 +60,11 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
   const [revealedTopics, setRevealedTopics] = useState<number[]>([]);
 
   const scrapeSteps = ["Extracting brand info...", "Detecting colors & fonts...", "Reading product pages...", "Analyzing tone of voice..."];
+
+  // Derive a screenshot URL from the entered website for the scraping animation
+  const screenshotUrl = website
+    ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
+    : null;
 
   useEffect(() => { onScraping(isScraping); }, [isScraping, onScraping]);
 
@@ -88,13 +78,19 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
         if (i >= scrapeSteps.length) {
           clearInterval(interval);
           setTimeout(() => {
-            setBrandDesc(companyName ? `${companyName} is a leading provider of innovative solutions.` : "An innovative company pushing the boundaries of modern advertising.");
+            // Extract a company name from the URL
+            try {
+              const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
+              const name = hostname.replace(/^www\./, "").split(".")[0];
+              setCompanyName(name.charAt(0).toUpperCase() + name.slice(1));
+            } catch {
+              setCompanyName("Your Brand");
+            }
+            setBrandDesc("An innovative company pushing the boundaries of modern advertising.");
             setTone("Professional yet approachable, with a focus on clarity and impact.");
             setPositioning("The AI-first platform for modern marketing teams.");
-            const tmpl = industryTemplates[industry] || industryTemplates["other"];
-            setIndustryAnswers(new Array(tmpl.questions.length).fill(""));
             setIsScraping(false);
-            setStep(2); // → AI Chat History (new step 2)
+            setStep(2); // → Brand Review
           }, 600);
         }
       }, 700);
@@ -118,51 +114,77 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     setIsScraping(true);
   };
 
-  const currentTemplate = industryTemplates[industry] || industryTemplates["other"];
-
-  // ─── Step 1: Basic Info ────────────────────────────────────────────────────
+  // ─── Step 1: Website URL only ─────────────────────────────────────────────
   if (step === 1) {
     if (isScraping) {
       return (
-        <div className="flex flex-col items-center gap-8 py-12 max-w-lg mx-auto">
-          {/* Animated logo with glow */}
-          <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
-            <div className="relative h-20 w-20 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
-              <Globe className="h-9 w-9 text-white" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            </div>
-          </div>
-          <div className="text-center space-y-1">
-            <p className="text-xl font-bold tracking-tight">Analyzing your website...</p>
-            <p className="text-sm text-muted-foreground">We're reading your brand to pre-fill your setup</p>
-          </div>
-          <div className="space-y-3 w-full max-w-xs">
-            {scrapeSteps.map((s, i) => (
-              <div
-                key={i}
-                className={`flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]`}
-                style={{
-                  opacity: i <= scrapeProgress ? 1 : 0.2,
-                  transitionDelay: `${i * 150}ms`,
-                  transform: i <= scrapeProgress ? "translateX(0)" : "translateX(-8px)",
-                }}
-              >
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                  i < scrapeProgress ? "bg-emerald-100" : i === scrapeProgress ? "bg-primary/10" : "bg-muted"
-                }`}>
-                  {i < scrapeProgress
-                    ? <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    : i === scrapeProgress
-                      ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                      : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
-                  }
+        <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-8 w-full">
+            {/* Screenshot preview */}
+            {screenshotUrl && (
+              <div className="relative w-full max-w-[320px] shrink-0">
+                <div className="rounded-xl overflow-hidden border border-border/60 shadow-xl bg-muted">
+                  <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
+                    <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                    <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{website}</span>
+                  </div>
+                  <img
+                    src={screenshotUrl}
+                    alt="Website preview"
+                    className="w-full aspect-[3/2] object-cover"
+                  />
                 </div>
-                <span className={i < scrapeProgress ? "text-foreground font-medium" : i === scrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
+                {/* Scanning overlay */}
+                <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse" />
+                  <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
+                </div>
               </div>
-            ))}
+            )}
+
+            {/* Progress steps */}
+            <div className="flex flex-col items-center md:items-start gap-6">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
+                <div className="relative h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
+                  <Globe className="h-8 w-8 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                </div>
+              </div>
+              <div className="text-center md:text-left space-y-1">
+                <p className="text-xl font-bold tracking-tight">Analyzing your website...</p>
+                <p className="text-sm text-muted-foreground">We're reading your brand to pre-fill your setup</p>
+              </div>
+              <div className="space-y-3 w-full max-w-xs">
+                {scrapeSteps.map((s, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    style={{
+                      opacity: i <= scrapeProgress ? 1 : 0.2,
+                      transitionDelay: `${i * 150}ms`,
+                      transform: i <= scrapeProgress ? "translateX(0)" : "translateX(-8px)",
+                    }}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      i < scrapeProgress ? "bg-emerald-100" : i === scrapeProgress ? "bg-primary/10" : "bg-muted"
+                    }`}>
+                      {i < scrapeProgress
+                        ? <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        : i === scrapeProgress
+                          ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                          : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
+                      }
+                    </div>
+                    <span className={i < scrapeProgress ? "text-foreground font-medium" : i === scrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -175,57 +197,55 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             <Sparkles className="h-7 w-7 text-white" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">Welcome to Adomate</h2>
-          <p className="text-muted-foreground mt-1">Tell us about your business to get started</p>
+          <p className="text-muted-foreground mt-1">Enter your website and we'll do the rest</p>
         </div>
-        <HoverExplainer text="Step 1 collects initial context. On submit, POST /api/onboarding/scrape { url, industry }. Backend uses Firecrawl to scrape website and LLM to extract brand data. Industry selection determines Step 3 questions.">
+        <HoverExplainer text="Step 1 collects the website URL. On submit, POST /api/onboarding/scrape { url }. Backend uses Firecrawl to scrape website and LLM to extract brand data.">
           <div className="space-y-4">
-            <div><Label>Company Name</Label><Input placeholder="Acme Inc." value={companyName} onChange={e => setCompanyName(e.target.value)} className="mt-1.5" /></div>
-            <div><Label>Website URL</Label><Input placeholder="https://acme.com" value={website} onChange={e => setWebsite(e.target.value)} className="mt-1.5" /></div>
             <div>
-              <Label>Industry</Label>
-              <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select industry" /></SelectTrigger>
-                <SelectContent>
-                  {Object.entries(industryTemplates).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Label>Website URL</Label>
+              <Input placeholder="https://acme.com" value={website} onChange={e => setWebsite(e.target.value)} className="mt-1.5" />
             </div>
-            <div>
-              <Label>Your Role</Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select role" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="founder">Founder</SelectItem>
-                  <SelectItem value="marketing">Marketing Manager</SelectItem>
-                  <SelectItem value="growth">Growth Lead</SelectItem>
-                  <SelectItem value="creative">Creative Director</SelectItem>
-                  <SelectItem value="agency">Agency</SelectItem>
-                  <SelectItem value="other_role">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Primary Goal</Label>
-              <Select value={goal} onValueChange={setGoal}>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select goal" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="awareness">Grow brand awareness</SelectItem>
-                  <SelectItem value="conversions">Increase conversions</SelectItem>
-                  <SelectItem value="scale">Scale ad creative</SelectItem>
-                  <SelectItem value="cost">Reduce creative costs</SelectItem>
-                  <SelectItem value="other_goal">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button className="w-full mt-2 shadow-sm" onClick={startScrape}>Continue</Button>
+            <Button className="w-full mt-2 shadow-sm" onClick={startScrape} disabled={!website.trim()}>
+              Continue
+            </Button>
           </div>
         </HoverExplainer>
       </div>
     );
   }
 
-  // ─── Step 2: AI Chat History (NEW) ────────────────────────────────────────
+  // ─── Step 2: Brand Review (was step 3) ────────────────────────────────────
   if (step === 2) {
+    return (
+      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
+        <div className="text-center mb-4">
+          <h2 className="text-2xl font-bold tracking-tight">Brand Review</h2>
+          <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
+        </div>
+        <HoverExplainer text="Step 2 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
+              <div>
+                <Label>Detected Colors</Label>
+                <div className="flex gap-2 mt-2">
+                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
+                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
+            <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
+            <div><Label>Brand Positioning</Label><Textarea className="mt-1.5" value={positioning} onChange={e => setPositioning(e.target.value)} rows={2} /></div>
+          </div>
+        </HoverExplainer>
+      </div>
+    );
+  }
+
+  // ─── Step 3: AI Chat History (was step 2) ─────────────────────────────────
+  if (step === 3) {
     return (
       <div className="max-w-lg mx-auto animate-scale-in">
         <div className="text-center mb-8">
@@ -282,48 +302,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 3: Brand Review (was 2) ─────────────────────────────────────────
-  if (step === 3) {
-    return (
-      <div className="space-y-6 overflow-y-auto max-h-[55vh] pr-2 animate-scale-in">
-        <div className="text-center mb-4">
-          <h2 className="text-2xl font-bold tracking-tight">Brand Review</h2>
-          <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
-        </div>
-        <HoverExplainer text="Step 3 displays scraped results and industry-specific questions. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Brand Name</Label><Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} /></div>
-              <div>
-                <Label>Detected Colors</Label>
-                <div className="flex gap-2 mt-2">
-                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                    <div key={c} className="w-8 h-8 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div><Label>Description</Label><Textarea className="mt-1.5" value={brandDesc} onChange={e => setBrandDesc(e.target.value)} rows={2} /></div>
-            <div><Label>Tone of Voice</Label><Textarea className="mt-1.5" value={tone} onChange={e => setTone(e.target.value)} rows={2} /></div>
-            <div><Label>Brand Positioning</Label><Textarea className="mt-1.5" value={positioning} onChange={e => setPositioning(e.target.value)} rows={2} /></div>
-            <div className="border-t pt-5">
-              <h3 className="font-semibold text-lg mb-3">Tell us more about your {currentTemplate.label} brand</h3>
-              <div className="space-y-4">
-                {currentTemplate.questions.map((q, i) => (
-                  <div key={i}>
-                    <Label className="text-muted-foreground">{q}</Label>
-                    <Textarea className="mt-1.5" rows={2} value={industryAnswers[i] || ""} onChange={e => { const next = [...industryAnswers]; next[i] = e.target.value; setIndustryAnswers(next); }} placeholder="Type your answer..." />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </HoverExplainer>
-      </div>
-    );
-  }
-
-  // ─── Step 4: Connect Meta (was 3) ─────────────────────────────────────────
+  // ─── Step 4: Connect Meta ─────────────────────────────────────────────────
   if (step === 4) {
     return (
       <div className="flex flex-col items-center gap-8 py-4 animate-scale-in">
@@ -354,14 +333,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 5: Upload Assets (was 4) ────────────────────────────────────────
+  // ─── Step 5: Upload Assets ────────────────────────────────────────────────
   if (step === 5) {
-    const assetExamples = [
-      { src: "https://picsum.photos/seed/brand-kit/200/140", label: "Brand Kit" },
-      { src: "https://picsum.photos/seed/product-img/200/140", label: "Product Photos" },
-      { src: "https://picsum.photos/seed/video-thumb/200/140", label: "Videos" },
-      { src: "https://picsum.photos/seed/other-asset/200/140", label: "Other Assets" },
-    ];
     return (
       <div className="space-y-6 animate-scale-in">
         <div className="text-center mb-4">
@@ -404,7 +377,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 6: Visual Style + Live Preview (was 5) ──────────────────────────
+  // ─── Step 6: Visual Style + Live Preview ──────────────────────────────────
   if (step === 6) {
     const preset = stylePresets.find(s => s.id === selectedStyle) || stylePresets[0];
     const isDarkText = selectedStyle === "minimalist" || selectedStyle === "editorial";
@@ -412,7 +385,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
       <div className="grid grid-cols-2 gap-6 h-[58vh] animate-scale-in">
         <div className="space-y-5 overflow-y-auto pr-3">
           <h2 className="text-xl font-bold tracking-tight">Visual Style</h2>
-          <HoverExplainer text="Step 6 saves visual preferences as brand_knowledge.visual_preset. Live preview is pure frontend React state. Topic generation LLM call from Step 1 completes in background.">
+          <HoverExplainer text="Step 6 saves visual preferences as brand_knowledge.visual_preset. Live preview is pure frontend React state.">
             <div className="space-y-5">
               <div>
                 <Label className="mb-2 block">Style Preset</Label>
@@ -477,7 +450,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 7: Wow Moment (was 6) ────────────────────────────────────────────
+  // ─── Step 7: Wow Moment ───────────────────────────────────────────────────
   if (step === 7) {
     return (
       <div className="space-y-6 text-center animate-scale-in">

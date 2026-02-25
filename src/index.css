@@ -201,3 +201,8 @@
     @apply border-l-2 border-primary pl-3;
   }
 }
+
+@keyframes scan {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(100%); opacity: 1; }
+}
