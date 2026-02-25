@@ -22,6 +22,7 @@ import Workflows from "./pages/Workflows";
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
+import OnboardingPage from "./pages/OnboardingPage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/onboarding" element={<OnboardingPage />} />
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/brand-data-room" element={<BrandDataRoom />} />
