@@ -9,7 +9,7 @@ import { HoverExplainer } from "@/components/HoverExplainer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
-  Loader2, Globe, Sparkles,
+  Loader2, Globe, Sparkles, Link as LinkIcon,
   ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
   Check, RefreshCw, Package, Plus, Trash2, Pencil,
 } from "lucide-react";
@@ -63,16 +63,30 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     { key: "Key Feature", value: "" },
     { key: "Price Point", value: "" },
   ]);
+  const [productPhase, setProductPhase] = useState<"select" | "scraping" | "details">("select");
+  const [selectedProductUrl, setSelectedProductUrl] = useState("");
+  const [customProductUrl, setCustomProductUrl] = useState("");
+  const [productScrapeProgress, setProductScrapeProgress] = useState(0);
 
   const [revealedTopics, setRevealedTopics] = useState<number[]>([]);
 
   const scrapeSteps = ["Extracting brand info...", "Detecting colors & fonts...", "Reading product pages...", "Analyzing tone of voice..."];
+  const productScrapeSteps = ["Loading product page...", "Extracting images...", "Reading product details...", "Analyzing features..."];
+
+  const baseUrl = (() => {
+    try { return website ? new URL(website.startsWith("http") ? website : `https://${website}`).origin : ""; }
+    catch { return ""; }
+  })();
+  const suggestedProductUrls = baseUrl ? [
+    `${baseUrl}/products/pro-plan`,
+    `${baseUrl}/products/starter-kit`,
+  ] : [];
 
   const screenshotUrl = website
     ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
     : null;
 
-  useEffect(() => { onScraping(isScraping); }, [isScraping, onScraping]);
+  useEffect(() => { onScraping(isScraping || (step === 3 && productPhase !== "details")); }, [isScraping, productPhase, step, onScraping]);
 
   // Handle Continue on Step 1 → scrape simulation
   useEffect(() => {
@@ -130,9 +144,52 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     }
   }, [step]);
 
+  // Product scraping simulation
+  useEffect(() => {
+    if (step === 3 && productPhase === "scraping") {
+      setProductScrapeProgress(0);
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setProductScrapeProgress(i);
+        if (i >= productScrapeSteps.length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            const urlToScrape = selectedProductUrl || customProductUrl;
+            try {
+              const urlObj = new URL(urlToScrape.startsWith("http") ? urlToScrape : `https://${urlToScrape}`);
+              const segments = urlObj.pathname.split("/").filter(Boolean);
+              const rawName = segments[segments.length - 1] || "Pro Plan";
+              setProductName(rawName.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
+            } catch {
+              setProductName("Pro Plan");
+            }
+            setProductDesc("Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.");
+            setProductImages([
+              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p1")}/400/400`,
+              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p2")}/400/400`,
+              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p3")}/400/400`,
+            ]);
+            setProductTerms([
+              { key: "Key Feature", value: "AI-powered creative generation with 10x faster output" },
+              { key: "Price Point", value: "Starting at $49/mo" },
+            ]);
+            setProductPhase("details");
+          }, 600);
+        }
+      }, 700);
+      return () => clearInterval(interval);
+    }
+  }, [step, productPhase]);
+
   const startScrape = () => {
     setScrapeProgress(0);
     setIsScraping(true);
+  };
+
+  const startProductScrape = (url: string) => {
+    setSelectedProductUrl(url);
+    setProductPhase("scraping");
   };
 
   // ─── Step 1: Website URL only ─────────────────────────────────────────────
@@ -401,6 +458,136 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     const updateTerm = (idx: number, field: "key" | "value", val: string) =>
       setProductTerms(prev => prev.map((t, i) => i === idx ? { ...t, [field]: val } : t));
 
+    // Phase: Select product URL
+    if (productPhase === "select") {
+      return (
+        <div className="space-y-8 animate-scale-in flex flex-col items-center">
+          <div className="text-center">
+            <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+              <Package className="h-7 w-7 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight">Which {businessType === "service" ? "service" : businessType === "saas" ? "solution" : "product"} should we onboard?</h2>
+            <p className="text-muted-foreground mt-1">We found these on your website — pick one to generate ads for</p>
+          </div>
+
+          {/* Suggested URLs */}
+          <div className="w-full max-w-lg space-y-3">
+            {suggestedProductUrls.map((url, i) => (
+              <button
+                key={i}
+                onClick={() => startProductScrape(url)}
+                className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all duration-200 hover:border-primary hover:bg-accent/50 ${
+                  selectedProductUrl === url ? "border-primary bg-accent/50" : "border-border"
+                }`}
+              >
+                <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
+                  <LinkIcon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{url}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Detected from your homepage</p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* OR divider */}
+          <div className="flex items-center gap-4 w-full max-w-lg">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-sm font-semibold text-muted-foreground">OR</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+
+          {/* Custom URL */}
+          <div className="w-full max-w-lg space-y-3">
+            <Label>Enter a different product URL</Label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="https://yoursite.com/products/my-product"
+                value={customProductUrl}
+                onChange={e => setCustomProductUrl(e.target.value)}
+                className="flex-1"
+              />
+              <Button
+                onClick={() => startProductScrape(customProductUrl)}
+                disabled={!customProductUrl.trim()}
+              >
+                Scrape
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Phase: Scraping animation
+    if (productPhase === "scraping") {
+      const scrapingUrl = selectedProductUrl || customProductUrl;
+      const screenshotSeed = encodeURIComponent(scrapingUrl);
+      return (
+        <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto animate-scale-in">
+          <div className="flex flex-col md:flex-row items-center gap-8 w-full">
+            <div className="relative w-full max-w-[320px] shrink-0">
+              <div className="rounded-xl overflow-hidden border border-border/60 shadow-xl bg-muted">
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
+                  <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-warning/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/60" />
+                  <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{scrapingUrl}</span>
+                </div>
+                <img src={`https://picsum.photos/seed/${screenshotSeed}/600/400`} alt="Product page preview" className="w-full aspect-[3/2] object-cover" />
+              </div>
+              <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse" />
+                <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
+              </div>
+            </div>
+            <div className="flex flex-col items-center md:items-start gap-6">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
+                <div className="relative h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
+                  <Package className="h-8 w-8 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                </div>
+              </div>
+              <div className="text-center md:text-left space-y-1">
+                <p className="text-xl font-bold tracking-tight">Scraping product page...</p>
+                <p className="text-sm text-muted-foreground">Extracting images, details & features</p>
+              </div>
+              <div className="space-y-3 w-full max-w-xs">
+                {productScrapeSteps.map((s, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    style={{
+                      opacity: i <= productScrapeProgress ? 1 : 0.2,
+                      transitionDelay: `${i * 150}ms`,
+                      transform: i <= productScrapeProgress ? "translateX(0)" : "translateX(-8px)",
+                    }}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      i < productScrapeProgress ? "bg-emerald-100" : i === productScrapeProgress ? "bg-primary/10" : "bg-muted"
+                    }`}>
+                      {i < productScrapeProgress
+                        ? <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        : i === productScrapeProgress
+                          ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                          : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
+                      }
+                    </div>
+                    <span className={i < productScrapeProgress ? "text-foreground font-medium" : i === productScrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Phase: Details (after scraping)
     return (
       <div className="space-y-6 animate-scale-in">
         <div className="text-center mb-4">
@@ -412,13 +599,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
         </div>
         <HoverExplainer text="Step 3 displays the hero product scraped from the website. Backend uses Firecrawl to find the most referenced product URL from the homepage, then scrapes that page for images and details.">
           <div className="space-y-5">
-            {/* Product Name */}
             <div>
               <Label>Product Name</Label>
               <Input className="mt-1.5" value={productName} onChange={e => setProductName(e.target.value)} />
             </div>
-
-            {/* Product Images */}
             <div>
               <Label>Product Images</Label>
               <p className="text-xs text-muted-foreground mt-0.5 mb-2">Scraped from the product page — click to remove, drag to reorder</p>
@@ -447,14 +631,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
                 </label>
               </div>
             </div>
-
-            {/* Product Description */}
             <div>
               <Label>Description</Label>
               <Textarea className="mt-1.5" value={productDesc} onChange={e => setProductDesc(e.target.value)} rows={3} />
             </div>
-
-            {/* Product Knowledge Key-Value Pairs */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label>Product Knowledge</Label>
