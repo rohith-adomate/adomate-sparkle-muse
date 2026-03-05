@@ -10,7 +10,7 @@ import BrandKnowledge from "./pages/BrandKnowledge";
 import Products from "./pages/Products";
 import Personas from "./pages/Personas";
 import MetaIntegration from "./pages/MetaIntegration";
-import CustomKeywords from "./pages/CustomKeywords";
+import Competitors from "./pages/Competitors";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import Concepts from "./pages/Concepts";
