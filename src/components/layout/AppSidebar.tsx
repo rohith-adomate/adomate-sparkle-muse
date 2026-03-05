@@ -1,6 +1,6 @@
 import {
   Home, Database, Megaphone, Lightbulb, Palette, FileText, CalendarDays,
-  BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Search,
+  BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
   ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -19,8 +19,8 @@ const dataRoomSubs = [
   { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
   { title: "Products", url: "/brand-data-room/products", icon: Package },
   { title: "Customer Personas", url: "/brand-data-room/personas", icon: Users },
+  { title: "Competitors", url: "/brand-data-room/competitors", icon: Swords },
   { title: "Meta Integration", url: "/brand-data-room/meta", icon: Link2 },
-  { title: "Custom Keywords", url: "/brand-data-room/keywords", icon: Search },
 ];
 
 const coreNav = [
