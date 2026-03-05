@@ -41,7 +41,7 @@ const App = () => (
             <Route path="/brand-data-room/products" element={<Products />} />
             <Route path="/brand-data-room/personas" element={<Personas />} />
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
-            <Route path="/brand-data-room/keywords" element={<CustomKeywords />} />
+            <Route path="/brand-data-room/competitors" element={<Competitors />} />
             <Route path="/campaigns" element={<Workflows />} />
             <Route path="/campaigns/:id" element={<Workflows />} />
             <Route path="/concepts" element={<Concepts />} />

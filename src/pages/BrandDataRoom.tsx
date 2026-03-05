@@ -42,7 +42,7 @@ export default function BrandDataRoom() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <HoverExplainer key={c.title} text={c.explainer}>
-            <Card className={`card-hover cursor-pointer group ${c.title === "Custom Keywords" ? "border-red-200 opacity-60" : ""}`} onClick={() => nav(c.url)}>
+            <Card className="card-hover cursor-pointer group" onClick={() => nav(c.url)}>
               <CardHeader className="flex flex-row items-start gap-3 pb-2">
                 <div className={`icon-badge rounded-xl bg-gradient-to-br ${c.gradient}`}>
                   <c.icon className="h-5 w-5 text-foreground/80" />
@@ -50,9 +50,7 @@ export default function BrandDataRoom() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base">{c.title}</CardTitle>
-                    {c.title === "Custom Keywords" ? (
-                      <Badge variant="outline" className="text-[9px] border-red-200 bg-red-50 text-red-600">Not MVP</Badge>
-                    ) : c.complete ? (
+                    {c.complete ? (
                       <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     ) : null}
                   </div>
