@@ -1,6 +1,6 @@
 import {
   Home, Database, Megaphone, Lightbulb, Palette, FileText, CalendarDays,
-  BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Search,
+  BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
   ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
