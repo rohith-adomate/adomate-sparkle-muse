@@ -10,9 +10,37 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
   Loader2, Globe, Sparkles, Link as LinkIcon,
-  ThumbsUp, ThumbsDown, Facebook, BarChart3, Users, TrendingUp,
+  ThumbsUp, ThumbsDown, BarChart3,
   Check, RefreshCw, Package, Plus, Trash2, Pencil,
+  Megaphone, Target, Layers, Zap,
 } from "lucide-react";
+
+const goalCards = [
+  {
+    id: "scale-ads",
+    icon: Megaphone,
+    title: "Scale Ad Creative",
+    subtitle: "Generate high-performing ad variations faster without a design team",
+  },
+  {
+    id: "competitor-intel",
+    icon: Target,
+    title: "Competitor Intelligence",
+    subtitle: "Understand what competitors are running and find gaps to exploit",
+  },
+  {
+    id: "creative-testing",
+    icon: Layers,
+    title: "Creative Testing",
+    subtitle: "Systematically test concepts, hooks, and visuals to find winners",
+  },
+  {
+    id: "performance",
+    icon: Zap,
+    title: "Improve ROAS",
+    subtitle: "Use data-driven insights to maximize return on ad spend",
+  },
+];
 
 const mockTopics = [
   { title: "Customer Success Story Spotlight", desc: "Showcase real results from your users. Social proof ads consistently outperform feature-focused ads by 2-3x.", tags: ["From website", "Industry trend"] },
@@ -31,6 +59,7 @@ interface OnboardingProps {
 }
 
 export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeProgress, setScrapeProgress] = useState(0);
 
@@ -86,11 +115,11 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
     : null;
 
-  useEffect(() => { onScraping(isScraping || (step === 3 && productPhase !== "details")); }, [isScraping, productPhase, step, onScraping]);
+  useEffect(() => { onScraping(isScraping || (step === 4 && productPhase !== "details")); }, [isScraping, productPhase, step, onScraping]);
 
-  // Handle Continue on Step 1 → scrape simulation
+  // Handle Continue on Step 2 → scrape simulation
   useEffect(() => {
-    if (step === 1 && isScraping) {
+    if (step === 2 && isScraping) {
       let i = 0;
       const interval = setInterval(() => {
         i++;
@@ -122,10 +151,9 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               { key: "Key Feature", value: "AI-powered creative generation with 10x faster output" },
               { key: "Price Point", value: "Starting at $49/mo" },
             ]);
-            // Detect business type from domain heuristic
             setBusinessType("saas");
             setIsScraping(false);
-            setStep(2);
+            setStep(3);
           }, 600);
         }
       }, 700);
@@ -146,7 +174,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
 
   // Product scraping simulation
   useEffect(() => {
-    if (step === 3 && productPhase === "scraping") {
+    if (step === 4 && productPhase === "scraping") {
       setProductScrapeProgress(0);
       let i = 0;
       const interval = setInterval(() => {
@@ -192,8 +220,62 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     setProductPhase("scraping");
   };
 
-  // ─── Step 1: Website URL only ─────────────────────────────────────────────
+  const toggleGoal = (id: string) => {
+    setSelectedGoals(prev =>
+      prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]
+    );
+  };
+
+  // ─── Step 1: Goals ────────────────────────────────────────────────────────
   if (step === 1) {
+    return (
+      <div className="space-y-8 max-w-2xl mx-auto animate-scale-in">
+        <div className="text-center">
+          <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+            <Target className="h-7 w-7 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight">What are you looking to achieve?</h2>
+          <p className="text-muted-foreground mt-1">Select one or more goals — this helps us tailor your experience</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {goalCards.map((goal) => {
+            const isSelected = selectedGoals.includes(goal.id);
+            const Icon = goal.icon;
+            return (
+              <button
+                key={goal.id}
+                onClick={() => toggleGoal(goal.id)}
+                className={`relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md ${
+                  isSelected
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-border hover:border-primary/40"
+                }`}
+              >
+                {isSelected && (
+                  <div className="absolute top-3 right-3 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="h-3 w-3 text-primary-foreground" />
+                  </div>
+                )}
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${
+                  isSelected ? "bg-primary/10" : "bg-accent"
+                }`}>
+                  <Icon className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{goal.title}</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{goal.subtitle}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Step 2: Website URL ──────────────────────────────────────────────────
+  if (step === 2) {
     if (isScraping) {
       return (
         <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto">
@@ -266,10 +348,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
             <Sparkles className="h-7 w-7 text-white" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight">Welcome to Adomate</h2>
-          <p className="text-muted-foreground mt-1">Enter your website and we'll do the rest</p>
+          <h2 className="text-2xl font-bold tracking-tight">Enter your website</h2>
+          <p className="text-muted-foreground mt-1">We'll scrape it to pre-fill your brand setup</p>
         </div>
-        <HoverExplainer text="Step 1 collects the website URL. On submit, POST /api/onboarding/scrape { url }. Backend uses Firecrawl to scrape website and LLM to extract brand data.">
+        <HoverExplainer text="Step 2 collects the website URL. On submit, POST /api/onboarding/scrape { url }. Backend uses Firecrawl to scrape website and LLM to extract brand data.">
           <div className="space-y-4">
             <div>
               <Label>Website URL</Label>
@@ -284,8 +366,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 2: Brand ────────────────────────────────────────────────────────
-  if (step === 2) {
+  // ─── Step 3: Brand ────────────────────────────────────────────────────────
+  if (step === 3) {
     const openEditBrandTitle = (fieldId: string) => {
       const field = brandFields.find(f => f.id === fieldId);
       if (field) { setEditBrandTitle(field.title); setEditingBrandField(fieldId); }
@@ -315,7 +397,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <h2 className="text-2xl font-bold tracking-tight">Brand</h2>
           <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
         </div>
-        <HoverExplainer text="Step 2 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
+        <HoverExplainer text="Step 3 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
           <div className="space-y-5">
             {/* Logo + Colors + Brand Name + Business Type */}
             <div className="flex gap-6 items-start">
@@ -451,8 +533,8 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 3: Product ──────────────────────────────────────────────────────
-  if (step === 3) {
+  // ─── Step 4: Product ──────────────────────────────────────────────────────
+  if (step === 4) {
     const addTerm = () => setProductTerms(prev => [...prev, { key: "", value: "" }]);
     const removeTerm = (idx: number) => setProductTerms(prev => prev.filter((_, i) => i !== idx));
     const updateTerm = (idx: number, field: "key" | "value", val: string) =>
@@ -597,7 +679,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <h2 className="text-2xl font-bold tracking-tight">Hero Product</h2>
           <p className="text-muted-foreground mt-1">We found your most prominent {businessType === "service" ? "service" : businessType === "saas" ? "solution" : "product"} — refine the details</p>
         </div>
-        <HoverExplainer text="Step 3 displays the hero product scraped from the website. Backend uses Firecrawl to find the most referenced product URL from the homepage, then scrapes that page for images and details.">
+        <HoverExplainer text="Step 4 displays the hero product scraped from the website. Backend uses Firecrawl to find the most referenced product URL from the homepage, then scrapes that page for images and details.">
           <div className="space-y-5">
             <div>
               <Label>Product Name</Label>
@@ -671,37 +753,6 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             </div>
           </div>
         </HoverExplainer>
-      </div>
-    );
-  }
-
-  // ─── Step 4: Connect Meta ─────────────────────────────────────────────────
-  if (step === 4) {
-    return (
-      <div className="flex flex-col items-center gap-8 py-4 animate-scale-in">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight">Connect your Meta Ad Account</h2>
-          <p className="text-muted-foreground mt-1">Supercharge your AI ads with real performance data</p>
-        </div>
-        <HoverExplainer text="Step 4 initiates Meta OAuth. Backend: GET /api/auth/meta/connect. On callback, store access_token, ad_account_id in meta_integrations.">
-          <div className="grid grid-cols-3 gap-4 max-w-xl">
-            {[
-              { icon: BarChart3, title: "Import best-performing ads", desc: "We analyze what already works for your brand" },
-              { icon: Users, title: "Audience insights", desc: "Understand who engages with your content" },
-              { icon: TrendingUp, title: "Performance benchmarks", desc: "Compare AI ads against your history" },
-            ].map(({ icon: Icon, title, desc }) => (
-              <Card key={title} className="p-4 text-center card-hover border-border/60">
-                <div className="mx-auto mb-3 w-11 h-11 rounded-xl bg-accent flex items-center justify-center shadow-sm">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <p className="font-semibold text-sm">{title}</p>
-                <p className="text-xs text-muted-foreground mt-1">{desc}</p>
-              </Card>
-            ))}
-          </div>
-        </HoverExplainer>
-        <Button className="gap-2 px-8 shadow-sm" size="lg"><Facebook className="h-5 w-5" /> Connect with Meta</Button>
-        <p className="text-xs text-muted-foreground">You can always connect later from Brand Data Room → Meta Integration</p>
       </div>
     );
   }

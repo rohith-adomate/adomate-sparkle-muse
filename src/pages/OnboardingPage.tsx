@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Onboarding } from "@/pages/Onboarding";
 import { ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
 
-const stepLabels = ["Website", "Brand", "Product", "Connect Meta", "Launch"];
+const stepLabels = ["Goals", "Website", "Brand", "Product", "Launch"];
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -24,7 +24,7 @@ export default function OnboardingPage() {
   const handleBack = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const handleScraping = useCallback((v: boolean) => setIsScraping(v), []);
 
-  const showFooterNav = currentStep !== 1 || isScraping;
+  const showFooterNav = currentStep !== 2 || isScraping;
 
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
@@ -100,7 +100,7 @@ export default function OnboardingPage() {
             <ChevronLeft className="h-4 w-4" /> Back
           </Button>
           <div className="flex items-center gap-3">
-            {currentStep !== 5 && currentStep !== 1 && (
+            {currentStep !== 5 && currentStep !== 1 && currentStep !== 2 && (
               <Button variant="ghost" size="sm" onClick={handleNext} className="text-muted-foreground hover:text-foreground">
                 Skip
               </Button>
