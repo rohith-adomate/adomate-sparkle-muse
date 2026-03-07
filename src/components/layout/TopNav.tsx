@@ -1,5 +1,5 @@
 import { Bell, HelpCircle, ChevronDown, Rocket } from "lucide-react";
-import adomateLogoSrc from "@/assets/adomate-logo.png";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
