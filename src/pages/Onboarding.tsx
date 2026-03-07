@@ -536,7 +536,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{brandData.name}</h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.description}</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.knowledgeFields.find(f => f.id === "description")?.value || ""}</p>
                     <p className="text-xs text-primary mt-3 font-medium">Click to see full brand profile →</p>
                   </div>
                 </div>
