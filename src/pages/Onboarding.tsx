@@ -12,6 +12,7 @@ import {
   Info, Package, FileText, Eye, TrendingUp,
 } from "lucide-react";
 import { BrandProfileModal, type BrandProfileData } from "@/components/BrandProfileModal";
+import { ProductProfileModal, type ProductProfileData } from "@/components/ProductProfileModal";
 
 const goalCards = [
   {
