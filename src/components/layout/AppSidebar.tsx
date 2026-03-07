@@ -104,7 +104,7 @@ export function AppSidebar() {
 
         <Separator className="mx-3 w-auto my-1" />
 
-        {/* Brand Data Room + Settings */}
+        {/* Data Room + Settings */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
