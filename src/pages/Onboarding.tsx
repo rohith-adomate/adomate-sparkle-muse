@@ -236,11 +236,21 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
               }),
             }));
           } catch {
-            setProductData({
+            setProductData(prev => ({
+              ...prev,
               name: "Pro Plan",
               description: "Our flagship offering combining AI-powered ad creation with performance analytics.",
-              image: `https://picsum.photos/seed/product/400/400`,
-            });
+              websiteUrl: website,
+              images: [{ id: crypto.randomUUID(), name: "product-hero.jpg", url: `https://picsum.photos/seed/product/400/400`, isHero: true }],
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "Our flagship offering combining AI-powered ad creation with performance analytics." };
+                if (f.id === "key-features") return { ...f, value: "- AI-powered creative generation\n- Performance analytics\n- Multi-channel support" };
+                if (f.id === "pricing") return { ...f, value: "Starting at **$49/mo**" };
+                if (f.id === "target-market") return { ...f, value: "Growth-stage DTC brands and SaaS companies." };
+                if (f.id === "selling-points") return { ...f, value: "- Fast time-to-launch\n- Data-driven optimization\n- Enterprise security" };
+                return f;
+              }),
+            }));
           }
           setTimeout(() => setKnowledgePhase("complete"), 600);
         }
