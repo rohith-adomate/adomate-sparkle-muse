@@ -667,10 +667,6 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     { id: "walmart", name: "Walmart", handle: "@walmart", avatar: "https://logo.clearbit.com/walmart.com" },
   ];
 
-  const [competitorSearch, setCompetitorSearch] = useState("");
-  const [selectedCompetitor, setSelectedCompetitor] = useState<{ id: string; name: string; handle: string; avatar: string } | null>(null);
-  const [searchFocused, setSearchFocused] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
 
   const filteredResults = competitorSearch.length >= 2
     ? [...suggestedBrands, ...mockSearchResults].filter(b =>
