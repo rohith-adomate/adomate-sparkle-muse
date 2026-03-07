@@ -32,7 +32,6 @@ function SidebarToggleNotch() {
           top: "50%",
           transform: "translateY(-50%)",
           height: "32px",
-          height: "32px",
         }}
       />
     </>
