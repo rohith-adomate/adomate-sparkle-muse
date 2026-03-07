@@ -104,10 +104,18 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
       { id: "uvp", title: "Unique Value Proposition", value: "" },
     ],
   });
-  const [productData, setProductData] = useState({
+  const [productData, setProductData] = useState<ProductProfileData>({
     name: "",
     description: "",
-    image: "",
+    websiteUrl: "",
+    images: [],
+    knowledgeFields: [
+      { id: "description", title: "Description", value: "" },
+      { id: "key-features", title: "Key Features", value: "" },
+      { id: "pricing", title: "Pricing", value: "" },
+      { id: "target-market", title: "Target Market", value: "" },
+      { id: "selling-points", title: "Unique Selling Points", value: "" },
+    ],
   });
 
   // Derive base URL (landing page) and product URL
