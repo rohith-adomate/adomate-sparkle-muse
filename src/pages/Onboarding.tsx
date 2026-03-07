@@ -106,6 +106,15 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     onScraping(isScraping);
   }, [knowledgePhase, onScraping]);
 
+  // Notify parent about whether continue is allowed
+  useEffect(() => {
+    if (step === 1) {
+      onCanContinue?.(selectedGoals.length > 0);
+    } else {
+      onCanContinue?.(true);
+    }
+  }, [step, selectedGoals, onCanContinue]);
+
   // Reset knowledge phase when navigating back to step 2
   useEffect(() => {
     if (step === 2 && knowledgePhase !== "url" && knowledgePhase !== "complete") {
