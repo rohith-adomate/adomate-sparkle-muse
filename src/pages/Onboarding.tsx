@@ -11,6 +11,7 @@ import {
   Check, ThumbsUp, ThumbsDown, Target, Layers, Zap, Megaphone,
   Info, Package, FileText, Eye, TrendingUp,
 } from "lucide-react";
+import { BrandProfileModal, type BrandProfileData } from "@/components/BrandProfileModal";
 
 const goalCards = [
   {
