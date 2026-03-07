@@ -238,7 +238,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <p className="text-muted-foreground mt-1">Select one or more goals. This helps us tailor your experience.</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-5">
           {goalCards.map((goal) => {
             const isSelected = selectedGoals.includes(goal.id);
             const Icon = goal.icon;
@@ -246,7 +246,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               <button
                 key={goal.id}
                 onClick={() => toggleGoal(goal.id)}
-                className={`relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md ${
+                className={`relative flex flex-col items-start gap-4 p-7 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md ${
                   isSelected
                     ? "border-primary bg-primary/5 shadow-sm"
                     : "border-border hover:border-primary/40"
