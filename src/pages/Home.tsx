@@ -175,7 +175,7 @@ export default function Home() {
         </HoverExplainer>
 
         {/* Setup health */}
-        <HoverExplainer text="Setup Health: Tracks completion of the Brand Data Room onboarding steps. Each item links to its respective setup page. Progress bar shows percentage complete. Backend: check for existence of records in brand_knowledge, products, personas, meta_integration, and custom_keywords tables.">
+        <HoverExplainer text="Setup Health: Tracks completion of the Data Room onboarding steps. Each item links to its respective setup page. Progress bar shows percentage complete.">
           <Card className="card-hover">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">

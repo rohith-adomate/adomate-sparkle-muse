@@ -134,7 +134,7 @@ export function AppSidebar() {
                     >
                       <span className="flex items-center gap-2.5">
                         <Database className="h-4 w-4" />
-                        <span>Brand Data Room</span>
+                        <span>Data Room</span>
                       </span>
                       <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dr:rotate-90" />
                     </CollapsibleTrigger>

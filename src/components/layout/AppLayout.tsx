@@ -29,7 +29,9 @@ function SidebarToggleNotch() {
         className="fixed z-40 w-px bg-sidebar pointer-events-none transition-all duration-200"
         style={{
           left: `calc(${sidebarEdge} - 1px)`,
-          top: "calc(3.5rem + 12px)",
+          top: "50%",
+          transform: "translateY(-50%)",
+          height: "32px",
           height: "32px",
         }}
       />
