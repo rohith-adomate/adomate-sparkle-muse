@@ -500,14 +500,22 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                 onClick={() => setShowProductModal(true)}
               >
                 <div className="flex gap-5">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-border/60 shadow-sm shrink-0 bg-muted">
-                    {productData.image ? (
-                      <img src={productData.image} alt={productData.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="h-8 w-8 text-muted-foreground" />
+                  <div className="shrink-0 space-y-2">
+                    <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
+                      <Package className="h-6 w-6 text-muted-foreground/40" />
+                      <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 2</span>
                       </div>
-                    )}
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 3</span>
+                      </div>
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[9px] text-muted-foreground/50 font-bold">+4</span>
+                      </div>
+                    </div>
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{productData.name}</h4>
