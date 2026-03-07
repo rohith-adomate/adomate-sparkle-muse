@@ -22,9 +22,9 @@ export default function BrandDataRoom() {
   const nav = useNavigate();
   return (
     <div className="space-y-6">
-      <HoverExplainer text="Brand Data Room Overview: Central hub for all brand intelligence. Shows completion status of each data source. Each card navigates to its detail page. Backend: aggregates counts from brand_knowledge, products, personas, meta_connections, and keywords tables.">
+      <HoverExplainer text="Data Room Overview: Central hub for all brand intelligence. Shows completion status of each data source. Each card navigates to its detail page.">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Brand Data Room</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Data Room</h1>
           <p className="text-muted-foreground text-sm">All your brand intelligence in one place.</p>
         </div>
       </HoverExplainer>
