@@ -115,10 +115,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   useEffect(() => {
     if (step === 1) {
       onCanContinue?.(selectedGoals.length > 0);
+    } else if (step === 2) {
+      onCanContinue?.(knowledgePhase === "complete");
     } else {
       onCanContinue?.(true);
     }
-  }, [step, selectedGoals, onCanContinue]);
+  }, [step, selectedGoals, knowledgePhase, onCanContinue]);
 
   // Reset knowledge phase when navigating back to step 2
   useEffect(() => {
@@ -349,7 +351,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
                   <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">
-                    {isBrandPhase ? baseUrl : productUrl}
+                    {isBrandPhase ? baseUrl : website.startsWith("http") ? website : `https://${website}`}
                   </span>
                 </div>
                 <div className="relative w-full aspect-[3/2] flex flex-col items-center justify-center gap-3 bg-muted/50 border-t border-border/20">
@@ -453,8 +455,9 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
               >
                 <div className="flex gap-5">
                   <div className="space-y-3 shrink-0">
-                    <div className="w-16 h-16 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">{brandData.logo}</span>
+                    <div className="w-28 h-20 rounded-xl border-2 border-border bg-muted flex flex-col items-center justify-center gap-1">
+                      <Globe className="h-6 w-6 text-muted-foreground/40" />
+                      <span className="text-[10px] text-muted-foreground/60 font-medium">Logo preview</span>
                     </div>
                     <div className="flex gap-1.5">
                       {brandData.colors.map((c, i) => (
@@ -497,14 +500,22 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                 onClick={() => setShowProductModal(true)}
               >
                 <div className="flex gap-5">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-border/60 shadow-sm shrink-0 bg-muted">
-                    {productData.image ? (
-                      <img src={productData.image} alt={productData.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="h-8 w-8 text-muted-foreground" />
+                  <div className="shrink-0 space-y-2">
+                    <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
+                      <Package className="h-6 w-6 text-muted-foreground/40" />
+                      <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 2</span>
                       </div>
-                    )}
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 3</span>
+                      </div>
+                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                        <span className="text-[9px] text-muted-foreground/50 font-bold">+4</span>
+                      </div>
+                    </div>
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{productData.name}</h4>
