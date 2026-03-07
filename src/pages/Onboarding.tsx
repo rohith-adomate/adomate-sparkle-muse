@@ -75,7 +75,7 @@ type KnowledgePhase = "url" | "brand-scraping" | "brand-done" | "product-scrapin
 
 export function Onboarding({ step, setStep, onScraping, onCanContinue }: OnboardingProps) {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
-  const [website, setWebsite] = useState("");
+  const [website, setWebsite] = useState("https://www.adomate.com/pricing");
   const [knowledgePhase, setKnowledgePhase] = useState<KnowledgePhase>("url");
   const [brandStepIndex, setBrandStepIndex] = useState(0);
   const [productStepIndex, setProductStepIndex] = useState(0);
