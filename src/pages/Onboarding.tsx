@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { HoverExplainer } from "@/components/HoverExplainer";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import {
-  Loader2, Globe, Sparkles, Link as LinkIcon,
-  ThumbsUp, ThumbsDown, BarChart3,
-  Check, RefreshCw, Package, Plus, Trash2, Pencil,
-  Megaphone, Target, Layers, Zap,
+  Loader2, Globe, Sparkles, Search, Brain, Palette, ShoppingBag,
+  Check, ThumbsUp, ThumbsDown, Target, Layers, Zap, Megaphone,
+  Info, Package, FileText, Eye, TrendingUp,
 } from "lucide-react";
 
 const goalCards = [
@@ -52,118 +48,148 @@ const mockTopics = [
   { title: "User-Generated Content Style", desc: "Ads that look native to the platform. UGC-style creative outperforms polished ads by 2x on Meta.", tags: ["From Meta data", "Industry trend"] },
 ];
 
+const brandScrapeSteps = [
+  { icon: Globe, text: "Scanning your landing page..." },
+  { icon: Palette, text: "Extracting brand colors & logo..." },
+  { icon: FileText, text: "Reading your brand story & messaging..." },
+  { icon: Search, text: "Searching Google for additional brand intel..." },
+  { icon: Brain, text: "Building your brand profile with AI..." },
+];
+
+const productScrapeSteps = [
+  { icon: Eye, text: "Analyzing your product page..." },
+  { icon: ShoppingBag, text: "Extracting product details & pricing..." },
+  { icon: Search, text: "Researching your market & competitors..." },
+  { icon: TrendingUp, text: "Identifying key selling points..." },
+  { icon: Brain, text: "Crafting your product positioning..." },
+];
+
 interface OnboardingProps {
   step: number;
   setStep: (step: number) => void;
   onScraping: (v: boolean) => void;
 }
 
+type KnowledgePhase = "url" | "brand-scraping" | "brand-done" | "product-scraping" | "complete";
+
 export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
-  const [isScraping, setIsScraping] = useState(false);
-  const [scrapeProgress, setScrapeProgress] = useState(0);
-
-  const [companyName, setCompanyName] = useState("");
   const [website, setWebsite] = useState("");
-  const [businessType, setBusinessType] = useState("dtc");
-
-  const [brandDesc, setBrandDesc] = useState("");
-  const [tone, setTone] = useState("");
-
-  // Brand dynamic fields
-  const [brandFields, setBrandFields] = useState<{ id: string; title: string; value: string }[]>([
-    { id: "desc", title: "Description", value: "" },
-    { id: "tone", title: "Tone of Voice", value: "" },
-    { id: "mv1", title: "Marketing Valuable Field 1", value: "AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." },
-    { id: "mv2", title: "Marketing Valuable Field 2", value: "Small-to-medium business marketing teams looking to scale ad creative without hiring designers." },
-  ]);
-  const [editingBrandField, setEditingBrandField] = useState<string | null>(null);
-  const [editBrandTitle, setEditBrandTitle] = useState("");
-  const [showAddBrandField, setShowAddBrandField] = useState(false);
-  const [newBrandFieldTitle, setNewBrandFieldTitle] = useState("");
-  const [newBrandFieldValue, setNewBrandFieldValue] = useState("");
-  const [deletingBrandField, setDeletingBrandField] = useState<string | null>(null);
-
-  // Product state
-  const [productName, setProductName] = useState("");
-  const [productDesc, setProductDesc] = useState("");
-  const [productImages, setProductImages] = useState<string[]>([]);
-  const [productTerms, setProductTerms] = useState<{ key: string; value: string }[]>([
-    { key: "Key Feature", value: "" },
-    { key: "Price Point", value: "" },
-  ]);
-  const [productPhase, setProductPhase] = useState<"select" | "scraping" | "details">("select");
-  const [selectedProductUrl, setSelectedProductUrl] = useState("");
-  const [customProductUrl, setCustomProductUrl] = useState("");
-  const [productScrapeProgress, setProductScrapeProgress] = useState(0);
-
+  const [knowledgePhase, setKnowledgePhase] = useState<KnowledgePhase>("url");
+  const [brandStepIndex, setBrandStepIndex] = useState(0);
+  const [productStepIndex, setProductStepIndex] = useState(0);
   const [revealedTopics, setRevealedTopics] = useState<number[]>([]);
+  const [showBrandModal, setShowBrandModal] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
 
-  const scrapeSteps = ["Extracting brand info...", "Detecting colors & fonts...", "Reading product pages...", "Analyzing tone of voice..."];
-  const productScrapeSteps = ["Loading product page...", "Extracting images...", "Reading product details...", "Analyzing features..."];
-
-  const baseUrl = (() => {
-    try { return website ? new URL(website.startsWith("http") ? website : `https://${website}`).origin : ""; }
-    catch { return ""; }
-  })();
-  const suggestedProductUrls = baseUrl ? [
-    `${baseUrl}/products/pro-plan`,
-    `${baseUrl}/products/starter-kit`,
-  ] : [];
+  // Mock scraped data
+  const [brandData, setBrandData] = useState({
+    name: "",
+    description: "",
+    logo: "",
+    colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
+  });
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    image: "",
+  });
 
   const screenshotUrl = website
     ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
     : null;
 
-  useEffect(() => { onScraping(isScraping || (step === 4 && productPhase !== "details")); }, [isScraping, productPhase, step, onScraping]);
-
-  // Handle Continue on Step 2 → scrape simulation
+  // Notify parent about scraping state
   useEffect(() => {
-    if (step === 2 && isScraping) {
+    const isScraping = knowledgePhase === "brand-scraping" || knowledgePhase === "product-scraping" || knowledgePhase === "brand-done";
+    onScraping(isScraping);
+  }, [knowledgePhase, onScraping]);
+
+  // Reset knowledge phase when navigating back to step 2
+  useEffect(() => {
+    if (step === 2 && knowledgePhase !== "url" && knowledgePhase !== "complete") {
+      // Keep current phase
+    }
+  }, [step]);
+
+  // Brand scraping animation (10 seconds, 2s per step)
+  useEffect(() => {
+    if (step === 2 && knowledgePhase === "brand-scraping") {
+      setBrandStepIndex(0);
       let i = 0;
       const interval = setInterval(() => {
         i++;
-        setScrapeProgress(i);
-        if (i >= scrapeSteps.length) {
+        setBrandStepIndex(i);
+        if (i >= brandScrapeSteps.length) {
           clearInterval(interval);
-          setTimeout(() => {
-            try {
-              const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
-              const name = hostname.replace(/^www\./, "").split(".")[0];
-              setCompanyName(name.charAt(0).toUpperCase() + name.slice(1));
-            } catch {
-              setCompanyName("Your Brand");
-            }
-            setBrandDesc("An innovative company pushing the boundaries of modern advertising.");
-            setTone("Professional yet approachable, with a focus on clarity and impact.");
-            setBrandFields(prev => prev.map(f =>
-              f.id === "desc" ? { ...f, value: "An innovative company pushing the boundaries of modern advertising." } :
-              f.id === "tone" ? { ...f, value: "Professional yet approachable, with a focus on clarity and impact." } : f
-            ));
-            setProductName("Pro Plan");
-            setProductDesc("Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.");
-            setProductImages([
-              `https://picsum.photos/seed/${encodeURIComponent(website + "-p1")}/400/400`,
-              `https://picsum.photos/seed/${encodeURIComponent(website + "-p2")}/400/400`,
-              `https://picsum.photos/seed/${encodeURIComponent(website + "-p3")}/400/400`,
-            ]);
-            setProductTerms([
-              { key: "Key Feature", value: "AI-powered creative generation with 10x faster output" },
-              { key: "Price Point", value: "Starting at $49/mo" },
-            ]);
-            setBusinessType("saas");
-            setIsScraping(false);
-            setStep(3);
-          }, 600);
+          // Populate brand data
+          try {
+            const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
+            const name = hostname.replace(/^www\./, "").split(".")[0];
+            setBrandData({
+              name: name.charAt(0).toUpperCase() + name.slice(1),
+              description: "An innovative company pushing the boundaries of modern advertising with AI-powered creative solutions.",
+              logo: name.charAt(0).toUpperCase(),
+              colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
+            });
+          } catch {
+            setBrandData({
+              name: "Your Brand",
+              description: "An innovative company pushing the boundaries of modern advertising.",
+              logo: "Y",
+              colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
+            });
+          }
+          setTimeout(() => setKnowledgePhase("brand-done"), 600);
         }
-      }, 700);
+      }, 2000);
       return () => clearInterval(interval);
     }
-  }, [isScraping, step]);
+  }, [knowledgePhase, step, website]);
 
-  // Step 5 (Wow Moment) reveal
+  // Auto-start product scraping after brand-done
   useEffect(() => {
-    if (step === 5) {
+    if (knowledgePhase === "brand-done") {
+      const timer = setTimeout(() => setKnowledgePhase("product-scraping"), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [knowledgePhase]);
+
+  // Product scraping animation (10 seconds, 2s per step)
+  useEffect(() => {
+    if (step === 2 && knowledgePhase === "product-scraping") {
+      setProductStepIndex(0);
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setProductStepIndex(i);
+        if (i >= productScrapeSteps.length) {
+          clearInterval(interval);
+          try {
+            const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
+            const name = hostname.replace(/^www\./, "").split(".")[0];
+            setProductData({
+              name: name.charAt(0).toUpperCase() + name.slice(1) + " Pro Plan",
+              description: "Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.",
+              image: `https://picsum.photos/seed/${encodeURIComponent(website + "-product")}/400/400`,
+            });
+          } catch {
+            setProductData({
+              name: "Pro Plan",
+              description: "Our flagship offering combining AI-powered ad creation with performance analytics.",
+              image: `https://picsum.photos/seed/product/400/400`,
+            });
+          }
+          setTimeout(() => setKnowledgePhase("complete"), 600);
+        }
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [knowledgePhase, step, website]);
+
+  // Step 3 (Launch) reveal animation
+  useEffect(() => {
+    if (step === 3) {
       setRevealedTopics([]);
       const timers = mockTopics.map((_, i) =>
         setTimeout(() => setRevealedTopics(prev => [...prev, i]), 400 + i * 250)
@@ -172,58 +198,14 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     }
   }, [step]);
 
-  // Product scraping simulation
-  useEffect(() => {
-    if (step === 4 && productPhase === "scraping") {
-      setProductScrapeProgress(0);
-      let i = 0;
-      const interval = setInterval(() => {
-        i++;
-        setProductScrapeProgress(i);
-        if (i >= productScrapeSteps.length) {
-          clearInterval(interval);
-          setTimeout(() => {
-            const urlToScrape = selectedProductUrl || customProductUrl;
-            try {
-              const urlObj = new URL(urlToScrape.startsWith("http") ? urlToScrape : `https://${urlToScrape}`);
-              const segments = urlObj.pathname.split("/").filter(Boolean);
-              const rawName = segments[segments.length - 1] || "Pro Plan";
-              setProductName(rawName.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
-            } catch {
-              setProductName("Pro Plan");
-            }
-            setProductDesc("Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.");
-            setProductImages([
-              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p1")}/400/400`,
-              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p2")}/400/400`,
-              `https://picsum.photos/seed/${encodeURIComponent(selectedProductUrl || customProductUrl + "-p3")}/400/400`,
-            ]);
-            setProductTerms([
-              { key: "Key Feature", value: "AI-powered creative generation with 10x faster output" },
-              { key: "Price Point", value: "Starting at $49/mo" },
-            ]);
-            setProductPhase("details");
-          }, 600);
-        }
-      }, 700);
-      return () => clearInterval(interval);
-    }
-  }, [step, productPhase]);
-
-  const startScrape = () => {
-    setScrapeProgress(0);
-    setIsScraping(true);
-  };
-
-  const startProductScrape = (url: string) => {
-    setSelectedProductUrl(url);
-    setProductPhase("scraping");
-  };
-
   const toggleGoal = (id: string) => {
     setSelectedGoals(prev =>
       prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]
     );
+  };
+
+  const startKnowledgeScrape = () => {
+    setKnowledgePhase("brand-scraping");
   };
 
   // ─── Step 1: Goals ────────────────────────────────────────────────────────
@@ -274,491 +256,335 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     );
   }
 
-  // ─── Step 2: Website URL ──────────────────────────────────────────────────
+  // ─── Step 2: Knowledge (consolidated) ─────────────────────────────────────
   if (step === 2) {
-    if (isScraping) {
+    // Phase: URL input
+    if (knowledgePhase === "url") {
       return (
-        <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center gap-8 w-full">
-            {screenshotUrl && (
-              <div className="relative w-full max-w-[320px] shrink-0">
-                <div className="rounded-xl overflow-hidden border border-border/60 shadow-xl bg-muted">
-                  <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
-                    <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-                    <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{website}</span>
-                  </div>
-                  <img src={screenshotUrl} alt="Website preview" className="w-full aspect-[3/2] object-cover" />
-                </div>
-                <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse" />
-                  <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
-                </div>
-              </div>
-            )}
-            <div className="flex flex-col items-center md:items-start gap-6">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
-                <div className="relative h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
-                  <Globe className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                </div>
-              </div>
-              <div className="text-center md:text-left space-y-1">
-                <p className="text-xl font-bold tracking-tight">Analyzing your website...</p>
-                <p className="text-sm text-muted-foreground">We're reading your brand to pre-fill your setup</p>
-              </div>
-              <div className="space-y-3 w-full max-w-xs">
-                {scrapeSteps.map((s, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{
-                      opacity: i <= scrapeProgress ? 1 : 0.2,
-                      transitionDelay: `${i * 150}ms`,
-                      transform: i <= scrapeProgress ? "translateX(0)" : "translateX(-8px)",
-                    }}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                      i < scrapeProgress ? "bg-emerald-100" : i === scrapeProgress ? "bg-primary/10" : "bg-muted"
-                    }`}>
-                      {i < scrapeProgress
-                        ? <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        : i === scrapeProgress
-                          ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                          : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
-                      }
-                    </div>
-                    <span className={i < scrapeProgress ? "text-foreground font-medium" : i === scrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
-                  </div>
-                ))}
-              </div>
+        <div className="space-y-6 max-w-lg mx-auto animate-scale-in">
+          <div className="text-center mb-8">
+            <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+              <Sparkles className="h-7 w-7 text-white" />
             </div>
+            <h2 className="text-2xl font-bold tracking-tight">What are you selling?</h2>
+            <p className="text-muted-foreground mt-2 leading-relaxed">
+              Paste the URL that best describes what you want to generate ads for.
+              <br />
+              This could be a product page, a service landing page, or your homepage.
+            </p>
           </div>
-        </div>
-      );
-    }
 
-    return (
-      <div className="space-y-5 max-w-lg mx-auto animate-scale-in">
-        <div className="text-center mb-8">
-          <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
-            <Sparkles className="h-7 w-7 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight">Enter your website</h2>
-          <p className="text-muted-foreground mt-1">We'll scrape it to pre-fill your brand setup</p>
-        </div>
-        <HoverExplainer text="Step 2 collects the website URL. On submit, POST /api/onboarding/scrape { url }. Backend uses Firecrawl to scrape website and LLM to extract brand data.">
           <div className="space-y-4">
             <div>
-              <Label>Website URL</Label>
-              <Input placeholder="https://acme.com" value={website} onChange={e => setWebsite(e.target.value)} className="mt-1.5" />
+              <Input
+                placeholder="https://acme.com/products/pro-plan"
+                value={website}
+                onChange={e => setWebsite(e.target.value)}
+                className="h-12 text-base"
+              />
             </div>
-            <Button className="w-full mt-2 shadow-sm" onClick={startScrape} disabled={!website.trim()}>
+            <TooltipProvider>
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <span>We start with one product or service to keep things simple.</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3.5 w-3.5 cursor-help text-muted-foreground/60" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>You can always add more products, services, or offers later from the Data Room.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+            <Button className="w-full h-11 shadow-sm" onClick={startKnowledgeScrape} disabled={!website.trim()}>
               Continue
             </Button>
           </div>
-        </HoverExplainer>
-      </div>
-    );
-  }
+        </div>
+      );
+    }
 
-  // ─── Step 3: Brand ────────────────────────────────────────────────────────
-  if (step === 3) {
-    const openEditBrandTitle = (fieldId: string) => {
-      const field = brandFields.find(f => f.id === fieldId);
-      if (field) { setEditBrandTitle(field.title); setEditingBrandField(fieldId); }
-    };
-    const saveEditBrandTitle = () => {
-      if (editingBrandField && editBrandTitle.trim()) {
-        setBrandFields(prev => prev.map(f => f.id === editingBrandField ? { ...f, title: editBrandTitle.trim() } : f));
-        setEditingBrandField(null);
-      }
-    };
-    const addBrandField = () => {
-      if (newBrandFieldTitle.trim()) {
-        setBrandFields(prev => [...prev, { id: `custom-${Date.now()}`, title: newBrandFieldTitle.trim(), value: newBrandFieldValue }]);
-        setNewBrandFieldTitle(""); setNewBrandFieldValue(""); setShowAddBrandField(false);
-      }
-    };
-    const confirmDeleteBrandField = () => {
-      if (deletingBrandField) {
-        setBrandFields(prev => prev.filter(f => f.id !== deletingBrandField));
-        setDeletingBrandField(null);
-      }
-    };
+    // Scraping phases (brand-scraping, brand-done, product-scraping, complete)
+    const isBrandPhase = knowledgePhase === "brand-scraping" || knowledgePhase === "brand-done";
+    const isProductPhase = knowledgePhase === "product-scraping";
+    const isComplete = knowledgePhase === "complete";
+
+    const currentTitle = isBrandPhase
+      ? "Getting to know your brand..."
+      : isProductPhase
+        ? "Learning about what you sell..."
+        : "Knowledge gathered ✨";
+
+    const currentSteps = isBrandPhase ? brandScrapeSteps : productScrapeSteps;
+    const currentStepIndex = isBrandPhase ? brandStepIndex : productStepIndex;
+
+    const brandCardReady = knowledgePhase === "brand-done" || knowledgePhase === "product-scraping" || isComplete;
+    const productCardReady = isComplete;
 
     return (
-      <div className="space-y-6 animate-scale-in">
-        <div className="text-center mb-2">
-          <h2 className="text-2xl font-bold tracking-tight">Brand</h2>
-          <p className="text-muted-foreground mt-1">We found this from your website — edit anything that's off</p>
-        </div>
-        <HoverExplainer text="Step 3 displays scraped results. All answers saved to brand_knowledge table via PUT /api/onboarding/brand-knowledge.">
-          <div className="space-y-5">
-            {/* Logo + Colors + Brand Name + Business Type */}
-            <div className="flex gap-6 items-start">
-              <div className="flex flex-col items-center gap-3 shrink-0">
-                <div className="relative group">
-                  <div className="w-20 h-20 rounded-2xl border-2 border-border bg-muted flex items-center justify-center overflow-hidden shadow-sm">
-                    <span className="text-2xl font-bold text-primary">{companyName.charAt(0) || "A"}</span>
+      <div className="space-y-8 max-w-3xl mx-auto animate-scale-in">
+        {/* Top scraping rectangle */}
+        {!isComplete && (
+          <Card className="overflow-hidden border-border/60">
+            <div className="flex flex-col md:flex-row">
+              {/* Left: Screenshot */}
+              <div className="relative w-full md:w-[320px] shrink-0 bg-muted">
+                {screenshotUrl ? (
+                  <>
+                    <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
+                      <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                      <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{website}</span>
+                    </div>
+                    <div className="relative">
+                      <img src={screenshotUrl} alt="Website preview" className="w-full aspect-[3/2] object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full aspect-[3/2] flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                   </div>
-                  <label className="absolute inset-0 rounded-2xl bg-foreground/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                    <RefreshCw className="h-5 w-5 text-white" />
-                    <input type="file" accept="image/*" className="hidden" />
-                  </label>
+                )}
+              </div>
+
+              {/* Right: Animated steps */}
+              <div className="flex-1 p-6 flex flex-col justify-center">
+                <div className="space-y-1 mb-6">
+                  <h3 className="text-lg font-bold tracking-tight">{currentTitle}</h3>
+                  <p className="text-sm text-muted-foreground animate-fade-in" key={`subtitle-${currentStepIndex}`}>
+                    {currentStepIndex < currentSteps.length
+                      ? currentSteps[currentStepIndex].text
+                      : currentSteps[currentSteps.length - 1].text
+                    }
+                  </p>
                 </div>
-                <div className="flex gap-1.5">
-                  {["#6366f1", "#ec4899", "#f59e0b", "#10b981"].map(c => (
-                    <div key={c} className="w-6 h-6 rounded-md border cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: c }} />
+
+                <div className="space-y-3">
+                  {currentSteps.map((s, i) => {
+                    const StepIcon = s.icon;
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                        style={{
+                          opacity: i <= currentStepIndex ? 1 : 0.2,
+                          transitionDelay: `${i * 100}ms`,
+                          transform: i <= currentStepIndex ? "translateX(0)" : "translateX(-8px)",
+                        }}
+                      >
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                          i < currentStepIndex ? "bg-emerald-100 dark:bg-emerald-900/30" : i === currentStepIndex ? "bg-primary/10" : "bg-muted"
+                        }`}>
+                          {i < currentStepIndex
+                            ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                            : i === currentStepIndex
+                              ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                              : <StepIcon className="h-3.5 w-3.5 text-muted-foreground/40" />
+                          }
+                        </div>
+                        <span className={
+                          i < currentStepIndex ? "text-foreground font-medium" :
+                          i === currentStepIndex ? "text-foreground" :
+                          "text-muted-foreground"
+                        }>{s.text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Brand card or skeleton */}
+        <div className="space-y-4">
+          {/* Brand section */}
+          {knowledgePhase === "brand-scraping" && (
+            <div className="space-y-3 animate-fade-in">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Brand Profile</p>
+              <Card className="p-5">
+                <div className="flex gap-5">
+                  <div className="space-y-3 shrink-0">
+                    <Skeleton className="w-16 h-16 rounded-xl" />
+                    <div className="flex gap-1.5">
+                      <Skeleton className="w-6 h-6 rounded-md" />
+                      <Skeleton className="w-6 h-6 rounded-md" />
+                      <Skeleton className="w-6 h-6 rounded-md" />
+                      <Skeleton className="w-6 h-6 rounded-md" />
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {brandCardReady && (
+            <div className="space-y-3 animate-scale-in">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Brand Profile</p>
+              <Card
+                className="p-5 cursor-pointer hover:shadow-md hover:border-primary/40 transition-all duration-200"
+                onClick={() => setShowBrandModal(true)}
+              >
+                <div className="flex gap-5">
+                  <div className="space-y-3 shrink-0">
+                    <div className="w-16 h-16 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
+                      <span className="text-2xl font-bold text-primary">{brandData.logo}</span>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {brandData.colors.map((c, i) => (
+                        <div key={i} className="w-6 h-6 rounded-md border shadow-sm" style={{ backgroundColor: c }} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold">{brandData.name}</h4>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.description}</p>
+                    <p className="text-xs text-primary mt-3 font-medium">Click to see full brand profile →</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* Product section */}
+          {(knowledgePhase === "product-scraping") && (
+            <div className="space-y-3 animate-fade-in">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product / Service</p>
+              <Card className="p-5">
+                <div className="flex gap-5">
+                  <Skeleton className="w-20 h-20 rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {productCardReady && (
+            <div className="space-y-3 animate-scale-in">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product / Service</p>
+              <Card
+                className="p-5 cursor-pointer hover:shadow-md hover:border-primary/40 transition-all duration-200"
+                onClick={() => setShowProductModal(true)}
+              >
+                <div className="flex gap-5">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-border/60 shadow-sm shrink-0 bg-muted">
+                    {productData.image ? (
+                      <img src={productData.image} alt={productData.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold">{productData.name}</h4>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{productData.description}</p>
+                    <p className="text-xs text-primary mt-3 font-medium">Click to see full product details →</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+        </div>
+
+        {/* Brand Detail Modal */}
+        <Dialog open={showBrandModal} onOpenChange={setShowBrandModal}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
+                  <span className="text-lg font-bold text-primary">{brandData.logo}</span>
+                </div>
+                {brandData.name} — Brand Profile
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 pt-2">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Brand Colors</p>
+                <div className="flex gap-2">
+                  {brandData.colors.map((c, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div className="w-12 h-12 rounded-lg border shadow-sm" style={{ backgroundColor: c }} />
+                      <span className="text-[10px] text-muted-foreground font-mono">{c}</span>
+                    </div>
                   ))}
                 </div>
               </div>
-              <div className="flex-1 space-y-3">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Brand Name</Label>
-                    <Input className="mt-1.5" value={companyName} onChange={e => setCompanyName(e.target.value)} />
-                  </div>
-                  <div>
-                    <Label>Business Type</Label>
-                    <Select value={businessType} onValueChange={setBusinessType}>
-                      <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="saas">SaaS</SelectItem>
-                        <SelectItem value="service">Service Business</SelectItem>
-                        <SelectItem value="dtc">DTC Brand</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
+                <p className="text-sm text-foreground leading-relaxed">{brandData.description}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Tone of Voice</p>
+                <p className="text-sm text-foreground leading-relaxed">Professional yet approachable, with a focus on clarity and impact.</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Audience</p>
+                <p className="text-sm text-foreground leading-relaxed">Small-to-medium business marketing teams looking to scale ad creative without hiring designers.</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Unique Value Proposition</p>
+                <p className="text-sm text-foreground leading-relaxed">AI-powered ad creation that delivers 10x faster creative output with zero design skills needed.</p>
               </div>
             </div>
-
-            {/* Dynamic brand fields with editable titles */}
-            {brandFields.map((field) => (
-              <div key={field.id} className="space-y-1.5">
-                <div className="flex items-center gap-1.5 group">
-                  <Label>{field.title}</Label>
-                  <button
-                    onClick={() => openEditBrandTitle(field.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
-                    aria-label={`Edit ${field.title} title`}
-                  >
-                    <Pencil className="h-3 w-3 text-muted-foreground" />
-                  </button>
-                  <div className="flex-1" />
-                  <button
-                    onClick={() => setDeletingBrandField(field.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
-                    aria-label={`Delete ${field.title}`}
-                  >
-                    <Trash2 className="h-3.5 w-3.5 text-destructive/70" />
-                  </button>
-                </div>
-                <Textarea
-                  value={field.value}
-                  onChange={e => setBrandFields(prev => prev.map(f => f.id === field.id ? { ...f, value: e.target.value } : f))}
-                  rows={2}
-                />
-              </div>
-            ))}
-
-            {/* Add field button */}
-            <div className="flex justify-center pt-2">
-              <button
-                onClick={() => setShowAddBrandField(true)}
-                className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
-                aria-label="Add new brand field"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        </HoverExplainer>
-
-        {/* Edit Title Dialog */}
-        <Dialog open={!!editingBrandField} onOpenChange={(open) => !open && setEditingBrandField(null)}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader><DialogTitle>Edit Field Title</DialogTitle></DialogHeader>
-            <div className="space-y-2">
-              <Label>Title</Label>
-              <Input value={editBrandTitle} onChange={e => setEditBrandTitle(e.target.value)} onKeyDown={e => e.key === "Enter" && saveEditBrandTitle()} autoFocus />
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingBrandField(null)}>Cancel</Button>
-              <Button onClick={saveEditBrandTitle}>Save</Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* Add Field Dialog */}
-        <Dialog open={showAddBrandField} onOpenChange={setShowAddBrandField}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader><DialogTitle>Add Knowledge Field</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Title</Label>
-                <Input value={newBrandFieldTitle} onChange={e => setNewBrandFieldTitle(e.target.value)} placeholder="e.g. Target Audience" autoFocus />
+        {/* Product Detail Modal */}
+        <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                <Package className="h-5 w-5 text-primary" />
+                {productData.name} — Product Details
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 pt-2">
+              {productData.image && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Product Image</p>
+                  <div className="w-full max-w-xs rounded-xl overflow-hidden border border-border/60 shadow-sm">
+                    <img src={productData.image} alt={productData.name} className="w-full aspect-square object-cover" />
+                  </div>
+                </div>
+              )}
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
+                <p className="text-sm text-foreground leading-relaxed">{productData.description}</p>
               </div>
-              <div className="space-y-2">
-                <Label>Content</Label>
-                <Textarea value={newBrandFieldValue} onChange={e => setNewBrandFieldValue(e.target.value)} placeholder="Describe this aspect of your brand..." rows={4} />
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Key Feature</p>
+                <p className="text-sm text-foreground leading-relaxed">AI-powered creative generation with 10x faster output</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Price Point</p>
+                <p className="text-sm text-foreground leading-relaxed">Starting at $49/mo</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Market</p>
+                <p className="text-sm text-foreground leading-relaxed">Growth-stage DTC brands and SaaS companies looking to scale their paid social creative.</p>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddBrandField(false)}>Cancel</Button>
-              <Button onClick={addBrandField} disabled={!newBrandFieldTitle.trim()}>Add Field</Button>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {/* Delete Confirm Dialog */}
-        <AlertDialog open={!!deletingBrandField} onOpenChange={(open) => !open && setDeletingBrandField(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete field?</AlertDialogTitle>
-              <AlertDialogDescription>This will permanently remove "{brandFields.find(f => f.id === deletingBrandField)?.title}" from your brand knowledge.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteBrandField}>Delete</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
     );
   }
 
-  // ─── Step 4: Product ──────────────────────────────────────────────────────
-  if (step === 4) {
-    const addTerm = () => setProductTerms(prev => [...prev, { key: "", value: "" }]);
-    const removeTerm = (idx: number) => setProductTerms(prev => prev.filter((_, i) => i !== idx));
-    const updateTerm = (idx: number, field: "key" | "value", val: string) =>
-      setProductTerms(prev => prev.map((t, i) => i === idx ? { ...t, [field]: val } : t));
-
-    // Phase: Select product URL
-    if (productPhase === "select") {
-      return (
-        <div className="space-y-8 animate-scale-in flex flex-col items-center">
-          <div className="text-center">
-            <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
-              <Package className="h-7 w-7 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">Which {businessType === "service" ? "service" : businessType === "saas" ? "solution" : "product"} should we onboard?</h2>
-            <p className="text-muted-foreground mt-1">We found these on your website — pick one to generate ads for</p>
-          </div>
-
-          {/* Suggested URLs */}
-          <div className="w-full max-w-lg space-y-3">
-            {suggestedProductUrls.map((url, i) => (
-              <button
-                key={i}
-                onClick={() => startProductScrape(url)}
-                className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all duration-200 hover:border-primary hover:bg-accent/50 ${
-                  selectedProductUrl === url ? "border-primary bg-accent/50" : "border-border"
-                }`}
-              >
-                <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                  <LinkIcon className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{url}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Detected from your homepage</p>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* OR divider */}
-          <div className="flex items-center gap-4 w-full max-w-lg">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-sm font-semibold text-muted-foreground">OR</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
-          {/* Custom URL */}
-          <div className="w-full max-w-lg space-y-3">
-            <Label>Enter a different product URL</Label>
-            <div className="flex gap-2">
-              <Input
-                placeholder="https://yoursite.com/products/my-product"
-                value={customProductUrl}
-                onChange={e => setCustomProductUrl(e.target.value)}
-                className="flex-1"
-              />
-              <Button
-                onClick={() => startProductScrape(customProductUrl)}
-                disabled={!customProductUrl.trim()}
-              >
-                Scrape
-              </Button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Phase: Scraping animation
-    if (productPhase === "scraping") {
-      const scrapingUrl = selectedProductUrl || customProductUrl;
-      const screenshotSeed = encodeURIComponent(scrapingUrl);
-      return (
-        <div className="flex flex-col items-center gap-8 py-12 max-w-2xl mx-auto animate-scale-in">
-          <div className="flex flex-col md:flex-row items-center gap-8 w-full">
-            <div className="relative w-full max-w-[320px] shrink-0">
-              <div className="rounded-xl overflow-hidden border border-border/60 shadow-xl bg-muted">
-                <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
-                  <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-warning/60" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/60" />
-                  <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{scrapingUrl}</span>
-                </div>
-                <img src={`https://picsum.photos/seed/${screenshotSeed}/600/400`} alt="Product page preview" className="w-full aspect-[3/2] object-cover" />
-              </div>
-              <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse" />
-                <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
-              </div>
-            </div>
-            <div className="flex flex-col items-center md:items-start gap-6">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-primary/20 scale-150 animate-glow" />
-                <div className="relative h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center shadow-xl animate-float">
-                  <Package className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                </div>
-              </div>
-              <div className="text-center md:text-left space-y-1">
-                <p className="text-xl font-bold tracking-tight">Scraping product page...</p>
-                <p className="text-sm text-muted-foreground">Extracting images, details & features</p>
-              </div>
-              <div className="space-y-3 w-full max-w-xs">
-                {productScrapeSteps.map((s, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{
-                      opacity: i <= productScrapeProgress ? 1 : 0.2,
-                      transitionDelay: `${i * 150}ms`,
-                      transform: i <= productScrapeProgress ? "translateX(0)" : "translateX(-8px)",
-                    }}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                      i < productScrapeProgress ? "bg-emerald-100" : i === productScrapeProgress ? "bg-primary/10" : "bg-muted"
-                    }`}>
-                      {i < productScrapeProgress
-                        ? <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        : i === productScrapeProgress
-                          ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                          : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
-                      }
-                    </div>
-                    <span className={i < productScrapeProgress ? "text-foreground font-medium" : i === productScrapeProgress ? "text-foreground" : "text-muted-foreground"}>{s}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Phase: Details (after scraping)
-    return (
-      <div className="space-y-6 animate-scale-in">
-        <div className="text-center mb-4">
-          <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
-            <Package className="h-7 w-7 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight">Hero Product</h2>
-          <p className="text-muted-foreground mt-1">We found your most prominent {businessType === "service" ? "service" : businessType === "saas" ? "solution" : "product"} — refine the details</p>
-        </div>
-        <HoverExplainer text="Step 4 displays the hero product scraped from the website. Backend uses Firecrawl to find the most referenced product URL from the homepage, then scrapes that page for images and details.">
-          <div className="space-y-5">
-            <div>
-              <Label>Product Name</Label>
-              <Input className="mt-1.5" value={productName} onChange={e => setProductName(e.target.value)} />
-            </div>
-            <div>
-              <Label>Product Images</Label>
-              <p className="text-xs text-muted-foreground mt-0.5 mb-2">Scraped from the product page — click to remove, drag to reorder</p>
-              <div className="flex gap-3 flex-wrap">
-                {productImages.map((img, i) => (
-                  <div key={i} className="relative group w-24 h-24 rounded-xl overflow-hidden border border-border/60 shadow-sm">
-                    <img src={img} alt={`Product ${i + 1}`} className="w-full h-full object-cover" />
-                    <button
-                      onClick={() => setProductImages(prev => prev.filter((_, idx) => idx !== i))}
-                      className="absolute inset-0 bg-foreground/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="h-4 w-4 text-white" />
-                    </button>
-                  </div>
-                ))}
-                <label className="w-24 h-24 rounded-xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary/40 hover:bg-accent/30 transition-colors">
-                  <Plus className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-[10px] text-muted-foreground">Add</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const url = URL.createObjectURL(file);
-                      setProductImages(prev => [...prev, url]);
-                    }
-                  }} />
-                </label>
-              </div>
-            </div>
-            <div>
-              <Label>Description</Label>
-              <Textarea className="mt-1.5" value={productDesc} onChange={e => setProductDesc(e.target.value)} rows={3} />
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label>Product Knowledge</Label>
-                <Button variant="ghost" size="sm" onClick={addTerm} className="gap-1 text-xs text-muted-foreground h-7">
-                  <Plus className="h-3.5 w-3.5" /> Add field
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {productTerms.map((term, i) => (
-                  <div key={i} className="flex gap-3 items-start">
-                    <div className="flex-1 space-y-1.5">
-                      <Input
-                        value={term.key}
-                        onChange={e => updateTerm(i, "key", e.target.value)}
-                        placeholder="Field name"
-                        className="text-xs font-semibold bg-muted/50 border-border/60"
-                      />
-                      <Textarea
-                        value={term.value}
-                        onChange={e => updateTerm(i, "value", e.target.value)}
-                        placeholder="Value..."
-                        rows={2}
-                        className="text-sm"
-                      />
-                    </div>
-                    {productTerms.length > 1 && (
-                      <button onClick={() => removeTerm(i)} className="mt-2 p-1.5 rounded-md hover:bg-accent transition-colors">
-                        <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </HoverExplainer>
-      </div>
-    );
-  }
-
-  // ─── Step 5: Wow Moment ───────────────────────────────────────────────────
-  if (step === 5) {
+  // ─── Step 3: Launch (Wow Moment) ──────────────────────────────────────────
+  if (step === 3) {
     return (
       <div className="space-y-6 text-center animate-scale-in">
         <div className="py-4">
@@ -769,39 +595,37 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
           <h2 className="text-2xl font-bold tracking-tight">Based on everything we know about your brand...</h2>
           <p className="text-muted-foreground mt-1">Here are 7 ad topics we think will crush it this week</p>
         </div>
-        <HoverExplainer text="Step 5 displays LLM-generated topics. Backend async job calls POST /api/ai/generate-topics.">
-          <div className="grid grid-cols-1 gap-3 max-w-2xl mx-auto text-left">
-            {mockTopics.map((topic, i) => (
-              <Card
-                key={i}
-                className={`p-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-border/60 ${
-                  revealedTopics.includes(i)
-                    ? "opacity-100 translate-y-0 scale-100"
-                    : "opacity-0 translate-y-4 scale-95"
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center shrink-0 shadow-sm">
-                    <span className="text-xs font-bold text-white">{i + 1}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm">{topic.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{topic.desc}</p>
-                    <div className="flex gap-1.5 mt-2">
-                      {topic.tags.map(t => (
-                        <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-medium">{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex gap-1 shrink-0">
-                    <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsUp className="h-3.5 w-3.5 text-muted-foreground" /></button>
-                    <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsDown className="h-3.5 w-3.5 text-muted-foreground" /></button>
+        <div className="grid grid-cols-1 gap-3 max-w-2xl mx-auto text-left">
+          {mockTopics.map((topic, i) => (
+            <Card
+              key={i}
+              className={`p-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-border/60 ${
+                revealedTopics.includes(i)
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 translate-y-4 scale-95"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="text-xs font-bold text-white">{i + 1}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">{topic.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{topic.desc}</p>
+                  <div className="flex gap-1.5 mt-2">
+                    {topic.tags.map(t => (
+                      <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-medium">{t}</span>
+                    ))}
                   </div>
                 </div>
-              </Card>
-            ))}
-          </div>
-        </HoverExplainer>
+                <div className="flex gap-1 shrink-0">
+                  <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsUp className="h-3.5 w-3.5 text-muted-foreground" /></button>
+                  <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsDown className="h-3.5 w-3.5 text-muted-foreground" /></button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
