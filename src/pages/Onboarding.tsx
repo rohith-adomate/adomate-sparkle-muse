@@ -451,7 +451,8 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
             <div className="space-y-3 animate-scale-in">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Brand Profile</p>
               <Card
-                className="p-5 hover:shadow-md hover:border-primary/40 transition-all duration-200"
+                className="p-5 cursor-pointer hover:shadow-md hover:border-primary/40 transition-all duration-200"
+                onClick={() => setShowBrandModal(true)}
               >
                 <div className="flex gap-5">
                   <div className="space-y-3 shrink-0">
@@ -459,7 +460,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                       <Globe className="h-6 w-6 text-muted-foreground/40" />
                       <span className="text-[10px] text-muted-foreground/60 font-medium">Logo preview</span>
                     </div>
-                    <div className="flex gap-1.5 relative">
+                    <div className="flex gap-1.5 relative" onClick={(e) => e.stopPropagation()}>
                       {brandData.colors.map((c, i) => (
                         <div key={i} className="relative">
                           <button
@@ -474,7 +475,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                           {openColorIndex === i && (
                             <>
                               <div className="fixed inset-0 z-40" onClick={() => setOpenColorIndex(null)} />
-                              <div className="absolute top-full left-0 mt-2 z-50 w-56 rounded-md border bg-popover p-3 space-y-3 shadow-md animate-in fade-in-0 zoom-in-95">
+                              <div className="absolute bottom-full left-0 mb-2 z-50 w-56 rounded-md border bg-popover p-3 space-y-3 shadow-md animate-in fade-in-0 zoom-in-95">
                                 <input
                                   type="color"
                                   value={c}
