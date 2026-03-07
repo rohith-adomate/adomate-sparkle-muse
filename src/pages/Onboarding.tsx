@@ -68,11 +68,12 @@ interface OnboardingProps {
   step: number;
   setStep: (step: number) => void;
   onScraping: (v: boolean) => void;
+  onCanContinue?: (v: boolean) => void;
 }
 
 type KnowledgePhase = "url" | "brand-scraping" | "brand-done" | "product-scraping" | "complete";
 
-export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
+export function Onboarding({ step, setStep, onScraping, onCanContinue }: OnboardingProps) {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [website, setWebsite] = useState("");
   const [knowledgePhase, setKnowledgePhase] = useState<KnowledgePhase>("url");
@@ -104,6 +105,15 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
     const isScraping = knowledgePhase === "brand-scraping" || knowledgePhase === "product-scraping" || knowledgePhase === "brand-done";
     onScraping(isScraping);
   }, [knowledgePhase, onScraping]);
+
+  // Notify parent about whether continue is allowed
+  useEffect(() => {
+    if (step === 1) {
+      onCanContinue?.(selectedGoals.length > 0);
+    } else {
+      onCanContinue?.(true);
+    }
+  }, [step, selectedGoals, onCanContinue]);
 
   // Reset knowledge phase when navigating back to step 2
   useEffect(() => {
@@ -268,9 +278,9 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             </div>
             <h2 className="text-2xl font-bold tracking-tight">What are you selling?</h2>
             <p className="text-muted-foreground mt-2 leading-relaxed">
-              Paste the URL that best describes what you want to generate ads for.
+              Paste the URL of the product, service, or offer you want to build ad workflows around.
               <br />
-              This could be a product page, a service landing page, or your homepage.
+              This could be a product page, a service landing page, or homepage.
             </p>
           </div>
 
