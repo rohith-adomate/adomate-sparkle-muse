@@ -1,19 +1,24 @@
 import {
   Home, Database, Lightbulb, Palette, FileText,
   Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
-  ChevronRight, User,
+  ChevronRight, ChevronLeft, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip, TooltipContent, TooltipTrigger,
+} from "@/components/ui/tooltip";
+import adomateLogoSrc from "@/assets/adomate-logo.png";
 
 const dataRoomSubs = [
   { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
@@ -32,33 +37,62 @@ const coreNav = [
 const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-muted-foreground hover:text-foreground";
 const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium border border-sidebar-primary/20";
 
+function SidebarNavItem({ item, collapsed }: { item: { title: string; url: string; icon: React.ElementType }; collapsed: boolean }) {
+  const link = (
+    <NavLink to={item.url} end={item.url === "/"} className={cn(linkCls, collapsed && "justify-center px-0")} activeClassName={activeCls}>
+      <item.icon className="h-4 w-4 shrink-0" />
+      {!collapsed && <span>{item.title}</span>}
+    </NavLink>
+  );
+
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right" align="center">{item.title}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return link;
+}
+
 export function AppSidebar() {
   const { pathname } = useLocation();
   const nav = useNavigate();
+  const { state, toggleSidebar } = useSidebar();
+  const collapsed = state === "collapsed";
   const inDataRoom = pathname.startsWith("/brand-data-room");
 
   return (
-    <Sidebar collapsible="offcanvas" className="border-r">
-      <SidebarContent className="pt-[3.75rem] pb-3 flex flex-col h-full">
+    <Sidebar collapsible="icon" className="border-r">
+      {/* Logo + collapse toggle header */}
+      <SidebarHeader className="px-3 py-3 flex-row items-center justify-between border-b border-sidebar-border">
+        {!collapsed && (
+          <img src={adomateLogoSrc} alt="Adomate" className="h-6 w-auto" />
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="Toggle sidebar"
+        >
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
+      </SidebarHeader>
 
+      <SidebarContent className="pb-3 flex flex-col h-full">
         {/* Top group: Home + Workflows */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/" end className={linkCls} activeClassName={activeCls}>
-                    <Home className="h-4 w-4" />
-                    <span>Home</span>
-                  </NavLink>
+                <SidebarMenuButton asChild tooltip="Home">
+                  <SidebarNavItem item={{ title: "Home", url: "/", icon: Home }} collapsed={collapsed} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/workflows" className={linkCls} activeClassName={activeCls}>
-                    <Workflow className="h-4 w-4" />
-                    <span>Workflows</span>
-                  </NavLink>
+                <SidebarMenuButton asChild tooltip="Workflows">
+                  <SidebarNavItem item={{ title: "Workflows", url: "/workflows", icon: Workflow }} collapsed={collapsed} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -73,11 +107,8 @@ export function AppSidebar() {
             <SidebarMenu>
               {coreNav.map((item) => (
                 <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={linkCls} activeClassName={activeCls}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarNavItem item={item} collapsed={collapsed} />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -87,44 +118,59 @@ export function AppSidebar() {
 
         <Separator className="mx-3 w-auto my-1" />
 
-        {/* Bottom group: Performance + Brand Data Room (collapsible) + Settings */}
+        {/* Brand Data Room + Settings */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Brand Data Room — collapsible */}
-              <li>
-                <Collapsible defaultOpen={inDataRoom}>
-                  <CollapsibleTrigger
-                    className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}
-                    onClick={() => nav("/brand-data-room")}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <Database className="h-4 w-4" />
-                      <span>Brand Data Room</span>
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dr:rotate-90" />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-sidebar-border pl-3">
-                      {dataRoomSubs.map((sub) => (
-                        <li key={sub.url}>
-                          <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
-                            <sub.icon className="h-3.5 w-3.5" />
-                            <span>{sub.title}</span>
-                          </NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </CollapsibleContent>
-                </Collapsible>
-              </li>
+              {collapsed ? (
+                /* Collapsed: show just the icon with tooltip */
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <NavLink
+                        to="/brand-data-room"
+                        className={cn(linkCls, "justify-center px-0")}
+                        activeClassName={activeCls}
+                      >
+                        <Database className="h-4 w-4 shrink-0" />
+                      </NavLink>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" align="center">Brand Data Room</TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+              ) : (
+                /* Expanded: collapsible with sub-items */
+                <li>
+                  <Collapsible defaultOpen={inDataRoom}>
+                    <CollapsibleTrigger
+                      className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}
+                      onClick={() => nav("/brand-data-room")}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <Database className="h-4 w-4" />
+                        <span>Brand Data Room</span>
+                      </span>
+                      <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dr:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-sidebar-border pl-3">
+                        {dataRoomSubs.map((sub) => (
+                          <li key={sub.url}>
+                            <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
+                              <sub.icon className="h-3.5 w-3.5" />
+                              <span>{sub.title}</span>
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </li>
+              )}
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/settings" className={linkCls} activeClassName={activeCls}>
-                    <Settings className="h-4 w-4" />
-                    <span>Settings</span>
-                  </NavLink>
+                <SidebarMenuButton asChild tooltip="Settings">
+                  <SidebarNavItem item={{ title: "Settings", url: "/settings", icon: Settings }} collapsed={collapsed} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -133,14 +179,16 @@ export function AppSidebar() {
 
         {/* User avatar at bottom */}
         <div className="mt-auto px-3 py-3 border-t border-sidebar-border">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center shadow-sm">
+          <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-2.5")}>
+            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center shadow-sm shrink-0">
               <User className="h-4 w-4 text-white" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">John Doe</p>
-              <p className="text-[11px] text-muted-foreground truncate">john@acmeco.com</p>
-            </div>
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">John Doe</p>
+                <p className="text-[11px] text-muted-foreground truncate">john@acmeco.com</p>
+              </div>
+            )}
           </div>
         </div>
       </SidebarContent>
