@@ -220,11 +220,21 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
           try {
             const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
             const name = hostname.replace(/^www\./, "").split(".")[0];
-            setProductData({
+            setProductData(prev => ({
+              ...prev,
               name: name.charAt(0).toUpperCase() + name.slice(1) + " Pro Plan",
               description: "Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.",
-              image: `https://picsum.photos/seed/${encodeURIComponent(website + "-product")}/400/400`,
-            });
+              websiteUrl: website,
+              images: [{ id: crypto.randomUUID(), name: "product-hero.jpg", url: `https://picsum.photos/seed/${encodeURIComponent(website + "-product")}/400/400`, isHero: true }],
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results." };
+                if (f.id === "key-features") return { ...f, value: "- AI-powered creative generation with 10x faster output\n- Performance analytics dashboard\n- Multi-channel campaign management" };
+                if (f.id === "pricing") return { ...f, value: "Starting at **$49/mo** for growth teams" };
+                if (f.id === "target-market") return { ...f, value: "Growth-stage DTC brands and SaaS companies looking to scale their paid social creative." };
+                if (f.id === "selling-points") return { ...f, value: "- Fastest time-to-launch in the market\n- Data-driven creative optimization\n- Enterprise-grade security" };
+                return f;
+              }),
+            }));
           } catch {
             setProductData({
               name: "Pro Plan",
