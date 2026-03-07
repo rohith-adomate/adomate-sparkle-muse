@@ -192,8 +192,6 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarContent>
-
-      </SidebarContent>
     </Sidebar>
   );
 }
