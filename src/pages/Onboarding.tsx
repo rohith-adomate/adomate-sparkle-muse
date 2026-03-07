@@ -95,6 +95,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     socialLinks: "",
     colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
     logos: [],
+    assets: [],
     languages: [{ name: "American English", isDefault: true }],
     knowledgeFields: [
       { id: "description", title: "Description", value: "" },
