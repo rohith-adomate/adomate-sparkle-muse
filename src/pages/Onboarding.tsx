@@ -450,8 +450,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
             <div className="space-y-3 animate-scale-in">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Brand Profile</p>
               <Card
-                className="p-5 cursor-pointer hover:shadow-md hover:border-primary/40 transition-all duration-200"
-                onClick={() => setShowBrandModal(true)}
+                className="p-5 hover:shadow-md hover:border-primary/40 transition-all duration-200"
               >
                 <div className="flex gap-5">
                   <div className="space-y-3 shrink-0">
@@ -459,17 +458,17 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                       <Globe className="h-6 w-6 text-muted-foreground/40" />
                       <span className="text-[10px] text-muted-foreground/60 font-medium">Logo preview</span>
                     </div>
-                    <div className="flex gap-1.5">
+                    <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
                       {brandData.colors.map((c, i) => (
                         <Popover key={i}>
                           <PopoverTrigger asChild>
                             <button
-                              className="w-6 h-6 rounded-md border shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                              type="button"
+                              className="w-6 h-6 rounded-md border shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 cursor-pointer"
                               style={{ backgroundColor: c }}
-                              onClick={(e) => e.stopPropagation()}
                             />
                           </PopoverTrigger>
-                          <PopoverContent className="w-56 p-3 space-y-3" side="bottom" align="start" onClick={(e) => e.stopPropagation()}>
+                          <PopoverContent className="w-56 p-3 space-y-3" side="bottom" align="start">
                             <div className="space-y-2">
                               <input
                                 type="color"
@@ -503,7 +502,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                       ))}
                     </div>
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 cursor-pointer" onClick={() => setShowBrandModal(true)}>
                     <h4 className="text-lg font-bold">{brandData.name}</h4>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.description}</p>
                     <p className="text-xs text-primary mt-3 font-medium">Click to see full brand profile →</p>
