@@ -7,7 +7,7 @@ import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
