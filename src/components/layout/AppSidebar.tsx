@@ -65,7 +65,7 @@ export function AppSidebar() {
   const inDataRoom = pathname.startsWith("/brand-data-room");
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" className="border-r relative group/sidebar">
       {/* Logo + collapse toggle header */}
       <SidebarHeader className="px-3 py-3 flex-row items-center justify-between border-b border-sidebar-border">
         {!collapsed && (
@@ -192,6 +192,15 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarContent>
+
+      {/* Edge toggle button — vertically centered on the sidebar border */}
+      <button
+        onClick={toggleSidebar}
+        className="absolute top-1/2 -translate-y-1/2 -right-3 z-20 h-6 w-6 rounded-full border border-border bg-background shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+      </button>
     </Sidebar>
   );
 }
