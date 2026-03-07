@@ -65,19 +65,15 @@ export function AppSidebar() {
   const inDataRoom = pathname.startsWith("/brand-data-room");
 
   return (
-    <Sidebar collapsible="icon" className="border-r relative group/sidebar">
+    <Sidebar collapsible="icon" className="border-r">
       {/* Logo + collapse toggle header */}
-      <SidebarHeader className="px-3 py-3 flex-row items-center justify-between border-b border-sidebar-border">
+      <SidebarHeader className={cn(
+        "px-3 py-3 flex-row items-center border-b border-sidebar-border",
+        collapsed ? "justify-center" : "justify-between"
+      )}>
         {!collapsed && (
           <img src={adomateLogoSrc} alt="Adomate" className="h-6 w-auto" />
         )}
-        <button
-          onClick={toggleSidebar}
-          className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="Toggle sidebar"
-        >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
       </SidebarHeader>
 
       <SidebarContent className="pb-3 flex flex-col h-full">
