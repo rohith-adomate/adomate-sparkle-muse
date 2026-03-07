@@ -83,6 +83,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   const [revealedTopics, setRevealedTopics] = useState<number[]>([]);
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
+  const [openColorIndex, setOpenColorIndex] = useState<number | null>(null);
 
   // Mock scraped data
   const [brandData, setBrandData] = useState({
