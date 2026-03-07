@@ -455,8 +455,9 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
               >
                 <div className="flex gap-5">
                   <div className="space-y-3 shrink-0">
-                    <div className="w-16 h-16 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">{brandData.logo}</span>
+                    <div className="w-28 h-20 rounded-xl border-2 border-border bg-muted flex flex-col items-center justify-center gap-1">
+                      <Globe className="h-6 w-6 text-muted-foreground/40" />
+                      <span className="text-[10px] text-muted-foreground/60 font-medium">Logo preview</span>
                     </div>
                     <div className="flex gap-1.5">
                       {brandData.colors.map((c, i) => (
