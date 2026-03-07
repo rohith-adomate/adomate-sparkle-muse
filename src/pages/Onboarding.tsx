@@ -283,7 +283,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
             </div>
             <h2 className="text-2xl font-bold tracking-tight">What are you selling?</h2>
             <p className="text-muted-foreground mt-2 leading-relaxed">
-              Paste the URL of the product, service, or offer you want to build ad workflows around.
+              Paste the URL of the product, software, or service you want to build ad workflows for.
               <br />
               This could be a product page, a service landing page, or homepage.
             </p>
