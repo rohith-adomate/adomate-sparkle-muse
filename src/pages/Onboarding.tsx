@@ -599,21 +599,34 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
               >
                 <div className="flex gap-5">
                   <div className="shrink-0 space-y-2">
-                    <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
-                      <Package className="h-6 w-6 text-muted-foreground/40" />
-                      <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
-                    </div>
-                    <div className="flex gap-1.5">
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 2</span>
+                    {productData.images.length > 0 ? (
+                      <div className="w-32 h-24 rounded-xl border border-border/60 overflow-hidden">
+                        <img
+                          src={(productData.images.find(i => i.isHero) || productData.images[0]).url}
+                          alt={productData.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 3</span>
+                    ) : (
+                      <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
+                        <Package className="h-6 w-6 text-muted-foreground/40" />
+                        <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
                       </div>
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[9px] text-muted-foreground/50 font-bold">+4</span>
+                    )}
+                    {productData.images.length > 1 && (
+                      <div className="flex gap-1.5">
+                        {productData.images.filter(i => !i.isHero).slice(0, 2).map((img) => (
+                          <div key={img.id} className="w-10 h-10 rounded-lg border border-border/60 overflow-hidden">
+                            <img src={img.url} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                        {productData.images.length > 3 && (
+                          <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                            <span className="text-[9px] text-muted-foreground/50 font-bold">+{productData.images.length - 3}</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{productData.name}</h4>
