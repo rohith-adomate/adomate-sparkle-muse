@@ -9,6 +9,7 @@ const stepLabels = ["Goals", "Knowledge", "Launch"];
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isScraping, setIsScraping] = useState(false);
+  const [canContinue, setCanContinue] = useState(false);
   const navigate = useNavigate();
 
   const progress = (currentStep / stepLabels.length) * 100;
@@ -23,6 +24,7 @@ export default function OnboardingPage() {
 
   const handleBack = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const handleScraping = useCallback((v: boolean) => setIsScraping(v), []);
+  const handleCanContinue = useCallback((v: boolean) => setCanContinue(v), []);
 
   // Hide footer nav during knowledge scraping phase
   const showFooterNav = currentStep !== 2 || !isScraping;
@@ -76,7 +78,7 @@ export default function OnboardingPage() {
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-6 py-10">
         <div className="max-w-4xl mx-auto">
-          <Onboarding step={currentStep} setStep={setCurrentStep} onScraping={handleScraping} />
+          <Onboarding step={currentStep} setStep={setCurrentStep} onScraping={handleScraping} onCanContinue={handleCanContinue} />
         </div>
       </div>
 
@@ -96,7 +98,7 @@ export default function OnboardingPage() {
           ) : <div />}
           <div className="flex items-center gap-3">
             {!isScraping && (
-              <Button size="sm" onClick={handleNext} className="gap-1.5 px-6 shadow-sm">
+              <Button size="sm" onClick={handleNext} disabled={!canContinue} className="gap-1.5 px-6 shadow-sm">
                 {currentStep === 3 ? "Launch into Adomate ✨" : <>Continue <ChevronRight className="h-4 w-4" /></>}
               </Button>
             )}
