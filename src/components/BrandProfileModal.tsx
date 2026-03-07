@@ -177,7 +177,7 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] p-0 overflow-hidden z-[70]">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="flex items-center gap-3 text-xl">
             <div className="h-10 w-10 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
