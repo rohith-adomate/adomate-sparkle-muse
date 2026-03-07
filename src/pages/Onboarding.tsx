@@ -459,17 +459,25 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                       <Globe className="h-6 w-6 text-muted-foreground/40" />
                       <span className="text-[10px] text-muted-foreground/60 font-medium">Logo preview</span>
                     </div>
-                    <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex gap-1.5">
                       {brandData.colors.map((c, i) => (
-                        <Popover key={i}>
+                        <Popover key={i} open={openColorIndex === i} onOpenChange={(open) => setOpenColorIndex(open ? i : null)}>
                           <PopoverTrigger asChild>
                             <button
                               type="button"
                               className="w-6 h-6 rounded-md border shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 cursor-pointer"
                               style={{ backgroundColor: c }}
+                              onPointerDown={(e) => {
+                                e.stopPropagation();
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setOpenColorIndex(openColorIndex === i ? null : i);
+                              }}
                             />
                           </PopoverTrigger>
-                          <PopoverContent className="w-56 p-3 space-y-3" side="bottom" align="start">
+                          <PopoverContent className="w-56 p-3 space-y-3" side="bottom" align="start" onPointerDownOutside={() => setOpenColorIndex(null)}>
                             <div className="space-y-2">
                               <input
                                 type="color"
