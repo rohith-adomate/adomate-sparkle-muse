@@ -1,5 +1,5 @@
 import { Bell, HelpCircle, ChevronDown, Rocket } from "lucide-react";
-import adomateLogoSrc from "@/assets/adomate-logo.png";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+
 
 const brands = [
   { name: "Acme Co", color: "hsl(336 78% 50%)" },
@@ -24,11 +24,6 @@ export function TopNav() {
   return (
     <header className="h-14 border-b glass flex items-center justify-between px-4 shrink-0 sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
       <div className="flex items-center gap-3">
-        <SidebarTrigger />
-        <div className="flex items-center gap-1.5">
-          <img src={adomateLogoSrc} alt="Adomate" className="h-7 w-auto" />
-        </div>
-        <span className="mx-1 h-5 w-px bg-border" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2 font-medium">
