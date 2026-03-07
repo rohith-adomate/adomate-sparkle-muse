@@ -11,6 +11,7 @@ import {
   Check, ThumbsUp, ThumbsDown, Target, Layers, Zap, Megaphone,
   Info, Package, FileText, Eye, TrendingUp,
 } from "lucide-react";
+import { BrandProfileModal, type BrandProfileData } from "@/components/BrandProfileModal";
 
 const goalCards = [
   {
@@ -86,11 +87,21 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   const [openColorIndex, setOpenColorIndex] = useState<number | null>(null);
 
   // Mock scraped data
-  const [brandData, setBrandData] = useState({
+  const [brandData, setBrandData] = useState<BrandProfileData>({
     name: "",
     description: "",
-    logo: "",
+    websiteUrl: "",
+    socialLinks: "",
     colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
+    logos: [],
+    languages: [{ name: "American English", isDefault: true }],
+    knowledgeFields: [
+      { id: "description", title: "Description", value: "" },
+      { id: "tone", title: "Tone of Voice", value: "" },
+      { id: "positioning", title: "Brand Positioning", value: "" },
+      { id: "target-audience", title: "Target Audience", value: "" },
+      { id: "uvp", title: "Unique Value Proposition", value: "" },
+    ],
   });
   const [productData, setProductData] = useState({
     name: "",
@@ -145,19 +156,32 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
           try {
             const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
             const name = hostname.replace(/^www\./, "").split(".")[0];
-            setBrandData({
+            const fullUrl = website.startsWith("http") ? website : `https://${website}`;
+            setBrandData(prev => ({
+              ...prev,
               name: name.charAt(0).toUpperCase() + name.slice(1),
-              description: "An innovative company pushing the boundaries of modern advertising with AI-powered creative solutions.",
-              logo: name.charAt(0).toUpperCase(),
+              websiteUrl: fullUrl,
               colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
-            });
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "An innovative company pushing the boundaries of modern advertising with AI-powered creative solutions." };
+                if (f.id === "tone") return { ...f, value: "Professional yet approachable, with a focus on clarity and impact." };
+                if (f.id === "positioning") return { ...f, value: "The easiest way to create high-performing ads at scale." };
+                if (f.id === "target-audience") return { ...f, value: "Small-to-medium business marketing teams looking to scale ad creative without hiring designers." };
+                if (f.id === "uvp") return { ...f, value: "AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." };
+                return f;
+              }),
+            }));
           } catch {
-            setBrandData({
+            setBrandData(prev => ({
+              ...prev,
               name: "Your Brand",
-              description: "An innovative company pushing the boundaries of modern advertising.",
-              logo: "Y",
+              websiteUrl: website,
               colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
-            });
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "An innovative company pushing the boundaries of modern advertising." };
+                return f;
+              }),
+            }));
           }
           setTimeout(() => setKnowledgePhase("brand-done"), 600);
         }
@@ -512,7 +536,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{brandData.name}</h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.description}</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{brandData.knowledgeFields.find(f => f.id === "description")?.value || ""}</p>
                     <p className="text-xs text-primary mt-3 font-medium">Click to see full brand profile →</p>
                   </div>
                 </div>
@@ -574,47 +598,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
         </div>
 
         {/* Brand Detail Modal */}
-        <Dialog open={showBrandModal} onOpenChange={setShowBrandModal}>
-          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
-                  <span className="text-lg font-bold text-primary">{brandData.logo}</span>
-                </div>
-                {brandData.name} — Brand Profile
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 pt-2">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Brand Colors</p>
-                <div className="flex gap-2">
-                  {brandData.colors.map((c, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1">
-                      <div className="w-12 h-12 rounded-lg border shadow-sm" style={{ backgroundColor: c }} />
-                      <span className="text-[10px] text-muted-foreground font-mono">{c}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
-                <p className="text-sm text-foreground leading-relaxed">{brandData.description}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Tone of Voice</p>
-                <p className="text-sm text-foreground leading-relaxed">Professional yet approachable, with a focus on clarity and impact.</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Audience</p>
-                <p className="text-sm text-foreground leading-relaxed">Small-to-medium business marketing teams looking to scale ad creative without hiring designers.</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Unique Value Proposition</p>
-                <p className="text-sm text-foreground leading-relaxed">AI-powered ad creation that delivers 10x faster creative output with zero design skills needed.</p>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <BrandProfileModal
+          open={showBrandModal}
+          onOpenChange={setShowBrandModal}
+          data={brandData}
+          onDataChange={setBrandData}
+        />
 
         {/* Product Detail Modal */}
         <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
