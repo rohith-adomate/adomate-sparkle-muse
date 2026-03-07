@@ -66,16 +66,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r">
-      {/* Logo + collapse toggle header */}
-      <SidebarHeader className={cn(
-        "px-3 py-3 flex-row items-center border-b border-sidebar-border",
-        collapsed ? "justify-center" : "justify-between"
-      )}>
-        {!collapsed && (
-          <img src={adomateLogoSrc} alt="Adomate" className="h-6 w-auto" />
-        )}
-      </SidebarHeader>
-
       <SidebarContent className="pb-3 flex flex-col h-full">
         {/* Top group: Home + Workflows */}
         <SidebarGroup>
