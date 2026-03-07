@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import {
   Loader2, Globe, Sparkles, Search, Brain, Palette, ShoppingBag,
@@ -460,7 +461,45 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                     </div>
                     <div className="flex gap-1.5">
                       {brandData.colors.map((c, i) => (
-                        <div key={i} className="w-6 h-6 rounded-md border shadow-sm" style={{ backgroundColor: c }} />
+                        <Popover key={i}>
+                          <PopoverTrigger asChild>
+                            <button
+                              className="w-6 h-6 rounded-md border shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                              style={{ backgroundColor: c }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          </PopoverTrigger>
+                          <PopoverContent className="w-56 p-3 space-y-3" side="bottom" align="start" onClick={(e) => e.stopPropagation()}>
+                            <div className="space-y-2">
+                              <input
+                                type="color"
+                                value={c}
+                                onChange={(e) => {
+                                  const newColors = [...brandData.colors];
+                                  newColors[i] = e.target.value;
+                                  setBrandData(prev => ({ ...prev, colors: newColors }));
+                                }}
+                                className="w-full h-32 rounded-lg cursor-pointer border-0 p-0 bg-transparent [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-lg [&::-webkit-color-swatch]:border-0"
+                              />
+                            </div>
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-medium text-muted-foreground">HEX Color Code</label>
+                              <Input
+                                value={c}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (/^#[0-9a-fA-F]{0,6}$/.test(val) || val === "") {
+                                    const newColors = [...brandData.colors];
+                                    newColors[i] = val;
+                                    setBrandData(prev => ({ ...prev, colors: newColors }));
+                                  }
+                                }}
+                                className="h-9 font-mono text-sm"
+                                placeholder="#000000"
+                              />
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       ))}
                     </div>
                   </div>
