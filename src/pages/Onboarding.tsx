@@ -351,7 +351,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
                   <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">
-                    {isBrandPhase ? baseUrl : productUrl}
+                    {isBrandPhase ? baseUrl : website.startsWith("http") ? website : `https://${website}`}
                   </span>
                 </div>
                 <div className="relative w-full aspect-[3/2] flex flex-col items-center justify-center gap-3 bg-muted/50 border-t border-border/20">
