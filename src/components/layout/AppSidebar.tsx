@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Tooltip, TooltipContent, TooltipTrigger,
 } from "@/components/ui/tooltip";
-import adomateLogoSrc from "@/assets/adomate-logo.png";
+
 
 const dataRoomSubs = [
   { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
