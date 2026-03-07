@@ -87,11 +87,21 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   const [openColorIndex, setOpenColorIndex] = useState<number | null>(null);
 
   // Mock scraped data
-  const [brandData, setBrandData] = useState({
+  const [brandData, setBrandData] = useState<BrandProfileData>({
     name: "",
     description: "",
-    logo: "",
+    websiteUrl: "",
+    socialLinks: "",
     colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
+    logos: [],
+    languages: [{ name: "American English", isDefault: true }],
+    knowledgeFields: [
+      { id: "description", title: "Description", value: "" },
+      { id: "tone", title: "Tone of Voice", value: "" },
+      { id: "positioning", title: "Brand Positioning", value: "" },
+      { id: "target-audience", title: "Target Audience", value: "" },
+      { id: "uvp", title: "Unique Value Proposition", value: "" },
+    ],
   });
   const [productData, setProductData] = useState({
     name: "",
