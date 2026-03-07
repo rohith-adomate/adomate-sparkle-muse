@@ -16,7 +16,7 @@ function SidebarToggleNotch() {
         className="fixed z-50 h-8 w-4 rounded-r-md border border-border bg-sidebar flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
         style={{
           left: sidebarEdge,
-          top: "calc(3.5rem + 24px)",
+          top: "calc(3.5rem + 12px)",
           borderLeft: "none",
         }}
         aria-label="Toggle sidebar"
