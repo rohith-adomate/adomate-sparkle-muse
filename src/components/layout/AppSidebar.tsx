@@ -65,7 +65,7 @@ export function AppSidebar() {
   const inDataRoom = pathname.startsWith("/brand-data-room");
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" className="border-r relative group/sidebar">
       {/* Logo + collapse toggle header */}
       <SidebarHeader className="px-3 py-3 flex-row items-center justify-between border-b border-sidebar-border">
         {!collapsed && (
