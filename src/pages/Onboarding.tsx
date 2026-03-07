@@ -115,10 +115,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   useEffect(() => {
     if (step === 1) {
       onCanContinue?.(selectedGoals.length > 0);
+    } else if (step === 2) {
+      onCanContinue?.(knowledgePhase === "complete");
     } else {
       onCanContinue?.(true);
     }
-  }, [step, selectedGoals, onCanContinue]);
+  }, [step, selectedGoals, knowledgePhase, onCanContinue]);
 
   // Reset knowledge phase when navigating back to step 2
   useEffect(() => {
