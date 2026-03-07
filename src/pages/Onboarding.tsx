@@ -598,47 +598,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
         </div>
 
         {/* Brand Detail Modal */}
-        <Dialog open={showBrandModal} onOpenChange={setShowBrandModal}>
-          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
-                  <span className="text-lg font-bold text-primary">{brandData.logo}</span>
-                </div>
-                {brandData.name} — Brand Profile
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 pt-2">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Brand Colors</p>
-                <div className="flex gap-2">
-                  {brandData.colors.map((c, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1">
-                      <div className="w-12 h-12 rounded-lg border shadow-sm" style={{ backgroundColor: c }} />
-                      <span className="text-[10px] text-muted-foreground font-mono">{c}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
-                <p className="text-sm text-foreground leading-relaxed">{brandData.description}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Tone of Voice</p>
-                <p className="text-sm text-foreground leading-relaxed">Professional yet approachable, with a focus on clarity and impact.</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Audience</p>
-                <p className="text-sm text-foreground leading-relaxed">Small-to-medium business marketing teams looking to scale ad creative without hiring designers.</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Unique Value Proposition</p>
-                <p className="text-sm text-foreground leading-relaxed">AI-powered ad creation that delivers 10x faster creative output with zero design skills needed.</p>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <BrandProfileModal
+          open={showBrandModal}
+          onOpenChange={setShowBrandModal}
+          data={brandData}
+          onDataChange={setBrandData}
+        />
 
         {/* Product Detail Modal */}
         <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
