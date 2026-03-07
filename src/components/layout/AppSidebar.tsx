@@ -29,8 +29,8 @@ const coreNav = [
   { title: "Content", url: "/content", icon: FileText },
 ];
 
-const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground";
-const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm";
+const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-muted-foreground hover:text-foreground";
+const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium border border-sidebar-primary/20";
 
 export function AppSidebar() {
   const { pathname } = useLocation();
