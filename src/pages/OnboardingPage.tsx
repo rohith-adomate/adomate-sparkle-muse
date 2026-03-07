@@ -26,8 +26,8 @@ export default function OnboardingPage() {
   const handleScraping = useCallback((v: boolean) => setIsScraping(v), []);
   const handleCanContinue = useCallback((v: boolean) => setCanContinue(v), []);
 
-  // Hide footer nav during knowledge scraping phase
-  const showFooterNav = currentStep !== 2 || !isScraping;
+  // Hide footer nav during knowledge scraping phase and URL input phase
+  const showFooterNav = currentStep !== 2 || (!isScraping && canContinue);
 
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
