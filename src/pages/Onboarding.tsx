@@ -12,6 +12,7 @@ import {
   Info, Package, FileText, Eye, TrendingUp,
 } from "lucide-react";
 import { BrandProfileModal, type BrandProfileData } from "@/components/BrandProfileModal";
+import { ProductProfileModal, type ProductProfileData } from "@/components/ProductProfileModal";
 
 const goalCards = [
   {
@@ -103,10 +104,18 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
       { id: "uvp", title: "Unique Value Proposition", value: "" },
     ],
   });
-  const [productData, setProductData] = useState({
+  const [productData, setProductData] = useState<ProductProfileData>({
     name: "",
     description: "",
-    image: "",
+    websiteUrl: "",
+    images: [],
+    knowledgeFields: [
+      { id: "description", title: "Description", value: "" },
+      { id: "key-features", title: "Key Features", value: "" },
+      { id: "pricing", title: "Pricing", value: "" },
+      { id: "target-market", title: "Target Market", value: "" },
+      { id: "selling-points", title: "Unique Selling Points", value: "" },
+    ],
   });
 
   // Derive base URL (landing page) and product URL
@@ -211,17 +220,37 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
           try {
             const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
             const name = hostname.replace(/^www\./, "").split(".")[0];
-            setProductData({
+            setProductData(prev => ({
+              ...prev,
               name: name.charAt(0).toUpperCase() + name.slice(1) + " Pro Plan",
               description: "Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results.",
-              image: `https://picsum.photos/seed/${encodeURIComponent(website + "-product")}/400/400`,
-            });
+              websiteUrl: website,
+              images: [{ id: crypto.randomUUID(), name: "product-hero.jpg", url: `https://picsum.photos/seed/${encodeURIComponent(website + "-product")}/400/400`, isHero: true }],
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "Our flagship offering that combines AI-powered ad creation with performance analytics to deliver measurable results." };
+                if (f.id === "key-features") return { ...f, value: "- AI-powered creative generation with 10x faster output\n- Performance analytics dashboard\n- Multi-channel campaign management" };
+                if (f.id === "pricing") return { ...f, value: "Starting at **$49/mo** for growth teams" };
+                if (f.id === "target-market") return { ...f, value: "Growth-stage DTC brands and SaaS companies looking to scale their paid social creative." };
+                if (f.id === "selling-points") return { ...f, value: "- Fastest time-to-launch in the market\n- Data-driven creative optimization\n- Enterprise-grade security" };
+                return f;
+              }),
+            }));
           } catch {
-            setProductData({
+            setProductData(prev => ({
+              ...prev,
               name: "Pro Plan",
               description: "Our flagship offering combining AI-powered ad creation with performance analytics.",
-              image: `https://picsum.photos/seed/product/400/400`,
-            });
+              websiteUrl: website,
+              images: [{ id: crypto.randomUUID(), name: "product-hero.jpg", url: `https://picsum.photos/seed/product/400/400`, isHero: true }],
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "Our flagship offering combining AI-powered ad creation with performance analytics." };
+                if (f.id === "key-features") return { ...f, value: "- AI-powered creative generation\n- Performance analytics\n- Multi-channel support" };
+                if (f.id === "pricing") return { ...f, value: "Starting at **$49/mo**" };
+                if (f.id === "target-market") return { ...f, value: "Growth-stage DTC brands and SaaS companies." };
+                if (f.id === "selling-points") return { ...f, value: "- Fast time-to-launch\n- Data-driven optimization\n- Enterprise security" };
+                return f;
+              }),
+            }));
           }
           setTimeout(() => setKnowledgePhase("complete"), 600);
         }
@@ -570,21 +599,34 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
               >
                 <div className="flex gap-5">
                   <div className="shrink-0 space-y-2">
-                    <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
-                      <Package className="h-6 w-6 text-muted-foreground/40" />
-                      <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
-                    </div>
-                    <div className="flex gap-1.5">
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 2</span>
+                    {productData.images.length > 0 ? (
+                      <div className="w-32 h-24 rounded-xl border border-border/60 overflow-hidden">
+                        <img
+                          src={(productData.images.find(i => i.isHero) || productData.images[0]).url}
+                          alt={productData.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[8px] text-muted-foreground/50 font-medium">Img 3</span>
+                    ) : (
+                      <div className="w-32 h-24 rounded-xl border border-border/60 bg-muted flex flex-col items-center justify-center gap-1">
+                        <Package className="h-6 w-6 text-muted-foreground/40" />
+                        <span className="text-[10px] text-muted-foreground/60 font-medium">Hero product image</span>
                       </div>
-                      <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
-                        <span className="text-[9px] text-muted-foreground/50 font-bold">+4</span>
+                    )}
+                    {productData.images.length > 1 && (
+                      <div className="flex gap-1.5">
+                        {productData.images.filter(i => !i.isHero).slice(0, 2).map((img) => (
+                          <div key={img.id} className="w-10 h-10 rounded-lg border border-border/60 overflow-hidden">
+                            <img src={img.url} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                        {productData.images.length > 3 && (
+                          <div className="w-10 h-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center">
+                            <span className="text-[9px] text-muted-foreground/50 font-bold">+{productData.images.length - 3}</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold">{productData.name}</h4>
@@ -606,42 +648,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
         />
 
         {/* Product Detail Modal */}
-        <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
-          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <Package className="h-5 w-5 text-primary" />
-                {productData.name} — Product Details
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 pt-2">
-              {productData.image && (
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Product Image</p>
-                  <div className="w-full max-w-xs rounded-xl overflow-hidden border border-border/60 shadow-sm">
-                    <img src={productData.image} alt={productData.name} className="w-full aspect-square object-cover" />
-                  </div>
-                </div>
-              )}
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
-                <p className="text-sm text-foreground leading-relaxed">{productData.description}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Key Feature</p>
-                <p className="text-sm text-foreground leading-relaxed">AI-powered creative generation with 10x faster output</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Price Point</p>
-                <p className="text-sm text-foreground leading-relaxed">Starting at $49/mo</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Market</p>
-                <p className="text-sm text-foreground leading-relaxed">Growth-stage DTC brands and SaaS companies looking to scale their paid social creative.</p>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <ProductProfileModal
+          open={showProductModal}
+          onOpenChange={setShowProductModal}
+          data={productData}
+          onDataChange={setProductData}
+        />
       </div>
     );
   }
