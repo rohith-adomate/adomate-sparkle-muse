@@ -30,15 +30,7 @@ export default function OnboardingPage() {
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 shrink-0">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/")}
-          className="gap-2 text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to App
-        </Button>
+        <div />
 
         {/* Step pills */}
         <div className="flex items-center gap-0.5 overflow-x-auto">
