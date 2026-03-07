@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const brands = [
-  { name: "Acme Co", color: "hsl(243 75% 59%)" },
+  { name: "Acme Co", color: "hsl(336 78% 50%)" },
   { name: "Beta Brand", color: "hsl(152 60% 42%)" },
   { name: "Gamma Inc", color: "hsl(25 95% 55%)" },
 ];

@@ -156,7 +156,7 @@
     @apply bg-card/80 backdrop-blur-xl;
   }
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(243 75% 59%), hsl(280 65% 55%));
+    background: linear-gradient(135deg, hsl(336 78% 50%), hsl(336 70% 60%));
   }
   .gradient-home {
     background: linear-gradient(135deg, hsl(243 75% 59% / 0.08), hsl(280 65% 55% / 0.06));
