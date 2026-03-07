@@ -86,6 +86,10 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
   const [openColorIndex, setOpenColorIndex] = useState<number | null>(null);
+  const [competitorSearch, setCompetitorSearch] = useState("");
+  const [selectedCompetitor, setSelectedCompetitor] = useState<{ id: string; name: string; handle: string; avatar: string } | null>(null);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // Mock scraped data
   const [brandData, setBrandData] = useState<BrandProfileData>({
