@@ -91,16 +91,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/performance" className={linkCls} activeClassName={activeCls}>
-                    <BarChart3 className="h-4 w-4" />
-                    <span>Performance</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Brand Data Room — collapsible, moved to bottom */}
+              {/* Brand Data Room — collapsible */}
               <li>
                 <Collapsible defaultOpen={inDataRoom}>
                   <CollapsibleTrigger
