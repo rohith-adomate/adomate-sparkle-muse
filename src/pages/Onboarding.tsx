@@ -86,6 +86,10 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
   const [openColorIndex, setOpenColorIndex] = useState<number | null>(null);
+  const [competitorSearch, setCompetitorSearch] = useState("");
+  const [selectedCompetitor, setSelectedCompetitor] = useState<{ id: string; name: string; handle: string; avatar: string } | null>(null);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // Mock scraped data
   const [brandData, setBrandData] = useState<BrandProfileData>({
@@ -646,49 +650,182 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     );
   }
 
-  // ─── Step 3: Launch (Wow Moment) ──────────────────────────────────────────
+  // ─── Step 3: Launch (Competitor Selection) ─────────────────────────────────
+  const suggestedBrands = [
+    { id: "amazon", name: "Amazon", handle: "@amazon", avatar: "https://logo.clearbit.com/amazon.com" },
+    { id: "shein", name: "SHEIN", handle: "@shein_official", avatar: "https://logo.clearbit.com/shein.com" },
+    { id: "nike", name: "Nike", handle: "@nike", avatar: "https://logo.clearbit.com/nike.com" },
+    { id: "zara", name: "Zara", handle: "@zara", avatar: "https://logo.clearbit.com/zara.com" },
+  ];
+
+  const mockSearchResults = [
+    { id: "adidas", name: "Adidas", handle: "@adidas", avatar: "https://logo.clearbit.com/adidas.com" },
+    { id: "hm", name: "H&M", handle: "@hm", avatar: "https://logo.clearbit.com/hm.com" },
+    { id: "uniqlo", name: "UNIQLO", handle: "@uniqlo", avatar: "https://logo.clearbit.com/uniqlo.com" },
+    { id: "asos", name: "ASOS", handle: "@asos", avatar: "https://logo.clearbit.com/asos.com" },
+    { id: "target", name: "Target", handle: "@target", avatar: "https://logo.clearbit.com/target.com" },
+    { id: "walmart", name: "Walmart", handle: "@walmart", avatar: "https://logo.clearbit.com/walmart.com" },
+  ];
+
+
+  const filteredResults = competitorSearch.length >= 2
+    ? [...suggestedBrands, ...mockSearchResults].filter(b =>
+        b.name.toLowerCase().includes(competitorSearch.toLowerCase()) ||
+        b.handle.toLowerCase().includes(competitorSearch.toLowerCase())
+      )
+    : [];
+
+  const handleSelectCompetitor = (brand: typeof suggestedBrands[0]) => {
+    setSelectedCompetitor(brand);
+    setCompetitorSearch("");
+    setSearchFocused(false);
+  };
+
   if (step === 3) {
     return (
-      <div className="space-y-6 text-center animate-scale-in">
+      <div className="space-y-8 text-center animate-scale-in max-w-2xl mx-auto">
         <div className="py-4">
           <div className="relative inline-flex items-center justify-center mb-4">
             <div className="absolute inset-0 rounded-2xl bg-primary/20 scale-150 animate-glow" />
             <Sparkles className="relative h-12 w-12 text-primary animate-float" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">Based on everything we know about your brand...</h2>
-          <p className="text-muted-foreground mt-1">Here are 7 ad topics we think will crush it this week</p>
+          <p className="text-muted-foreground mt-2 max-w-lg mx-auto">
+            Choose a competitor to launch your first ad variation workflow. We'll analyze their creative strategy and generate winning ad concepts for your brand.
+          </p>
         </div>
-        <div className="grid grid-cols-1 gap-3 max-w-2xl mx-auto text-left">
-          {mockTopics.map((topic, i) => (
-            <Card
-              key={i}
-              className={`p-4 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] border-border/60 ${
-                revealedTopics.includes(i)
-                  ? "opacity-100 translate-y-0 scale-100"
-                  : "opacity-0 translate-y-4 scale-95"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center shrink-0 shadow-sm">
-                  <span className="text-xs font-bold text-white">{i + 1}</span>
+
+        {/* Suggested Brands */}
+        {!selectedCompetitor && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {suggestedBrands.map((brand) => (
+              <button
+                key={brand.id}
+                onClick={() => handleSelectCompetitor(brand)}
+                className="group flex flex-col items-center gap-3 p-4 rounded-xl border-2 border-border bg-card hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-pointer"
+              >
+                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-border bg-muted group-hover:border-primary/40 transition-colors">
+                  <img
+                    src={brand.avatar}
+                    alt={brand.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(brand.name)}&background=6366f1&color=fff&size=56`;
+                    }}
+                  />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{topic.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{topic.desc}</p>
-                  <div className="flex gap-1.5 mt-2">
-                    {topic.tags.map(t => (
-                      <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-medium">{t}</span>
-                    ))}
+                <div className="text-center">
+                  <p className="text-sm font-semibold">{brand.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{brand.handle}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Search Bar */}
+        {!selectedCompetitor && (
+          <div className="relative" ref={searchRef}>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search for a competitor's Facebook page..."
+                value={competitorSearch}
+                onChange={(e) => setCompetitorSearch(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                className="pl-10 h-12 text-sm"
+              />
+            </div>
+
+            {/* Search Results Dropdown */}
+            {searchFocused && filteredResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-popover border border-border rounded-xl shadow-lg z-50 overflow-hidden">
+                {filteredResults.slice(0, 5).map((result) => (
+                  <button
+                    key={result.id}
+                    onMouseDown={() => handleSelectCompetitor(result)}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left"
+                  >
+                    <div className="w-9 h-9 rounded-full overflow-hidden border border-border bg-muted shrink-0">
+                      <img
+                        src={result.avatar}
+                        alt={result.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(result.name)}&background=6366f1&color=fff&size=36`;
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{result.name}</p>
+                      <p className="text-[11px] text-muted-foreground">{result.handle}</p>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full shrink-0">Facebook Page</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {searchFocused && competitorSearch.length >= 2 && filteredResults.length === 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-popover border border-border rounded-xl shadow-lg z-50 p-4 text-center">
+                <p className="text-sm text-muted-foreground">No Facebook pages found for "{competitorSearch}"</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Selected Competitor Confirmation */}
+        {selectedCompetitor && (
+          <div className="space-y-6 animate-scale-in">
+            <Card className="p-6 border-2 border-primary/30 bg-primary/5 max-w-md mx-auto">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/30 bg-muted shrink-0">
+                  <img
+                    src={selectedCompetitor.avatar}
+                    alt={selectedCompetitor.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedCompetitor.name)}&background=6366f1&color=fff&size=64`;
+                    }}
+                  />
+                </div>
+                <div className="text-left flex-1">
+                  <p className="font-bold text-lg">{selectedCompetitor.name}</p>
+                  <p className="text-sm text-muted-foreground">{selectedCompetitor.handle}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <Check className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs text-primary font-medium">Competitor selected</span>
                   </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsUp className="h-3.5 w-3.5 text-muted-foreground" /></button>
-                  <button className="p-1.5 rounded-full hover:bg-accent transition-colors"><ThumbsDown className="h-3.5 w-3.5 text-muted-foreground" /></button>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground text-xs"
+                  onClick={() => setSelectedCompetitor(null)}
+                >
+                  Change
+                </Button>
               </div>
             </Card>
-          ))}
-        </div>
+
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                We'll analyze <span className="font-semibold text-foreground">{selectedCompetitor.name}'s</span> ad creative and launch a competitor variation workflow for your brand.
+              </p>
+              <Button
+                size="lg"
+                className="gap-2 px-8"
+                onClick={() => {
+                  // Future: navigate to workflow
+                }}
+              >
+                <Sparkles className="h-4 w-4" />
+                Launch Workflow
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
