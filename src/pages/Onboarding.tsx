@@ -96,9 +96,14 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     image: "",
   });
 
-  const screenshotUrl = website
-    ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
-    : null;
+  // Derive base URL (landing page) and product URL
+  const baseUrl = (() => {
+    try {
+      const u = new URL(website.startsWith("http") ? website : `https://${website}`);
+      return u.origin;
+    } catch { return website; }
+  })();
+  const productUrl = website;
 
   // Notify parent about scraping state
   useEffect(() => {
