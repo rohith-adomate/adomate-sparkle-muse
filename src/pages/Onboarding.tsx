@@ -96,9 +96,14 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     image: "",
   });
 
-  const screenshotUrl = website
-    ? `https://picsum.photos/seed/${encodeURIComponent(website)}/600/400`
-    : null;
+  // Derive base URL (landing page) and product URL
+  const baseUrl = (() => {
+    try {
+      const u = new URL(website.startsWith("http") ? website : `https://${website}`);
+      return u.origin;
+    } catch { return website; }
+  })();
+  const productUrl = website;
 
   // Notify parent about scraping state
   useEffect(() => {
@@ -278,7 +283,7 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
             </div>
             <h2 className="text-2xl font-bold tracking-tight">What are you selling?</h2>
             <p className="text-muted-foreground mt-2 leading-relaxed">
-              Paste the URL of the product, service, or offer you want to build ad workflows around.
+              Paste the URL of the product, software, or service you want to build ad workflows for.
               <br />
               This could be a product page, a service landing page, or homepage.
             </p>
@@ -334,42 +339,32 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
     return (
       <div className="space-y-8 max-w-3xl mx-auto animate-scale-in">
         {/* Top scraping rectangle */}
-        {!isComplete && (
+        {!isComplete ? (
           <Card className="overflow-hidden border-border/60">
             <div className="flex flex-col md:flex-row">
-              {/* Left: Screenshot */}
+              {/* Left: Placeholder for landing page preview */}
               <div className="relative w-full md:w-[320px] shrink-0 bg-muted">
-                {screenshotUrl ? (
-                  <>
-                    <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
-                      <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-                      <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">{website}</span>
-                    </div>
-                    <div className="relative">
-                      <img src={screenshotUrl} alt="Website preview" className="w-full aspect-[3/2] object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10 animate-pulse pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full aspect-[3/2] flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
+                  <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                  <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">
+                    {isBrandPhase ? baseUrl : productUrl}
+                  </span>
+                </div>
+                <div className="relative w-full aspect-[3/2] flex flex-col items-center justify-center gap-3 bg-muted/50 border-t border-border/20">
+                  <Globe className="h-8 w-8 text-muted-foreground/40" />
+                  <p className="text-xs text-muted-foreground/60 font-medium px-4 text-center">
+                    {isBrandPhase ? "Landing page preview" : "Product page preview"}
+                  </p>
+                  <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
+                </div>
               </div>
 
               {/* Right: Animated steps */}
               <div className="flex-1 p-6 flex flex-col justify-center">
-                <div className="space-y-1 mb-6">
+                <div className="mb-6">
                   <h3 className="text-lg font-bold tracking-tight">{currentTitle}</h3>
-                  <p className="text-sm text-muted-foreground animate-fade-in" key={`subtitle-${currentStepIndex}`}>
-                    {currentStepIndex < currentSteps.length
-                      ? currentSteps[currentStepIndex].text
-                      : currentSteps[currentSteps.length - 1].text
-                    }
-                  </p>
                 </div>
 
                 <div className="space-y-3">
@@ -404,6 +399,19 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
                     );
                   })}
                 </div>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          /* Complete state: show success summary */
+          <Card className="overflow-hidden border-primary/30 bg-primary/5">
+            <div className="p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm">Knowledge gathered successfully</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Brand data and product information collected. Click the cards below to review details.</p>
               </div>
             </div>
           </Card>
