@@ -635,42 +635,12 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
         />
 
         {/* Product Detail Modal */}
-        <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
-          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <Package className="h-5 w-5 text-primary" />
-                {productData.name} — Product Details
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 pt-2">
-              {productData.image && (
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Product Image</p>
-                  <div className="w-full max-w-xs rounded-xl overflow-hidden border border-border/60 shadow-sm">
-                    <img src={productData.image} alt={productData.name} className="w-full aspect-square object-cover" />
-                  </div>
-                </div>
-              )}
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Description</p>
-                <p className="text-sm text-foreground leading-relaxed">{productData.description}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Key Feature</p>
-                <p className="text-sm text-foreground leading-relaxed">AI-powered creative generation with 10x faster output</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Price Point</p>
-                <p className="text-sm text-foreground leading-relaxed">Starting at $49/mo</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Target Market</p>
-                <p className="text-sm text-foreground leading-relaxed">Growth-stage DTC brands and SaaS companies looking to scale their paid social creative.</p>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <ProductProfileModal
+          open={showProductModal}
+          onOpenChange={setShowProductModal}
+          data={productData}
+          onDataChange={setProductData}
+        />
       </div>
     );
   }
