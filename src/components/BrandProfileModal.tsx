@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import {
-  Upload, Trash2, Star, Plus, X, Globe, Pencil, Link2
+  Upload, Trash2, Star, Plus, X, Globe, Pencil, Link2, Info, ImageIcon
 } from "lucide-react";
 
 const AVAILABLE_LANGUAGES = [
@@ -20,13 +21,21 @@ const AVAILABLE_LANGUAGES = [
 
 const MAX_LOGOS = 6;
 const MAX_LOGO_SIZE_MB = 25;
+const MAX_ASSET_SIZE_MB = 25;
 const ACCEPTED_LOGO_TYPES = ".png,.jpg,.jpeg,.svg,.webp";
+const ACCEPTED_ASSET_TYPES = ".png,.jpg,.jpeg,.svg,.webp";
 
 interface LogoFile {
   id: string;
   name: string;
   url: string;
   isDefault: boolean;
+}
+
+interface AssetFile {
+  id: string;
+  name: string;
+  url: string;
 }
 
 interface KnowledgeField {
@@ -47,6 +56,7 @@ export interface BrandProfileData {
   socialLinks: string;
   colors: string[];
   logos: LogoFile[];
+  assets: AssetFile[];
   languages: LanguageEntry[];
   knowledgeFields: KnowledgeField[];
 }
@@ -58,8 +68,24 @@ interface BrandProfileModalProps {
   onDataChange: (data: BrandProfileData) => void;
 }
 
+function InfoTooltip({ text }: { text: string }) {
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Info className="h-3.5 w-3.5 text-muted-foreground/60 hover:text-muted-foreground cursor-help transition-colors" />
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[240px] text-xs">
+          {text}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: BrandProfileModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const assetInputRef = useRef<HTMLInputElement>(null);
   const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
 
@@ -98,6 +124,26 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
       remaining[0].isDefault = true;
     }
     update({ logos: remaining });
+  };
+
+  // ─── Assets ───────────────────────────────────────────────────────────────
+  const handleAssetUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const toAdd = Array.from(files).filter(f => f.size <= MAX_ASSET_SIZE_MB * 1024 * 1024);
+
+    const newAssets: AssetFile[] = toAdd.map((file) => ({
+      id: crypto.randomUUID(),
+      name: file.name,
+      url: URL.createObjectURL(file),
+    }));
+
+    update({ assets: [...(data.assets || []), ...newAssets] });
+    if (assetInputRef.current) assetInputRef.current.value = "";
+  };
+
+  const deleteAsset = (id: string) => {
+    update({ assets: (data.assets || []).filter(a => a.id !== id) });
   };
 
   // ─── Languages ────────────────────────────────────────────────────────────
@@ -194,9 +240,12 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
               {/* Brand Logos */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold">Brand Logos</Label>
+                  <div className="flex items-center gap-1.5">
+                    <Label className="text-sm font-semibold">Brand Logos</Label>
+                    <InfoTooltip text="Your brand's logo files used across ads and campaigns. The starred logo is the primary one. Upload up to 6 logos." />
+                  </div>
                   <span className="text-[10px] text-muted-foreground">
-                    At least one logo is required
+                    {data.logos.length}/{MAX_LOGOS}
                   </span>
                 </div>
 
@@ -211,7 +260,6 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
                         alt={logo.name}
                         className="max-w-full max-h-full object-contain p-3"
                       />
-                      {/* Star (default) badge */}
                       {logo.isDefault && (
                         <div className="absolute top-2 left-2">
                           <Star className="h-5 w-5 fill-warning text-warning" />
@@ -227,7 +275,6 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
                           <Star className="h-5 w-5 text-muted-foreground hover:text-warning transition-colors" />
                         </button>
                       )}
-                      {/* Delete button */}
                       <button
                         type="button"
                         onClick={() => deleteLogo(logo.id)}
@@ -242,7 +289,6 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
                     </div>
                   ))}
 
-                  {/* Upload placeholder */}
                   {data.logos.length < MAX_LOGOS && (
                     <button
                       type="button"
@@ -251,9 +297,9 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
                     >
                       <Upload className="h-5 w-5 text-muted-foreground" />
                       <div className="text-center">
-                        <p className="text-[11px] font-medium text-muted-foreground">upload logo</p>
+                        <p className="text-[11px] font-medium text-muted-foreground">Upload logo</p>
                         <p className="text-[9px] text-muted-foreground/70">(PNG, JPEG, SVG, WEBP)</p>
-                        <p className="text-[9px] text-muted-foreground/70">Max {MAX_LOGO_SIZE_MB}MB per logo.</p>
+                        <p className="text-[9px] text-muted-foreground/70">Max {MAX_LOGO_SIZE_MB}MB</p>
                       </div>
                     </button>
                   )}
@@ -271,7 +317,10 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
 
               {/* Brand Colors */}
               <div className="space-y-3">
-                <Label className="text-sm font-semibold">Brand Colors</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label className="text-sm font-semibold">Brand Colors</Label>
+                  <InfoTooltip text="Your brand's color palette extracted from your website. These colors are used to generate on-brand ad creatives." />
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {data.colors.map((color, i) => (
                     <div key={i} className="group relative flex flex-col items-center gap-1">
@@ -308,6 +357,65 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
                   </button>
                 </div>
               </div>
+
+              {/* Brand Assets */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Label className="text-sm font-semibold">Brand Assets</Label>
+                    <InfoTooltip text="Additional brand imagery like banners, icons, patterns, and lifestyle photos used in ad creative generation." />
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">
+                    {(data.assets || []).length} files
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {(data.assets || []).map((asset) => (
+                    <div
+                      key={asset.id}
+                      className="group relative aspect-square rounded-lg border border-border bg-muted/50 overflow-hidden"
+                    >
+                      <img
+                        src={asset.url}
+                        alt={asset.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => deleteAsset(asset.id)}
+                        className="absolute top-1.5 right-1.5 p-1 rounded bg-background/80 border border-border opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                      <div className="absolute bottom-0 inset-x-0 bg-background/80 backdrop-blur-sm px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <p className="text-[9px] text-muted-foreground truncate">{asset.name}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => assetInputRef.current?.click()}
+                    className="aspect-square rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                    <div className="text-center">
+                      <p className="text-[10px] font-medium text-muted-foreground">Upload</p>
+                      <p className="text-[8px] text-muted-foreground/70">Max {MAX_ASSET_SIZE_MB}MB</p>
+                    </div>
+                  </button>
+                </div>
+
+                <input
+                  ref={assetInputRef}
+                  type="file"
+                  accept={ACCEPTED_ASSET_TYPES}
+                  multiple
+                  onChange={handleAssetUpload}
+                  className="hidden"
+                />
+              </div>
             </div>
 
             {/* ═══ RIGHT COLUMN: Knowledge ═══ */}
@@ -316,6 +424,7 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
               <div className="space-y-1.5">
                 <Label className="text-sm font-semibold flex items-center gap-1.5">
                   <Globe className="h-3.5 w-3.5" /> Website URL
+                  <InfoTooltip text="Your brand's primary website. This URL was used to scrape initial brand data and context." />
                 </Label>
                 <Input
                   value={data.websiteUrl}
@@ -328,6 +437,7 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
               <div className="space-y-1.5">
                 <Label className="text-sm font-semibold flex items-center gap-1.5">
                   <Link2 className="h-3.5 w-3.5" /> Social Links
+                  <InfoTooltip text="Links to your brand's social media profiles. Used for audience research and ad placement context." />
                 </Label>
                 <Input
                   value={data.socialLinks}
@@ -339,7 +449,10 @@ export function BrandProfileModal({ open, onOpenChange, data, onDataChange }: Br
 
               {/* Target Languages */}
               <div className="space-y-2">
-                <Label className="text-sm font-semibold">Target Languages</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label className="text-sm font-semibold">Target Languages</Label>
+                  <InfoTooltip text="Languages your ads will be generated in. Star a language to set it as the default for new campaigns." />
+                </div>
                 {data.languages.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {data.languages.map((lang) => (

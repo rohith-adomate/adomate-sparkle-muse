@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import {
-  Upload, Trash2, Star, Plus, Package, Globe, Pencil, Link2
+  Upload, Trash2, Star, Plus, Package, Globe, Pencil, Info
 } from "lucide-react";
 
 const MAX_IMAGE_SIZE_MB = 25;
@@ -38,6 +39,21 @@ interface ProductProfileModalProps {
   onOpenChange: (open: boolean) => void;
   data: ProductProfileData;
   onDataChange: (data: ProductProfileData) => void;
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Info className="h-3.5 w-3.5 text-muted-foreground/60 hover:text-muted-foreground cursor-help transition-colors" />
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[240px] text-xs">
+          {text}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }
 
 export function ProductProfileModal({ open, onOpenChange, data, onDataChange }: ProductProfileModalProps) {
@@ -137,9 +153,12 @@ export function ProductProfileModal({ open, onOpenChange, data, onDataChange }: 
             <div className="lg:w-[380px] shrink-0 p-6 space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold">Product Images</Label>
+                  <div className="flex items-center gap-1.5">
+                    <Label className="text-sm font-semibold">Product Images</Label>
+                    <InfoTooltip text="Upload product photos used in ad creative. The starred image is the hero image shown as the primary visual." />
+                  </div>
                   <span className="text-[10px] text-muted-foreground">
-                    At least one image required · ★ = Hero
+                    {data.images.length} files · ★ = Hero
                   </span>
                 </div>
 
@@ -154,7 +173,6 @@ export function ProductProfileModal({ open, onOpenChange, data, onDataChange }: 
                         alt={img.name}
                         className="w-full h-full object-cover"
                       />
-                      {/* Star (hero) badge */}
                       {img.isHero && (
                         <div className="absolute top-2 left-2">
                           <Star className="h-5 w-5 fill-warning text-warning" />
@@ -170,7 +188,6 @@ export function ProductProfileModal({ open, onOpenChange, data, onDataChange }: 
                           <Star className="h-5 w-5 text-muted-foreground hover:text-warning transition-colors" />
                         </button>
                       )}
-                      {/* Delete button */}
                       <button
                         type="button"
                         onClick={() => deleteImage(img.id)}
@@ -217,6 +234,7 @@ export function ProductProfileModal({ open, onOpenChange, data, onDataChange }: 
               <div className="space-y-1.5">
                 <Label className="text-sm font-semibold flex items-center gap-1.5">
                   <Globe className="h-3.5 w-3.5" /> Product URL
+                  <InfoTooltip text="The direct link to this product or service page. Used as context for generating relevant ad copy." />
                 </Label>
                 <Input
                   value={data.websiteUrl}
