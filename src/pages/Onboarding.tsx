@@ -68,6 +68,7 @@ interface OnboardingProps {
   step: number;
   setStep: (step: number) => void;
   onScraping: (v: boolean) => void;
+  onCanContinue?: (v: boolean) => void;
 }
 
 type KnowledgePhase = "url" | "brand-scraping" | "brand-done" | "product-scraping" | "complete";
