@@ -1,7 +1,7 @@
 import {
   Home, Database, Lightbulb, Palette, FileText,
   Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
-  ChevronRight, ChevronLeft, User,
+  ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
