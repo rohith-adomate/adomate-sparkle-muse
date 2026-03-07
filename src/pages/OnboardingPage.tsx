@@ -2,9 +2,9 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Onboarding } from "@/pages/Onboarding";
-import { ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-const stepLabels = ["Goals", "Website", "Brand", "Product", "Launch"];
+const stepLabels = ["Goals", "Knowledge", "Launch"];
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -14,17 +14,18 @@ export default function OnboardingPage() {
   const progress = (currentStep / stepLabels.length) * 100;
 
   const handleNext = () => {
-    if (currentStep === 5) {
+    if (currentStep === 3) {
       navigate("/");
     } else {
-      setCurrentStep(prev => Math.min(prev + 1, 5));
+      setCurrentStep(prev => Math.min(prev + 1, 3));
     }
   };
 
   const handleBack = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   const handleScraping = useCallback((v: boolean) => setIsScraping(v), []);
 
-  const showFooterNav = currentStep !== 2 || isScraping;
+  // Hide footer nav during knowledge scraping phase
+  const showFooterNav = currentStep !== 2 || !isScraping;
 
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
@@ -94,14 +95,9 @@ export default function OnboardingPage() {
             </Button>
           ) : <div />}
           <div className="flex items-center gap-3">
-            {currentStep !== 5 && currentStep !== 1 && currentStep !== 2 && (
-              <Button variant="ghost" size="sm" onClick={handleNext} className="text-muted-foreground hover:text-foreground">
-                Skip
-              </Button>
-            )}
             {!isScraping && (
               <Button size="sm" onClick={handleNext} className="gap-1.5 px-6 shadow-sm">
-                {currentStep === 5 ? "Launch into Adomate ✨" : <>Continue <ChevronRight className="h-4 w-4" /></>}
+                {currentStep === 3 ? "Launch into Adomate ✨" : <>Continue <ChevronRight className="h-4 w-4" /></>}
               </Button>
             )}
           </div>
