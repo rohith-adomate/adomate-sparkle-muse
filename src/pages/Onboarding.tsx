@@ -235,10 +235,10 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             <Target className="h-7 w-7 text-white" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">What are you looking to achieve?</h2>
-          <p className="text-muted-foreground mt-1">Select one or more goals — this helps us tailor your experience</p>
+          <p className="text-muted-foreground mt-1">Select one or more goals. This helps us tailor your experience.</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-5">
           {goalCards.map((goal) => {
             const isSelected = selectedGoals.includes(goal.id);
             const Icon = goal.icon;
@@ -246,7 +246,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
               <button
                 key={goal.id}
                 onClick={() => toggleGoal(goal.id)}
-                className={`relative flex flex-col items-start gap-3 p-5 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md ${
+                className={`relative flex flex-col items-start gap-4 p-7 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md ${
                   isSelected
                     ? "border-primary bg-primary/5 shadow-sm"
                     : "border-border hover:border-primary/40"
@@ -257,14 +257,14 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
                     <Check className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-colors ${
                   isSelected ? "bg-primary/10" : "bg-accent"
                 }`}>
-                  <Icon className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                  <Icon className={`h-6 w-6 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">{goal.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{goal.subtitle}</p>
+                  <p className="font-semibold">{goal.title}</p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{goal.subtitle}</p>
                 </div>
               </button>
             );

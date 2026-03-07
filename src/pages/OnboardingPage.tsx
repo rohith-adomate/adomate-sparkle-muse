@@ -30,15 +30,7 @@ export default function OnboardingPage() {
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 shrink-0">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/")}
-          className="gap-2 text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to App
-        </Button>
+        <div />
 
         {/* Step pills */}
         <div className="flex items-center gap-0.5 overflow-x-auto">
@@ -90,15 +82,17 @@ export default function OnboardingPage() {
       {/* Footer */}
       {showFooterNav && (
         <div className="flex items-center justify-between px-6 py-4 border-t border-border/40 bg-muted/20 shrink-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            disabled={currentStep <= 1 || isScraping}
-            className="gap-1 text-muted-foreground"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back
-          </Button>
+          {currentStep > 1 ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              disabled={isScraping}
+              className="gap-1 text-muted-foreground"
+            >
+              <ChevronLeft className="h-4 w-4" /> Back
+            </Button>
+          ) : <div />}
           <div className="flex items-center gap-3">
             {currentStep !== 5 && currentStep !== 1 && currentStep !== 2 && (
               <Button variant="ghost" size="sm" onClick={handleNext} className="text-muted-foreground hover:text-foreground">
