@@ -27,12 +27,6 @@ const coreNav = [
   { title: "Concepts", url: "/concepts", icon: Lightbulb },
   { title: "Studio", url: "/studio", icon: Palette },
   { title: "Content", url: "/content", icon: FileText },
-  { title: "Calendar", url: "/calendar", icon: CalendarDays },
-];
-
-const bottomNav = [
-  { title: "Performance", url: "/performance", icon: BarChart3 },
-  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground";
