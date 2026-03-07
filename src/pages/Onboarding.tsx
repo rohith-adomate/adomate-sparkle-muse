@@ -235,7 +235,7 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
             <Target className="h-7 w-7 text-white" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">What are you looking to achieve?</h2>
-          <p className="text-muted-foreground mt-1">Select one or more goals — this helps us tailor your experience</p>
+          <p className="text-muted-foreground mt-1">Select one or more goals. This helps us tailor your experience.</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
