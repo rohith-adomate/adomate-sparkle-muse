@@ -193,14 +193,7 @@ export function AppSidebar() {
         </div>
       </SidebarContent>
 
-      {/* Edge toggle button — vertically centered on the sidebar border */}
-      <button
-        onClick={toggleSidebar}
-        className="absolute top-1/2 -translate-y-1/2 -right-3 z-20 h-6 w-6 rounded-full border border-border bg-background shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        aria-label="Toggle sidebar"
-      >
-        {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
-      </button>
+      </SidebarContent>
     </Sidebar>
   );
 }
