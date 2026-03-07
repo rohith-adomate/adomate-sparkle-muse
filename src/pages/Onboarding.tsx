@@ -156,19 +156,32 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
           try {
             const hostname = new URL(website.startsWith("http") ? website : `https://${website}`).hostname;
             const name = hostname.replace(/^www\./, "").split(".")[0];
-            setBrandData({
+            const fullUrl = website.startsWith("http") ? website : `https://${website}`;
+            setBrandData(prev => ({
+              ...prev,
               name: name.charAt(0).toUpperCase() + name.slice(1),
-              description: "An innovative company pushing the boundaries of modern advertising with AI-powered creative solutions.",
-              logo: name.charAt(0).toUpperCase(),
+              websiteUrl: fullUrl,
               colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
-            });
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "An innovative company pushing the boundaries of modern advertising with AI-powered creative solutions." };
+                if (f.id === "tone") return { ...f, value: "Professional yet approachable, with a focus on clarity and impact." };
+                if (f.id === "positioning") return { ...f, value: "The easiest way to create high-performing ads at scale." };
+                if (f.id === "target-audience") return { ...f, value: "Small-to-medium business marketing teams looking to scale ad creative without hiring designers." };
+                if (f.id === "uvp") return { ...f, value: "AI-powered ad creation that delivers 10x faster creative output with zero design skills needed." };
+                return f;
+              }),
+            }));
           } catch {
-            setBrandData({
+            setBrandData(prev => ({
+              ...prev,
               name: "Your Brand",
-              description: "An innovative company pushing the boundaries of modern advertising.",
-              logo: "Y",
+              websiteUrl: website,
               colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981"],
-            });
+              knowledgeFields: prev.knowledgeFields.map(f => {
+                if (f.id === "description") return { ...f, value: "An innovative company pushing the boundaries of modern advertising." };
+                return f;
+              }),
+            }));
           }
           setTimeout(() => setKnowledgePhase("brand-done"), 600);
         }
