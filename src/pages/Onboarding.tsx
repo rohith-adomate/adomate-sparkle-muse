@@ -73,7 +73,7 @@ interface OnboardingProps {
 
 type KnowledgePhase = "url" | "brand-scraping" | "brand-done" | "product-scraping" | "complete";
 
-export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
+export function Onboarding({ step, setStep, onScraping, onCanContinue }: OnboardingProps) {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [website, setWebsite] = useState("");
   const [knowledgePhase, setKnowledgePhase] = useState<KnowledgePhase>("url");
