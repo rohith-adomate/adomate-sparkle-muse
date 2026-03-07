@@ -405,91 +405,17 @@ export function Onboarding({ step, setStep, onScraping, onCanContinue }: Onboard
             </div>
           </Card>
         ) : (
-          /* Complete state: 5 alternatives for user to choose from */
-          <div className="space-y-4">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Choose a completion style</p>
-            <div className="grid grid-cols-1 gap-4">
-
-              {/* Alternative 1: Minimal pill */}
-              <Card className="overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-200 cursor-pointer group">
-                <div className="px-5 py-4 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground">Knowledge collected</p>
-                    <p className="text-xs text-muted-foreground">Brand profile & product data ready. Review below.</p>
-                  </div>
-                  <span className="text-[10px] font-mono text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">Option 1</span>
-                </div>
-              </Card>
-
-              {/* Alternative 2: Gradient banner */}
-              <Card className="overflow-hidden border-0 hover:shadow-md transition-all duration-200 cursor-pointer group">
-                <div className="px-5 py-4 bg-gradient-to-r from-primary/8 via-primary/4 to-transparent flex items-center gap-4 border border-primary/15 rounded-lg">
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-sm">
-                      <Sparkles className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-foreground">We've got everything we need ✨</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Brand identity, product details, and market positioning — all captured.</p>
-                  </div>
-                  <span className="text-[10px] font-mono text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">Option 2</span>
-                </div>
-              </Card>
-
-              {/* Alternative 3: Two-stat summary */}
-              <Card className="overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-200 cursor-pointer group">
-                <div className="px-5 py-4 flex items-center gap-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-sm font-semibold text-foreground">Knowledge sync complete</span>
-                  </div>
-                  <div className="h-4 w-px bg-border" />
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><Palette className="h-3 w-3" /> Brand profile</span>
-                    <span className="flex items-center gap-1.5"><Package className="h-3 w-3" /> Product data</span>
-                  </div>
-                  <span className="ml-auto text-[10px] font-mono text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">Option 3</span>
-                </div>
-              </Card>
-
-              {/* Alternative 4: Celebration card */}
-              <Card className="overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-200 cursor-pointer group">
-                <div className="px-5 py-5 text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold mb-2">
-                    <Check className="h-3 w-3" />
-                    All done
-                  </div>
-                  <p className="text-sm font-bold text-foreground">Your brand knowledge base is ready</p>
-                  <p className="text-xs text-muted-foreground mt-1">We scraped, analyzed, and organized everything. Click the cards below to review.</p>
-                  <span className="text-[10px] font-mono text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity mt-2 inline-block">Option 4</span>
-                </div>
-              </Card>
-
-              {/* Alternative 5: Progress-complete bar */}
-              <Card className="overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-200 cursor-pointer group">
-                <div className="px-5 py-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Brain className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-semibold text-foreground">Intelligence gathered</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">Option 5</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full w-full rounded-full gradient-primary" />
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Brand profile · Product data · Market intel</span>
-                    <span className="text-emerald-500 font-medium">100%</span>
-                  </div>
-                </div>
-              </Card>
+          <Card className="overflow-hidden border-border/40">
+            <div className="px-5 py-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <Check className="h-4 w-4 text-emerald-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">Knowledge collected</p>
+                <p className="text-xs text-muted-foreground">Brand profile & product data ready. Review below.</p>
+              </div>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Brand card or skeleton */}
