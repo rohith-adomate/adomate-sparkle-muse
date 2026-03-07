@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+
 
 const brands = [
   { name: "Acme Co", color: "hsl(336 78% 50%)" },
