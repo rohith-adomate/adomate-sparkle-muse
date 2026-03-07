@@ -1,6 +1,6 @@
 import {
-  Home, Database, Megaphone, Lightbulb, Palette, FileText, CalendarDays,
-  BarChart3, Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
+  Home, Database, Lightbulb, Palette, FileText,
+  Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
   ChevronRight, User,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -27,12 +27,6 @@ const coreNav = [
   { title: "Concepts", url: "/concepts", icon: Lightbulb },
   { title: "Studio", url: "/studio", icon: Palette },
   { title: "Content", url: "/content", icon: FileText },
-  { title: "Calendar", url: "/calendar", icon: CalendarDays },
-];
-
-const bottomNav = [
-  { title: "Performance", url: "/performance", icon: BarChart3 },
-  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground";
@@ -97,16 +91,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/performance" className={linkCls} activeClassName={activeCls}>
-                    <BarChart3 className="h-4 w-4" />
-                    <span>Performance</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Brand Data Room — collapsible, moved to bottom */}
+              {/* Brand Data Room — collapsible */}
               <li>
                 <Collapsible defaultOpen={inDataRoom}>
                   <CollapsibleTrigger
