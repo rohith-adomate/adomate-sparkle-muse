@@ -257,14 +257,14 @@ export function Onboarding({ step, setStep, onScraping }: OnboardingProps) {
                     <Check className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-colors ${
                   isSelected ? "bg-primary/10" : "bg-accent"
                 }`}>
-                  <Icon className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                  <Icon className={`h-6 w-6 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">{goal.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{goal.subtitle}</p>
+                  <p className="font-semibold">{goal.title}</p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{goal.subtitle}</p>
                 </div>
               </button>
             );
