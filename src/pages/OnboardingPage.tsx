@@ -30,7 +30,7 @@ export default function OnboardingPage() {
   const showFooterNav = currentStep !== 2 || (!isScraping && canContinue);
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col bg-background">
+    <div className="fixed inset-0 z-40 flex flex-col bg-background">
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 shrink-0">
         <div />
