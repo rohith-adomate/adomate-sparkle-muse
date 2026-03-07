@@ -203,6 +203,7 @@ const Sidebar = React.forwardRef<
             : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
           className,
         )}
+        style={{ top: "var(--topnav-height, 0px)", height: "calc(100svh - var(--topnav-height, 0px))" }}
         {...props}
       >
         <div
