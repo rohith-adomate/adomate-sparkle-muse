@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2 } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
+import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
 
