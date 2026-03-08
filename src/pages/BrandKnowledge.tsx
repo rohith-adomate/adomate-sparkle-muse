@@ -161,25 +161,9 @@ export default function BrandKnowledge() {
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <Breadcrumbs items={[{ label: "Brand Data Room", href: "/brand-data-room" }, { label: "Brand Knowledge" }]} />
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Brand Knowledge</h1>
-          <p className="text-muted-foreground text-sm">Define your brand identity and visual style. Changes auto-save.</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          {saveState === "saving" && (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <span className="text-muted-foreground">Saving...</span>
-            </>
-          )}
-          {saveState === "saved" && (
-            <>
-              <Check className="h-4 w-4 text-emerald-500" />
-              <span className="text-emerald-600">Saved</span>
-            </>
-          )}
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Brand Knowledge</h1>
+        <p className="text-muted-foreground text-sm">Define your brand identity and visual style. Changes auto-save.</p>
       </div>
 
       <Tabs defaultValue="knowledge">
