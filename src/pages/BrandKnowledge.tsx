@@ -107,14 +107,8 @@ export default function BrandKnowledge() {
   };
 
   const triggerAutoSave = useCallback(() => {
-    setSaveState("saving");
-    const timer = setTimeout(() => {
-      setSaveState("saved");
-      const resetTimer = setTimeout(() => setSaveState("idle"), 2000);
-      return () => clearTimeout(resetTimer);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+    triggerSave();
+  }, [triggerSave]);
 
   const handleFieldChange = useCallback(() => {
     const debounce = setTimeout(() => triggerAutoSave(), 300);
