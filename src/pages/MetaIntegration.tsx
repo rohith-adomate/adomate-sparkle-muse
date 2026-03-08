@@ -3,13 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Separator } from "@/components/ui/separator";
-
-const syncHistory = [
-  { time: "1 hour ago", status: "Success", records: "1,234" },
-  { time: "Yesterday, 3:00 PM", status: "Success", records: "1,198" },
-  { time: "Feb 11, 10:00 AM", status: "Success", records: "1,150" },
-];
 
 export default function MetaIntegration() {
   return (
