@@ -631,6 +631,8 @@ export default function BrandKnowledge() {
                       />
                       <Upload className="h-5 w-5 text-muted-foreground" />
                       <p className="text-[10px] text-muted-foreground text-center px-2">Add image</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-1">(PNG, JPEG, SVG, WEBP)</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-1">Max 25MB</p>
                     </label>
                   </div>
                 )}
