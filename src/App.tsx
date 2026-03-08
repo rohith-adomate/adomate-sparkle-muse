@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 import Home from "./pages/Home";
 import BrandDataRoom from "./pages/BrandDataRoom";
 import BrandKnowledge from "./pages/BrandKnowledge";
@@ -24,6 +25,8 @@ import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
 import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
+import AdminHome from "./pages/admin/AdminHome";
+import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +57,16 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
+          </Route>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/admin/users" element={<AdminPlaceholder title="Users" />} />
+            <Route path="/admin/admins" element={<AdminPlaceholder title="Admins" />} />
+            <Route path="/admin/credits" element={<AdminPlaceholder title="Credits" />} />
+            <Route path="/admin/system-settings" element={<AdminPlaceholder title="System Settings" />} />
+            <Route path="/admin/dashboards/users" element={<AdminPlaceholder title="Users Overview" />} />
+            <Route path="/admin/dashboards/companies" element={<AdminPlaceholder title="Companies & Brands" />} />
+            <Route path="/admin/dashboards/onboarding-qa" element={<AdminPlaceholder title="Onboarding QA" />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
