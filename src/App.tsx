@@ -70,9 +70,9 @@ const App = () => (
             <Route path="/admin/admins" element={<AdminAdmins />} />
             <Route path="/admin/credits" element={<AdminCredits />} />
             <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
-            <Route path="/admin/dashboards/users" element={<AdminPlaceholder title="Users Overview" />} />
+            <Route path="/admin/dashboards/users" element={<AdminUsersOverview />} />
             <Route path="/admin/dashboards/companies" element={<AdminPlaceholder title="Companies & Brands" />} />
-            <Route path="/admin/dashboards/onboarding-qa" element={<AdminPlaceholder title="Onboarding QA" />} />
+            <Route path="/admin/dashboards/onboarding-qa" element={<AdminOnboardingQA />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
