@@ -1,15 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search } from "lucide-react";
+import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2 } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
 
@@ -69,6 +69,7 @@ export default function BrandKnowledge() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
+  const [deletingField, setDeletingField] = useState<string | null>(null);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
@@ -297,11 +298,11 @@ export default function BrandKnowledge() {
             </CardContent>
           </Card>
 
-          {/* Knowledge Fields Card - no outer tooltip */}
+          {/* Knowledge Fields */}
           <Card>
-            <CardContent className="pt-6 space-y-4">
+            <CardContent className="pt-6 space-y-6">
               {fields.map((field) => (
-                <div key={field.id} className="space-y-1.5">
+                <div key={field.id} className="space-y-1.5 group/field relative">
                   <div className="flex items-center gap-1.5 group">
                     <Label>{field.title}</Label>
                     <button
@@ -311,12 +312,21 @@ export default function BrandKnowledge() {
                     >
                       <Pencil className="h-3 w-3 text-muted-foreground" />
                     </button>
+                    <div className="flex-1" />
+                    <button
+                      onClick={() => setDeletingField(field.id)}
+                      className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                      aria-label={`Delete ${field.title}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
+                    </button>
                   </div>
-                  <Textarea
+                  <MarkdownEditor
                     value={field.value}
-                    onChange={(e) => updateFieldValue(field.id, e.target.value)}
-                    onBlur={handleFieldChange}
-                    rows={field.rows}
+                    onChange={(val) => {
+                      updateFieldValue(field.id, val);
+                      handleFieldChange();
+                    }}
                   />
                 </div>
               ))}
@@ -439,12 +449,39 @@ export default function BrandKnowledge() {
             </div>
             <div className="space-y-2">
               <Label>Content</Label>
-              <Textarea value={newFieldValue} onChange={(e) => setNewFieldValue(e.target.value)} placeholder="Describe this aspect of your brand..." rows={4} />
+              <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
             <Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deletingField} onOpenChange={(open) => !open && setDeletingField(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Knowledge Field</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{fields.find(f => f.id === deletingField)?.title}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deletingField) {
+                  setFields(fields.filter(f => f.id !== deletingField));
+                  setDeletingField(null);
+                  triggerAutoSave();
+                }
+              }}
+            >
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

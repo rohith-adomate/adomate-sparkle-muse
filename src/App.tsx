@@ -8,7 +8,7 @@ import { AdminLayout } from "@/components/layout/AdminLayout";
 import Home from "./pages/Home";
 import BrandDataRoom from "./pages/BrandDataRoom";
 import BrandKnowledge from "./pages/BrandKnowledge";
-import LanguageSelectorDemo from "./pages/LanguageSelectorDemo";
+
 import Products from "./pages/Products";
 import Personas from "./pages/Personas";
 import MetaIntegration from "./pages/MetaIntegration";
@@ -50,7 +50,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/brand-data-room" element={<BrandDataRoom />} />
             <Route path="/brand-data-room/knowledge" element={<BrandKnowledge />} />
-            <Route path="/brand-data-room/language-demos" element={<LanguageSelectorDemo />} />
+            
             <Route path="/brand-data-room/products" element={<Products />} />
             <Route path="/brand-data-room/personas" element={<Personas />} />
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
