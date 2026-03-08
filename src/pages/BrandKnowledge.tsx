@@ -370,10 +370,10 @@ export default function BrandKnowledge() {
                     <p className="text-xs text-muted-foreground">Max 25MB per logo · Up to 6 logos</p>
                   </label>
                 ) : (
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-4">
                     {logos.map((logo) => (
                       <div key={logo.id} className="relative group/logo aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
-                        <img src={logo.url} alt={logo.name} className="max-w-full max-h-full object-contain p-2" />
+                        <img src={logo.url} alt={logo.name} className="max-w-[70%] max-h-[70%] object-contain" />
                         {/* Default star - always visible */}
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
@@ -425,17 +425,15 @@ export default function BrandKnowledge() {
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
-                          {logos.length <= 1 && (
-                            <TooltipContent side="top" className="text-xs">
-                              At least one logo is required
-                            </TooltipContent>
-                          )}
+                          <TooltipContent side="top" className="text-xs">
+                            {logos.length <= 1 ? "At least one logo is required" : "Delete this logo"}
+                          </TooltipContent>
                         </Tooltip>
                       </div>
                     ))}
                     {/* Upload drop zone - only show if under 6 */}
                     {logos.length < 6 && (
-                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 transition-colors cursor-pointer">
                         <input
                           type="file"
                           accept=".png,.jpg,.jpeg,.svg,.webp"
@@ -451,7 +449,8 @@ export default function BrandKnowledge() {
                         />
                         <Upload className="h-6 w-6 text-muted-foreground" />
                         <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
-                        <p className="text-[10px] text-muted-foreground text-center px-2">({6 - logos.length} remaining)</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo</p>
                       </label>
                     )}
                   </div>
