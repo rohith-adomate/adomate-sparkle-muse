@@ -211,7 +211,7 @@ export function AppSidebar() {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent side="top" align="start" className="w-48 p-2">
-                  <button className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md hover:bg-muted transition-colors">
+                  <button onClick={() => { setPopoverOpen(false); nav("/admin"); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md hover:bg-muted transition-colors">
                     <Crown className="h-4 w-4" />
                     Admin
                   </button>
