@@ -66,9 +66,8 @@ const App = () => (
             <Route path="/admin" element={<AdminHome />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/admins" element={<AdminAdmins />} />
-            <Route path="/admin/credits" element={<AdminPlaceholder title="Credits" />} />
-            <Route path="/admin/credits" element={<AdminPlaceholder title="Credits" />} />
-            <Route path="/admin/system-settings" element={<AdminPlaceholder title="System Settings" />} />
+            <Route path="/admin/credits" element={<AdminCredits />} />
+            <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
             <Route path="/admin/dashboards/users" element={<AdminPlaceholder title="Users Overview" />} />
             <Route path="/admin/dashboards/companies" element={<AdminPlaceholder title="Companies & Brands" />} />
             <Route path="/admin/dashboards/onboarding-qa" element={<AdminPlaceholder title="Onboarding QA" />} />
