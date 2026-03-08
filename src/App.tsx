@@ -22,6 +22,7 @@ import Workflows from "./pages/Workflows";
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
+import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
 
 const queryClient = new QueryClient();
