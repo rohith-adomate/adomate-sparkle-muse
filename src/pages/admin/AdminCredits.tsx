@@ -36,14 +36,14 @@ export default function AdminCredits() {
           </div>
 
           <div>
-            <div className="grid grid-cols-3 px-4 py-2">
-              <span className="text-sm font-medium text-primary cursor-pointer">Company</span>
-              <span className="text-sm font-medium text-primary cursor-pointer">Created</span>
-              <span className="text-sm font-medium text-primary cursor-pointer">Remaining credits</span>
+            <div className="grid grid-cols-3 px-4 py-2 border-b border-border/40">
+              <span className="text-sm font-medium text-muted-foreground cursor-pointer">Company</span>
+              <span className="text-sm font-medium text-muted-foreground cursor-pointer">Created</span>
+              <span className="text-sm font-medium text-muted-foreground cursor-pointer">Remaining credits</span>
             </div>
             {filtered.map((c) => (
-              <div key={c.name} className="grid grid-cols-3 px-4 py-3 border-t border-border/40">
-                <span className="text-sm font-medium">{c.name}</span>
+              <div key={c.name} className="grid grid-cols-3 px-4 py-3">
+                <span className="text-sm font-semibold">{c.name}</span>
                 <span className="text-sm">{c.created}</span>
                 <span className="text-sm font-bold text-primary">{c.credits}</span>
               </div>
