@@ -615,7 +615,7 @@ export default function BrandKnowledge() {
                         </button>
                       </div>
                     ))}
-                    <label className="w-[120px] h-[120px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                    <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
                       <input
                         type="file"
                         accept=".png,.jpg,.jpeg,.svg,.webp"
