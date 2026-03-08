@@ -189,7 +189,7 @@ export function AppSidebar() {
                   <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Credits</span>
                   <span className="text-sm font-bold text-primary">0</span>
                 </div>
-                <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-lg">Buy credits</span>
+                <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md">Buy credits</span>
               </button>
             )}
           </div>
