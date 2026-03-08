@@ -302,32 +302,35 @@ export default function BrandKnowledge() {
           <Card>
             <CardContent className="pt-6 space-y-6">
               {fields.map((field) => (
-                <div key={field.id} className="space-y-1.5 group/field relative">
-                  <div className="flex items-center gap-1.5 group">
-                    <Label>{field.title}</Label>
-                    <button
-                      onClick={() => openEditTitle(field.id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
-                      aria-label={`Edit ${field.title} title`}
-                    >
-                      <Pencil className="h-3 w-3 text-muted-foreground" />
-                    </button>
-                    <div className="flex-1" />
+                <div key={field.id} className="group/field relative flex gap-2">
+                  <div className="flex-1 space-y-1.5 min-w-0">
+                    <div className="flex items-center gap-1.5 group">
+                      <Label>{field.title}</Label>
+                      <button
+                        onClick={() => openEditTitle(field.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
+                        aria-label={`Edit ${field.title} title`}
+                      >
+                        <Pencil className="h-3 w-3 text-muted-foreground" />
+                      </button>
+                    </div>
+                    <MarkdownEditor
+                      value={field.value}
+                      onChange={(val) => {
+                        updateFieldValue(field.id, val);
+                        handleFieldChange();
+                      }}
+                    />
+                  </div>
+                  <div className="w-8 shrink-0 flex items-center justify-center">
                     <button
                       onClick={() => setDeletingField(field.id)}
-                      className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                      className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-destructive/10"
                       aria-label={`Delete ${field.title}`}
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
+                      <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
                     </button>
                   </div>
-                  <MarkdownEditor
-                    value={field.value}
-                    onChange={(val) => {
-                      updateFieldValue(field.id, val);
-                      handleFieldChange();
-                    }}
-                  />
                 </div>
               ))}
               <div className="flex justify-center pt-2">
