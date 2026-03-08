@@ -69,6 +69,7 @@ export default function BrandKnowledge() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
+  const [deletingField, setDeletingField] = useState<string | null>(null);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
