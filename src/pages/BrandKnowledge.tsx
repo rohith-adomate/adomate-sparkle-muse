@@ -347,7 +347,7 @@ export default function BrandKnowledge() {
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5">
                   <Label>Brand Logos</Label>
-                  <InfoTooltip text="Upload your brand logos for use in generated ad creative. The starred logo is the default used in campaigns. Supports PNG, JPEG, SVG, and WebP up to 25MB each." />
+                  <InfoTooltip text="Upload up to 6 brand logos for use in generated ad creative. The yellow star indicates the default logo used in campaigns. Click the star on any logo to set it as default. Supports PNG, JPEG, SVG, and WebP up to 25MB each." />
                 </div>
                 {logos.length === 0 ? (
                   <label className="border-2 border-dashed border-border rounded-xl p-10 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer block">
@@ -365,33 +365,41 @@ export default function BrandKnowledge() {
                       }}
                     />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">upload logo</p>
+                    <p className="text-sm font-medium">Upload logo</p>
                     <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP)</p>
-                    <p className="text-xs text-muted-foreground">Max 25MB per logo.</p>
+                    <p className="text-xs text-muted-foreground">Max 25MB per logo · Up to 6 logos</p>
                   </label>
                 ) : (
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="grid grid-cols-3 gap-3">
                     {logos.map((logo) => (
-                      <div key={logo.id} className="relative group/logo w-[160px] h-[160px] rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
+                      <div key={logo.id} className="relative group/logo aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
                         <img src={logo.url} alt={logo.name} className="max-w-full max-h-full object-contain p-2" />
-                        {/* Default star */}
-                        {logo.isDefault && (
-                          <div className="absolute top-2 left-2">
-                            <Star className="h-5 w-5 fill-primary text-primary" />
-                          </div>
-                        )}
-                        {!logo.isDefault && (
-                          <button
-                            onClick={() => {
-                              setLogos(logos.map(l => ({ ...l, isDefault: l.id === logo.id })));
-                              triggerAutoSave();
-                            }}
-                            className="absolute top-2 left-2 opacity-0 group-hover/logo:opacity-100 transition-opacity"
-                            aria-label="Set as default"
-                          >
-                            <Star className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
-                          </button>
-                        )}
+                        {/* Default star - always visible */}
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => {
+                                if (!logo.isDefault) {
+                                  setLogos(logos.map(l => ({ ...l, isDefault: l.id === logo.id })));
+                                  triggerAutoSave();
+                                }
+                              }}
+                              className="absolute top-2 left-2 p-0.5"
+                              aria-label={logo.isDefault ? "Default logo" : "Set as default logo"}
+                            >
+                              <Star
+                                className={`h-5 w-5 transition-colors ${
+                                  logo.isDefault
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-muted-foreground/30 hover:fill-yellow-400 hover:text-yellow-400"
+                                }`}
+                              />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs">
+                            {logo.isDefault ? "This is the default logo" : "Click to set as default logo"}
+                          </TooltipContent>
+                        </Tooltip>
                         {/* Delete icon */}
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
@@ -425,26 +433,27 @@ export default function BrandKnowledge() {
                         </Tooltip>
                       </div>
                     ))}
-                    {/* Upload drop zone */}
-                    <label className="w-[160px] h-[160px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
-                      <input
-                        type="file"
-                        accept=".png,.jpg,.jpeg,.svg,.webp"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file && file.size <= 25 * 1024 * 1024) {
-                            const url = URL.createObjectURL(file);
-                            setLogos([...logos, { id: `logo-${Date.now()}`, url, name: file.name, isDefault: false }]);
-                            triggerAutoSave();
-                          }
-                        }}
-                      />
-                      <Upload className="h-6 w-6 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground text-center px-2">upload logo</p>
-                      <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
-                      <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo.</p>
-                    </label>
+                    {/* Upload drop zone - only show if under 6 */}
+                    {logos.length < 6 && (
+                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept=".png,.jpg,.jpeg,.svg,.webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file && file.size <= 25 * 1024 * 1024 && logos.length < 6) {
+                              const url = URL.createObjectURL(file);
+                              setLogos([...logos, { id: `logo-${Date.now()}`, url, name: file.name, isDefault: false }]);
+                              triggerAutoSave();
+                            }
+                          }}
+                        />
+                        <Upload className="h-6 w-6 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">({6 - logos.length} remaining)</p>
+                      </label>
+                    )}
                   </div>
                 )}
               </div>
@@ -459,25 +468,86 @@ export default function BrandKnowledge() {
                   <Label>Brand Colors</Label>
                   <InfoTooltip text="Your brand's primary color palette. These hex colors are used in generated ad creative to ensure brand consistency." />
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {colors.map((c) => (
-                    <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
-                      <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
-                      <div className="text-left">
-                        <p className="text-xs font-medium">{c.name}</p>
-                        <p className="text-[10px] text-muted-foreground">{c.hex}</p>
-                      </div>
-                      <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {colors.map((c, idx) => (
+                    <Popover key={c.hex + idx}>
+                      <PopoverTrigger asChild>
+                        <div className="group relative rounded-xl border p-3 flex flex-col items-center gap-2 cursor-pointer hover:border-primary/50 transition-colors">
+                          <div className="h-16 w-full rounded-lg shadow-inner" style={{ background: c.hex }} />
+                          <p className="text-xs font-mono text-muted-foreground">{c.hex.toUpperCase()}</p>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); removeColor(c.hex); }}
+                            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="w-auto p-3 space-y-3">
+                        <input
+                          type="color"
+                          value={c.hex}
+                          onChange={(e) => {
+                            const updated = [...colors];
+                            updated[idx] = { hex: e.target.value, name: e.target.value };
+                            setColors(updated);
+                            triggerAutoSave();
+                          }}
+                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                        />
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                          <Input
+                            value={c.hex.toUpperCase()}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                              if (!val.startsWith("#")) val = "#" + val;
+                              if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
+                                const updated = [...colors];
+                                updated[idx] = { hex: val, name: val };
+                                setColors(updated);
+                                triggerAutoSave();
+                              }
+                            }}
+                            className="font-mono text-sm"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   ))}
-                  <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
-                    <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
-                      <Plus className="h-3 w-3" /> Add
-                    </Button>
-                  </div>
+                  {colors.length < 8 && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="rounded-xl border-2 border-dashed border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer min-h-[106px]">
+                          <Plus className="h-6 w-6 text-muted-foreground" />
+                          <p className="text-xs text-muted-foreground">Add color</p>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="w-auto p-3 space-y-3">
+                        <input
+                          type="color"
+                          value={newColor}
+                          onChange={(e) => setNewColor(e.target.value)}
+                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                        />
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                          <Input
+                            value={newColor.toUpperCase()}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                              if (!val.startsWith("#")) val = "#" + val;
+                              if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) setNewColor(val);
+                            }}
+                            className="font-mono text-sm"
+                          />
+                        </div>
+                        <Button size="sm" className="w-full" onClick={() => { addColor(); }}>
+                          Add Color
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </div>
               </div>
             </CardContent>
