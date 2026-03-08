@@ -22,6 +22,7 @@ import Workflows from "./pages/Workflows";
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
+import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
+            <Route path="/credits" element={<Credits />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,7 +1,7 @@
 import {
   Home, Database, Lightbulb, Palette, FileText,
   Workflow, Settings, BookOpen, Package, Users, Link2, Swords,
-  ChevronRight, User,
+  ChevronRight, User, CreditCard,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -163,18 +163,50 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* User avatar at bottom */}
-        <div className="mt-auto px-3 py-3 border-t border-sidebar-border">
-          <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-2.5")}>
-            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center shadow-sm shrink-0">
-              <User className="h-4 w-4 text-white" />
-            </div>
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">John Doe</p>
-                <p className="text-[11px] text-muted-foreground truncate">john@acmeco.com</p>
-              </div>
+        {/* Credits widget */}
+        <div className="mt-auto">
+          <div className="px-3 py-2">
+            {collapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => nav("/credits")}
+                    className="w-full rounded-lg border border-border/60 bg-muted/50 p-2 flex flex-col items-center gap-1 hover:bg-muted transition-colors"
+                  >
+                    <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs font-bold text-primary">0</span>
+                    <span className="text-[10px] text-muted-foreground">Buy</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Credits</TooltipContent>
+              </Tooltip>
+            ) : (
+              <button
+                onClick={() => nav("/credits")}
+                className="w-full rounded-lg border border-border/60 bg-muted/50 p-2.5 flex items-center justify-between hover:bg-muted transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Credits</span>
+                  <span className="text-sm font-bold text-primary">0</span>
+                </div>
+                <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-md">Buy credits</span>
+              </button>
             )}
+          </div>
+
+          {/* User avatar */}
+          <div className="px-3 py-3 border-t border-sidebar-border">
+            <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-2.5")}>
+              <div className="h-8 w-8 rounded-full bg-foreground flex items-center justify-center shadow-sm shrink-0">
+                <span className="text-sm font-bold text-background">N</span>
+              </div>
+              {!collapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">Ankit Kumar</p>
+                  <p className="text-[11px] text-muted-foreground truncate">ankit@adomate.com</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </SidebarContent>
