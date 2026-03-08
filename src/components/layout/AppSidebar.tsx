@@ -171,9 +171,11 @@ export function AppSidebar() {
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => nav("/credits")}
-                    className="w-full rounded-xl bg-primary/10 px-2 py-2 flex items-center justify-center hover:bg-primary/15 transition-colors"
+                    className="w-full rounded-lg border border-border/60 bg-muted/50 p-2 flex flex-col items-center gap-1 hover:bg-muted transition-colors"
                   >
-                    <span className="text-xs font-medium text-primary">Buy credits</span>
+                    <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs font-bold text-primary">0</span>
+                    <span className="text-[10px] text-muted-foreground">Buy</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">Credits</TooltipContent>
@@ -181,13 +183,13 @@ export function AppSidebar() {
             ) : (
               <button
                 onClick={() => nav("/credits")}
-                className="w-full rounded-xl border border-border/60 bg-muted/40 px-3 py-2.5 flex items-center justify-between hover:bg-muted transition-colors"
+                className="w-full rounded-lg border border-border/60 bg-muted/50 p-2.5 flex items-center justify-between hover:bg-muted transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Credits</span>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Credits</span>
                   <span className="text-sm font-bold text-primary">0</span>
                 </div>
-                <span className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-lg">Buy credits</span>
+                <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-md">Buy credits</span>
               </button>
             )}
           </div>
@@ -201,6 +203,7 @@ export function AppSidebar() {
               {!collapsed && (
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">Ankit Kumar</p>
+                  <p className="text-[11px] text-muted-foreground truncate">ankit@adomate.com</p>
                 </div>
               )}
             </div>
