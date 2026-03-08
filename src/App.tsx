@@ -53,6 +53,7 @@ const App = () => (
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
+            <Route path="/credits" element={<Credits />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
