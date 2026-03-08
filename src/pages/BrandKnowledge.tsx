@@ -6,9 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Loader2, Check, RefreshCw, Upload, Plus, X, Pencil } from "lucide-react";
-import { useState, useCallback } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search } from "lucide-react";
+import { useState, useCallback, useMemo } from "react";
 import { HoverExplainer } from "@/components/HoverExplainer";
+import { Badge } from "@/components/ui/badge";
+
+const ALL_LANGUAGES = [
+  "Afrikaans","Albanian","Amharic","Arabic","Armenian","Azerbaijani","Basque","Belarusian","Bengali","Bosnian",
+  "Bulgarian","Burmese","Catalan","Cebuano","Chinese (Simplified)","Chinese (Traditional)","Croatian","Czech",
+  "Danish","Dutch","English","Esperanto","Estonian","Filipino","Finnish","French","Galician","Georgian","German",
+  "Greek","Gujarati","Haitian Creole","Hausa","Hawaiian","Hebrew","Hindi","Hmong","Hungarian","Icelandic","Igbo",
+  "Indonesian","Irish","Italian","Japanese","Javanese","Kannada","Kazakh","Khmer","Kinyarwanda","Korean","Kurdish",
+  "Kyrgyz","Lao","Latin","Latvian","Lithuanian","Luxembourgish","Macedonian","Malagasy","Malay","Malayalam","Maltese",
+  "Maori","Marathi","Mongolian","Nepali","Norwegian","Odia","Pashto","Persian","Polish","Portuguese","Punjabi",
+  "Romanian","Russian","Samoan","Scottish Gaelic","Serbian","Sesotho","Shona","Sindhi","Sinhala","Slovak","Slovenian",
+  "Somali","Spanish","Sundanese","Swahili","Swedish","Tajik","Tamil","Tatar","Telugu","Thai","Turkish","Turkmen",
+  "Ukrainian","Urdu","Uyghur","Uzbek","Vietnamese","Welsh","Xhosa","Yiddish","Yoruba","Zulu"
+];
 
 const initialColors = [
   { hex: "#6366F1", name: "Indigo" },
@@ -30,6 +46,19 @@ const initialFields: KnowledgeField[] = [
   { id: "visual-style", title: "Visual Style", value: "Prefer lifestyle photography with diverse models. Avoid stock-photo aesthetics. Use warm lighting. Clean layouts with generous whitespace. Product shots should be on neutral backgrounds.", rows: 4 },
 ];
 
+function InfoTooltip({ text }: { text: string }) {
+  return (
+    <Tooltip delayDuration={200}>
+      <TooltipTrigger asChild>
+        <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help shrink-0" />
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+        <p>{text}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 export default function BrandKnowledge() {
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [colors, setColors] = useState(initialColors);
@@ -40,6 +69,40 @@ export default function BrandKnowledge() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
+
+  // Languages state
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
+  const [defaultLanguage, setDefaultLanguage] = useState("English");
+  const [langSearch, setLangSearch] = useState("");
+  const [langPopoverOpen, setLangPopoverOpen] = useState(false);
+
+  const filteredLanguages = useMemo(() => {
+    return ALL_LANGUAGES.filter(
+      (l) => l.toLowerCase().includes(langSearch.toLowerCase()) && !selectedLanguages.includes(l)
+    );
+  }, [langSearch, selectedLanguages]);
+
+  const addLanguage = (lang: string) => {
+    const updated = [...selectedLanguages, lang];
+    setSelectedLanguages(updated);
+    if (updated.length === 1) setDefaultLanguage(lang);
+    setLangSearch("");
+    triggerAutoSave();
+  };
+
+  const removeLanguage = (lang: string) => {
+    const updated = selectedLanguages.filter((l) => l !== lang);
+    setSelectedLanguages(updated);
+    if (defaultLanguage === lang && updated.length > 0) {
+      setDefaultLanguage(updated[0]);
+    }
+    triggerAutoSave();
+  };
+
+  const setAsDefault = (lang: string) => {
+    setDefaultLanguage(lang);
+    triggerAutoSave();
+  };
 
   const triggerAutoSave = useCallback(() => {
     setSaveState("saving");
@@ -130,74 +193,144 @@ export default function BrandKnowledge() {
         </TabsList>
 
         <TabsContent value="knowledge" className="mt-4 space-y-4">
-          <HoverExplainer text="Brand Name: The primary brand name used in all generated ad copy and creative. Stored in brand_knowledge.name. Auto-saved on blur with 300ms debounce. Max length: 100 characters.">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-1.5">
+          {/* Merged Brand Info Card */}
+          <Card>
+            <CardContent className="pt-6 space-y-5">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
                   <Label>Brand Name</Label>
-                  <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
+                  <InfoTooltip text="The primary name of your brand. This will be used across all generated ad copy and creative materials." />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Languages</Label>
-                  <Input defaultValue="English, Spanish" onBlur={handleFieldChange} placeholder="Comma-separated list of languages" />
-                  <p className="text-[10px] text-muted-foreground">Languages the AI will generate ad copy in.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
+                <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
+              </div>
 
-          <HoverExplainer text="Website URL: Used by the AI scraper to extract brand context, product info, and tone. 'Refresh Knowledge' triggers a web scrape of the URL and updates the brand context.">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-1.5">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
                   <Label>Website URL</Label>
-                  <div className="flex gap-2">
-                    <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} className="flex-1" />
-                    <Button variant="outline" size="sm" className="gap-1.5 shrink-0">
-                      <RefreshCw className="h-3.5 w-3.5" /> Refresh Knowledge
-                    </Button>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">We'll scrape your website to extract brand context automatically.</p>
+                  <InfoTooltip text="Your brand's main website. This helps the AI understand your brand context, products, and messaging." />
                 </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
+                <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} />
+              </div>
 
-          <HoverExplainer text="Knowledge fields: Free-form brand context fields. Each is editable — hover a title to rename it, or add custom fields with the + button. Backend: brand_knowledge entries (JSONB).">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                {fields.map((field) => (
-                  <div key={field.id} className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 group">
-                      <Label>{field.title}</Label>
-                      <button
-                        onClick={() => openEditTitle(field.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
-                        aria-label={`Edit ${field.title} title`}
-                      >
-                        <Pencil className="h-3 w-3 text-muted-foreground" />
-                      </button>
-                    </div>
-                    <Textarea
-                      value={field.value}
-                      onChange={(e) => updateFieldValue(field.id, e.target.value)}
-                      onBlur={handleFieldChange}
-                      rows={field.rows}
-                    />
-                  </div>
-                ))}
-                <div className="flex justify-center pt-2">
-                  <button
-                    onClick={() => setShowAddModal(true)}
-                    className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
-                    aria-label="Add new knowledge field"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Languages</Label>
+                  <InfoTooltip text="Set the languages your brand uses for advertising. The AI will generate ad copy in these languages. The starred language is the default." />
                 </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
+
+                {/* Selected languages */}
+                <div className="flex flex-wrap gap-2">
+                  {selectedLanguages.map((lang) => (
+                    <Badge
+                      key={lang}
+                      variant="secondary"
+                      className="gap-1.5 py-1 px-2.5 text-xs font-medium"
+                    >
+                      <Tooltip delayDuration={600}>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => setAsDefault(lang)}
+                            className="shrink-0"
+                            aria-label={`Set ${lang} as default`}
+                          >
+                            <Star
+                              className={`h-3 w-3 transition-colors ${
+                                defaultLanguage === lang
+                                  ? "fill-primary text-primary"
+                                  : "text-muted-foreground/40 hover:text-muted-foreground"
+                              }`}
+                            />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          {defaultLanguage === lang ? "Default language" : "Set as default language"}
+                        </TooltipContent>
+                      </Tooltip>
+                      {lang}
+                      <button
+                        onClick={() => removeLanguage(lang)}
+                        className="shrink-0 hover:text-destructive transition-colors"
+                        aria-label={`Remove ${lang}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+
+                  {/* Add language popover */}
+                  <Popover open={langPopoverOpen} onOpenChange={setLangPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <button className="h-7 px-2.5 rounded-md border border-dashed border-muted-foreground/30 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-1">
+                        <Plus className="h-3 w-3" /> Add language
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-2" align="start">
+                      <div className="flex items-center gap-2 border-b pb-2 mb-1">
+                        <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <input
+                          value={langSearch}
+                          onChange={(e) => setLangSearch(e.target.value)}
+                          placeholder="Search languages..."
+                          className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="max-h-48 overflow-y-auto space-y-0.5">
+                        {filteredLanguages.length === 0 ? (
+                          <p className="text-xs text-muted-foreground p-2 text-center">No languages found</p>
+                        ) : (
+                          filteredLanguages.map((lang) => (
+                            <button
+                              key={lang}
+                              onClick={() => addLanguage(lang)}
+                              className="w-full text-left text-sm px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                            >
+                              {lang}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Knowledge Fields Card - no outer tooltip */}
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              {fields.map((field) => (
+                <div key={field.id} className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 group">
+                    <Label>{field.title}</Label>
+                    <button
+                      onClick={() => openEditTitle(field.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent"
+                      aria-label={`Edit ${field.title} title`}
+                    >
+                      <Pencil className="h-3 w-3 text-muted-foreground" />
+                    </button>
+                  </div>
+                  <Textarea
+                    value={field.value}
+                    onChange={(e) => updateFieldValue(field.id, e.target.value)}
+                    onBlur={handleFieldChange}
+                    rows={field.rows}
+                  />
+                </div>
+              ))}
+              <div className="flex justify-center pt-2">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground"
+                  aria-label="Add new knowledge field"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="visual" className="mt-4 space-y-4">
