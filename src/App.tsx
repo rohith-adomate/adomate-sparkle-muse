@@ -8,7 +8,7 @@ import { AdminLayout } from "@/components/layout/AdminLayout";
 import Home from "./pages/Home";
 import BrandDataRoom from "./pages/BrandDataRoom";
 import BrandKnowledge from "./pages/BrandKnowledge";
-import LanguageSelectorDemo from "./pages/LanguageSelectorDemo";
+
 import Products from "./pages/Products";
 import Personas from "./pages/Personas";
 import MetaIntegration from "./pages/MetaIntegration";
