@@ -43,6 +43,54 @@ const demoGenerations: Generation[] = [
 
 const aspectRatios = ["1:1", "4:5", "9:16", "16:9"];
 
+function ModalTabs({ selectedImage }: { selectedImage: Generation }) {
+  const [activeTab, setActiveTab] = useState<"settings" | "prompt">("settings");
+  return (
+    <div>
+      <div className="flex border-b border-border">
+        <button
+          onClick={() => setActiveTab("settings")}
+          className={`flex-1 pb-2 text-sm font-medium text-center transition-colors ${activeTab === "settings" ? "text-foreground" : "text-muted-foreground"}`}
+          style={activeTab === "settings" ? { borderBottom: "2px solid hsl(var(--primary))", marginBottom: "-1px" } : {}}
+        >
+          Settings
+        </button>
+        <button
+          onClick={() => setActiveTab("prompt")}
+          className={`flex-1 pb-2 text-sm font-medium text-center transition-colors ${activeTab === "prompt" ? "text-foreground" : "text-muted-foreground"}`}
+          style={activeTab === "prompt" ? { borderBottom: "2px solid hsl(var(--primary))", marginBottom: "-1px" } : {}}
+        >
+          Prompt
+        </button>
+      </div>
+      {activeTab === "settings" ? (
+        <div className="mt-4 space-y-2.5">
+          {([
+            ["Status", selectedImage.status],
+            ["Generated", selectedImage.generated],
+            ["Product", selectedImage.product],
+            ["Model", selectedImage.model],
+            ["Ratio", selectedImage.ratio],
+            ["Language", selectedImage.language],
+            ["ImageGPT", selectedImage.imageGpt],
+            ["Send product image", selectedImage.sendProductImage],
+            ["Include product context", selectedImage.includeProductContext],
+          ] as const).map(([k, v]) => (
+            <div key={k} className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{k}</span>
+              <Badge variant="outline" className="text-[10px] font-semibold">{v}</Badge>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-4">
+          <Input readOnly value={selectedImage.prompt} className="text-sm bg-muted/50" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Studio() {
   const { setOpen } = useSidebar();
 
@@ -264,13 +312,13 @@ export default function Studio() {
               {/* Header */}
               <div className="flex items-center gap-3 px-6 pt-5 pb-3">
                 <h3 className="text-base font-semibold">Generated ad</h3>
-                <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-semibold">NANO BANANA PRO</Badge>
-                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-semibold">DONE</Badge>
+                <Badge variant="outline" className="text-[10px] font-semibold border-primary text-primary bg-transparent">NANO BANANA PRO</Badge>
+                <Badge variant="outline" className="text-[10px] font-semibold border-emerald-500 text-emerald-600 bg-transparent">DONE</Badge>
               </div>
 
               <div className="flex px-6 pb-6 gap-5">
                 {/* Large image preview */}
-                <div className="flex-1 border-2 border-foreground/10 rounded-xl overflow-hidden">
+                <div className="flex-1 border border-border/60 rounded-xl overflow-hidden">
                   <img src={selectedImage.src} alt="Generated ad" className="w-full h-full object-cover" />
                 </div>
 
@@ -285,33 +333,8 @@ export default function Studio() {
                     </div>
                   </div>
 
-                  <Tabs defaultValue="settings">
-                    <TabsList className="w-full">
-                      <TabsTrigger value="settings" className="flex-1">Settings</TabsTrigger>
-                      <TabsTrigger value="prompt" className="flex-1">Prompt</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="settings" className="mt-4 space-y-2.5">
-                      {[
-                        ["Status", selectedImage.status],
-                        ["Generated", selectedImage.generated],
-                        ["Product", selectedImage.product],
-                        ["Model", selectedImage.model],
-                        ["Ratio", selectedImage.ratio],
-                        ["Language", selectedImage.language],
-                        ["ImageGPT", selectedImage.imageGpt],
-                        ["Send product image", selectedImage.sendProductImage],
-                        ["Include product context", selectedImage.includeProductContext],
-                      ].map(([k, v]) => (
-                        <div key={k} className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">{k}</span>
-                          <Badge variant="outline" className="text-[10px] font-semibold">{v}</Badge>
-                        </div>
-                      ))}
-                    </TabsContent>
-                    <TabsContent value="prompt" className="mt-4">
-                      <Input readOnly value={selectedImage.prompt} className="text-sm bg-muted/50" />
-                    </TabsContent>
-                  </Tabs>
+                  {/* Custom underline tabs */}
+                  <ModalTabs selectedImage={selectedImage} />
                 </div>
               </div>
             </>
