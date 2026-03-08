@@ -298,11 +298,11 @@ export default function BrandKnowledge() {
             </CardContent>
           </Card>
 
-          {/* Knowledge Fields Card - no outer tooltip */}
+          {/* Knowledge Fields */}
           <Card>
-            <CardContent className="pt-6 space-y-4">
+            <CardContent className="pt-6 space-y-6">
               {fields.map((field) => (
-                <div key={field.id} className="space-y-1.5">
+                <div key={field.id} className="space-y-1.5 group/field relative">
                   <div className="flex items-center gap-1.5 group">
                     <Label>{field.title}</Label>
                     <button
@@ -312,12 +312,21 @@ export default function BrandKnowledge() {
                     >
                       <Pencil className="h-3 w-3 text-muted-foreground" />
                     </button>
+                    <div className="flex-1" />
+                    <button
+                      onClick={() => setDeletingField(field.id)}
+                      className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                      aria-label={`Delete ${field.title}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
+                    </button>
                   </div>
-                  <Textarea
+                  <MarkdownEditor
                     value={field.value}
-                    onChange={(e) => updateFieldValue(field.id, e.target.value)}
-                    onBlur={handleFieldChange}
-                    rows={field.rows}
+                    onChange={(val) => {
+                      updateFieldValue(field.id, val);
+                      handleFieldChange();
+                    }}
                   />
                 </div>
               ))}
