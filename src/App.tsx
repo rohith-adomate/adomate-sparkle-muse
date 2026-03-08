@@ -32,6 +32,7 @@ import AdminCredits from "./pages/admin/AdminCredits";
 import AdminSystemSettings from "./pages/admin/AdminSystemSettings";
 import AdminUsersOverview from "./pages/admin/AdminUsersOverview";
 import AdminOnboardingQA from "./pages/admin/AdminOnboardingQA";
+import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
@@ -71,7 +72,7 @@ const App = () => (
             <Route path="/admin/credits" element={<AdminCredits />} />
             <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
             <Route path="/admin/dashboards/users" element={<AdminUsersOverview />} />
-            <Route path="/admin/dashboards/companies" element={<AdminPlaceholder title="Companies & Brands" />} />
+            <Route path="/admin/dashboards/companies" element={<AdminCompanies />} />
             <Route path="/admin/dashboards/onboarding-qa" element={<AdminOnboardingQA />} />
           </Route>
           <Route path="*" element={<NotFound />} />
