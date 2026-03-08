@@ -26,6 +26,8 @@ import NotFound from "./pages/NotFound";
 import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
 import AdminHome from "./pages/admin/AdminHome";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAdmins from "./pages/admin/AdminAdmins";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
@@ -60,8 +62,9 @@ const App = () => (
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminHome />} />
-            <Route path="/admin/users" element={<AdminPlaceholder title="Users" />} />
-            <Route path="/admin/admins" element={<AdminPlaceholder title="Admins" />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/admins" element={<AdminAdmins />} />
+            <Route path="/admin/credits" element={<AdminPlaceholder title="Credits" />} />
             <Route path="/admin/credits" element={<AdminPlaceholder title="Credits" />} />
             <Route path="/admin/system-settings" element={<AdminPlaceholder title="System Settings" />} />
             <Route path="/admin/dashboards/users" element={<AdminPlaceholder title="Users Overview" />} />
