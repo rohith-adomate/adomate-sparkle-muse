@@ -449,12 +449,39 @@ export default function BrandKnowledge() {
             </div>
             <div className="space-y-2">
               <Label>Content</Label>
-              <Textarea value={newFieldValue} onChange={(e) => setNewFieldValue(e.target.value)} placeholder="Describe this aspect of your brand..." rows={4} />
+              <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
             <Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deletingField} onOpenChange={(open) => !open && setDeletingField(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Knowledge Field</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{fields.find(f => f.id === deletingField)?.title}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deletingField) {
+                  setFields(fields.filter(f => f.id !== deletingField));
+                  setDeletingField(null);
+                  triggerAutoSave();
+                }
+              }}
+            >
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
