@@ -370,10 +370,10 @@ export default function BrandKnowledge() {
                     <p className="text-xs text-muted-foreground">Max 25MB per logo · Up to 6 logos</p>
                   </label>
                 ) : (
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-4">
                     {logos.map((logo) => (
                       <div key={logo.id} className="relative group/logo aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
-                        <img src={logo.url} alt={logo.name} className="max-w-full max-h-full object-contain p-2" />
+                        <img src={logo.url} alt={logo.name} className="max-w-[70%] max-h-[70%] object-contain" />
                         {/* Default star - always visible */}
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
@@ -425,17 +425,15 @@ export default function BrandKnowledge() {
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
-                          {logos.length <= 1 && (
-                            <TooltipContent side="top" className="text-xs">
-                              At least one logo is required
-                            </TooltipContent>
-                          )}
+                          <TooltipContent side="top" className="text-xs">
+                            {logos.length <= 1 ? "At least one logo is required" : "Delete this logo"}
+                          </TooltipContent>
                         </Tooltip>
                       </div>
                     ))}
                     {/* Upload drop zone - only show if under 6 */}
                     {logos.length < 6 && (
-                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 transition-colors cursor-pointer">
                         <input
                           type="file"
                           accept=".png,.jpg,.jpeg,.svg,.webp"
@@ -451,7 +449,8 @@ export default function BrandKnowledge() {
                         />
                         <Upload className="h-6 w-6 text-muted-foreground" />
                         <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
-                        <p className="text-[10px] text-muted-foreground text-center px-2">({6 - logos.length} remaining)</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo</p>
                       </label>
                     )}
                   </div>
@@ -472,9 +471,12 @@ export default function BrandKnowledge() {
                   {colors.map((c, idx) => (
                     <Popover key={c.hex + idx}>
                       <PopoverTrigger asChild>
-                        <div className="group relative rounded-xl border p-3 flex flex-col items-center gap-2 cursor-pointer hover:border-primary/50 transition-colors">
-                          <div className="h-16 w-full rounded-lg shadow-inner" style={{ background: c.hex }} />
-                          <p className="text-xs font-mono text-muted-foreground">{c.hex.toUpperCase()}</p>
+                        <div className="group relative flex items-center gap-2.5 rounded-xl border p-2.5 pr-3 cursor-pointer hover:border-primary/50 transition-colors">
+                          <div className="h-10 w-10 rounded-lg shadow-inner shrink-0" style={{ background: c.hex }} />
+                          <div className="text-left min-w-0">
+                            <p className="text-xs font-medium truncate">{c.name}</p>
+                            <p className="text-[10px] text-muted-foreground font-mono">{c.hex.toUpperCase()}</p>
+                          </div>
                           <button
                             onClick={(e) => { e.stopPropagation(); removeColor(c.hex); }}
                             className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -489,14 +491,14 @@ export default function BrandKnowledge() {
                           value={c.hex}
                           onChange={(e) => {
                             const updated = [...colors];
-                            updated[idx] = { hex: e.target.value, name: e.target.value };
+                            updated[idx] = { ...updated[idx], hex: e.target.value };
                             setColors(updated);
                             triggerAutoSave();
                           }}
-                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                          className="w-52 h-36 rounded cursor-pointer border-0 p-0 block"
                         />
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground font-medium">HEX Color Code</p>
                           <Input
                             value={c.hex.toUpperCase()}
                             onChange={(e) => {
@@ -504,12 +506,26 @@ export default function BrandKnowledge() {
                               if (!val.startsWith("#")) val = "#" + val;
                               if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
                                 const updated = [...colors];
-                                updated[idx] = { hex: val, name: val };
+                                updated[idx] = { ...updated[idx], hex: val };
                                 setColors(updated);
                                 triggerAutoSave();
                               }
                             }}
                             className="font-mono text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground font-medium">Color Name</p>
+                          <Input
+                            value={c.name}
+                            onChange={(e) => {
+                              const updated = [...colors];
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                              setColors(updated);
+                              triggerAutoSave();
+                            }}
+                            className="text-sm"
+                            placeholder="e.g. Brand Blue"
                           />
                         </div>
                       </PopoverContent>
@@ -518,8 +534,10 @@ export default function BrandKnowledge() {
                   {colors.length < 8 && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="rounded-xl border-2 border-dashed border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer min-h-[106px]">
-                          <Plus className="h-6 w-6 text-muted-foreground" />
+                        <button className="flex items-center gap-2.5 rounded-xl border-2 border-dashed border-border p-2.5 pr-3 hover:border-primary/50 transition-colors cursor-pointer">
+                          <div className="h-10 w-10 rounded-lg border-2 border-dashed border-muted-foreground/20 flex items-center justify-center shrink-0">
+                            <Plus className="h-4 w-4 text-muted-foreground" />
+                          </div>
                           <p className="text-xs text-muted-foreground">Add color</p>
                         </button>
                       </PopoverTrigger>
@@ -528,10 +546,10 @@ export default function BrandKnowledge() {
                           type="color"
                           value={newColor}
                           onChange={(e) => setNewColor(e.target.value)}
-                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                          className="w-52 h-36 rounded cursor-pointer border-0 p-0 block"
                         />
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground font-medium">HEX Color Code</p>
                           <Input
                             value={newColor.toUpperCase()}
                             onChange={(e) => {
@@ -613,6 +631,8 @@ export default function BrandKnowledge() {
                       />
                       <Upload className="h-5 w-5 text-muted-foreground" />
                       <p className="text-[10px] text-muted-foreground text-center px-2">Add image</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-1">(PNG, JPEG, SVG, WEBP)</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-1">Max 25MB</p>
                     </label>
                   </div>
                 )}
