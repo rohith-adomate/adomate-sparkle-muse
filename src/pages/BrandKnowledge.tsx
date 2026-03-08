@@ -214,8 +214,8 @@ export default function BrandKnowledge() {
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Label>Languages</Label>
-                  <InfoTooltip text="Set the languages your brand uses for advertising. The AI will generate ad copy in these languages. The starred language is the default." />
+                  <Label>Ad Languages</Label>
+                  <InfoTooltip text="Choose the languages your brand uses for ad creation. The starred language is the default used unless another language is selected." />
                 </div>
 
                 {/* Selected languages */}
