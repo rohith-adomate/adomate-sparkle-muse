@@ -3,26 +3,42 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
-  ImageIcon, Expand, Copy, Trash2, RefreshCw,
+  ImageIcon, Maximize2, Copy, Trash2, RotateCcw, X,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useEffect } from "react";
 
 /* ── Demo data ── */
 
-const demoGenerations = [
-  { id: 1, src: "https://picsum.photos/seed/gen1/400/500" },
-  { id: 2, src: "https://picsum.photos/seed/gen2/400/500" },
-  { id: 3, src: "https://picsum.photos/seed/gen3/400/500" },
-  { id: 4, src: "https://picsum.photos/seed/gen4/400/500" },
-  { id: 5, src: "https://picsum.photos/seed/gen5/400/500" },
-  { id: 6, src: "https://picsum.photos/seed/gen6/400/500" },
+interface Generation {
+  id: number;
+  src: string;
+  status: string;
+  generated: string;
+  product: string;
+  model: string;
+  ratio: string;
+  language: string;
+  imageGpt: string;
+  sendProductImage: string;
+  includeProductContext: string;
+  prompt: string;
+}
+
+const demoGenerations: Generation[] = [
+  { id: 1, src: "https://picsum.photos/seed/gen1/600/750", status: "DONE", generated: "05/03/2026, 13:08:15", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 2, src: "https://picsum.photos/seed/gen2/600/750", status: "DONE", generated: "05/03/2026, 13:08:22", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 3, src: "https://picsum.photos/seed/gen3/600/750", status: "DONE", generated: "05/03/2026, 13:08:30", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 4, src: "https://picsum.photos/seed/gen4/600/750", status: "DONE", generated: "05/03/2026, 13:09:01", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 5, src: "https://picsum.photos/seed/gen5/600/750", status: "DONE", generated: "05/03/2026, 13:09:10", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 6, src: "https://picsum.photos/seed/gen6/600/750", status: "DONE", generated: "05/03/2026, 13:09:18", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
 ];
 
 const aspectRatios = ["1:1", "4:5", "9:16", "16:9"];
@@ -30,7 +46,6 @@ const aspectRatios = ["1:1", "4:5", "9:16", "16:9"];
 export default function Studio() {
   const { setOpen } = useSidebar();
 
-  // Auto-collapse sidebar on mount, restore on unmount
   useEffect(() => {
     setOpen(false);
     return () => setOpen(true);
@@ -43,6 +58,7 @@ export default function Studio() {
   const [language, setLanguage] = useState("en");
   const [prompt, setPrompt] = useState("");
   const [imageCount, setImageCount] = useState(3);
+  const [selectedImage, setSelectedImage] = useState<Generation | null>(null);
 
   return (
     <div className="flex gap-0 h-[calc(100vh-4rem)] -m-6">
@@ -50,7 +66,6 @@ export default function Studio() {
       <div className="w-[420px] shrink-0 border-r border-border overflow-y-auto p-6 space-y-5">
         <h1 className="text-xl font-bold tracking-tight">AI Image Studio</h1>
 
-        {/* Generation mode */}
         <Card className="border border-border/60">
           <CardContent className="p-4 space-y-3">
             <Label className="text-sm font-semibold">Generation mode</Label>
@@ -65,7 +80,6 @@ export default function Studio() {
           </CardContent>
         </Card>
 
-        {/* Product */}
         <Card className="border border-border/60">
           <CardContent className="p-4 space-y-3">
             <Label className="text-sm font-semibold">Product</Label>
@@ -75,7 +89,7 @@ export default function Studio() {
               </div>
               <Button variant="outline" size="sm">Choose images</Button>
             </div>
-            <p className="text-xs text-muted-foreground font-mono">345772564264751624​8</p>
+            <p className="text-xs text-muted-foreground font-mono">3457725642647516248</p>
             <div className="flex items-center gap-2">
               <Switch checked={sendProductImage} onCheckedChange={setSendProductImage} />
               <span className="text-sm">Send product image with prompt</span>
@@ -83,7 +97,6 @@ export default function Studio() {
           </CardContent>
         </Card>
 
-        {/* Model */}
         <Card className="border border-border/60">
           <CardContent className="p-4 space-y-4">
             <Label className="text-sm font-semibold">Model</Label>
@@ -139,7 +152,6 @@ export default function Studio() {
           </CardContent>
         </Card>
 
-        {/* ImageGPT */}
         <Card className="border border-border/60">
           <CardContent className="p-4 space-y-3">
             <Label className="text-sm font-semibold">ImageGPT (optional)</Label>
@@ -150,7 +162,6 @@ export default function Studio() {
           </CardContent>
         </Card>
 
-        {/* Prompt */}
         <div className="space-y-2">
           <Label className="text-sm font-semibold">Prompt</Label>
           <Textarea
@@ -161,20 +172,21 @@ export default function Studio() {
           />
         </div>
 
-        {/* Images count */}
         <div className="space-y-2">
           <Label className="text-sm font-semibold">Images</Label>
           <Input type="number" value={imageCount} onChange={(e) => setImageCount(Number(e.target.value))} min={1} max={10} />
         </div>
 
-        {/* Generate button */}
         <Button variant="secondary" className="w-full" disabled>Generate</Button>
       </div>
 
       {/* Right panel — Generations */}
       <div className="flex-1 overflow-y-auto p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold tracking-tight">Generations</h2>
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-6 bg-primary rounded-full" />
+            <h2 className="text-xl font-bold tracking-tight">Generations</h2>
+          </div>
           <Select defaultValue="ai-studio">
             <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -184,53 +196,128 @@ export default function Studio() {
           </Select>
         </div>
 
-        {/* Settings summary */}
-        <div className="flex gap-6">
-          <Card className="border border-border/60 shrink-0">
-            <CardContent className="p-4 space-y-1.5">
-              <p className="text-sm font-semibold mb-2">Settings</p>
-              {[
-                ["Product", "Face Wash Sensitive"],
-                ["ImageGPT", "ProblemSolutionGPT"],
-                ["Model", "NANO_BANANA_PRO"],
-                ["Ratio", "1:1"],
-                ["Language", "en"],
-                ["Include product context", "Yes"],
-                ["Send images", "Yes"],
-              ].map(([k, v]) => (
-                <div key={k} className="flex items-center justify-between gap-6 text-xs">
-                  <span className="text-muted-foreground">{k}</span>
-                  <Badge variant="outline" className="text-[10px] font-medium">{v}</Badge>
-                </div>
-              ))}
-              <Separator className="my-2" />
-              <p className="text-sm font-semibold">Prompt</p>
-              <Input readOnly value="Seeded demo concept" className="text-xs h-8" />
-            </CardContent>
-          </Card>
+        {/* Settings + grid row */}
+        <Card className="border border-border/60">
+          <CardContent className="p-5">
+            <div className="flex gap-5">
+              {/* Settings summary column */}
+              <div className="w-[200px] shrink-0 space-y-2">
+                <p className="text-sm font-semibold">Settings</p>
+                {[
+                  ["Product", "Face Wash Sensitive"],
+                  ["ImageGPT", "ProblemSolutionGPT"],
+                  ["Model", "NANO_BANANA_PRO"],
+                  ["Ratio", "1:1"],
+                  ["Language", "en"],
+                  ["Include product context", "Yes"],
+                  ["Send images", "Yes"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">{k}</span>
+                    <Badge variant="outline" className="text-[10px] font-semibold">{v}</Badge>
+                  </div>
+                ))}
+                <Separator className="!my-3" />
+                <p className="text-sm font-semibold">Prompt</p>
+                <Input readOnly value="Seeded demo concept" className="text-xs h-8 bg-muted/50" />
+              </div>
 
-          {/* Image grid */}
-          <div className="flex-1 grid grid-cols-3 gap-4">
-            {demoGenerations.map((gen) => (
-              <div key={gen.id} className="space-y-1">
-                <Card className="border border-border/60 overflow-hidden">
-                  <CardContent className="p-2">
-                    <div className="aspect-[4/5] rounded-lg overflow-hidden bg-muted">
-                      <img src={gen.src} alt={`Generation ${gen.id}`} className="w-full h-full object-cover" />
+              {/* Image grid */}
+              <div className="flex-1 grid grid-cols-3 gap-4">
+                {demoGenerations.map((gen) => (
+                  <div key={gen.id} className="space-y-1">
+                    <div
+                      className="border-2 border-foreground/80 rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                      onClick={() => setSelectedImage(gen)}
+                    >
+                      <div className="aspect-[3/4] bg-muted">
+                        <img src={gen.src} alt={`Generation ${gen.id}`} className="w-full h-full object-cover" />
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-                <div className="flex items-center justify-center gap-1">
-                  <Button variant="ghost" size="icon" className="h-7 w-7"><Expand className="h-3.5 w-3.5" /></Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7"><Copy className="h-3.5 w-3.5" /></Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7"><RefreshCw className="h-3.5 w-3.5" /></Button>
+                    <div className="flex items-center justify-center gap-0.5">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedImage(gen)}>
+                        <Maximize2 className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7">
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7">
+                        <RotateCcw className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ── Image Detail Modal ── */}
+      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+        <DialogContent className="max-w-5xl p-0 gap-0 overflow-hidden">
+          {selectedImage && (
+            <>
+              {/* Header */}
+              <div className="flex items-center gap-3 px-6 pt-5 pb-3">
+                <h3 className="text-base font-semibold">Generated ad</h3>
+                <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-semibold">NANO BANANA PRO</Badge>
+                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-semibold">DONE</Badge>
+              </div>
+
+              <div className="flex px-6 pb-6 gap-5">
+                {/* Large image preview */}
+                <div className="flex-1 border-2 border-foreground/10 rounded-xl overflow-hidden">
+                  <img src={selectedImage.src} alt="Generated ad" className="w-full h-full object-cover" />
+                </div>
+
+                {/* Details panel */}
+                <div className="w-[300px] shrink-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-base font-semibold">Details</p>
+                    <div className="flex items-center gap-0.5">
+                      <Button variant="ghost" size="icon" className="h-7 w-7"><Copy className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7"><RotateCcw className="h-3.5 w-3.5" /></Button>
+                    </div>
+                  </div>
+
+                  <Tabs defaultValue="settings">
+                    <TabsList className="w-full">
+                      <TabsTrigger value="settings" className="flex-1">Settings</TabsTrigger>
+                      <TabsTrigger value="prompt" className="flex-1">Prompt</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="settings" className="mt-4 space-y-2.5">
+                      {[
+                        ["Status", selectedImage.status],
+                        ["Generated", selectedImage.generated],
+                        ["Product", selectedImage.product],
+                        ["Model", selectedImage.model],
+                        ["Ratio", selectedImage.ratio],
+                        ["Language", selectedImage.language],
+                        ["ImageGPT", selectedImage.imageGpt],
+                        ["Send product image", selectedImage.sendProductImage],
+                        ["Include product context", selectedImage.includeProductContext],
+                      ].map(([k, v]) => (
+                        <div key={k} className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">{k}</span>
+                          <Badge variant="outline" className="text-[10px] font-semibold">{v}</Badge>
+                        </div>
+                      ))}
+                    </TabsContent>
+                    <TabsContent value="prompt" className="mt-4">
+                      <Input readOnly value={selectedImage.prompt} className="text-sm bg-muted/50" />
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
