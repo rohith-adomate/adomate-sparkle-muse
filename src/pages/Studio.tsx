@@ -43,6 +43,54 @@ const demoGenerations: Generation[] = [
 
 const aspectRatios = ["1:1", "4:5", "9:16", "16:9"];
 
+function ModalTabs({ selectedImage }: { selectedImage: Generation }) {
+  const [activeTab, setActiveTab] = useState<"settings" | "prompt">("settings");
+  return (
+    <div>
+      <div className="flex border-b border-border">
+        <button
+          onClick={() => setActiveTab("settings")}
+          className={`flex-1 pb-2 text-sm font-medium text-center transition-colors ${activeTab === "settings" ? "text-foreground" : "text-muted-foreground"}`}
+          style={activeTab === "settings" ? { borderBottom: "2px solid hsl(var(--primary))", marginBottom: "-1px" } : {}}
+        >
+          Settings
+        </button>
+        <button
+          onClick={() => setActiveTab("prompt")}
+          className={`flex-1 pb-2 text-sm font-medium text-center transition-colors ${activeTab === "prompt" ? "text-foreground" : "text-muted-foreground"}`}
+          style={activeTab === "prompt" ? { borderBottom: "2px solid hsl(var(--primary))", marginBottom: "-1px" } : {}}
+        >
+          Prompt
+        </button>
+      </div>
+      {activeTab === "settings" ? (
+        <div className="mt-4 space-y-2.5">
+          {([
+            ["Status", selectedImage.status],
+            ["Generated", selectedImage.generated],
+            ["Product", selectedImage.product],
+            ["Model", selectedImage.model],
+            ["Ratio", selectedImage.ratio],
+            ["Language", selectedImage.language],
+            ["ImageGPT", selectedImage.imageGpt],
+            ["Send product image", selectedImage.sendProductImage],
+            ["Include product context", selectedImage.includeProductContext],
+          ] as const).map(([k, v]) => (
+            <div key={k} className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{k}</span>
+              <Badge variant="outline" className="text-[10px] font-semibold">{v}</Badge>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-4">
+          <Input readOnly value={selectedImage.prompt} className="text-sm bg-muted/50" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Studio() {
   const { setOpen } = useSidebar();
 
