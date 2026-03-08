@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Facebook, Instagram } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 const adAccounts = [
   { id: "act_123456789", name: "Oy Care - Main", avatar: "https://ui-avatars.com/api/?name=OC&background=7c3aed&color=fff&size=32" },
