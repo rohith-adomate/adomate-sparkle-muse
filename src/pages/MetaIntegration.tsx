@@ -1,15 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Activity } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Separator } from "@/components/ui/separator";
-
-const syncHistory = [
-  { time: "1 hour ago", status: "Success", records: "1,234" },
-  { time: "Yesterday, 3:00 PM", status: "Success", records: "1,198" },
-  { time: "Feb 11, 10:00 AM", status: "Success", records: "1,150" },
-];
 
 export default function MetaIntegration() {
   return (
@@ -60,31 +53,6 @@ export default function MetaIntegration() {
         </CardContent>
       </Card>
 
-      <Card className="border border-border/60">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Activity className="h-4 w-4 text-primary" />
-            <p className="font-semibold">Sync History</p>
-          </div>
-          <div className="space-y-0">
-            {syncHistory.map((s, i) => (
-              <div key={i}>
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-sm">{s.time}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground">{s.records} records</span>
-                    <Badge variant="secondary" className="text-xs font-normal">{s.status}</Badge>
-                  </div>
-                </div>
-                {i < syncHistory.length - 1 && <Separator />}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
