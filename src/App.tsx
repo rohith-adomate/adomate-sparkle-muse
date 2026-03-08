@@ -28,6 +28,8 @@ import OnboardingPage from "./pages/OnboardingPage";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAdmins from "./pages/admin/AdminAdmins";
+import AdminCredits from "./pages/admin/AdminCredits";
+import AdminSystemSettings from "./pages/admin/AdminSystemSettings";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
