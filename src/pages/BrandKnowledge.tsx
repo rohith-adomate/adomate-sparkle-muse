@@ -599,9 +599,9 @@ export default function BrandKnowledge() {
                     <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP) · Max 25MB per file</p>
                   </label>
                 ) : (
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="grid grid-cols-4 gap-3">
                     {brandVisuals.map((visual) => (
-                      <div key={visual.id} className="relative group/visual w-[120px] h-[120px] rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
+                      <div key={visual.id} className="relative group/visual aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
                         <img src={visual.url} alt={visual.name} className="max-w-full max-h-full object-contain p-1" />
                         <button
                           onClick={() => {
@@ -615,7 +615,7 @@ export default function BrandKnowledge() {
                         </button>
                       </div>
                     ))}
-                    <label className="w-[120px] h-[120px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                    <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
                       <input
                         type="file"
                         accept=".png,.jpg,.jpeg,.svg,.webp"
