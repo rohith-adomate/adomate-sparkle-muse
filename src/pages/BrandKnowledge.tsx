@@ -347,7 +347,7 @@ export default function BrandKnowledge() {
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5">
                   <Label>Brand Logos</Label>
-                  <InfoTooltip text="Upload your brand logos for use in generated ad creative. The starred logo is the default used in campaigns. Supports PNG, JPEG, SVG, and WebP up to 25MB each." />
+                  <InfoTooltip text="Upload up to 6 brand logos for use in generated ad creative. The yellow star indicates the default logo used in campaigns. Click the star on any logo to set it as default. Supports PNG, JPEG, SVG, and WebP up to 25MB each." />
                 </div>
                 {logos.length === 0 ? (
                   <label className="border-2 border-dashed border-border rounded-xl p-10 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer block">
