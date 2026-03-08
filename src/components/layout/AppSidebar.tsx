@@ -201,7 +201,6 @@ export function AppSidebar() {
               {!collapsed && (
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">Ankit Kumar</p>
-                  <p className="text-[11px] text-muted-foreground truncate">ankit@adomate.com</p>
                 </div>
               )}
             </div>
