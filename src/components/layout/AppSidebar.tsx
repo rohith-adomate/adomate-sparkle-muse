@@ -39,8 +39,8 @@ const coreNav = [
   { title: "Content", url: "/content", icon: FileText },
 ];
 
-const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-muted-foreground hover:text-foreground";
-const activeCls = "bg-sidebar-accent text-sidebar-accent-foreground font-medium border border-sidebar-primary/20";
+const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-foreground/70 hover:text-foreground";
+const activeCls = "bg-primary/10 text-foreground font-semibold border border-primary/30";
 
 function SidebarNavItem({ item, collapsed }: { item: { title: string; url: string; icon: React.ElementType }; collapsed: boolean }) {
   const link = (
