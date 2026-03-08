@@ -60,6 +60,19 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
+interface LogoItem {
+  id: string;
+  url: string;
+  name: string;
+  isDefault: boolean;
+}
+
+interface VisualItem {
+  id: string;
+  url: string;
+  name: string;
+}
+
 export default function BrandKnowledge() {
   const { triggerSave } = useSaveIndicator();
   const [colors, setColors] = useState(initialColors);
@@ -71,6 +84,8 @@ export default function BrandKnowledge() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
+  const [logos, setLogos] = useState<LogoItem[]>([]);
+  const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([]);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
