@@ -60,6 +60,19 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
+interface LogoItem {
+  id: string;
+  url: string;
+  name: string;
+  isDefault: boolean;
+}
+
+interface VisualItem {
+  id: string;
+  url: string;
+  name: string;
+}
+
 export default function BrandKnowledge() {
   const { triggerSave } = useSaveIndicator();
   const [colors, setColors] = useState(initialColors);
@@ -71,6 +84,8 @@ export default function BrandKnowledge() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
+  const [logos, setLogos] = useState<LogoItem[]>([]);
+  const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([]);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
@@ -326,78 +341,214 @@ export default function BrandKnowledge() {
         </TabsContent>
 
         <TabsContent value="visual" className="mt-4 space-y-4">
-          <HoverExplainer text="Fonts: Typography used in generated ad creative. Backend: brand_knowledge.fonts (TEXT). Expected format: comma-separated font names.">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-1.5">
-                  <Label>Fonts</Label>
-                  <Input defaultValue="Inter, DM Sans" onBlur={handleFieldChange} />
-                  <p className="text-[10px] text-muted-foreground">Primary and secondary fonts used in ad creative.</p>
+          {/* Brand Logos */}
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5">
+                  <Label>Brand Logos</Label>
+                  <InfoTooltip text="Upload your brand logos for use in generated ad creative. The starred logo is the default used in campaigns. Supports PNG, JPEG, SVG, and WebP up to 25MB each." />
                 </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
-
-          <HoverExplainer text="Logos: Brand logos uploaded for use in generated ad creative. Supports PNG, SVG, JPG. Backend: stored in storage bucket 'brand-assets'. Max file size: 5MB per file.">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-1.5">
-                  <Label>Logos</Label>
-                  <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
+                {logos.length === 0 ? (
+                  <label className="border-2 border-dashed border-border rounded-xl p-10 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer block">
+                    <input
+                      type="file"
+                      accept=".png,.jpg,.jpeg,.svg,.webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file && file.size <= 25 * 1024 * 1024) {
+                          const url = URL.createObjectURL(file);
+                          setLogos([{ id: `logo-${Date.now()}`, url, name: file.name, isDefault: true }]);
+                          triggerAutoSave();
+                        }
+                      }}
+                    />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">Upload logo files</p>
-                    <p className="text-xs text-muted-foreground">PNG, SVG, or JPG · Max 5MB per file</p>
-                    <p className="text-[10px] text-muted-foreground">Upload light, dark, and icon-only variants</p>
+                    <p className="text-sm font-medium">upload logo</p>
+                    <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP)</p>
+                    <p className="text-xs text-muted-foreground">Max 25MB per logo.</p>
+                  </label>
+                ) : (
+                  <div className="flex gap-3 flex-wrap">
+                    {logos.map((logo) => (
+                      <div key={logo.id} className="relative group/logo w-[160px] h-[160px] rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
+                        <img src={logo.url} alt={logo.name} className="max-w-full max-h-full object-contain p-2" />
+                        {/* Default star */}
+                        {logo.isDefault && (
+                          <div className="absolute top-2 left-2">
+                            <Star className="h-5 w-5 fill-primary text-primary" />
+                          </div>
+                        )}
+                        {!logo.isDefault && (
+                          <button
+                            onClick={() => {
+                              setLogos(logos.map(l => ({ ...l, isDefault: l.id === logo.id })));
+                              triggerAutoSave();
+                            }}
+                            className="absolute top-2 left-2 opacity-0 group-hover/logo:opacity-100 transition-opacity"
+                            aria-label="Set as default"
+                          >
+                            <Star className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
+                          </button>
+                        )}
+                        {/* Delete icon */}
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => {
+                                if (logos.length > 1) {
+                                  const remaining = logos.filter(l => l.id !== logo.id);
+                                  if (logo.isDefault && remaining.length > 0) {
+                                    remaining[0].isDefault = true;
+                                  }
+                                  setLogos(remaining);
+                                  triggerAutoSave();
+                                }
+                              }}
+                              disabled={logos.length <= 1}
+                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-opacity p-1 rounded-md ${
+                                logos.length <= 1
+                                  ? "cursor-not-allowed text-muted-foreground/40"
+                                  : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                              }`}
+                              aria-label="Delete logo"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </TooltipTrigger>
+                          {logos.length <= 1 && (
+                            <TooltipContent side="top" className="text-xs">
+                              At least one logo is required
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </div>
+                    ))}
+                    {/* Upload drop zone */}
+                    <label className="w-[160px] h-[160px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                      <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.svg,.webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file && file.size <= 25 * 1024 * 1024) {
+                            const url = URL.createObjectURL(file);
+                            setLogos([...logos, { id: `logo-${Date.now()}`, url, name: file.name, isDefault: false }]);
+                            triggerAutoSave();
+                          }
+                        }}
+                      />
+                      <Upload className="h-6 w-6 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground text-center px-2">upload logo</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo.</p>
+                    </label>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-          <HoverExplainer text="Brand Guidelines: PDF or image files containing the brand's style guide. Backend: stored in storage bucket 'brand-assets'.">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-1.5">
-                  <Label>Brand Guidelines</Label>
-                  <div className="border-2 border-dashed border-border rounded-xl p-8 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer">
-                    <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">Upload brand guidelines</p>
-                    <p className="text-xs text-muted-foreground">PDF, PNG, or JPG · Max 20MB</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
-
-          <HoverExplainer text="Brand Colors: Hex color values used in generated ad creative. Backend: brand_knowledge.colors (JSONB array of {hex, name}).">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-2">
+          {/* Brand Colors */}
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5">
                   <Label>Brand Colors</Label>
-                  <div className="flex flex-wrap gap-3">
-                    {colors.map((c) => (
-                      <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
-                        <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
-                        <div className="text-left">
-                          <p className="text-xs font-medium">{c.name}</p>
-                          <p className="text-[10px] text-muted-foreground">{c.hex}</p>
-                        </div>
-                        <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <X className="h-3 w-3" />
+                  <InfoTooltip text="Your brand's primary color palette. These hex colors are used in generated ad creative to ensure brand consistency." />
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {colors.map((c) => (
+                    <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
+                      <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
+                      <div className="text-left">
+                        <p className="text-xs font-medium">{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{c.hex}</p>
+                      </div>
+                      <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
+                    <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
+                    <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
+                      <Plus className="h-3 w-3" /> Add
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Brand Visuals */}
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5">
+                  <Label>Brand Visuals</Label>
+                  <InfoTooltip text="Upload brand imagery such as lifestyle photos, product shots, or campaign visuals. These can be used as reference or directly in generated ads." />
+                </div>
+                {brandVisuals.length === 0 ? (
+                  <label className="border-2 border-dashed border-border rounded-xl p-10 text-center space-y-2 hover:border-primary/50 transition-colors cursor-pointer block">
+                    <input
+                      type="file"
+                      accept=".png,.jpg,.jpeg,.svg,.webp"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        const valid = files.filter(f => f.size <= 25 * 1024 * 1024);
+                        const newVisuals = valid.map(f => ({ id: `visual-${Date.now()}-${Math.random()}`, url: URL.createObjectURL(f), name: f.name }));
+                        setBrandVisuals([...brandVisuals, ...newVisuals]);
+                        triggerAutoSave();
+                      }}
+                    />
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                    <p className="text-sm font-medium">Upload brand visuals</p>
+                    <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP) · Max 25MB per file</p>
+                  </label>
+                ) : (
+                  <div className="flex gap-3 flex-wrap">
+                    {brandVisuals.map((visual) => (
+                      <div key={visual.id} className="relative group/visual w-[120px] h-[120px] rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
+                        <img src={visual.url} alt={visual.name} className="max-w-full max-h-full object-contain p-1" />
+                        <button
+                          onClick={() => {
+                            setBrandVisuals(brandVisuals.filter(v => v.id !== visual.id));
+                            triggerAutoSave();
+                          }}
+                          className="absolute top-1.5 right-1.5 opacity-0 group-hover/visual:opacity-100 transition-opacity p-1 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                          aria-label="Delete visual"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     ))}
-                    <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
-                      <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
-                      <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
-                        <Plus className="h-3 w-3" /> Add
-                      </Button>
-                    </div>
+                    <label className="w-[120px] h-[120px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                      <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.svg,.webp"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          const valid = files.filter(f => f.size <= 25 * 1024 * 1024);
+                          const newVisuals = valid.map(f => ({ id: `visual-${Date.now()}-${Math.random()}`, url: URL.createObjectURL(f), name: f.name }));
+                          setBrandVisuals([...brandVisuals, ...newVisuals]);
+                          triggerAutoSave();
+                        }}
+                      />
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <p className="text-[10px] text-muted-foreground text-center px-2">Add image</p>
+                    </label>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </HoverExplainer>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 
