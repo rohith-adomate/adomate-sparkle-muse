@@ -26,6 +26,8 @@ import NotFound from "./pages/NotFound";
 import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
 import AdminHome from "./pages/admin/AdminHome";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAdmins from "./pages/admin/AdminAdmins";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
