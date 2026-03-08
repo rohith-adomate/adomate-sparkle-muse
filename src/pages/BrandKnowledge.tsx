@@ -468,25 +468,86 @@ export default function BrandKnowledge() {
                   <Label>Brand Colors</Label>
                   <InfoTooltip text="Your brand's primary color palette. These hex colors are used in generated ad creative to ensure brand consistency." />
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {colors.map((c) => (
-                    <div key={c.hex} className="flex items-center gap-2 rounded-xl border p-2 px-3 group relative">
-                      <div className="h-8 w-8 rounded-lg shadow-inner" style={{ background: c.hex }} />
-                      <div className="text-left">
-                        <p className="text-xs font-medium">{c.name}</p>
-                        <p className="text-[10px] text-muted-foreground">{c.hex}</p>
-                      </div>
-                      <button onClick={() => removeColor(c.hex)} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {colors.map((c, idx) => (
+                    <Popover key={c.hex + idx}>
+                      <PopoverTrigger asChild>
+                        <div className="group relative rounded-xl border p-3 flex flex-col items-center gap-2 cursor-pointer hover:border-primary/50 transition-colors">
+                          <div className="h-16 w-full rounded-lg shadow-inner" style={{ background: c.hex }} />
+                          <p className="text-xs font-mono text-muted-foreground">{c.hex.toUpperCase()}</p>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); removeColor(c.hex); }}
+                            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="w-auto p-3 space-y-3">
+                        <input
+                          type="color"
+                          value={c.hex}
+                          onChange={(e) => {
+                            const updated = [...colors];
+                            updated[idx] = { hex: e.target.value, name: e.target.value };
+                            setColors(updated);
+                            triggerAutoSave();
+                          }}
+                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                        />
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                          <Input
+                            value={c.hex.toUpperCase()}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                              if (!val.startsWith("#")) val = "#" + val;
+                              if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
+                                const updated = [...colors];
+                                updated[idx] = { hex: val, name: val };
+                                setColors(updated);
+                                triggerAutoSave();
+                              }
+                            }}
+                            className="font-mono text-sm"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   ))}
-                  <div className="flex items-center gap-2 rounded-xl border border-dashed p-2 px-3">
-                    <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} className="h-8 w-8 rounded cursor-pointer" />
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={addColor}>
-                      <Plus className="h-3 w-3" /> Add
-                    </Button>
-                  </div>
+                  {colors.length < 8 && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="rounded-xl border-2 border-dashed border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer min-h-[106px]">
+                          <Plus className="h-6 w-6 text-muted-foreground" />
+                          <p className="text-xs text-muted-foreground">Add color</p>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="w-auto p-3 space-y-3">
+                        <input
+                          type="color"
+                          value={newColor}
+                          onChange={(e) => setNewColor(e.target.value)}
+                          className="w-48 h-32 rounded cursor-pointer border-0 p-0"
+                        />
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground">HEX Color Code</p>
+                          <Input
+                            value={newColor.toUpperCase()}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                              if (!val.startsWith("#")) val = "#" + val;
+                              if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) setNewColor(val);
+                            }}
+                            className="font-mono text-sm"
+                          />
+                        </div>
+                        <Button size="sm" className="w-full" onClick={() => { addColor(); }}>
+                          Add Color
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </div>
               </div>
             </CardContent>
