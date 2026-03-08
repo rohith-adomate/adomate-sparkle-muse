@@ -61,7 +61,7 @@ function InfoTooltip({ text }: { text: string }) {
 }
 
 export default function BrandKnowledge() {
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const { triggerSave } = useSaveIndicator();
   const [colors, setColors] = useState(initialColors);
   const [newColor, setNewColor] = useState("#000000");
   const [fields, setFields] = useState<KnowledgeField[]>(initialFields);
