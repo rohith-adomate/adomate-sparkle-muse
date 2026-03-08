@@ -365,33 +365,41 @@ export default function BrandKnowledge() {
                       }}
                     />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">upload logo</p>
+                    <p className="text-sm font-medium">Upload logo</p>
                     <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP)</p>
-                    <p className="text-xs text-muted-foreground">Max 25MB per logo.</p>
+                    <p className="text-xs text-muted-foreground">Max 25MB per logo · Up to 6 logos</p>
                   </label>
                 ) : (
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="grid grid-cols-3 gap-3">
                     {logos.map((logo) => (
-                      <div key={logo.id} className="relative group/logo w-[160px] h-[160px] rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
+                      <div key={logo.id} className="relative group/logo aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
                         <img src={logo.url} alt={logo.name} className="max-w-full max-h-full object-contain p-2" />
-                        {/* Default star */}
-                        {logo.isDefault && (
-                          <div className="absolute top-2 left-2">
-                            <Star className="h-5 w-5 fill-primary text-primary" />
-                          </div>
-                        )}
-                        {!logo.isDefault && (
-                          <button
-                            onClick={() => {
-                              setLogos(logos.map(l => ({ ...l, isDefault: l.id === logo.id })));
-                              triggerAutoSave();
-                            }}
-                            className="absolute top-2 left-2 opacity-0 group-hover/logo:opacity-100 transition-opacity"
-                            aria-label="Set as default"
-                          >
-                            <Star className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
-                          </button>
-                        )}
+                        {/* Default star - always visible */}
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => {
+                                if (!logo.isDefault) {
+                                  setLogos(logos.map(l => ({ ...l, isDefault: l.id === logo.id })));
+                                  triggerAutoSave();
+                                }
+                              }}
+                              className="absolute top-2 left-2 p-0.5"
+                              aria-label={logo.isDefault ? "Default logo" : "Set as default logo"}
+                            >
+                              <Star
+                                className={`h-5 w-5 transition-colors ${
+                                  logo.isDefault
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-muted-foreground/30 hover:fill-yellow-400 hover:text-yellow-400"
+                                }`}
+                              />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs">
+                            {logo.isDefault ? "This is the default logo" : "Click to set as default logo"}
+                          </TooltipContent>
+                        </Tooltip>
                         {/* Delete icon */}
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
@@ -425,26 +433,27 @@ export default function BrandKnowledge() {
                         </Tooltip>
                       </div>
                     ))}
-                    {/* Upload drop zone */}
-                    <label className="w-[160px] h-[160px] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
-                      <input
-                        type="file"
-                        accept=".png,.jpg,.jpeg,.svg,.webp"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file && file.size <= 25 * 1024 * 1024) {
-                            const url = URL.createObjectURL(file);
-                            setLogos([...logos, { id: `logo-${Date.now()}`, url, name: file.name, isDefault: false }]);
-                            triggerAutoSave();
-                          }
-                        }}
-                      />
-                      <Upload className="h-6 w-6 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground text-center px-2">upload logo</p>
-                      <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
-                      <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo.</p>
-                    </label>
+                    {/* Upload drop zone - only show if under 6 */}
+                    {logos.length < 6 && (
+                      <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept=".png,.jpg,.jpeg,.svg,.webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file && file.size <= 25 * 1024 * 1024 && logos.length < 6) {
+                              const url = URL.createObjectURL(file);
+                              setLogos([...logos, { id: `logo-${Date.now()}`, url, name: file.name, isDefault: false }]);
+                              triggerAutoSave();
+                            }
+                          }}
+                        />
+                        <Upload className="h-6 w-6 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
+                        <p className="text-[10px] text-muted-foreground text-center px-2">({6 - logos.length} remaining)</p>
+                      </label>
+                    )}
                   </div>
                 )}
               </div>
