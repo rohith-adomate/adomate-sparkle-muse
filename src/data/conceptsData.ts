@@ -73,6 +73,18 @@ export const agentRuns: AgentRun[] = [
       { id: "c46", title: "Mood Board Style", source: "Competitor Ad I", status: "pending", campaign: "Flash Sale", imgSeed: "mood-board" },
     ],
   },
+  {
+    id: "competitor-ad-variation-5",
+    label: "Competitor Ad Variation",
+    time: "Mar 4, 2026 · 09:58",
+    seen: true,
+    concepts: [
+      { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
+      { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },
+      { id: "c52", title: "Isometric Product", source: "Competitor Ad K", status: "pending", campaign: "Brand Refresh", imgSeed: "isometric-prod" },
+      { id: "c53", title: "Paper Cut Style", source: "Competitor Ad K", status: "rejected", campaign: "Brand Refresh", imgSeed: "paper-cut" },
+    ],
+  },
 ];
 
 export const agentRunsById: Record<string, AgentRun> = Object.fromEntries(

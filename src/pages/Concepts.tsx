@@ -59,7 +59,7 @@ export default function Concepts() {
         return (
           <div
             key={run.id}
-            className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover} ${run.seen ? "opacity-60" : ""}`}
+            className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover}`}
             onClick={() => navigate(`/concepts/${run.id}`)}
           >
             <div className="flex items-center gap-2">
@@ -69,11 +69,7 @@ export default function Concepts() {
                 )}
                 <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
                 <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
-                {run.seen && (
-                  <Badge variant="outline" className="text-[10px] gap-1 border-border text-muted-foreground font-normal">
-                    <Eye className="h-3 w-3" /> Seen
-                  </Badge>
-                )}
+                {run.seen && <SeenBadge runId={run.id} />}
               </div>
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
