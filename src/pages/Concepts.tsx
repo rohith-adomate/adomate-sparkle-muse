@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Eye, Sparkles, Bell, Circle, Flame } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HoverExplainer } from "@/components/HoverExplainer";
@@ -18,51 +19,20 @@ const rowStyle = {
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
 
-// 5 distinct "New/Unseen" indicator variations for comparison
-function UnseenBadge({ runId }: { runId: string }) {
-  switch (runId) {
-    // Style A — Bold pink "NEW" pill
-    case "competitor-ad-variation-1":
-      return (
-        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary text-primary-foreground shadow-sm">
-          New
+function UnseenIndicator() {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="relative flex h-2.5 w-2.5 cursor-default">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
         </span>
-      );
-    // Style B — Pulsing dot + "New" text
-    case "competitor-ad-variation-2":
-      return (
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-primary">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-          </span>
-          New
-        </span>
-      );
-    // Style C — Sparkle icon with amber "Unseen" badge
-    case "competitor-ad-variation-3":
-      return (
-        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold border border-amber-300/60">
-          <Sparkles className="h-3 w-3" /> Unseen
-        </span>
-      );
-    // Style D — Notification bell with count-style red badge
-    case "competitor-ad-variation-4":
-      return (
-        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-red-500 text-white font-bold shadow-sm">
-          <Bell className="h-3 w-3" /> New
-        </span>
-      );
-    // Style E — Outlined primary with flame icon
-    case "competitor-ad-variation-5":
-      return (
-        <Badge variant="outline" className="text-[10px] gap-1 border-primary/50 text-primary font-semibold bg-primary/5">
-          <Flame className="h-3 w-3" /> New
-        </Badge>
-      );
-    default:
-      return null;
-  }
+      </TooltipTrigger>
+      <TooltipContent side="top" className="text-xs">
+        New — not yet reviewed
+      </TooltipContent>
+    </Tooltip>
+  );
 }
 
 export default function Concepts() {
