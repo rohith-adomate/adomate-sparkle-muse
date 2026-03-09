@@ -91,7 +91,7 @@ export default function Concepts() {
               {visibleConcepts.map((c) => (
                 <Card
                   key={c.id}
-                  className={`overflow-hidden transition-all duration-200 ${style.cardHover}`}
+                  className={`overflow-hidden transition-all duration-200 ${style.cardHover} ${c.status === "accepted" ? "ring-2 ring-emerald-400/60" : ""}`}
                 >
                   <CardContent className="p-0">
                     <div className="aspect-[3/2] relative overflow-hidden bg-muted">
@@ -100,14 +100,6 @@ export default function Concepts() {
                         alt={c.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                      <div className="absolute top-2 right-2">
-                        <span className={`h-2.5 w-2.5 rounded-full inline-block ${statusDot[c.status]} ring-2 ring-white shadow-sm`} />
-                      </div>
-                    </div>
-                    <div className="p-3 space-y-1">
-                      <p className="text-sm font-medium truncate">{c.title}</p>
-                      <p className="text-[10px] text-muted-foreground">{c.source}</p>
                     </div>
                   </CardContent>
                 </Card>
