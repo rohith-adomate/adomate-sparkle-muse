@@ -37,7 +37,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-2",
     label: "Competitor Ad Variation",
     time: "Mar 7, 2026 · 11:05",
-    seen: false,
+    seen: true,
     concepts: [
       { id: "c20", title: "Neon Gradient Ad", source: "Competitor Ad D", status: "pending", campaign: "Spring Launch", imgSeed: "neon-gradient" },
       { id: "c21", title: "Minimalist Product", source: "Competitor Ad D", status: "accepted", campaign: "Spring Launch", imgSeed: "minimalist-prod" },
