@@ -83,7 +83,7 @@ export default function Concepts() {
               <div className="flex items-center gap-2">
                 <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
                 <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
-                {!run.seen && <UnseenBadge runId={run.id} />}
+                {!run.seen && <UnseenIndicator />}
               </div>
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
