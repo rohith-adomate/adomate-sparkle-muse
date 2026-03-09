@@ -17,6 +17,7 @@ import Competitors from "./pages/Competitors";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import Concepts from "./pages/Concepts";
+import ConceptsRunDetail from "./pages/ConceptsRunDetail";
 import Studio from "./pages/Studio";
 import Content from "./pages/Content";
 import CalendarPage from "./pages/CalendarPage";
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/campaigns" element={<Workflows />} />
             <Route path="/campaigns/:id" element={<Workflows />} />
             <Route path="/concepts" element={<Concepts />} />
+            <Route path="/concepts/:runId" element={<ConceptsRunDetail />} />
             <Route path="/studio" element={<Studio />} />
             <Route path="/content" element={<Content />} />
             <Route path="/calendar" element={<CalendarPage />} />
