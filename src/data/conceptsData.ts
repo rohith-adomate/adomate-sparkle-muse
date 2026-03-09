@@ -62,7 +62,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-4",
     label: "Competitor Ad Variation",
     time: "Mar 5, 2026 · 15:47",
-    seen: false,
+    seen: true,
     concepts: [
       { id: "c40", title: "Duotone Effect", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "duotone-fx" },
       { id: "c41", title: "Product in Action", source: "Competitor Ad H", status: "accepted", campaign: "Flash Sale", imgSeed: "product-action" },
