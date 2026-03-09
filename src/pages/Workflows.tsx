@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon,
+  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, Timer,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -52,8 +52,8 @@ const defaultAgents: Agent[] = [
     type: "holiday",
     description: "Romantic-themed creatives for Valentine's Day.",
     concepts: 6,
-    enabled: false,
-    nextRun: "Not scheduled",
+    enabled: true,
+    nextRun: "Feb 1, 2027 · 7:00 AM",
   },
   {
     id: "competitor-1",
@@ -70,8 +70,8 @@ const defaultAgents: Agent[] = [
     type: "competitor",
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
-    enabled: false,
-    nextRun: "Not scheduled",
+    enabled: true,
+    nextRun: "Mar 21, 2026 · 6:00 PM",
   },
 ];
 
@@ -175,7 +175,7 @@ export default function Workflows() {
         <CardContent className="p-6">
           <h2 className="text-base font-semibold mb-4">Your agents</h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            {agents.map((agent) => (
+            {agents.map((agent, idx) => (
               <Card key={agent.id} className="border border-border/60">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-3">
@@ -193,11 +193,62 @@ export default function Workflows() {
                     </div>
                     <Switch checked={agent.enabled} onCheckedChange={() => toggleAgent(agent.id)} />
                   </div>
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                      <CalendarIcon className="h-3 w-3" />
-                      {agent.nextRun}
-                    </span>
+
+                  {/* ── Variant 1: Labeled inline with icon + "Next run:" prefix ── */}
+                  {idx === 0 && (
+                    <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-xs text-muted-foreground">Next run:</span>
+                      <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
+                    </div>
+                  )}
+
+                  {/* ── Variant 2: Full-width banner bar at bottom ── */}
+                  {idx === 1 && (
+                    <div className="rounded-md border border-border bg-muted/30 px-3 py-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Scheduled</span>
+                      </div>
+                      <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
+                    </div>
+                  )}
+
+                  {/* ── Variant 3: Badge-style pill ── */}
+                  {idx === 2 && (
+                    <div className="pt-1">
+                      <Badge className="bg-primary/10 text-primary hover:bg-primary/10 border-0 text-[11px] font-medium gap-1.5 px-2.5 py-1">
+                        <Timer className="h-3 w-3" />
+                        Next run · {agent.nextRun}
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* ── Variant 4: Two-line stacked date + time ── */}
+                  {idx === 3 && (
+                    <div className="flex items-center gap-3 pt-1">
+                      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <CalendarIcon className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Next scheduled run</p>
+                        <p className="text-sm font-semibold text-foreground -mt-0.5">{agent.nextRun}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Variant 5: Progress-bar style countdown feel ── */}
+                  {idx === 4 && (
+                    <div className="rounded-md border border-primary/20 bg-primary/5 px-3 py-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] uppercase tracking-wider text-primary font-semibold">Upcoming run</span>
+                        <span className="text-[10px] text-muted-foreground">in ~12 days</span>
+                      </div>
+                      <p className="text-xs font-semibold text-foreground">{agent.nextRun}</p>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-end pt-1">
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7">
                         <Play className="h-3.5 w-3.5" />
