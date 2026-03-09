@@ -20,6 +20,54 @@ const agentRuns: { id: string; label: string; time: string; concepts: Concept[] 
     ],
   },
   {
+    id: "competitor-ad-variation-2",
+    label: "Competitor Ad Variation",
+    time: "Mar 7, 2026 · 11:05",
+    concepts: [
+      { id: "c20", title: "Neon Gradient Ad", source: "Competitor Ad D", status: "pending", campaign: "Spring Launch", imgSeed: "neon-gradient" },
+      { id: "c21", title: "Minimalist Product", source: "Competitor Ad D", status: "accepted", campaign: "Spring Launch", imgSeed: "minimalist-prod" },
+      { id: "c22", title: "Split Screen Compare", source: "Competitor Ad E", status: "pending", campaign: "Spring Launch", imgSeed: "split-screen" },
+      { id: "c23", title: "Motion Blur Effect", source: "Competitor Ad E", status: "rejected", campaign: "Spring Launch", imgSeed: "motion-blur" },
+      { id: "c24", title: "Flat Lay Showcase", source: "Competitor Ad D", status: "pending", campaign: "Spring Launch", imgSeed: "flat-lay" },
+      { id: "c25", title: "AR Preview Card", source: "Trending Topic", status: "pending", campaign: "Spring Launch", imgSeed: "ar-preview" },
+    ],
+  },
+  {
+    id: "competitor-ad-variation-3",
+    label: "Competitor Ad Variation",
+    time: "Mar 6, 2026 · 08:22",
+    concepts: [
+      { id: "c30", title: "Pastel Palette Ad", source: "Competitor Ad F", status: "accepted", campaign: "Q2 Push", imgSeed: "pastel-palette" },
+      { id: "c31", title: "Bold Typography", source: "Competitor Ad F", status: "pending", campaign: "Q2 Push", imgSeed: "bold-typo" },
+      { id: "c32", title: "Cinematic Still", source: "Competitor Ad G", status: "pending", campaign: "Q2 Push", imgSeed: "cinematic-still" },
+    ],
+  },
+  {
+    id: "competitor-ad-variation-4",
+    label: "Competitor Ad Variation",
+    time: "Mar 5, 2026 · 15:47",
+    concepts: [
+      { id: "c40", title: "Duotone Effect", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "duotone-fx" },
+      { id: "c41", title: "Product in Action", source: "Competitor Ad H", status: "accepted", campaign: "Flash Sale", imgSeed: "product-action" },
+      { id: "c42", title: "Geometric Overlay", source: "Competitor Ad I", status: "rejected", campaign: "Flash Sale", imgSeed: "geometric-overlay" },
+      { id: "c43", title: "Customer Spotlight", source: "Competitor Ad I", status: "pending", campaign: "Flash Sale", imgSeed: "customer-spot" },
+      { id: "c44", title: "Animated Banner", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "animated-banner" },
+      { id: "c45", title: "Before/After Strip", source: "Trending Topic", status: "accepted", campaign: "Flash Sale", imgSeed: "before-after" },
+      { id: "c46", title: "Mood Board Style", source: "Competitor Ad I", status: "pending", campaign: "Flash Sale", imgSeed: "mood-board" },
+    ],
+  },
+  {
+    id: "competitor-ad-variation-5",
+    label: "Competitor Ad Variation",
+    time: "Mar 4, 2026 · 10:13",
+    concepts: [
+      { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
+      { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },
+      { id: "c52", title: "Isometric Product", source: "Competitor Ad K", status: "pending", campaign: "Brand Refresh", imgSeed: "isometric-prod" },
+      { id: "c53", title: "Paper Cut Style", source: "Competitor Ad K", status: "rejected", campaign: "Brand Refresh", imgSeed: "paper-cut" },
+    ],
+  },
+  {
     id: "seasonal-trend-2",
     label: "Seasonal Trend Discovery",
     time: "Mar 7, 2026 · 09:15",
@@ -44,14 +92,14 @@ const agentRuns: { id: string; label: string; time: string; concepts: Concept[] 
 
 const statusDot = { pending: "bg-amber-400", accepted: "bg-emerald-400", rejected: "bg-red-400" };
 
-const MAX_VISIBLE = 5;
+const CARDS_PER_ROW = 5;
 
 export default function Concepts() {
   const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
-      <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows. Each row shows a preview of generated concepts with a '+' overflow indicator linking to the full image wall.">
+      <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows with fixed-size cards and overflow indicators.">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
@@ -65,8 +113,9 @@ export default function Concepts() {
       </HoverExplainer>
 
       {agentRuns.map((run) => {
-        const visibleConcepts = run.concepts.slice(0, MAX_VISIBLE);
-        const overflowCount = run.concepts.length - MAX_VISIBLE;
+        const hasOverflow = run.concepts.length > CARDS_PER_ROW;
+        const visibleConcepts = run.concepts.slice(0, hasOverflow ? CARDS_PER_ROW - 1 : CARDS_PER_ROW);
+        const overflowCount = run.concepts.length - visibleConcepts.length;
 
         return (
           <div
@@ -79,14 +128,14 @@ export default function Concepts() {
               <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
-            <div className="flex items-stretch gap-3">
+            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${CARDS_PER_ROW}, 1fr)` }}>
               {visibleConcepts.map((c) => (
                 <Card
                   key={c.id}
-                  className="shrink-0 flex-1 min-w-0 overflow-hidden transition-shadow duration-200 group-hover/run:shadow-md"
+                  className="overflow-hidden transition-shadow duration-200 group-hover/run:shadow-md"
                 >
                   <CardContent className="p-0">
-                    <div className="h-32 relative overflow-hidden bg-muted">
+                    <div className="aspect-[3/2] relative overflow-hidden bg-muted">
                       <img
                         src={`https://picsum.photos/seed/${c.imgSeed}/300/200`}
                         alt={c.title}
@@ -105,12 +154,12 @@ export default function Concepts() {
                 </Card>
               ))}
 
-              {overflowCount > 0 && (
-                <div className="shrink-0 w-16 rounded-lg border border-dashed border-border bg-muted/30 flex flex-col items-center justify-center gap-1.5 group-hover/run:bg-muted/60 group-hover/run:border-primary/30 transition-all">
-                  <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center group-hover/run:bg-primary/10 transition-colors">
-                    <Plus className="h-4 w-4 text-muted-foreground group-hover/run:text-primary transition-colors" />
+              {hasOverflow && (
+                <div className="rounded-lg border border-dashed border-border bg-muted/30 flex flex-col items-center justify-center gap-1.5 group-hover/run:bg-muted/60 group-hover/run:border-primary/30 transition-all aspect-[3/2]">
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center group-hover/run:bg-primary/10 transition-colors">
+                    <Plus className="h-5 w-5 text-muted-foreground group-hover/run:text-primary transition-colors" />
                   </div>
-                  <span className="text-[10px] text-muted-foreground group-hover/run:text-primary font-medium transition-colors">+{overflowCount}</span>
+                  <span className="text-xs text-muted-foreground group-hover/run:text-primary font-medium transition-colors">+{overflowCount} more</span>
                 </div>
               )}
             </div>
