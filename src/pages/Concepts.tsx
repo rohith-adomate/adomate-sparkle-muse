@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, EyeOff, Check, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HoverExplainer } from "@/components/HoverExplainer";
@@ -17,6 +17,50 @@ const rowStyle = {
   overflowIdle: "border-dashed border-border bg-muted/20",
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
+
+// 5 distinct "Seen" badge variations for comparison
+function SeenBadge({ runId }: { runId: string }) {
+  switch (runId) {
+    // Style A — Subtle outline with eye icon
+    case "competitor-ad-variation-1":
+      return (
+        <Badge variant="outline" className="text-[10px] gap-1 border-border text-muted-foreground font-normal">
+          <Eye className="h-3 w-3" /> Seen
+        </Badge>
+      );
+    // Style B — Filled muted pill, no icon
+    case "competitor-ad-variation-2":
+      return (
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+          Seen
+        </span>
+      );
+    // Style C — Checkmark circle with soft green tint
+    case "competitor-ad-variation-3":
+      return (
+        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium border border-emerald-200/60">
+          <CheckCircle2 className="h-3 w-3" /> Reviewed
+        </span>
+      );
+    // Style D — Minimal italic text
+    case "competitor-ad-variation-4":
+      return (
+        <span className="text-[10px] text-muted-foreground/50 font-medium italic">
+          — seen
+        </span>
+      );
+    // Style E — Dot + "Viewed" inline
+    case "competitor-ad-variation-5":
+      return (
+        <span className="inline-flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+          Viewed
+        </span>
+      );
+    default:
+      return null;
+  }
+}
 
 export default function Concepts() {
   const navigate = useNavigate();
@@ -59,7 +103,7 @@ export default function Concepts() {
         return (
           <div
             key={run.id}
-            className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover} ${run.seen ? "opacity-60" : ""}`}
+            className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover}`}
             onClick={() => navigate(`/concepts/${run.id}`)}
           >
             <div className="flex items-center gap-2">
@@ -69,11 +113,7 @@ export default function Concepts() {
                 )}
                 <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
                 <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
-                {run.seen && (
-                  <Badge variant="outline" className="text-[10px] gap-1 border-border text-muted-foreground font-normal">
-                    <Eye className="h-3 w-3" /> Seen
-                  </Badge>
-                )}
+                {run.seen && <SeenBadge runId={run.id} />}
               </div>
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
