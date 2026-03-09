@@ -94,6 +94,72 @@ const statusDot = { pending: "bg-amber-400", accepted: "bg-emerald-400", rejecte
 
 const CARDS_PER_ROW = 5;
 
+// 5 distinct visual styles for the Competitor Ad Variation rows
+const runStyles: Record<string, {
+  container: string;
+  hover: string;
+  titleHover: string;
+  cardHover: string;
+  overflowIdle: string;
+  overflowHover: string;
+  label: string;
+}> = {
+  "competitor-ad-variation-1": {
+    label: "Style A — Elevated Glass",
+    container: "rounded-2xl p-4 -mx-4 border border-transparent bg-background transition-all duration-300",
+    hover: "hover:bg-accent/30 hover:border-border hover:shadow-lg hover:shadow-primary/5 hover:backdrop-blur-sm",
+    titleHover: "group-hover/run:text-primary",
+    cardHover: "group-hover/run:shadow-md group-hover/run:-translate-y-0.5",
+    overflowIdle: "border-dashed border-border bg-muted/20",
+    overflowHover: "group-hover/run:bg-primary/5 group-hover/run:border-primary/40",
+  },
+  "competitor-ad-variation-2": {
+    label: "Style B — Soft Gradient Strip",
+    container: "rounded-xl p-4 -mx-4 transition-all duration-300 border border-transparent",
+    hover: "hover:bg-gradient-to-r hover:from-accent/40 hover:via-accent/20 hover:to-transparent hover:border-border/50",
+    titleHover: "group-hover/run:text-pink-600",
+    cardHover: "group-hover/run:shadow-sm group-hover/run:ring-1 group-hover/run:ring-pink-200/50",
+    overflowIdle: "border-dashed border-border bg-muted/20",
+    overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
+  },
+  "competitor-ad-variation-3": {
+    label: "Style C — Left Accent Bar",
+    container: "rounded-lg p-4 -mx-4 border-l-4 border-l-transparent border border-transparent transition-all duration-300",
+    hover: "hover:border-l-primary hover:bg-muted/30 hover:border-border/40",
+    titleHover: "group-hover/run:text-primary",
+    cardHover: "group-hover/run:shadow-md",
+    overflowIdle: "border-dashed border-border bg-muted/20",
+    overflowHover: "group-hover/run:bg-accent/40 group-hover/run:border-primary/30",
+  },
+  "competitor-ad-variation-4": {
+    label: "Style D — Outlined Card",
+    container: "rounded-2xl p-4 -mx-4 border-2 border-transparent transition-all duration-300",
+    hover: "hover:border-border hover:bg-background hover:shadow-[0_0_0_4px_hsl(var(--accent)/0.3)]",
+    titleHover: "group-hover/run:text-foreground group-hover/run:tracking-wide",
+    cardHover: "group-hover/run:shadow-none group-hover/run:border-border",
+    overflowIdle: "border-2 border-dashed border-muted-foreground/20 bg-transparent",
+    overflowHover: "group-hover/run:border-foreground/30 group-hover/run:bg-muted/30",
+  },
+  "competitor-ad-variation-5": {
+    label: "Style E — Warm Glow",
+    container: "rounded-2xl p-4 -mx-4 border border-transparent transition-all duration-500",
+    hover: "hover:bg-amber-50/40 hover:border-amber-200/60 hover:shadow-xl hover:shadow-amber-100/30",
+    titleHover: "group-hover/run:text-amber-700",
+    cardHover: "group-hover/run:shadow-lg group-hover/run:shadow-amber-100/40 group-hover/run:-translate-y-1",
+    overflowIdle: "border-dashed border-amber-200/40 bg-amber-50/20",
+    overflowHover: "group-hover/run:bg-amber-50/60 group-hover/run:border-amber-300/60",
+  },
+};
+
+const defaultStyle = {
+  container: "rounded-xl p-3 -mx-3 transition-all duration-200",
+  hover: "hover:bg-muted/40",
+  titleHover: "group-hover/run:text-primary",
+  cardHover: "group-hover/run:shadow-md",
+  overflowIdle: "border-dashed border-border bg-muted/30",
+  overflowHover: "group-hover/run:bg-muted/60 group-hover/run:border-primary/30",
+};
+
 export default function Concepts() {
   const navigate = useNavigate();
 
@@ -116,23 +182,29 @@ export default function Concepts() {
         const hasOverflow = run.concepts.length > CARDS_PER_ROW;
         const visibleConcepts = run.concepts.slice(0, hasOverflow ? CARDS_PER_ROW - 1 : CARDS_PER_ROW);
         const overflowCount = run.concepts.length - visibleConcepts.length;
+        const style = runStyles[run.id] || defaultStyle;
 
         return (
           <div
             key={run.id}
-            className="space-y-2.5 group/run cursor-pointer rounded-xl p-3 -mx-3 transition-all duration-200 hover:bg-muted/40"
+            className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover}`}
             onClick={() => navigate(`/concepts/${run.id}`)}
           >
             <div className="flex items-baseline gap-2">
-              <h2 className="text-sm font-semibold group-hover/run:text-primary transition-colors">{run.label}</h2>
-              <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
+              <div className="flex items-baseline gap-2">
+                <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
+                <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
+              </div>
+              {style !== defaultStyle && (
+                <span className="text-[10px] text-muted-foreground/60 font-mono">{(style as any).label}</span>
+              )}
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
             <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${CARDS_PER_ROW}, 1fr)` }}>
               {visibleConcepts.map((c) => (
                 <Card
                   key={c.id}
-                  className="overflow-hidden transition-shadow duration-200 group-hover/run:shadow-md"
+                  className={`overflow-hidden transition-all duration-200 ${style.cardHover}`}
                 >
                   <CardContent className="p-0">
                     <div className="aspect-[3/2] relative overflow-hidden bg-muted">
@@ -155,7 +227,7 @@ export default function Concepts() {
               ))}
 
               {hasOverflow && (
-                <div className="rounded-lg border border-dashed border-border bg-muted/30 flex flex-col items-center justify-center gap-1.5 group-hover/run:bg-muted/60 group-hover/run:border-primary/30 transition-all aspect-[3/2]">
+                <div className={`rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all ${style.overflowIdle} ${style.overflowHover}`}>
                   <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center group-hover/run:bg-primary/10 transition-colors">
                     <Plus className="h-5 w-5 text-muted-foreground group-hover/run:text-primary transition-colors" />
                   </div>
