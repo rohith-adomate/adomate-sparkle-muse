@@ -18,7 +18,51 @@ const rowStyle = {
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
 
-export default function Concepts() {
+// 5 distinct "Seen" badge variations for comparison
+function SeenBadge({ runId }: { runId: string }) {
+  switch (runId) {
+    // Style A — Subtle outline with eye icon
+    case "competitor-ad-variation-1":
+      return (
+        <Badge variant="outline" className="text-[10px] gap-1 border-border text-muted-foreground font-normal">
+          <Eye className="h-3 w-3" /> Seen
+        </Badge>
+      );
+    // Style B — Filled muted pill, no icon
+    case "competitor-ad-variation-2":
+      return (
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+          Seen
+        </span>
+      );
+    // Style C — Checkmark circle with soft green tint
+    case "competitor-ad-variation-3":
+      return (
+        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium border border-emerald-200/60">
+          <CheckCircle2 className="h-3 w-3" /> Reviewed
+        </span>
+      );
+    // Style D — Minimal italic text
+    case "competitor-ad-variation-4":
+      return (
+        <span className="text-[10px] text-muted-foreground/50 font-medium italic">
+          — seen
+        </span>
+      );
+    // Style E — Dot + "Viewed" inline
+    case "competitor-ad-variation-5":
+      return (
+        <span className="inline-flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+          Viewed
+        </span>
+      );
+    default:
+      return null;
+  }
+}
+
+
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("all");
 
