@@ -52,8 +52,8 @@ const defaultAgents: Agent[] = [
     type: "holiday",
     description: "Romantic-themed creatives for Valentine's Day.",
     concepts: 6,
-    enabled: false,
-    nextRun: "Not scheduled",
+    enabled: true,
+    nextRun: "Feb 1, 2027 · 7:00 AM",
   },
   {
     id: "competitor-1",
@@ -70,8 +70,8 @@ const defaultAgents: Agent[] = [
     type: "competitor",
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
-    enabled: false,
-    nextRun: "Not scheduled",
+    enabled: true,
+    nextRun: "Mar 21, 2026 · 6:00 PM",
   },
 ];
 
