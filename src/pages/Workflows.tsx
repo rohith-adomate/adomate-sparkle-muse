@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -23,15 +23,55 @@ interface Agent {
   type: AgentType;
   description: string;
   concepts: number;
+  enabled: boolean;
+  nextRun: string;
 }
 
 const defaultAgents: Agent[] = [
   {
-    id: "demo-competitor",
-    name: "Competitor Refresh (Demo)",
+    id: "holiday-1",
+    name: "Christmas Campaign",
+    type: "holiday",
+    description: "Generate festive creatives ahead of Christmas.",
+    concepts: 12,
+    enabled: true,
+    nextRun: "Dec 10, 2026 · 9:00 AM",
+  },
+  {
+    id: "holiday-2",
+    name: "Black Friday Blitz",
+    type: "holiday",
+    description: "Automated deal-focused ads for Black Friday.",
+    concepts: 8,
+    enabled: true,
+    nextRun: "Nov 15, 2026 · 8:00 AM",
+  },
+  {
+    id: "holiday-3",
+    name: "Valentine's Day Specials",
+    type: "holiday",
+    description: "Romantic-themed creatives for Valentine's Day.",
+    concepts: 6,
+    enabled: false,
+    nextRun: "Not scheduled",
+  },
+  {
+    id: "competitor-1",
+    name: "Nike Ad Monitor",
     type: "competitor",
-    description: "Weekly competitor creative scan → generate a few on-brand static variations for testing.",
+    description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
+    enabled: true,
+    nextRun: "Mar 14, 2026 · 10:00 AM",
+  },
+  {
+    id: "competitor-2",
+    name: "Adidas Creative Tracker",
+    type: "competitor",
+    description: "Monitor Adidas campaigns and produce counter-creatives.",
+    concepts: 5,
+    enabled: false,
+    nextRun: "Not scheduled",
   },
 ];
 
@@ -42,6 +82,7 @@ const stepLabels = ["Type", "Basics", "Settings", "More", "Review"];
 export default function Workflows() {
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [step, setStep] = useState(0);
 
   // Create agent form state
@@ -93,15 +134,27 @@ export default function Workflows() {
       type: agentType!,
       description: desc,
       concepts: conceptCount,
+      enabled: enableAutomation,
+      nextRun: enableAutomation ? "Pending" : "Not scheduled",
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
     toast.success(`Agent "${name}" created!`);
   };
 
-  const deleteAgent = (id: string) => {
-    setAgents((prev) => prev.filter((a) => a.id !== id));
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setAgents((prev) => prev.filter((a) => a.id !== deleteTarget));
     toast.success("Agent deleted");
+    setDeleteTarget(null);
+  };
+
+  const toggleAgent = (id: string) => {
+    setAgents((prev) =>
+      prev.map((a) =>
+        a.id === id ? { ...a, enabled: !a.enabled, nextRun: !a.enabled ? "Pending" : "Not scheduled" } : a
+      )
+    );
   };
 
   const typeLabel = agentType === "holiday" ? "Holiday" : agentType === "competitor" ? "Competitor" : "";
@@ -125,20 +178,26 @@ export default function Workflows() {
             {agents.map((agent) => (
               <Card key={agent.id} className="border border-border/60">
                 <CardContent className="p-4 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
-                      <Zap className="h-4 w-4 text-violet-600" />
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                        <Zap className="h-4 w-4 text-foreground" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-sm">{agent.name}</p>
+                        <Badge variant="outline" className={`text-[10px] mt-1 ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                          {agent.type === "holiday" ? "HOLIDAY" : "COMPETITOR"}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground mt-1.5">{agent.description}</p>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] mt-1 ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "HOLIDAY" : "COMPETITOR"}
-                      </Badge>
-                      <p className="text-xs text-muted-foreground mt-1.5">{agent.description}</p>
-                    </div>
+                    <Switch checked={agent.enabled} onCheckedChange={() => toggleAgent(agent.id)} />
                   </div>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs text-muted-foreground">{agent.concepts} concepts</span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <CalendarIcon className="h-3 w-3" />
+                      {agent.nextRun}
+                    </span>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7">
                         <Play className="h-3.5 w-3.5" />
@@ -146,7 +205,7 @@ export default function Workflows() {
                       <Button variant="ghost" size="icon" className="h-7 w-7">
                         <Settings2 className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteAgent(agent.id)}>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteTarget(agent.id)}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -403,6 +462,22 @@ export default function Workflows() {
               </div>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete agent</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this agent? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
