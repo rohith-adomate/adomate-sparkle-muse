@@ -142,9 +142,19 @@ export default function Workflows() {
     toast.success(`Agent "${name}" created!`);
   };
 
-  const deleteAgent = (id: string) => {
-    setAgents((prev) => prev.filter((a) => a.id !== id));
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setAgents((prev) => prev.filter((a) => a.id !== deleteTarget));
     toast.success("Agent deleted");
+    setDeleteTarget(null);
+  };
+
+  const toggleAgent = (id: string) => {
+    setAgents((prev) =>
+      prev.map((a) =>
+        a.id === id ? { ...a, enabled: !a.enabled, nextRun: !a.enabled ? "Pending" : "Not scheduled" } : a
+      )
+    );
   };
 
   const typeLabel = agentType === "holiday" ? "Holiday" : agentType === "competitor" ? "Competitor" : "";
