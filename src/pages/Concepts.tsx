@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Eye, EyeOff, Check, CheckCircle2 } from "lucide-react";
+import { Plus, Eye, Sparkles, Bell, Circle, Flame } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HoverExplainer } from "@/components/HoverExplainer";
