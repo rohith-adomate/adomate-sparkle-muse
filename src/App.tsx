@@ -17,6 +17,7 @@ import Competitors from "./pages/Competitors";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import Concepts from "./pages/Concepts";
+import ConceptsRunDetail from "./pages/ConceptsRunDetail";
 import Studio from "./pages/Studio";
 import Content from "./pages/Content";
 import CalendarPage from "./pages/CalendarPage";
