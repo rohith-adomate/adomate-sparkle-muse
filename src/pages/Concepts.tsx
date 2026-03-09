@@ -18,44 +18,47 @@ const rowStyle = {
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
 
-// 5 distinct "Seen" badge variations for comparison
-function SeenBadge({ runId }: { runId: string }) {
+// 5 distinct "New/Unseen" indicator variations for comparison
+function UnseenBadge({ runId }: { runId: string }) {
   switch (runId) {
-    // Style A — Subtle outline with eye icon
+    // Style A — Bold pink "NEW" pill
     case "competitor-ad-variation-1":
       return (
-        <Badge variant="outline" className="text-[10px] gap-1 border-border text-muted-foreground font-normal">
-          <Eye className="h-3 w-3" /> Seen
-        </Badge>
+        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary text-primary-foreground shadow-sm">
+          New
+        </span>
       );
-    // Style B — Filled muted pill, no icon
+    // Style B — Pulsing dot + "New" text
     case "competitor-ad-variation-2":
       return (
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-          Seen
+        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-primary">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+          </span>
+          New
         </span>
       );
-    // Style C — Checkmark circle with soft green tint
+    // Style C — Sparkle icon with amber "Unseen" badge
     case "competitor-ad-variation-3":
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium border border-emerald-200/60">
-          <CheckCircle2 className="h-3 w-3" /> Reviewed
+        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold border border-amber-300/60">
+          <Sparkles className="h-3 w-3" /> Unseen
         </span>
       );
-    // Style D — Minimal italic text
+    // Style D — Notification bell with count-style red badge
     case "competitor-ad-variation-4":
       return (
-        <span className="text-[10px] text-muted-foreground/50 font-medium italic">
-          — seen
+        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-red-500 text-white font-bold shadow-sm">
+          <Bell className="h-3 w-3" /> New
         </span>
       );
-    // Style E — Dot + "Viewed" inline
+    // Style E — Outlined primary with flame icon
     case "competitor-ad-variation-5":
       return (
-        <span className="inline-flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
-          <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
-          Viewed
-        </span>
+        <Badge variant="outline" className="text-[10px] gap-1 border-primary/50 text-primary font-semibold bg-primary/5">
+          <Flame className="h-3 w-3" /> New
+        </Badge>
       );
     default:
       return null;
