@@ -23,15 +23,55 @@ interface Agent {
   type: AgentType;
   description: string;
   concepts: number;
+  enabled: boolean;
+  nextRun: string;
 }
 
 const defaultAgents: Agent[] = [
   {
-    id: "demo-competitor",
-    name: "Competitor Refresh (Demo)",
+    id: "holiday-1",
+    name: "Christmas Campaign",
+    type: "holiday",
+    description: "Generate festive creatives ahead of Christmas.",
+    concepts: 12,
+    enabled: true,
+    nextRun: "Dec 10, 2026 · 9:00 AM",
+  },
+  {
+    id: "holiday-2",
+    name: "Black Friday Blitz",
+    type: "holiday",
+    description: "Automated deal-focused ads for Black Friday.",
+    concepts: 8,
+    enabled: true,
+    nextRun: "Nov 15, 2026 · 8:00 AM",
+  },
+  {
+    id: "holiday-3",
+    name: "Valentine's Day Specials",
+    type: "holiday",
+    description: "Romantic-themed creatives for Valentine's Day.",
+    concepts: 6,
+    enabled: false,
+    nextRun: "Not scheduled",
+  },
+  {
+    id: "competitor-1",
+    name: "Nike Ad Monitor",
     type: "competitor",
-    description: "Weekly competitor creative scan → generate a few on-brand static variations for testing.",
+    description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
+    enabled: true,
+    nextRun: "Mar 14, 2026 · 10:00 AM",
+  },
+  {
+    id: "competitor-2",
+    name: "Adidas Creative Tracker",
+    type: "competitor",
+    description: "Monitor Adidas campaigns and produce counter-creatives.",
+    concepts: 5,
+    enabled: false,
+    nextRun: "Not scheduled",
   },
 ];
 
