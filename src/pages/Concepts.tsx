@@ -94,7 +94,7 @@ export default function Concepts() {
                   className={`overflow-hidden transition-all duration-200 ${style.cardHover} ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
                 >
                   <CardContent className="p-0">
-                    <div className="aspect-[3/2] relative overflow-hidden bg-muted">
+                    <div className="aspect-square relative overflow-hidden bg-muted">
                       <img
                         src={`https://picsum.photos/seed/${c.imgSeed}/300/200`}
                         alt={c.title}
