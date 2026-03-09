@@ -138,9 +138,6 @@ export default function Concepts() {
                 <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
                 <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
               </div>
-              {style !== defaultStyle && (
-                <span className="text-[10px] text-muted-foreground/60 font-mono">{(style as any).label}</span>
-              )}
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
             <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${CARDS_PER_ROW}, 1fr)` }}>
