@@ -17,6 +17,10 @@ const agentRuns: { id: string; label: string; time: string; concepts: Concept[] 
       { id: "c3", title: "Bold CTA Banner", source: "Competitor Ad B", status: "pending", campaign: "Summer Kickoff", imgSeed: "cta-banner" },
       { id: "c4", title: "Lifestyle Carousel", source: "Competitor Ad B", status: "rejected", campaign: "Summer Kickoff", imgSeed: "lifestyle" },
       { id: "c5", title: "Testimonial Overlay", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "testimonial" },
+      { id: "c13", title: "Dynamic Retargeting", source: "Competitor Ad A", status: "pending", campaign: "Summer Kickoff", imgSeed: "retargeting" },
+      { id: "c14", title: "Story Takeover", source: "Competitor Ad B", status: "accepted", campaign: "Summer Kickoff", imgSeed: "story-takeover" },
+      { id: "c15", title: "Influencer Collab", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "influencer" },
+      { id: "c16", title: "Brand Mashup", source: "Competitor Ad A", status: "rejected", campaign: "Summer Kickoff", imgSeed: "brand-mashup" },
     ],
   },
   {
@@ -54,38 +58,6 @@ const agentRuns: { id: string; label: string; time: string; concepts: Concept[] 
       { id: "c44", title: "Animated Banner", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "animated-banner" },
       { id: "c45", title: "Before/After Strip", source: "Trending Topic", status: "accepted", campaign: "Flash Sale", imgSeed: "before-after" },
       { id: "c46", title: "Mood Board Style", source: "Competitor Ad I", status: "pending", campaign: "Flash Sale", imgSeed: "mood-board" },
-    ],
-  },
-  {
-    id: "competitor-ad-variation-5",
-    label: "Competitor Ad Variation",
-    time: "Mar 4, 2026 · 10:13",
-    concepts: [
-      { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
-      { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },
-      { id: "c52", title: "Isometric Product", source: "Competitor Ad K", status: "pending", campaign: "Brand Refresh", imgSeed: "isometric-prod" },
-      { id: "c53", title: "Paper Cut Style", source: "Competitor Ad K", status: "rejected", campaign: "Brand Refresh", imgSeed: "paper-cut" },
-    ],
-  },
-  {
-    id: "seasonal-trend-2",
-    label: "Seasonal Trend Discovery",
-    time: "Mar 7, 2026 · 09:15",
-    concepts: [
-      { id: "c6", title: "Heart Confetti Ad", source: "Seasonal Trend", status: "pending", campaign: "Valentine's Push", imgSeed: "valentine" },
-      { id: "c7", title: "Gift Guide Carousel", source: "Product Catalog", status: "accepted", campaign: "Valentine's Push", imgSeed: "gift-guide" },
-      { id: "c8", title: "Couple Lifestyle", source: "Competitor Ad C", status: "pending", campaign: "Valentine's Push", imgSeed: "couple" },
-    ],
-  },
-  {
-    id: "evergreen-content-3",
-    label: "Evergreen Content Generation",
-    time: "Mar 6, 2026 · 16:48",
-    concepts: [
-      { id: "c9", title: "Feature Highlight", source: "Brand Knowledge", status: "accepted", campaign: "Q1 Evergreen", imgSeed: "feature" },
-      { id: "c10", title: "Problem/Solution", source: "Persona: Busy Entrepreneur", status: "pending", campaign: "Q1 Evergreen", imgSeed: "problem-solution" },
-      { id: "c11", title: "Social Proof Strip", source: "Meta Performance", status: "pending", campaign: "Q1 Evergreen", imgSeed: "social-proof" },
-      { id: "c12", title: "How It Works", source: "Brand Knowledge", status: "pending", campaign: "Q1 Evergreen", imgSeed: "how-it-works" },
     ],
   },
 ];
