@@ -20,7 +20,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-1",
     label: "Competitor Ad Variation",
     time: "Mar 8, 2026 · 14:32",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c1", title: "Beach Vibes UGC", source: "Competitor Ad A", status: "accepted", campaign: "Summer Kickoff", imgSeed: "beach-ugc" },
       { id: "c2", title: "Sunset Product Shot", source: "Competitor Ad A", status: "pending", campaign: "Summer Kickoff", imgSeed: "sunset-shot" },
@@ -37,7 +37,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-2",
     label: "Competitor Ad Variation",
     time: "Mar 7, 2026 · 11:05",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c20", title: "Neon Gradient Ad", source: "Competitor Ad D", status: "pending", campaign: "Spring Launch", imgSeed: "neon-gradient" },
       { id: "c21", title: "Minimalist Product", source: "Competitor Ad D", status: "accepted", campaign: "Spring Launch", imgSeed: "minimalist-prod" },
@@ -51,7 +51,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-3",
     label: "Competitor Ad Variation",
     time: "Mar 6, 2026 · 08:22",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c30", title: "Pastel Palette Ad", source: "Competitor Ad F", status: "accepted", campaign: "Q2 Push", imgSeed: "pastel-palette" },
       { id: "c31", title: "Bold Typography", source: "Competitor Ad F", status: "pending", campaign: "Q2 Push", imgSeed: "bold-typo" },
@@ -62,7 +62,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-4",
     label: "Competitor Ad Variation",
     time: "Mar 5, 2026 · 15:47",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c40", title: "Duotone Effect", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "duotone-fx" },
       { id: "c41", title: "Product in Action", source: "Competitor Ad H", status: "accepted", campaign: "Flash Sale", imgSeed: "product-action" },
@@ -77,7 +77,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-5",
     label: "Competitor Ad Variation",
     time: "Mar 4, 2026 · 09:58",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
       { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },
