@@ -133,6 +133,8 @@ export default function Workflows() {
       type: agentType!,
       description: desc,
       concepts: conceptCount,
+      enabled: enableAutomation,
+      nextRun: enableAutomation ? "Pending" : "Not scheduled",
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
