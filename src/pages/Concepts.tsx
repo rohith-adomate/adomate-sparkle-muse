@@ -1,9 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { HoverExplainer } from "@/components/HoverExplainer";
 
 type Concept = { id: string; title: string; source: string; status: "pending" | "accepted" | "rejected"; campaign: string; imgSeed: string };
@@ -46,7 +44,7 @@ const agentRuns: { id: string; label: string; time: string; concepts: Concept[] 
 
 const statusDot = { pending: "bg-amber-400", accepted: "bg-emerald-400", rejected: "bg-red-400" };
 
-const MAX_VISIBLE = 4;
+const MAX_VISIBLE = 5;
 
 export default function Concepts() {
   const navigate = useNavigate();
@@ -71,24 +69,28 @@ export default function Concepts() {
         const overflowCount = run.concepts.length - MAX_VISIBLE;
 
         return (
-          <div key={run.id} className="space-y-2.5">
+          <div
+            key={run.id}
+            className="space-y-2.5 group/run cursor-pointer rounded-xl p-3 -mx-3 transition-all duration-200 hover:bg-muted/40"
+            onClick={() => navigate(`/concepts/${run.id}`)}
+          >
             <div className="flex items-baseline gap-2">
-              <h2 className="text-sm font-semibold">{run.label}</h2>
+              <h2 className="text-sm font-semibold group-hover/run:text-primary transition-colors">{run.label}</h2>
               <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
+              <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
             <div className="flex items-stretch gap-3">
               {visibleConcepts.map((c) => (
                 <Card
                   key={c.id}
-                  className="shrink-0 w-52 cursor-pointer group overflow-hidden hover:shadow-md transition-shadow"
-                  onClick={() => navigate(`/concepts/${run.id}`)}
+                  className="shrink-0 flex-1 min-w-0 overflow-hidden transition-shadow duration-200 group-hover/run:shadow-md"
                 >
                   <CardContent className="p-0">
                     <div className="h-32 relative overflow-hidden bg-muted">
                       <img
                         src={`https://picsum.photos/seed/${c.imgSeed}/300/200`}
                         alt={c.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                       <div className="absolute top-2 right-2">
@@ -104,15 +106,12 @@ export default function Concepts() {
               ))}
 
               {overflowCount > 0 && (
-                <button
-                  onClick={() => navigate(`/concepts/${run.id}`)}
-                  className="shrink-0 w-20 rounded-lg border border-dashed border-border bg-muted/30 flex flex-col items-center justify-center gap-1.5 hover:bg-muted/60 hover:border-primary/30 transition-all cursor-pointer group"
-                >
-                  <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                    <Plus className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="shrink-0 w-16 rounded-lg border border-dashed border-border bg-muted/30 flex flex-col items-center justify-center gap-1.5 group-hover/run:bg-muted/60 group-hover/run:border-primary/30 transition-all">
+                  <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center group-hover/run:bg-primary/10 transition-colors">
+                    <Plus className="h-4 w-4 text-muted-foreground group-hover/run:text-primary transition-colors" />
                   </div>
-                  <span className="text-xs text-muted-foreground group-hover:text-primary font-medium transition-colors">+{overflowCount} more</span>
-                </button>
+                  <span className="text-[10px] text-muted-foreground group-hover/run:text-primary font-medium transition-colors">+{overflowCount}</span>
+                </div>
               )}
             </div>
           </div>
