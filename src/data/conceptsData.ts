@@ -77,7 +77,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-5",
     label: "Competitor Ad Variation",
     time: "Mar 4, 2026 · 09:58",
-    seen: true,
+    seen: false,
     concepts: [
       { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
       { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },

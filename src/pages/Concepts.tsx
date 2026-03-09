@@ -111,12 +111,7 @@ export default function Concepts() {
           >
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
-                {!run.seen && (
-                  <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
-                )}
-                <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{run.label}</h2>
-                <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
-                {run.seen && <SeenBadge runId={run.id} />}
+                {!run.seen && <UnseenBadge runId={run.id} />}
               </div>
               <span className="text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ml-auto">View all →</span>
             </div>
