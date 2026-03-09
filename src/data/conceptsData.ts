@@ -51,7 +51,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-3",
     label: "Competitor Ad Variation",
     time: "Mar 6, 2026 · 08:22",
-    seen: false,
+    seen: true,
     concepts: [
       { id: "c30", title: "Pastel Palette Ad", source: "Competitor Ad F", status: "accepted", campaign: "Q2 Push", imgSeed: "pastel-palette" },
       { id: "c31", title: "Bold Typography", source: "Competitor Ad F", status: "pending", campaign: "Q2 Push", imgSeed: "bold-typo" },
@@ -62,7 +62,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-4",
     label: "Competitor Ad Variation",
     time: "Mar 5, 2026 · 15:47",
-    seen: false,
+    seen: true,
     concepts: [
       { id: "c40", title: "Duotone Effect", source: "Competitor Ad H", status: "pending", campaign: "Flash Sale", imgSeed: "duotone-fx" },
       { id: "c41", title: "Product in Action", source: "Competitor Ad H", status: "accepted", campaign: "Flash Sale", imgSeed: "product-action" },
@@ -77,7 +77,7 @@ export const agentRuns: AgentRun[] = [
     id: "competitor-ad-variation-5",
     label: "Competitor Ad Variation",
     time: "Mar 4, 2026 · 09:58",
-    seen: false,
+    seen: true,
     concepts: [
       { id: "c50", title: "Retro Halftone", source: "Competitor Ad J", status: "pending", campaign: "Brand Refresh", imgSeed: "retro-halftone" },
       { id: "c51", title: "Glass Morphism", source: "Competitor Ad J", status: "accepted", campaign: "Brand Refresh", imgSeed: "glass-morph" },
