@@ -62,7 +62,7 @@ function SeenBadge({ runId }: { runId: string }) {
   }
 }
 
-
+export default function Concepts() {
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("all");
 
