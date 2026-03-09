@@ -56,7 +56,7 @@ export default function ConceptsRunDetail() {
         {run.concepts.map((c) => (
           <Card
             key={c.id}
-            className="cursor-pointer overflow-hidden group hover:shadow-md transition-shadow"
+            className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
             onClick={() => setSelected(c)}
           >
             <CardContent className="p-0">
@@ -66,17 +66,6 @@ export default function ConceptsRunDetail() {
                   alt={c.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                <div className="absolute top-2 right-2">
-                  <span className={`h-2.5 w-2.5 rounded-full inline-block ${statusDot[c.status]} ring-2 ring-white shadow-sm`} />
-                </div>
-              </div>
-              <div className="p-3 space-y-1">
-                <p className="text-sm font-medium truncate">{c.title}</p>
-                <div className="flex items-center justify-between">
-                  <p className="text-[10px] text-muted-foreground truncate">{c.source}</p>
-                  <Badge variant="outline" className={`text-[9px] border ${statusBadge[c.status]} ml-1 shrink-0`}>{c.status}</Badge>
-                </div>
               </div>
             </CardContent>
           </Card>
