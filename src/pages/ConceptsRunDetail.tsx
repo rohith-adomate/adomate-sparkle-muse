@@ -27,6 +27,10 @@ const agentRuns: Record<string, { label: string; time: string; concepts: Concept
       { id: "c3", title: "Bold CTA Banner", source: "Competitor Ad B", status: "pending", campaign: "Summer Kickoff", imgSeed: "cta-banner" },
       { id: "c4", title: "Lifestyle Carousel", source: "Competitor Ad B", status: "rejected", campaign: "Summer Kickoff", imgSeed: "lifestyle" },
       { id: "c5", title: "Testimonial Overlay", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "testimonial" },
+      { id: "c13", title: "Dynamic Retargeting", source: "Competitor Ad A", status: "pending", campaign: "Summer Kickoff", imgSeed: "retargeting" },
+      { id: "c14", title: "Story Takeover", source: "Competitor Ad B", status: "accepted", campaign: "Summer Kickoff", imgSeed: "story-takeover" },
+      { id: "c15", title: "Influencer Collab", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "influencer" },
+      { id: "c16", title: "Brand Mashup", source: "Competitor Ad A", status: "rejected", campaign: "Summer Kickoff", imgSeed: "brand-mashup" },
     ],
   },
   "seasonal-trend-2": {
@@ -95,7 +99,7 @@ export default function ConceptsRunDetail() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {run.concepts.map((c) => (
           <Card
             key={c.id}
