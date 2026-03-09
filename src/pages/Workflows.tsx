@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon,
+  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, Timer,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
