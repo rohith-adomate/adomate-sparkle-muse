@@ -7,60 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, X, MessageSquare, Heart } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
-type Concept = {
-  id: string;
-  title: string;
-  source: string;
-  status: "pending" | "accepted" | "rejected";
-  campaign: string;
-  imgSeed: string;
-};
-
-const agentRuns: Record<string, { label: string; time: string; concepts: Concept[] }> = {
-  "competitor-ad-variation-1": {
-    label: "Competitor Ad Variation",
-    time: "Mar 8, 2026 · 14:32",
-    concepts: [
-      { id: "c1", title: "Beach Vibes UGC", source: "Competitor Ad A", status: "accepted", campaign: "Summer Kickoff", imgSeed: "beach-ugc" },
-      { id: "c2", title: "Sunset Product Shot", source: "Competitor Ad A", status: "pending", campaign: "Summer Kickoff", imgSeed: "sunset-shot" },
-      { id: "c3", title: "Bold CTA Banner", source: "Competitor Ad B", status: "pending", campaign: "Summer Kickoff", imgSeed: "cta-banner" },
-      { id: "c4", title: "Lifestyle Carousel", source: "Competitor Ad B", status: "rejected", campaign: "Summer Kickoff", imgSeed: "lifestyle" },
-      { id: "c5", title: "Testimonial Overlay", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "testimonial" },
-      { id: "c13", title: "Dynamic Retargeting", source: "Competitor Ad A", status: "pending", campaign: "Summer Kickoff", imgSeed: "retargeting" },
-      { id: "c14", title: "Story Takeover", source: "Competitor Ad B", status: "accepted", campaign: "Summer Kickoff", imgSeed: "story-takeover" },
-      { id: "c15", title: "Influencer Collab", source: "Trending Topic", status: "pending", campaign: "Summer Kickoff", imgSeed: "influencer" },
-      { id: "c16", title: "Brand Mashup", source: "Competitor Ad A", status: "rejected", campaign: "Summer Kickoff", imgSeed: "brand-mashup" },
-    ],
-  },
-  "seasonal-trend-2": {
-    label: "Seasonal Trend Discovery",
-    time: "Mar 7, 2026 · 09:15",
-    concepts: [
-      { id: "c6", title: "Heart Confetti Ad", source: "Seasonal Trend", status: "pending", campaign: "Valentine's Push", imgSeed: "valentine" },
-      { id: "c7", title: "Gift Guide Carousel", source: "Product Catalog", status: "accepted", campaign: "Valentine's Push", imgSeed: "gift-guide" },
-      { id: "c8", title: "Couple Lifestyle", source: "Competitor Ad C", status: "pending", campaign: "Valentine's Push", imgSeed: "couple" },
-    ],
-  },
-  "evergreen-content-3": {
-    label: "Evergreen Content Generation",
-    time: "Mar 6, 2026 · 16:48",
-    concepts: [
-      { id: "c9", title: "Feature Highlight", source: "Brand Knowledge", status: "accepted", campaign: "Q1 Evergreen", imgSeed: "feature" },
-      { id: "c10", title: "Problem/Solution", source: "Persona: Busy Entrepreneur", status: "pending", campaign: "Q1 Evergreen", imgSeed: "problem-solution" },
-      { id: "c11", title: "Social Proof Strip", source: "Meta Performance", status: "pending", campaign: "Q1 Evergreen", imgSeed: "social-proof" },
-      { id: "c12", title: "How It Works", source: "Brand Knowledge", status: "pending", campaign: "Q1 Evergreen", imgSeed: "how-it-works" },
-    ],
-  },
-};
-
-const statusDot = { pending: "bg-amber-400", accepted: "bg-emerald-400", rejected: "bg-red-400" };
-const statusBadge = { pending: "bg-amber-50 text-amber-700 border-amber-200", accepted: "bg-emerald-50 text-emerald-700 border-emerald-200", rejected: "bg-red-50 text-red-700 border-red-200" };
+import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
+import type { Concept } from "@/data/conceptsData";
 
 export default function ConceptsRunDetail() {
   const { runId } = useParams();
   const navigate = useNavigate();
-  const run = runId ? agentRuns[runId] : null;
+  const run = runId ? agentRunsById[runId] : null;
 
   const [selected, setSelected] = useState<Concept | null>(null);
   const [swipeAnim, setSwipeAnim] = useState<"left" | "right" | null>(null);
