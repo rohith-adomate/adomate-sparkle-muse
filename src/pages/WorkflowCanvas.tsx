@@ -790,6 +790,10 @@ export default function WorkflowCanvas() {
         open={competitorScrapeDrawerOpen}
         onOpenChange={setCompetitorScrapeDrawerOpen}
       />
+      <GenerateConceptsDrawer
+        open={generateConceptsDrawerOpen}
+        onOpenChange={setGenerateConceptsDrawerOpen}
+      />
       <NodeOutputDrawer
         open={outputDrawerOpen}
         onOpenChange={setOutputDrawerOpen}
