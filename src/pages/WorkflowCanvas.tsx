@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSidebar } from "@/components/ui/sidebar";
+import ScheduleDrawer from "@/components/ScheduleDrawer";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Clock, BookOpen, Package, Search, CheckSquare, Send,
