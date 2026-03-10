@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
-  Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, MoreVertical,
+  Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +38,7 @@ const defaultAgents: Agent[] = [
     description: "Generate festive creatives ahead of Christmas.",
     concepts: 12,
     enabled: true,
-    nextRun: "Dec 10, 2026 at 09:00 AM (CET)",
+    nextRun: "Dec 10, 2026",
   },
   {
     id: "holiday-2",
@@ -47,7 +47,7 @@ const defaultAgents: Agent[] = [
     description: "Automated deal-focused ads for Black Friday.",
     concepts: 8,
     enabled: true,
-    nextRun: "Nov 15, 2026 at 08:00 AM (CET)",
+    nextRun: "Nov 15, 2026",
   },
   {
     id: "holiday-3",
@@ -56,7 +56,7 @@ const defaultAgents: Agent[] = [
     description: "Romantic-themed creatives for Valentine's Day.",
     concepts: 6,
     enabled: true,
-    nextRun: "Feb 1, 2027 at 07:00 AM (CET)",
+    nextRun: "Feb 1, 2027",
   },
   {
     id: "competitor-1",
@@ -65,7 +65,7 @@ const defaultAgents: Agent[] = [
     description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
     enabled: true,
-    nextRun: "Mar 14, 2026 at 10:00 AM (CET)",
+    nextRun: "Mar 14, 2026",
   },
   {
     id: "competitor-2",
@@ -74,7 +74,7 @@ const defaultAgents: Agent[] = [
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
     enabled: true,
-    nextRun: "Mar 21, 2026 at 06:00 PM (CET)",
+    nextRun: "Mar 21, 2026",
   },
 ];
 
@@ -207,13 +207,19 @@ export default function Workflows() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">{agent.description}</p>
-                  <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5">
-                    <div className="relative shrink-0">
-                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                      <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5 cursor-default">
+                        <div className="relative shrink-0">
+                          <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>Next scheduled run for this agent</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </CardContent>
               </Card>
             ))}
