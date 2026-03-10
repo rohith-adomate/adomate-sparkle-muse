@@ -624,9 +624,6 @@ export default function Content() {
     return true;
   });
 
-  const readyCount = contentAds.filter((a) => a.status === "ready").length;
-  const incompleteCount = contentAds.filter((a) => a.status === "incomplete").length;
-  const draftCount = contentAds.filter((a) => a.status === "draft").length;
 
   return (
     <div className="space-y-6">
@@ -660,37 +657,6 @@ export default function Content() {
               <SelectItem value="draft">Draft</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-      </div>
-
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-xl border border-border bg-card p-3.5 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-            <Check className="h-4 w-4 text-emerald-600" />
-          </div>
-          <div>
-            <p className="text-lg font-bold">{readyCount}</p>
-            <p className="text-[11px] text-muted-foreground">Ready to launch</p>
-          </div>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-3.5 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-amber-100 flex items-center justify-center">
-            <Image className="h-4 w-4 text-amber-600" />
-          </div>
-          <div>
-            <p className="text-lg font-bold">{incompleteCount}</p>
-            <p className="text-[11px] text-muted-foreground">Incomplete</p>
-          </div>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-3.5 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div>
-            <p className="text-lg font-bold">{draftCount}</p>
-            <p className="text-[11px] text-muted-foreground">Drafts</p>
-          </div>
         </div>
       </div>
 
