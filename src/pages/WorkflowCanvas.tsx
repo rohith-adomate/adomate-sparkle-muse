@@ -11,6 +11,7 @@ import {
   Clock, BookOpen, Package, Search, CheckSquare, Send,
   PanelLeftClose, PanelLeft, Trash2,
 } from "lucide-react";
+import ScheduleDrawer from "@/components/ScheduleDrawer";
 
 /* ── Types ── */
 
