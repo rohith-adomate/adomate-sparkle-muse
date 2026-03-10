@@ -49,11 +49,17 @@ const NODE_CATALOG = [
     ],
   },
   {
-    category: "data" as const,
-    label: "DATA",
+    category: "static-data" as const,
+    label: "STATIC DATA",
     items: [
-      { type: "brand-knowledge", label: "Brand Knowledge", description: "Load brand guidelines & assets.", icon: BookOpen, inputs: ["In"], outputs: ["Brand Data"] },
-      { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: ["In"], outputs: ["Products"] },
+      { type: "brand-knowledge", label: "Brand Knowledge", description: "Load brand guidelines & assets.", icon: BookOpen, inputs: [], outputs: ["Brand Data"] },
+      { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
+    ],
+  },
+  {
+    category: "dynamic-data" as const,
+    label: "DYNAMIC DATA",
+    items: [
       { type: "competitor-scrape", label: "Competitor Scrape", description: "Scrape competitor ad data.", icon: Search, inputs: ["In"], outputs: ["Competitor Data"] },
     ],
   },
@@ -76,8 +82,10 @@ const NODE_CATALOG = [
 
 const CATEGORY_COLORS: Record<string, string> = {
   trigger: "152 60% 42%",
-  data: "210 80% 55%",
+  "static-data": "210 80% 55%",
+  "dynamic-data": "195 70% 50%",
   ai: "270 70% 60%",
+  action: "25 95% 55%",
 };
 
 const NODE_W = 200;
@@ -89,17 +97,20 @@ const PORT_R = 6;
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n1", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mondays at 9 AM", x: 100, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n2", type: "brand-knowledge", category: "data", label: "Brand Knowledge", description: "Load brand guidelines & assets.", x: 400, y: 120, inputs: ["In"], outputs: ["Brand Data"], status: "success" },
-    { id: "n3", type: "competitor-scrape", category: "data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 280, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
-    { id: "n4", type: "send-approval", category: "action", label: "Send for Approval", description: "Send to team for review.", x: 750, y: 200, inputs: ["Content"], outputs: ["Approved"] },
+    { id: "n2", type: "brand-knowledge", category: "static-data", label: "Brand Knowledge", description: "Load brand guidelines & assets.", x: 400, y: 80, inputs: [], outputs: ["Brand Data"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 180, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 310, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Concepts", description: "Generate image ad concepts with AI.", x: 700, y: 180, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
+    { id: "n4", type: "send-approval", category: "action", label: "Send for Approval", description: "Send to team for review.", x: 1000, y: 200, inputs: ["Content"], outputs: ["Approved"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
-  { id: "e1", from: "n1", fromPort: 0, to: "n2", toPort: 0 },
-  { id: "e2", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
-  { id: "e3", from: "n2", fromPort: 0, to: "n4", toPort: 0 },
-  { id: "e4", from: "n3", fromPort: 0, to: "n4", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e5", from: "n2", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+  { id: "e7", from: "n3", fromPort: 0, to: "n5", toPort: 2 },
+  { id: "e8", from: "n5", fromPort: 0, to: "n4", toPort: 0 },
 ];
 
 /* ── Helpers ── */
