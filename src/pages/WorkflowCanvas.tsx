@@ -543,6 +543,8 @@ export default function WorkflowCanvas() {
                     if (node.type === "schedule") {
                       setScheduleNodeId(node.id);
                       setScheduleDrawerOpen(true);
+                    } else if (node.type === "brand-knowledge") {
+                      setBrandKnowledgeDrawerOpen(true);
                     }
                   }}
                 >
