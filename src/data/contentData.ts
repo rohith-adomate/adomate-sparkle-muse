@@ -31,6 +31,37 @@ export interface ContentAd {
   likedAt: string;
 }
 
+}
+
+export interface AdHistoryEntry {
+  id: string;
+  label: string;
+  date: string;
+  actor: string;
+  imgSeed: string;
+  status: "approved" | "current" | "rejected";
+  note?: string;
+}
+
+export interface ContentAd {
+  id: string;
+  conceptId: string;
+  title: string;
+  headline: string;
+  adCopy: string;
+  cta: string;
+  status: AdStatus;
+  platforms: Platform[];
+  requiredRatios: AspectRatio[];
+  completedRatios: AspectRatio[];
+  completionMethod: CompletionMethod;
+  versions: AdVersion[];
+  imgSeed: string;
+  sourceWorkflow: string;
+  likedAt: string;
+  history: AdHistoryEntry[];
+}
+
 export const contentAds: ContentAd[] = [
   {
     id: "ad-1",
