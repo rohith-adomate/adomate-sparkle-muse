@@ -144,6 +144,7 @@ export default function WorkflowCanvas() {
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
   const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
+  const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
 
   // Auto-collapse main sidebar on mount (user can still expand it manually)
   const { setOpen: setSidebarOpen } = useSidebar();
