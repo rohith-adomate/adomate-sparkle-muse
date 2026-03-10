@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { BookOpen, Image, Plus, X, Info, Check } from "lucide-react";
+import { BookOpen, Image, Plus, X, Info, Check, RefreshCw } from "lucide-react";
 
 const MOCK_LOGOS = [
   { id: "logo-1", name: "Primary Logo", url: "/placeholder.svg" },
@@ -100,48 +100,78 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                 Logo
               </Label>
               <div className="flex items-center gap-2">
-                {selectedLogoData && (
-                  <div className="relative rounded-lg border border-primary/30 bg-primary/5 p-2 h-14 w-14 flex items-center justify-center">
-                    <img src={selectedLogoData.url} alt={selectedLogoData.name} className="max-h-full max-w-full object-contain opacity-60" />
-                    <button
-                      onClick={() => setSelectedLogo(null)}
-                      className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 hover:bg-destructive hover:text-destructive-foreground transition-colors"
-                    >
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                  </div>
-                )}
-                <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
-                      <Plus className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-[240px] p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Select a logo</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {MOCK_LOGOS.map((l) => {
-                        const isSel = selectedLogo === l.id;
-                        return (
+                {selectedLogoData ? (
+                  <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
+                    <div className="relative group">
+                      <PopoverTrigger asChild>
+                        <button className="rounded-lg border border-primary/30 bg-primary/5 p-2 h-14 w-14 flex items-center justify-center cursor-pointer">
+                          <img src={selectedLogoData.url} alt={selectedLogoData.name} className="max-h-full max-w-full object-contain opacity-60" />
+                        </button>
+                      </PopoverTrigger>
+                      <div className="absolute -top-1 -left-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-accent">
+                        <PopoverTrigger asChild>
+                          <RefreshCw className="h-2.5 w-2.5 text-muted-foreground" />
+                        </PopoverTrigger>
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setSelectedLogo(null); }}
+                        className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <X className="h-2.5 w-2.5" />
+                      </button>
+                    </div>
+                    <PopoverContent align="start" className="w-[240px] p-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Replace logo</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {MOCK_LOGOS.map((l) => {
+                          const isSel = selectedLogo === l.id;
+                          return (
+                            <button
+                              key={l.id}
+                              onClick={() => {
+                                setSelectedLogo(l.id);
+                                setLogoPopoverOpen(false);
+                              }}
+                              className={`relative rounded-lg border-2 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all ${
+                                isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                              }`}
+                            >
+                              <img src={l.url} alt={l.name} className="h-8 w-8 object-contain opacity-60" />
+                              <span className="text-[9px] text-muted-foreground truncate w-full text-center">{l.name}</span>
+                              {isSel && <div className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
+                        <Plus className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-[240px] p-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Select a logo</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {MOCK_LOGOS.map((l) => (
                           <button
                             key={l.id}
                             onClick={() => {
-                              setSelectedLogo(isSel ? null : l.id);
+                              setSelectedLogo(l.id);
                               setLogoPopoverOpen(false);
                             }}
-                            className={`relative rounded-lg border-2 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all ${
-                              isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                            }`}
+                            className="relative rounded-lg border-2 border-border hover:border-muted-foreground/30 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all"
                           >
                             <img src={l.url} alt={l.name} className="h-8 w-8 object-contain opacity-60" />
                             <span className="text-[9px] text-muted-foreground truncate w-full text-center">{l.name}</span>
-                            {isSel && <div className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary" />}
                           </button>
-                        );
-                      })}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                )}
               </div>
             </div>
 
