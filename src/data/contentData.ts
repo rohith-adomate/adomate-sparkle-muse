@@ -13,26 +13,6 @@ export interface AdVersion {
   createdAt: string;
 }
 
-export interface ContentAd {
-  id: string;
-  conceptId: string;
-  title: string;
-  headline: string;
-  adCopy: string;
-  cta: string;
-  status: AdStatus;
-  platforms: Platform[];
-  requiredRatios: AspectRatio[];
-  completedRatios: AspectRatio[];
-  completionMethod: CompletionMethod;
-  versions: AdVersion[];
-  imgSeed: string;
-  sourceWorkflow: string;
-  likedAt: string;
-}
-
-}
-
 export interface AdHistoryEntry {
   id: string;
   label: string;
@@ -83,6 +63,11 @@ export const contentAds: ContentAd[] = [
     imgSeed: "beach-ugc",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 8, 2026",
+    history: [
+      { id: "h1-1", label: "Ad Concept", date: "Mar 6, 2026, 14:20", actor: "Lucas Desard", imgSeed: "beach-ugc-concept", status: "approved", note: "Original concept liked from workflow" },
+      { id: "h1-2", label: "First Delivery", date: "Mar 7, 2026, 10:15", actor: "AI Generation", imgSeed: "beach-ugc-v1", status: "approved", note: "All 3 ratios generated successfully" },
+      { id: "h1-3", label: "Final Version", date: "Mar 8, 2026, 16:30", actor: "AI Generation", imgSeed: "beach-ugc-4x5", status: "current" },
+    ],
   },
   {
     id: "ad-2",
@@ -102,6 +87,10 @@ export const contentAds: ContentAd[] = [
     imgSeed: "story-takeover",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 8, 2026",
+    history: [
+      { id: "h2-1", label: "Ad Concept", date: "Mar 5, 2026, 09:00", actor: "Lucas Desard", imgSeed: "story-takeover-concept", status: "approved" },
+      { id: "h2-2", label: "First Delivery (Current)", date: "Mar 8, 2026, 11:30", actor: "AI Generation", imgSeed: "story-takeover-4x5", status: "current", note: "9:16 ratio still pending" },
+    ],
   },
   {
     id: "ad-3",
@@ -121,6 +110,10 @@ export const contentAds: ContentAd[] = [
     imgSeed: "minimalist-prod",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 7, 2026",
+    history: [
+      { id: "h3-1", label: "Ad Concept", date: "Mar 5, 2026, 15:00", actor: "Emma Chen", imgSeed: "minimalist-concept", status: "approved" },
+      { id: "h3-2", label: "Final Version", date: "Mar 7, 2026, 09:45", actor: "AI Generation", imgSeed: "minimalist-prod-1x1", status: "current" },
+    ],
   },
   {
     id: "ad-4",
@@ -140,6 +133,11 @@ export const contentAds: ContentAd[] = [
     imgSeed: "pastel-palette",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 6, 2026",
+    history: [
+      { id: "h4-1", label: "Ad Concept", date: "Mar 3, 2026, 11:00", actor: "Lucas Desard", imgSeed: "pastel-concept", status: "approved" },
+      { id: "h4-2", label: "Designer Draft", date: "Mar 5, 2026, 14:20", actor: "Sarah Kim", imgSeed: "pastel-draft", status: "rejected", note: "Colors too muted, needs more contrast" },
+      { id: "h4-3", label: "Revised Version (Current)", date: "Mar 6, 2026, 10:00", actor: "Sarah Kim", imgSeed: "pastel-palette-4x5", status: "current", note: "Updated palette with bolder accents" },
+    ],
   },
   {
     id: "ad-5",
@@ -157,6 +155,9 @@ export const contentAds: ContentAd[] = [
     imgSeed: "product-action",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 5, 2026",
+    history: [
+      { id: "h5-1", label: "Ad Concept", date: "Mar 5, 2026, 08:30", actor: "Lucas Desard", imgSeed: "product-action-concept", status: "current", note: "Awaiting generation" },
+    ],
   },
   {
     id: "ad-6",
@@ -178,6 +179,11 @@ export const contentAds: ContentAd[] = [
     imgSeed: "glass-morph",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 4, 2026",
+    history: [
+      { id: "h6-1", label: "Ad Concept", date: "Mar 2, 2026, 16:00", actor: "Emma Chen", imgSeed: "glass-concept", status: "approved" },
+      { id: "h6-2", label: "First Delivery", date: "Mar 3, 2026, 09:15", actor: "AI Generation", imgSeed: "glass-morph-v1", status: "approved" },
+      { id: "h6-3", label: "Second Delivery", date: "Mar 4, 2026, 11:40", actor: "AI Generation", imgSeed: "glass-morph-4x5", status: "current", note: "16:9 added for LinkedIn" },
+    ],
   },
   {
     id: "ad-7",
@@ -197,5 +203,9 @@ export const contentAds: ContentAd[] = [
     imgSeed: "before-after",
     sourceWorkflow: "Competitor Ad Variation",
     likedAt: "Mar 5, 2026",
+    history: [
+      { id: "h7-1", label: "Ad Concept", date: "Mar 3, 2026, 13:00", actor: "Lucas Desard", imgSeed: "before-after-concept", status: "approved" },
+      { id: "h7-2", label: "Designer Delivery (Current)", date: "Mar 5, 2026, 17:00", actor: "Sarah Kim", imgSeed: "before-after-9x16", status: "current", note: "4:5 version in progress" },
+    ],
   },
 ];
