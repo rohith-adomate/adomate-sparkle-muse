@@ -58,6 +58,13 @@ const NODE_CATALOG = [
     ],
   },
   {
+    category: "ai" as const,
+    label: "AI",
+    items: [
+      { type: "generate-concepts", label: "Generate Concepts", description: "Generate image ad concepts with AI.", icon: Sparkles, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
+    ],
+  },
+  {
     category: "action" as const,
     label: "ACTIONS",
     items: [
