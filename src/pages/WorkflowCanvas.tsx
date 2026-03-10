@@ -668,6 +668,20 @@ export default function WorkflowCanvas() {
           </div>
         )}
       </div>
+
+      {/* Schedule Drawer */}
+      <ScheduleDrawer
+        open={scheduleDrawerOpen}
+        onOpenChange={setScheduleDrawerOpen}
+        onDescriptionChange={(desc) => {
+          const scheduleNodeId = nodes.find((n) => n.type === "schedule")?.id;
+          if (scheduleNodeId) {
+            setNodes((prev) =>
+              prev.map((n) => n.id === scheduleNodeId ? { ...n, description: desc } : n)
+            );
+          }
+        }}
+      />
     </div>
   );
 }
