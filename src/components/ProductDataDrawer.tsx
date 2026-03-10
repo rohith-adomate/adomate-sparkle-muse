@@ -4,49 +4,44 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Package, Image, ChevronDown, ChevronRight } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const PRODUCTS = [
   {
     id: "prod-1",
-    name: "SmartWidget Pro",
-    description: "One-click AI ad generation for SMBs",
+    name: "Hydra Glow Serum",
     imgSeed: "smartwidget",
     images: [
       { id: "img-1-1", name: "Hero Shot", seed: "sw-hero" },
-      { id: "img-1-2", name: "Dashboard View", seed: "sw-dash" },
-      { id: "img-1-3", name: "Mobile Preview", seed: "sw-mobile" },
+      { id: "img-1-2", name: "Texture Close-up", seed: "sw-dash" },
+      { id: "img-1-3", name: "Before & After", seed: "sw-mobile" },
     ],
   },
   {
     id: "prod-2",
-    name: "QuickLaunch",
-    description: "Template-based 1-day campaign launch",
+    name: "Gentle Foam Cleanser",
     imgSeed: "quicklaunch",
     images: [
-      { id: "img-2-1", name: "Landing Page", seed: "ql-landing" },
+      { id: "img-2-1", name: "Product Front", seed: "ql-landing" },
     ],
   },
   {
     id: "prod-3",
-    name: "InsightEngine",
-    description: "Unified analytics dashboard",
+    name: "Vitamin C Brightening Cream",
     imgSeed: "insight",
     images: [
-      { id: "img-3-1", name: "Analytics Overview", seed: "ie-overview" },
-      { id: "img-3-2", name: "Report Export", seed: "ie-report" },
+      { id: "img-3-1", name: "Jar Flat Lay", seed: "ie-overview" },
+      { id: "img-3-2", name: "Lifestyle Application", seed: "ie-report" },
     ],
   },
   {
     id: "prod-4",
-    name: "CreativeOS",
-    description: "AI-powered creative variations at scale",
+    name: "Retinol Night Recovery Mask",
     imgSeed: "creativeos",
     images: [
-      { id: "img-4-1", name: "Editor View", seed: "cos-editor" },
-      { id: "img-4-2", name: "Asset Library", seed: "cos-library" },
-      { id: "img-4-3", name: "Variation Grid", seed: "cos-grid" },
-      { id: "img-4-4", name: "Export Preview", seed: "cos-export" },
+      { id: "img-4-1", name: "Packaging Detail", seed: "cos-editor" },
+      { id: "img-4-2", name: "Ingredient Spread", seed: "cos-library" },
+      { id: "img-4-3", name: "Model Application", seed: "cos-grid" },
+      { id: "img-4-4", name: "Routine Bundle", seed: "cos-export" },
     ],
   },
 ];
@@ -95,8 +90,6 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
     });
   };
 
-  const totalImages = Object.values(selectedImages).reduce((sum, arr) => sum + arr.length, 0);
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[380px] sm:max-w-[380px] flex flex-col gap-0 p-0">
@@ -108,7 +101,7 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
             <div>
               <SheetTitle className="text-sm">Product Data</SheetTitle>
               <SheetDescription className="text-xs">
-                Select products and images for this workflow.
+                Select products for this workflow.
               </SheetDescription>
             </div>
           </div>
@@ -119,19 +112,10 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
             <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Products
             </Label>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                {selectedProducts.length} product{selectedProducts.length !== 1 ? "s" : ""}
-              </Badge>
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                {totalImages} image{totalImages !== 1 ? "s" : ""}
-              </Badge>
-            </div>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              {selectedProducts.length} product{selectedProducts.length !== 1 ? "s" : ""}
+            </Badge>
           </div>
-
-          <p className="text-[11px] text-muted-foreground mb-3">
-            All textual knowledge is included by default. Select product images to include.
-          </p>
 
           {PRODUCTS.map((product) => {
             const isSelected = selectedProducts.includes(product.id);
@@ -151,9 +135,7 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                     checked={isSelected}
                     onCheckedChange={() => toggleProduct(product.id)}
                   />
-                  <div
-                    className="h-9 w-9 rounded-md overflow-hidden bg-muted shrink-0"
-                  >
+                  <div className="h-9 w-9 rounded-md overflow-hidden bg-muted shrink-0">
                     <img
                       src={`https://picsum.photos/seed/${product.imgSeed}/80/80`}
                       alt={product.name}
@@ -162,19 +144,26 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold truncate">{product.name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{product.description}</p>
                   </div>
                   {isSelected && (
-                    <button
-                      onClick={() => toggleExpanded(product.id)}
-                      className="shrink-0 p-1 rounded hover:bg-muted/60 transition-colors"
-                    >
-                      {isExpanded ? (
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                      ) : (
-                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {!isExpanded && productImages.length > 0 && (
+                        <Badge variant="outline" className="text-[9px] px-1.5 py-0 gap-0.5">
+                          <Image className="h-2.5 w-2.5" />
+                          {productImages.length}
+                        </Badge>
                       )}
-                    </button>
+                      <button
+                        onClick={() => toggleExpanded(product.id)}
+                        className="p-1 rounded hover:bg-muted/60 transition-colors"
+                      >
+                        {isExpanded ? (
+                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
                   )}
                 </div>
 
