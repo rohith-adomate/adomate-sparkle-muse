@@ -15,6 +15,7 @@ import {
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
+import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 
 /* ── Types ── */
 
