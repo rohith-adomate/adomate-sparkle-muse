@@ -100,7 +100,37 @@ function getNextRuns(
           const dayNum = parseInt(monthOrdinal);
           const maxDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
           d.setDate(Math.min(dayNum, maxDay));
+  } else if (type === "years") {
+    const targetMonthIdx = MONTH_INDEX_MAP[yearMonth] ?? 0;
+    for (let i = 0; results.length < count && i < 20; i++) {
+      const year = now.getFullYear() + interval * (i + 1);
+      const d = new Date(year, targetMonthIdx, 1, 9, 0, 0, 0);
+      if (monthDayType === "day") {
+        if (monthOrdinal === "last") {
+          d.setMonth(d.getMonth() + 1, 0);
+        } else {
+          const dayNum = parseInt(monthOrdinal);
+          const maxDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+          d.setDate(Math.min(dayNum, maxDay));
         }
+      } else {
+        const targetDayIdx = FULL_DAYS.findIndex((fd) => fd.toLowerCase() === monthDayType);
+        if (monthOrdinal === "last") {
+          const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+          const diff = (lastDay.getDay() - 1 - targetDayIdx + 7) % 7;
+          lastDay.setDate(lastDay.getDate() - diff);
+          d.setDate(lastDay.getDate());
+        } else {
+          const ord = parseInt(monthOrdinal);
+          const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+          const diff = (targetDayIdx - ((firstDay.getDay() + 6) % 7) + 7) % 7;
+          d.setDate(1 + diff + (ord - 1) * 7);
+        }
+      }
+      d.setHours(9, 0, 0, 0);
+      if (d > now) results.push(d);
+    }
+  }
       } else {
         const targetDayIdx = FULL_DAYS.findIndex((fd) => fd.toLowerCase() === monthDayType);
         if (monthOrdinal === "last") {
