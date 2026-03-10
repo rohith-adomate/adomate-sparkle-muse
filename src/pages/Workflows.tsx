@@ -84,6 +84,7 @@ const stepLabels = ["Type", "Basics", "Settings", "More", "Review"];
 
 export default function Workflows() {
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
+  const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [step, setStep] = useState(0);
