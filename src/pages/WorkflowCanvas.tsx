@@ -12,6 +12,7 @@ import {
   PanelLeftClose, PanelLeft, Trash2,
 } from "lucide-react";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
+import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 
 /* ── Types ── */
 
