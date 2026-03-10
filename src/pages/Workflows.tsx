@@ -74,7 +74,7 @@ const defaultAgents: Agent[] = [
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
     enabled: true,
-    nextRun: "Mar 21, 2026 at 06:00 PM (CET)",
+    nextRun: "Mar 21, 2026",
   },
 ];
 
