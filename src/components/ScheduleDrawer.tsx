@@ -168,6 +168,7 @@ function buildSummary(
   weekDays: string[],
   monthOrdinal: string,
   monthDayType: string,
+  yearMonth: string,
 ): string {
   if (type === "days") {
     return interval === 1 ? "Every day" : `Every ${interval} days`;
@@ -178,6 +179,12 @@ function buildSummary(
   }
   const ordLabel = ORDINALS.find((o) => o.value === monthOrdinal)?.label || monthOrdinal;
   const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === monthDayType)?.label || monthDayType;
+  if (type === "years") {
+    const monthLabel = MONTHS_OF_YEAR.find((m) => m.value === yearMonth)?.label || yearMonth;
+    return interval === 1
+      ? `Yearly on the ${ordLabel} ${dayLabel} of ${monthLabel}`
+      : `Every ${interval} years on the ${ordLabel} ${dayLabel} of ${monthLabel}`;
+  }
   return interval === 1
     ? `Monthly on the ${ordLabel} ${dayLabel}`
     : `Every ${interval} months on the ${ordLabel} ${dayLabel}`;
