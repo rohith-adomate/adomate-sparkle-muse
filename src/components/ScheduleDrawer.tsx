@@ -60,6 +60,7 @@ function getNextRuns(
   weekDays: string[],
   monthOrdinal: string,
   monthDayType: string,
+  yearMonth: string,
   count: number = 3,
 ): Date[] {
   const now = new Date();
