@@ -778,6 +778,11 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
       />
+      <NodeOutputDrawer
+        open={outputDrawerOpen}
+        onOpenChange={setOutputDrawerOpen}
+        node={outputDrawerNode}
+      />
     </div>
   );
 }
