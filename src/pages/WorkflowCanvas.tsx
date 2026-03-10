@@ -450,7 +450,7 @@ export default function WorkflowCanvas() {
             }}
           >
             {/* SVG Edges */}
-            <svg className="absolute inset-0 pointer-events-none" style={{ overflow: "visible", width: 1, height: 1 }}>
+            <svg className="absolute inset-0" style={{ overflow: "visible", width: 1, height: 1, pointerEvents: "none" }}>
               <defs>
                 <marker id="dot" markerWidth="4" markerHeight="4" refX="2" refY="2">
                   <circle cx="2" cy="2" r="1.5" fill="hsl(var(--primary))" opacity="0.6" />
@@ -466,12 +466,22 @@ export default function WorkflowCanvas() {
                 const pathId = `path-${edge.id}`;
                 return (
                   <g key={edge.id}>
+                    {/* Invisible wide hitbox for clicking */}
+                    <path
+                      d={path}
+                      fill="none"
+                      stroke="transparent"
+                      strokeWidth="14"
+                      style={{ pointerEvents: "stroke", cursor: "pointer" }}
+                      onClick={(e) => { e.stopPropagation(); deleteEdge(edge.id); }}
+                    />
                     <path
                       d={path}
                       fill="none"
                       stroke="hsl(var(--border))"
                       strokeWidth="2"
                       strokeDasharray="6 4"
+                      style={{ pointerEvents: "none" }}
                     />
                     <path id={pathId} d={path} fill="none" stroke="none" />
                     <circle r="3" fill="hsl(var(--primary))" opacity="0.6">
@@ -482,6 +492,24 @@ export default function WorkflowCanvas() {
                   </g>
                 );
               })}
+              {/* Live connecting preview line */}
+              {connecting && (() => {
+                const fromNode = nodes.find((n) => n.id === connecting.fromNodeId);
+                if (!fromNode) return null;
+                const fromPos = getPortPos(fromNode, "output", connecting.fromPort, fromNode.outputs.length);
+                const path = cubicPath(fromPos.x, fromPos.y, connecting.mouseX, connecting.mouseY);
+                return (
+                  <path
+                    d={path}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2"
+                    strokeDasharray="4 4"
+                    opacity="0.7"
+                    style={{ pointerEvents: "none" }}
+                  />
+                );
+              })()}
             </svg>
 
             {/* Nodes */}
