@@ -77,7 +77,7 @@ const NODE_CATALOG = [
 const CATEGORY_COLORS: Record<string, string> = {
   trigger: "152 60% 42%",
   data: "210 80% 55%",
-  action: "25 95% 55%",
+  ai: "270 70% 60%",
 };
 
 const NODE_W = 200;
