@@ -8,9 +8,10 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon,
+  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock,
 } from "lucide-react";
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
 /* ── Types & Data ── */
@@ -35,7 +36,7 @@ const defaultAgents: Agent[] = [
     description: "Generate festive creatives ahead of Christmas.",
     concepts: 12,
     enabled: true,
-    nextRun: "Dec 10, 2026 · 9:00 AM",
+    nextRun: "Dec 10, 2026 at 09:00 AM (CET)",
   },
   {
     id: "holiday-2",
@@ -44,7 +45,7 @@ const defaultAgents: Agent[] = [
     description: "Automated deal-focused ads for Black Friday.",
     concepts: 8,
     enabled: true,
-    nextRun: "Nov 15, 2026 · 8:00 AM",
+    nextRun: "Nov 15, 2026 at 08:00 AM (CET)",
   },
   {
     id: "holiday-3",
@@ -53,7 +54,7 @@ const defaultAgents: Agent[] = [
     description: "Romantic-themed creatives for Valentine's Day.",
     concepts: 6,
     enabled: true,
-    nextRun: "Feb 1, 2027 · 7:00 AM",
+    nextRun: "Feb 1, 2027 at 07:00 AM (CET)",
   },
   {
     id: "competitor-1",
@@ -62,7 +63,7 @@ const defaultAgents: Agent[] = [
     description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
     enabled: true,
-    nextRun: "Mar 14, 2026 · 10:00 AM",
+    nextRun: "Mar 14, 2026 at 10:00 AM (CET)",
   },
   {
     id: "competitor-2",
@@ -71,7 +72,7 @@ const defaultAgents: Agent[] = [
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
     enabled: true,
-    nextRun: "Mar 21, 2026 · 6:00 PM",
+    nextRun: "Mar 21, 2026 at 06:00 PM (CET)",
   },
 ];
 
@@ -195,11 +196,20 @@ export default function Workflows() {
                   </div>
 
                   <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                      <span className="text-xs text-muted-foreground">Next run:</span>
-                      <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
-                    </div>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-2 cursor-default">
+                          <div className="relative shrink-0">
+                            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                            <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
+                          </div>
+                          <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs">
+                        Next run
+                      </TooltipContent>
+                    </Tooltip>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7">
                         <Play className="h-3.5 w-3.5" />
