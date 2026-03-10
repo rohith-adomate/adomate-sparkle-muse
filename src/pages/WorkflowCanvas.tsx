@@ -289,7 +289,7 @@ export default function WorkflowCanvas() {
   }, [searchQuery]);
 
   return (
-    <div className="fixed inset-0 z-50 flex bg-background">
+    <div className="flex h-[calc(100vh-3.5rem)] -m-6 bg-background">
       {/* ── Left Panel: Node Picker ── */}
       {showPicker && (
         <div className="w-60 border-r border-border bg-card flex flex-col shrink-0">
