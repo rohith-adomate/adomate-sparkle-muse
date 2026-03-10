@@ -573,11 +573,15 @@ export default function WorkflowCanvas() {
                     return (
                       <div
                         key={`in-${i}`}
-                        className="absolute w-3 h-3 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary transition-colors"
+                        className={`absolute w-4 h-4 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary hover:scale-150 transition-all cursor-crosshair z-10 ${
+                          connecting ? "ring-2 ring-primary/30 animate-pulse" : ""
+                        }`}
                         style={{
-                          left: -PORT_R,
-                          top: pos.y - node.y - PORT_R,
+                          left: -PORT_R - 2,
+                          top: pos.y - node.y - PORT_R - 2,
                         }}
+                        onMouseUp={(e) => finishConnection(e, node.id, i)}
+                        onMouseDown={(e) => e.stopPropagation()}
                       />
                     );
                   })}
@@ -588,11 +592,12 @@ export default function WorkflowCanvas() {
                     return (
                       <div
                         key={`out-${i}`}
-                        className="absolute w-3 h-3 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary transition-colors"
+                        className="absolute w-4 h-4 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary hover:scale-150 transition-all cursor-crosshair z-10"
                         style={{
-                          left: NODE_W - PORT_R,
-                          top: pos.y - node.y - PORT_R,
+                          left: NODE_W - PORT_R - 2,
+                          top: pos.y - node.y - PORT_R - 2,
                         }}
+                        onMouseDown={(e) => startConnection(e, node.id, i)}
                       />
                     );
                   })}
