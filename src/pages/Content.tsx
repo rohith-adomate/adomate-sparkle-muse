@@ -624,9 +624,6 @@ export default function Content() {
     return true;
   });
 
-  const readyCount = contentAds.filter((a) => a.status === "ready").length;
-  const incompleteCount = contentAds.filter((a) => a.status === "incomplete").length;
-  const draftCount = contentAds.filter((a) => a.status === "draft").length;
 
   return (
     <div className="space-y-6">
