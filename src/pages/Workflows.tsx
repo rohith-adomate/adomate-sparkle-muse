@@ -12,6 +12,7 @@ import {
   Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
@@ -83,6 +84,7 @@ const stepLabels = ["Type", "Basics", "Settings", "More", "Review"];
 
 export default function Workflows() {
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
+  const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [step, setStep] = useState(0);
@@ -178,7 +180,7 @@ export default function Workflows() {
           <h2 className="text-base font-semibold mb-4">Your agents</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
-              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`)}>
                 <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} />
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
