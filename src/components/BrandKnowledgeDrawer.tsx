@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { BookOpen, Image, Plus, X, Info, Check } from "lucide-react";
+import { BookOpen, Image, Plus, X, Info, Check, RefreshCw } from "lucide-react";
 
 const MOCK_LOGOS = [
   { id: "logo-1", name: "Primary Logo", url: "/placeholder.svg" },
