@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -150,6 +151,7 @@ export default function WorkflowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(true);
+  const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -431,7 +433,7 @@ export default function WorkflowCanvas() {
       {/* ── Canvas Area ── */}
       <div className="flex-1 relative overflow-hidden">
         {/* Top bar */}
-        <div className="absolute top-0 left-0 right-0 h-12 z-20 flex items-center justify-between px-3 bg-card/80 backdrop-blur-sm border-b border-border">
+        <div className="absolute top-0 left-0 right-0 h-12 z-20 grid grid-cols-3 items-center px-3 bg-card/80 backdrop-blur-sm border-b border-border">
           <div className="flex items-center gap-2">
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
@@ -446,7 +448,33 @@ export default function WorkflowCanvas() {
             </Button>
             <span className="text-sm font-semibold">{agentName}</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center bg-muted rounded-lg p-0.5">
+              <button
+                className={cn(
+                  "px-3 py-1 text-xs font-medium rounded-md transition-colors",
+                  activeTab === "editor"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => setActiveTab("editor")}
+              >
+                Editor
+              </button>
+              <button
+                className={cn(
+                  "px-3 py-1 text-xs font-medium rounded-md transition-colors",
+                  activeTab === "executions"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => setActiveTab("executions")}
+              >
+                Executions
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-3">
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-2">
