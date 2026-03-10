@@ -333,6 +333,22 @@ export default function WorkflowCanvas() {
     setZoom(newZoom);
   };
 
+  /* ── Can activate? Schedule must exist and be connected ── */
+  const canActivate = useMemo(() => {
+    const scheduleNodes = nodes.filter((n) => n.type === "schedule");
+    if (scheduleNodes.length === 0) return false;
+    return scheduleNodes.some((sn) =>
+      edges.some((e) => e.from === sn.id || e.to === sn.id)
+    );
+  }, [nodes, edges]);
+
+  // Force inactive when schedule is not connected
+  useEffect(() => {
+    if (!canActivate && agentEnabled) {
+      setAgentEnabled(false);
+    }
+  }, [canActivate]); // eslint-disable-line react-hooks/exhaustive-deps
+
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
     const q = searchQuery.toLowerCase();
