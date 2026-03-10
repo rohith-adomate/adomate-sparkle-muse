@@ -686,6 +686,10 @@ export default function WorkflowCanvas() {
           }
         }}
       />
+      <BrandKnowledgeDrawer
+        open={brandKnowledgeDrawerOpen}
+        onOpenChange={setBrandKnowledgeDrawerOpen}
+      />
     </div>
   );
 }
