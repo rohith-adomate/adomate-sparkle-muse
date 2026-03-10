@@ -54,7 +54,7 @@ const defaultAgents: Agent[] = [
     description: "Romantic-themed creatives for Valentine's Day.",
     concepts: 6,
     enabled: true,
-    nextRun: "Feb 1, 2027 · 7:00 AM",
+    nextRun: "Feb 1, 2027 at 07:00 AM (CET)",
   },
   {
     id: "competitor-1",
