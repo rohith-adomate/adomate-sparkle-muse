@@ -45,7 +45,7 @@ const defaultAgents: Agent[] = [
     description: "Automated deal-focused ads for Black Friday.",
     concepts: 8,
     enabled: true,
-    nextRun: "Nov 15, 2026 · 8:00 AM",
+    nextRun: "Nov 15, 2026 at 08:00 AM (CET)",
   },
   {
     id: "holiday-3",
