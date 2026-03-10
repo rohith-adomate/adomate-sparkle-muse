@@ -283,7 +283,7 @@ export default function WorkflowCanvas() {
   };
 
   /* ── Add node from picker ── */
-  const addNode = (item: typeof NODE_CATALOG[0]["items"][0], category: "trigger" | "data" | "action") => {
+  const addNode = (item: typeof NODE_CATALOG[0]["items"][0], category: "trigger" | "data" | "ai" | "action") => {
     const rect = canvasRef.current?.getBoundingClientRect();
     const cx = rect ? (rect.width / 2 - pan.x) / zoom - NODE_W / 2 : 300;
     const cy = rect ? (rect.height / 2 - pan.y) / zoom - NODE_H / 2 : 200;
