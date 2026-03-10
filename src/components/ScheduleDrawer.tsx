@@ -204,8 +204,8 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
   );
 
   const nextRuns = useMemo(
-    () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType],
+    () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
+    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
   );
 
   const handleOpenChange = (val: boolean) => {
