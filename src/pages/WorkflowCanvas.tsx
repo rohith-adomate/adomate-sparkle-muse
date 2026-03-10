@@ -9,7 +9,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Clock, BookOpen, Package, Search, CheckSquare, Send,
-  PanelLeftClose, PanelLeft, Trash2,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
@@ -20,7 +20,7 @@ import ProductDataDrawer from "@/components/ProductDataDrawer";
 interface CanvasNode {
   id: string;
   type: string;
-  category: "trigger" | "data" | "action";
+  category: "trigger" | "data" | "ai" | "action";
   label: string;
   description: string;
   x: number;
@@ -58,6 +58,13 @@ const NODE_CATALOG = [
     ],
   },
   {
+    category: "ai" as const,
+    label: "AI",
+    items: [
+      { type: "generate-concepts", label: "Generate Concepts", description: "Generate image ad concepts with AI.", icon: Sparkles, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
+    ],
+  },
+  {
     category: "action" as const,
     label: "ACTIONS",
     items: [
@@ -70,7 +77,7 @@ const NODE_CATALOG = [
 const CATEGORY_COLORS: Record<string, string> = {
   trigger: "152 60% 42%",
   data: "210 80% 55%",
-  action: "25 95% 55%",
+  ai: "270 70% 60%",
 };
 
 const NODE_W = 200;
@@ -276,7 +283,7 @@ export default function WorkflowCanvas() {
   };
 
   /* ── Add node from picker ── */
-  const addNode = (item: typeof NODE_CATALOG[0]["items"][0], category: "trigger" | "data" | "action") => {
+  const addNode = (item: typeof NODE_CATALOG[0]["items"][0], category: "trigger" | "data" | "ai" | "action") => {
     const rect = canvasRef.current?.getBoundingClientRect();
     const cx = rect ? (rect.width / 2 - pan.x) / zoom - NODE_W / 2 : 300;
     const cy = rect ? (rect.height / 2 - pan.y) / zoom - NODE_H / 2 : 200;
