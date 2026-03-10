@@ -16,6 +16,7 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import CompetitorScrapeDrawer from "@/components/CompetitorScrapeDrawer";
+import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 
 /* ── Types ── */
