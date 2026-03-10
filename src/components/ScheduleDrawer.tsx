@@ -191,8 +191,8 @@ export default function ScheduleDrawer({ open, onOpenChange, onDescriptionChange
       <SheetContent side="right" className="w-[380px] sm:w-[420px] overflow-y-auto">
         <SheetHeader className="pb-4">
           <SheetTitle className="flex items-center gap-2">
-            <div className="rounded-md p-1.5 bg-emerald-500/10">
-              <Clock className="h-4 w-4 text-emerald-500" />
+            <div className="rounded-md p-1.5 bg-primary/10">
+              <Clock className="h-4 w-4 text-primary" />
             </div>
             Schedule Configuration
           </SheetTitle>
