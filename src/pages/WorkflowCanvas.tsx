@@ -9,7 +9,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Clock, BookOpen, Package, Search, CheckSquare, Send,
-  PanelLeftClose, PanelLeft, Trash2,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
