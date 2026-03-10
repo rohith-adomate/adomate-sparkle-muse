@@ -634,6 +634,8 @@ export default function WorkflowCanvas() {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "competitor-scrape") {
                         setCompetitorScrapeDrawerOpen(true);
+                      } else if (node.type === "generate-concepts") {
+                        setGenerateConceptsDrawerOpen(true);
                       }
                     }
                   }}
