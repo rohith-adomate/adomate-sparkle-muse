@@ -782,6 +782,10 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
       />
+      <CompetitorScrapeDrawer
+        open={competitorScrapeDrawerOpen}
+        onOpenChange={setCompetitorScrapeDrawerOpen}
+      />
       <NodeOutputDrawer
         open={outputDrawerOpen}
         onOpenChange={setOutputDrawerOpen}
