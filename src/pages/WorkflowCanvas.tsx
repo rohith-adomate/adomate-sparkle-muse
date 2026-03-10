@@ -617,13 +617,18 @@ export default function WorkflowCanvas() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedNode(node.id);
-                    if (node.type === "schedule") {
-                      setScheduleNodeId(node.id);
-                      setScheduleDrawerOpen(true);
-                    } else if (node.type === "brand-knowledge") {
-                      setBrandKnowledgeDrawerOpen(true);
-                    } else if (node.type === "product-data") {
-                      setProductDataDrawerOpen(true);
+                    if (activeTab === "executions") {
+                      setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
+                      setOutputDrawerOpen(true);
+                    } else {
+                      if (node.type === "schedule") {
+                        setScheduleNodeId(node.id);
+                        setScheduleDrawerOpen(true);
+                      } else if (node.type === "brand-knowledge") {
+                        setBrandKnowledgeDrawerOpen(true);
+                      } else if (node.type === "product-data") {
+                        setProductDataDrawerOpen(true);
+                      }
                     }
                   }}
                 >
