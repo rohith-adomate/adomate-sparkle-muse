@@ -534,7 +534,13 @@ export default function WorkflowCanvas() {
                     width: NODE_W,
                   }}
                   onMouseDown={(e) => startNodeDrag(e, node.id)}
-                  onClick={(e) => { e.stopPropagation(); setSelectedNode(node.id); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedNode(node.id);
+                    if (node.type === "schedule") {
+                      setScheduleDrawerOpen(true);
+                    }
+                  }}
                 >
                   {/* Left accent border */}
                   <div
