@@ -547,6 +547,8 @@ export default function WorkflowCanvas() {
                       setScheduleDrawerOpen(true);
                     } else if (node.type === "brand-knowledge") {
                       setBrandKnowledgeDrawerOpen(true);
+                    } else if (node.type === "product-data") {
+                      setProductDataDrawerOpen(true);
                     }
                   }}
                 >
