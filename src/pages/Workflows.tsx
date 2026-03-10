@@ -196,11 +196,20 @@ export default function Workflows() {
                   </div>
 
                   <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                      <span className="text-xs text-muted-foreground">Next run:</span>
-                      <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
-                    </div>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-2 cursor-default">
+                          <div className="relative shrink-0">
+                            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                            <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
+                          </div>
+                          <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs">
+                        Next run
+                      </TooltipContent>
+                    </Tooltip>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7">
                         <Play className="h-3.5 w-3.5" />
