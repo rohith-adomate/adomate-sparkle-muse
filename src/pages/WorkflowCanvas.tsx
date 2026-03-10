@@ -149,6 +149,14 @@ export default function WorkflowCanvas() {
   const [dragNode, setDragNode] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
+  // Edge creation state
+  const [connecting, setConnecting] = useState<{
+    fromNodeId: string;
+    fromPort: number;
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
   const canvasRef = useRef<HTMLDivElement>(null);
 
   /* ── Zoom ── */
