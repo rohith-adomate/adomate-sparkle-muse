@@ -333,6 +333,22 @@ export default function WorkflowCanvas() {
     setZoom(newZoom);
   };
 
+  /* ── Can activate? Schedule must exist and be connected ── */
+  const canActivate = useMemo(() => {
+    const scheduleNodes = nodes.filter((n) => n.type === "schedule");
+    if (scheduleNodes.length === 0) return false;
+    return scheduleNodes.some((sn) =>
+      edges.some((e) => e.from === sn.id || e.to === sn.id)
+    );
+  }, [nodes, edges]);
+
+  // Force inactive when schedule is not connected
+  useEffect(() => {
+    if (!canActivate && agentEnabled) {
+      setAgentEnabled(false);
+    }
+  }, [canActivate]); // eslint-disable-line react-hooks/exhaustive-deps
+
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
     const q = searchQuery.toLowerCase();
@@ -413,13 +429,24 @@ export default function WorkflowCanvas() {
             <span className="text-sm font-semibold">{agentName}</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={agentEnabled}
-                onCheckedChange={setAgentEnabled}
-              />
-              <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
-            </div>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={agentEnabled}
+                    onCheckedChange={(v) => { if (canActivate) setAgentEnabled(v); }}
+                    disabled={!canActivate}
+                    className={!canActivate ? "opacity-50 cursor-not-allowed" : ""}
+                  />
+                  <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
+                </div>
+              </TooltipTrigger>
+              {!canActivate && (
+                <TooltipContent side="bottom" className="text-xs max-w-[200px]">
+                  A workflow without a schedule trigger connected to other nodes cannot be activated.
+                </TooltipContent>
+              )}
+            </Tooltip>
             <Button size="sm" className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground">
               <Play className="h-3.5 w-3.5" /> Run
             </Button>
