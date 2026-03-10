@@ -199,8 +199,8 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
   const [yearMonth, setYearMonth] = useState("january");
 
   const summary = useMemo(
-    () => buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType],
+    () => buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
+    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
   );
 
   const nextRuns = useMemo(
