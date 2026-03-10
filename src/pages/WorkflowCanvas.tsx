@@ -207,8 +207,9 @@ export default function WorkflowCanvas() {
     if (connecting) {
       const rect = canvasRef.current?.getBoundingClientRect();
       if (!rect) return;
+      const TOP_BAR_H = 48; // pt-12 = 3rem = 48px
       const canvasX = (e.clientX - rect.left - pan.x) / zoom;
-      const canvasY = (e.clientY - rect.top - pan.y) / zoom;
+      const canvasY = (e.clientY - rect.top - TOP_BAR_H - pan.y) / zoom;
       setConnecting((prev) => prev ? { ...prev, mouseX: canvasX, mouseY: canvasY } : null);
     }
   }, [isPanning, panStart, dragNode, dragOffset, pan, zoom, connecting]);
