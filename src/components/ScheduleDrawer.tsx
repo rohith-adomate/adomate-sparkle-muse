@@ -7,7 +7,27 @@ import { Clock, Info, MoreHorizontal } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-type RecurrenceType = "days" | "weeks" | "months";
+type RecurrenceType = "days" | "weeks" | "months" | "years";
+
+const MONTHS_OF_YEAR = [
+  { value: "january", label: "January" },
+  { value: "february", label: "February" },
+  { value: "march", label: "March" },
+  { value: "april", label: "April" },
+  { value: "may", label: "May" },
+  { value: "june", label: "June" },
+  { value: "july", label: "July" },
+  { value: "august", label: "August" },
+  { value: "september", label: "September" },
+  { value: "october", label: "October" },
+  { value: "november", label: "November" },
+  { value: "december", label: "December" },
+] as const;
+
+const MONTH_INDEX_MAP: Record<string, number> = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+};
 
 const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 const FULL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
@@ -40,6 +60,7 @@ function getNextRuns(
   weekDays: string[],
   monthOrdinal: string,
   monthDayType: string,
+  yearMonth: string,
   count: number = 3,
 ): Date[] {
   const now = new Date();
@@ -97,6 +118,36 @@ function getNextRuns(
       d.setHours(9, 0, 0, 0);
       if (d > now) results.push(d);
     }
+  } else if (type === "years") {
+    const targetMonthIdx = MONTH_INDEX_MAP[yearMonth] ?? 0;
+    for (let i = 0; results.length < count && i < 20; i++) {
+      const year = now.getFullYear() + interval * (i + 1);
+      const d = new Date(year, targetMonthIdx, 1, 9, 0, 0, 0);
+      if (monthDayType === "day") {
+        if (monthOrdinal === "last") {
+          d.setMonth(d.getMonth() + 1, 0);
+        } else {
+          const dayNum = parseInt(monthOrdinal);
+          const maxDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+          d.setDate(Math.min(dayNum, maxDay));
+        }
+      } else {
+        const targetDayIdx = FULL_DAYS.findIndex((fd) => fd.toLowerCase() === monthDayType);
+        if (monthOrdinal === "last") {
+          const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+          const diff = (lastDay.getDay() - 1 - targetDayIdx + 7) % 7;
+          lastDay.setDate(lastDay.getDate() - diff);
+          d.setDate(lastDay.getDate());
+        } else {
+          const ord = parseInt(monthOrdinal);
+          const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+          const diff = (targetDayIdx - ((firstDay.getDay() + 6) % 7) + 7) % 7;
+          d.setDate(1 + diff + (ord - 1) * 7);
+        }
+      }
+      d.setHours(9, 0, 0, 0);
+      if (d > now) results.push(d);
+    }
   }
 
   return results.slice(0, count);
@@ -117,6 +168,7 @@ function buildSummary(
   weekDays: string[],
   monthOrdinal: string,
   monthDayType: string,
+  yearMonth: string,
 ): string {
   if (type === "days") {
     return interval === 1 ? "Every day" : `Every ${interval} days`;
@@ -127,6 +179,12 @@ function buildSummary(
   }
   const ordLabel = ORDINALS.find((o) => o.value === monthOrdinal)?.label || monthOrdinal;
   const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === monthDayType)?.label || monthDayType;
+  if (type === "years") {
+    const monthLabel = MONTHS_OF_YEAR.find((m) => m.value === yearMonth)?.label || yearMonth;
+    return interval === 1
+      ? `Yearly on the ${ordLabel} ${dayLabel} of ${monthLabel}`
+      : `Every ${interval} years on the ${ordLabel} ${dayLabel} of ${monthLabel}`;
+  }
   return interval === 1
     ? `Monthly on the ${ordLabel} ${dayLabel}`
     : `Every ${interval} months on the ${ordLabel} ${dayLabel}`;
@@ -138,15 +196,16 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
   const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
   const [monthOrdinal, setMonthOrdinal] = useState("1");
   const [monthDayType, setMonthDayType] = useState("day");
+  const [yearMonth, setYearMonth] = useState("january");
 
   const summary = useMemo(
-    () => buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType],
+    () => buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
+    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
   );
 
   const nextRuns = useMemo(
-    () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType],
+    () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
+    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
   );
 
   const handleOpenChange = (val: boolean) => {
@@ -190,6 +249,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
                   <SelectItem value="days">Day(s)</SelectItem>
                   <SelectItem value="weeks">Week(s)</SelectItem>
                   <SelectItem value="months">Month(s)</SelectItem>
+                  <SelectItem value="years">Year(s)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -215,6 +275,46 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
+            </div>
+          )}
+
+          {/* Yearly: ordinal + day type + month */}
+          {recurrenceType === "years" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
+              <div className="flex items-center gap-2">
+                <Select value={monthOrdinal} onValueChange={setMonthOrdinal}>
+                  <SelectTrigger className="h-9 w-24 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-52">
+                    {ORDINALS.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={monthDayType} onValueChange={setMonthDayType}>
+                  <SelectTrigger className="h-9 flex-1 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MONTH_DAY_TYPE.map((m) => (
+                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Of</Label>
+              <Select value={yearMonth} onValueChange={setYearMonth}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {MONTHS_OF_YEAR.map((m) => (
+                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
 
