@@ -11,6 +11,7 @@ import {
   Clock, BookOpen, Package, Search, CheckSquare, Send,
   PanelLeftClose, PanelLeft, Trash2,
 } from "lucide-react";
+import ScheduleDrawer from "@/components/ScheduleDrawer";
 
 /* ── Types ── */
 
@@ -138,6 +139,8 @@ export default function WorkflowCanvas() {
   const [showGrid, setShowGrid] = useState(true);
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
+  const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
 
   // Auto-collapse main sidebar on mount (user can still expand it manually)
   const { setOpen: setSidebarOpen } = useSidebar();
@@ -532,7 +535,14 @@ export default function WorkflowCanvas() {
                     width: NODE_W,
                   }}
                   onMouseDown={(e) => startNodeDrag(e, node.id)}
-                  onClick={(e) => { e.stopPropagation(); setSelectedNode(node.id); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedNode(node.id);
+                    if (node.type === "schedule") {
+                      setScheduleNodeId(node.id);
+                      setScheduleDrawerOpen(true);
+                    }
+                  }}
                 >
                   {/* Left accent border */}
                   <div
@@ -660,6 +670,18 @@ export default function WorkflowCanvas() {
           </div>
         )}
       </div>
+      {/* Schedule Drawer */}
+      <ScheduleDrawer
+        open={scheduleDrawerOpen}
+        onOpenChange={setScheduleDrawerOpen}
+        onScheduleChange={(summary) => {
+          if (scheduleNodeId) {
+            setNodes((prev) =>
+              prev.map((n) => n.id === scheduleNodeId ? { ...n, description: summary } : n)
+            );
+          }
+        }}
+      />
     </div>
   );
 }
