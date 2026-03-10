@@ -38,6 +38,7 @@ import AdminUsersOverview from "./pages/admin/AdminUsersOverview";
 import AdminOnboardingQA from "./pages/admin/AdminOnboardingQA";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
+import UIVariations from "./pages/UIVariations";
 
 const queryClient = new QueryClient();
 
