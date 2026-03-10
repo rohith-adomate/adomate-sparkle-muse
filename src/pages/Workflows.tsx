@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
-  Play, Settings2, Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock,
+  Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -176,55 +177,157 @@ export default function Workflows() {
         <CardContent className="p-6">
           <h2 className="text-base font-semibold mb-4">Your agents</h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            {agents.map((agent, idx) => (
-              <Card key={agent.id} className="border border-border/60">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center shrink-0">
-                        <Zap className="h-4 w-4 text-foreground" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-semibold text-sm">{agent.name}</p>
-                        <Badge variant="outline" className={`text-[10px] mt-1 ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                          {agent.type === "holiday" ? "HOLIDAY" : "COMPETITOR"}
-                        </Badge>
-                        <p className="text-xs text-muted-foreground mt-1.5">{agent.description}</p>
-                      </div>
-                    </div>
-                    <Switch checked={agent.enabled} onCheckedChange={() => toggleAgent(agent.id)} />
-                  </div>
+            {agents.map((agent, idx) => {
+              const categoryBadge = (
+                <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                  {agent.type === "holiday" ? "HOLIDAY" : "COMPETITOR"}
+                </Badge>
+              );
+              const threeDotMenu = (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
+                      <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete agent
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+              const toggleSwitch = (
+                <Switch checked={agent.enabled} onCheckedChange={() => toggleAgent(agent.id)} onClick={(e) => e.stopPropagation()} />
+              );
 
-                  <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
-                    <Tooltip delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-2 cursor-default">
-                          <div className="relative shrink-0">
-                            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                            <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
-                          </div>
-                          <span className="text-xs font-semibold text-foreground">{agent.nextRun}</span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">
-                        Next run
-                      </TooltipContent>
-                    </Tooltip>
-                    <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-7 w-7">
-                        <Play className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7">
-                        <Settings2 className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteTarget(agent.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+              {/* ── Variant 1: Clean minimal – horizontal layout ── */}
+              if (idx === 0) return (
+                <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      {categoryBadge}
+                      <div className="flex items-center gap-1">
+                        {toggleSwitch}
+                        {threeDotMenu}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <p className="font-semibold text-sm">{agent.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{agent.description}</p>
+                    <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                      <CalendarIcon className="h-3 w-3" />
+                      <Clock className="h-3 w-3" />
+                      <span>{agent.nextRun}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+
+              {/* ── Variant 2: Card with colored top accent bar ── */}
+              if (idx === 1) return (
+                <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+                  <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} />
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <p className="font-semibold text-sm">{agent.name}</p>
+                        {categoryBadge}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {toggleSwitch}
+                        {threeDotMenu}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">{agent.description}</p>
+                    <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5">
+                      <div className="relative shrink-0">
+                        <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                        <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
+                      </div>
+                      <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+
+              {/* ── Variant 3: Split card – left content, right metadata column ── */}
+              if (idx === 2) return (
+                <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+                  <CardContent className="p-0 flex">
+                    <div className="flex-1 p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        {categoryBadge}
+                      </div>
+                      <p className="font-semibold text-sm mt-1">{agent.name}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{agent.description}</p>
+                    </div>
+                    <div className="w-px bg-border" />
+                    <div className="w-[120px] p-3 flex flex-col items-end justify-between shrink-0">
+                      <div className="flex items-center gap-1">
+                        {toggleSwitch}
+                        {threeDotMenu}
+                      </div>
+                      <div className="text-right space-y-0.5">
+                        <div className="flex items-center gap-1 justify-end">
+                          <CalendarIcon className="h-3 w-3 text-muted-foreground" />
+                          <Clock className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground leading-tight">{agent.nextRun}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+
+              {/* ── Variant 4: Compact row-style card ── */}
+              if (idx === 3) return (
+                <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+                  <CardContent className="p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <p className="font-semibold text-sm truncate">{agent.name}</p>
+                        {categoryBadge}
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {toggleSwitch}
+                        {threeDotMenu}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{agent.description}</p>
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-0.5 border-t border-border/40">
+                      <CalendarIcon className="h-3 w-3 shrink-0" />
+                      <span>{agent.nextRun}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+
+              {/* ── Variant 5: Bold header card with large date ── */}
+              return (
+                <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      {categoryBadge}
+                      <div className="flex items-center gap-1">
+                        {toggleSwitch}
+                        {threeDotMenu}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold text-base">{agent.name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{agent.description}</p>
+                    </div>
+                    <div className={`rounded-lg p-3 ${agent.type === "holiday" ? "bg-pink-50 border border-pink-100" : "bg-violet-50 border border-violet-100"}`}>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Next scheduled run</p>
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon className="h-4 w-4 text-foreground" />
+                        <span className="text-sm font-semibold text-foreground">{agent.nextRun}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
