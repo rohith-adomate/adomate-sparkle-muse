@@ -278,6 +278,46 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
             </div>
           )}
 
+          {/* Yearly: ordinal + day type + month */}
+          {recurrenceType === "years" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
+              <div className="flex items-center gap-2">
+                <Select value={monthOrdinal} onValueChange={setMonthOrdinal}>
+                  <SelectTrigger className="h-9 w-24 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-52">
+                    {ORDINALS.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={monthDayType} onValueChange={setMonthDayType}>
+                  <SelectTrigger className="h-9 flex-1 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MONTH_DAY_TYPE.map((m) => (
+                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Of</Label>
+              <Select value={yearMonth} onValueChange={setYearMonth}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {MONTHS_OF_YEAR.map((m) => (
+                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Monthly: ordinal + day type */}
           {recurrenceType === "months" && (
             <div className="space-y-2">
