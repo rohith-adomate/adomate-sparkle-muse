@@ -253,26 +253,38 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
             <p className="text-sm font-medium">{summary}</p>
           </div>
 
-          {/* Next 3 runs preview */}
+          {/* Upcoming runs preview */}
           <div className="space-y-2">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Next 3 scheduled runs
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Upcoming runs preview
+              </Label>
+              <Badge variant="outline" className="text-[9px] px-1.5 py-0 text-muted-foreground font-normal">
+                Preview
+              </Badge>
+            </div>
+            <p className="text-[10px] text-muted-foreground -mt-1">
+              A glimpse of the next scheduled dates. The workflow will continue to run on this schedule indefinitely.
+            </p>
             <div className="space-y-1.5">
               {nextRuns.map((d, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-2.5 rounded-md border border-border bg-card px-3 py-2"
+                  className="flex items-center gap-2.5 rounded-md border border-dashed border-border/60 bg-muted/20 px-3 py-2"
                 >
-                  <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-xs">{formatDate(d)}</span>
-                  <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0">
-                    9:00 AM
-                  </Badge>
+                  <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                  <span className="text-xs text-muted-foreground">{formatDate(d)}</span>
                 </div>
               ))}
               {nextRuns.length === 0 && (
                 <p className="text-xs text-muted-foreground italic">No upcoming runs found.</p>
+              )}
+              {nextRuns.length > 0 && (
+                <div className="flex items-center justify-center gap-1 pt-1">
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/20" />
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/10" />
+                </div>
               )}
             </div>
           </div>
