@@ -139,12 +139,11 @@ export default function WorkflowCanvas() {
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Auto-collapse main sidebar on mount, restore on unmount
+  // Auto-collapse main sidebar on mount (user can still expand it manually)
   const { setOpen: setSidebarOpen } = useSidebar();
   useEffect(() => {
     setSidebarOpen(false);
-    return () => { setSidebarOpen(true); };
-  }, [setSidebarOpen]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Drag node
   const [dragNode, setDragNode] = useState<string | null>(null);
