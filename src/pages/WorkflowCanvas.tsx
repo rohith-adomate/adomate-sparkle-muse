@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Clock, BookOpen, Package, Search, CheckSquare, Send,
@@ -126,6 +128,7 @@ export default function WorkflowCanvas() {
   const [nodes, setNodes] = useState<CanvasNode[]>(() => getDefaultNodes(agentName));
   const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [agentEnabled, setAgentEnabled] = useState(true);
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -135,6 +138,13 @@ export default function WorkflowCanvas() {
   const [showGrid, setShowGrid] = useState(true);
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Auto-collapse main sidebar on mount, restore on unmount
+  const { setOpen: setSidebarOpen } = useSidebar();
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => { setSidebarOpen(true); };
+  }, [setSidebarOpen]);
 
   // Drag node
   const [dragNode, setDragNode] = useState<string | null>(null);
@@ -279,7 +289,7 @@ export default function WorkflowCanvas() {
   }, [searchQuery]);
 
   return (
-    <div className="fixed inset-0 z-50 flex bg-background">
+    <div className="flex h-[calc(100vh-3.5rem)] -m-6 bg-background">
       {/* ── Left Panel: Node Picker ── */}
       {showPicker && (
         <div className="w-60 border-r border-border bg-card flex flex-col shrink-0">
@@ -345,9 +355,18 @@ export default function WorkflowCanvas() {
             </Button>
             <span className="text-sm font-semibold">{agentName}</span>
           </div>
-          <Button size="sm" className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground">
-            <Play className="h-3.5 w-3.5" /> Run
-          </Button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={agentEnabled}
+                onCheckedChange={setAgentEnabled}
+              />
+              <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
+            </div>
+            <Button size="sm" className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground">
+              <Play className="h-3.5 w-3.5" /> Run
+            </Button>
+          </div>
         </div>
 
         {/* Canvas */}
