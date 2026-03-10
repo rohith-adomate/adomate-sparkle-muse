@@ -20,7 +20,7 @@ import ProductDataDrawer from "@/components/ProductDataDrawer";
 interface CanvasNode {
   id: string;
   type: string;
-  category: "trigger" | "data" | "action";
+  category: "trigger" | "data" | "ai" | "action";
   label: string;
   description: string;
   x: number;
