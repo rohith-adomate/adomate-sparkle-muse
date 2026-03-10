@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Separator } from "@/components/ui/separator";
 import { Calendar as CalendarWidget } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
@@ -22,8 +24,9 @@ import {
   Image, Sparkles, Palette, Calendar, ExternalLink, Eye,
   ChevronLeft, ChevronRight, Settings2, RectangleHorizontal,
   Square, Smartphone, Monitor, CalendarIcon, DollarSign,
+  Clock, ArrowRight, User, CheckCircle2, XCircle, History,
 } from "lucide-react";
-import { contentAds, type ContentAd, type AspectRatio, type Platform, type CompletionMethod } from "@/data/contentData";
+import { contentAds, type ContentAd, type AspectRatio, type Platform, type CompletionMethod, type AdHistoryEntry } from "@/data/contentData";
 
 /* ── Status config ── */
 const statusConfig = {
