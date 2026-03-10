@@ -68,6 +68,7 @@ const App = () => (
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/performance" element={<Performance />} />
             <Route path="/workflows" element={<Workflows />} />
+            <Route path="/workflows/:id" element={<WorkflowCanvas />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />

@@ -12,6 +12,7 @@ import {
   Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
