@@ -249,6 +249,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
                   <SelectItem value="days">Day(s)</SelectItem>
                   <SelectItem value="weeks">Week(s)</SelectItem>
                   <SelectItem value="months">Month(s)</SelectItem>
+                  <SelectItem value="years">Year(s)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
