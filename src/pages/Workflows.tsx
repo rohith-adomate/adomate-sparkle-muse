@@ -180,7 +180,7 @@ export default function Workflows() {
           <h2 className="text-base font-semibold mb-4">Your agents</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
-              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => toast.info(`Opening ${agent.name}...`)}>
+              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`)}>
                 <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} />
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
