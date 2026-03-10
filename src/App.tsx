@@ -38,7 +38,7 @@ import AdminUsersOverview from "./pages/admin/AdminUsersOverview";
 import AdminOnboardingQA from "./pages/admin/AdminOnboardingQA";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
-import UIVariations from "./pages/UIVariations";
+
 
 const queryClient = new QueryClient();
 
@@ -73,7 +73,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
-            <Route path="/ui-variations" element={<UIVariations />} />
+            
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminHome />} />
