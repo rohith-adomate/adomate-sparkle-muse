@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
+import ProductDataDrawer from "@/components/ProductDataDrawer";
 
 /* ── Types ── */
 
@@ -143,6 +144,7 @@ export default function WorkflowCanvas() {
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
   const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
+  const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
 
   // Auto-collapse main sidebar on mount (user can still expand it manually)
   const { setOpen: setSidebarOpen } = useSidebar();
@@ -545,6 +547,8 @@ export default function WorkflowCanvas() {
                       setScheduleDrawerOpen(true);
                     } else if (node.type === "brand-knowledge") {
                       setBrandKnowledgeDrawerOpen(true);
+                    } else if (node.type === "product-data") {
+                      setProductDataDrawerOpen(true);
                     }
                   }}
                 >
@@ -689,6 +693,10 @@ export default function WorkflowCanvas() {
       <BrandKnowledgeDrawer
         open={brandKnowledgeDrawerOpen}
         onOpenChange={setBrandKnowledgeDrawerOpen}
+      />
+      <ProductDataDrawer
+        open={productDataDrawerOpen}
+        onOpenChange={setProductDataDrawerOpen}
       />
     </div>
   );
