@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { BookOpen, Image, Plus, Star, X, Info } from "lucide-react";
+import { BookOpen, Image, Plus, X, Info, Check } from "lucide-react";
 
 const MOCK_LOGOS = [
   { id: "logo-1", name: "Primary Logo", url: "/placeholder.svg" },
@@ -14,18 +14,10 @@ const MOCK_LOGOS = [
 
 const MOCK_VISUALS = [
   { id: "vis-1", name: "Hero Banner", url: "/placeholder.svg" },
-  { id: "vis-2", name: "Lifestyle Shot 1", url: "/placeholder.svg" },
+  { id: "vis-2", name: "Summer Campaign Lifestyle Photography 2025", url: "/placeholder.svg" },
   { id: "vis-3", name: "Lifestyle Shot 2", url: "/placeholder.svg" },
   { id: "vis-4", name: "Product Scene", url: "/placeholder.svg" },
-  { id: "vis-5", name: "Texture", url: "/placeholder.svg" },
-];
-
-const KNOWLEDGE_FIELDS = [
-  "Description",
-  "Tone of Voice",
-  "Brand Positioning",
-  "Visual Style",
-  "Brand Colors",
+  { id: "vis-5", name: "Brand Guidelines Background Texture Collection", url: "/placeholder.svg" },
 ];
 
 interface BrandKnowledgeDrawerProps {
@@ -48,10 +40,6 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
     );
   };
 
-  const removeVisual = (id: string) => {
-    setSelectedVisuals((prev) => prev.filter((v) => v !== id));
-  };
-
   return (
     <TooltipProvider>
       <Sheet open={open} onOpenChange={onOpenChange}>
@@ -70,7 +58,7 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
 
           <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
             {/* Knowledge toggle */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -80,8 +68,21 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-[220px] text-xs">
-                      Include your brand's textual knowledge such as description, tone of voice, positioning, visual style, and colors.
+                    <TooltipContent side="top" className="max-w-[240px] text-xs leading-relaxed p-3">
+                      <p className="font-medium mb-1">Includes your brand profile:</p>
+                      <ul className="list-disc pl-3.5 space-y-0.5 text-muted-foreground">
+                        <li>Description</li>
+                        <li>Tone of Voice</li>
+                        <li>Brand Positioning</li>
+                        <li>Visual Style</li>
+                        <li>Brand Colors</li>
+                      </ul>
+                      <p className="mt-1.5 text-muted-foreground">
+                        Manage in{" "}
+                        <a href="/brand-data-room/knowledge" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                          Data Room → Brand Knowledge
+                        </a>
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -91,42 +92,20 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                   className="scale-[0.8]"
                 />
               </div>
-              <div
-                className={`rounded-lg border px-3 py-2.5 space-y-1 transition-opacity ${
-                  includeKnowledge
-                    ? "border-primary/30 bg-primary/5"
-                    : "border-border bg-muted/30 opacity-50"
-                }`}
-              >
-                {KNOWLEDGE_FIELDS.map((field) => (
-                  <div key={field} className="flex items-center gap-2">
-                    <div
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        includeKnowledge ? "bg-primary" : "bg-muted-foreground/40"
-                      }`}
-                    />
-                    <span className="text-[11px] text-muted-foreground">{field}</span>
-                  </div>
-                ))}
-              </div>
             </div>
 
-            {/* Logo selection */}
-            <div className="space-y-2.5">
+            {/* Logo selection — Option A */}
+            <div className="space-y-2">
               <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Logo
               </Label>
               <div className="flex items-center gap-2">
                 {selectedLogoData && (
-                  <div className="relative rounded-lg border-2 border-primary bg-primary/5 p-3 h-16 w-16 flex items-center justify-center">
-                    <img
-                      src={selectedLogoData.url}
-                      alt={selectedLogoData.name}
-                      className="max-h-full max-w-full object-contain opacity-60"
-                    />
+                  <div className="relative rounded-lg border border-primary/30 bg-primary/5 p-2 h-14 w-14 flex items-center justify-center">
+                    <img src={selectedLogoData.url} alt={selectedLogoData.name} className="max-h-full max-w-full object-contain opacity-60" />
                     <button
                       onClick={() => setSelectedLogo(null)}
-                      className="absolute -top-1.5 -right-1.5 rounded-full bg-muted border border-border p-0.5 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                      className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 hover:bg-destructive hover:text-destructive-foreground transition-colors"
                     >
                       <X className="h-2.5 w-2.5" />
                     </button>
@@ -134,35 +113,29 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                 )}
                 <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
                   <PopoverTrigger asChild>
-                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-16 w-16 flex items-center justify-center transition-colors">
+                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
                       <Plus className="h-4 w-4 text-muted-foreground" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="start" className="w-[200px] p-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1 pb-1.5">
-                      Select a logo
-                    </p>
-                    <div className="space-y-1">
-                      {MOCK_LOGOS.map((logo) => {
-                        const isCurrent = selectedLogo === logo.id;
+                  <PopoverContent align="start" className="w-[240px] p-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Select a logo</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {MOCK_LOGOS.map((l) => {
+                        const isSel = selectedLogo === l.id;
                         return (
                           <button
-                            key={logo.id}
+                            key={l.id}
                             onClick={() => {
-                              setSelectedLogo(isCurrent ? null : logo.id);
+                              setSelectedLogo(isSel ? null : l.id);
                               setLogoPopoverOpen(false);
                             }}
-                            className={`w-full flex items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors ${
-                              isCurrent
-                                ? "bg-primary/10 text-primary"
-                                : "hover:bg-muted"
+                            className={`relative rounded-lg border-2 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all ${
+                              isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
                             }`}
                           >
-                            <div className="h-8 w-8 rounded border border-border bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden">
-                              <img src={logo.url} alt={logo.name} className="max-h-full max-w-full object-contain opacity-60" />
-                            </div>
-                            <span className="text-xs font-medium">{logo.name}</span>
-                            {isCurrent && <Star className="h-3 w-3 ml-auto fill-primary text-primary" />}
+                            <img src={l.url} alt={l.name} className="h-8 w-8 object-contain opacity-60" />
+                            <span className="text-[9px] text-muted-foreground truncate w-full text-center">{l.name}</span>
+                            {isSel && <div className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary" />}
                           </button>
                         );
                       })}
@@ -172,8 +145,8 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
               </div>
             </div>
 
-            {/* Brand Visuals selection */}
-            <div className="space-y-2.5">
+            {/* Brand Visuals — Option A */}
+            <div className="space-y-2">
               <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Brand Visuals
               </Label>
@@ -184,12 +157,12 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                   return (
                     <div
                       key={visual.id}
-                      className="relative rounded-lg border border-border bg-card h-16 w-16 flex items-center justify-center overflow-hidden"
+                      className="relative rounded-lg border border-border bg-muted/30 h-14 w-14 flex items-center justify-center group"
                     >
                       <Image className="h-5 w-5 text-muted-foreground" />
                       <button
-                        onClick={() => removeVisual(visual.id)}
-                        className="absolute -top-1.5 -right-1.5 rounded-full bg-muted border border-border p-0.5 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                        onClick={() => toggleVisual(visual.id)}
+                        className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
                       >
                         <X className="h-2.5 w-2.5" />
                       </button>
@@ -198,37 +171,34 @@ export default function BrandKnowledgeDrawer({ open, onOpenChange }: BrandKnowle
                 })}
                 <Popover open={visualsPopoverOpen} onOpenChange={setVisualsPopoverOpen}>
                   <PopoverTrigger asChild>
-                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-16 w-16 flex items-center justify-center transition-colors">
+                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
                       <Plus className="h-4 w-4 text-muted-foreground" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="start" className="w-[220px] p-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1 pb-1.5">
-                      Add visuals
-                    </p>
-                    <div className="space-y-1">
-                      {MOCK_VISUALS.map((visual) => {
-                        const isSelected = selectedVisuals.includes(visual.id);
+                  <PopoverContent align="start" className="w-[260px] p-3">
+                    <div className="grid grid-cols-3 gap-2">
+                      {MOCK_VISUALS.map((v) => {
+                        const isSel = selectedVisuals.includes(v.id);
                         return (
-                          <button
-                            key={visual.id}
-                            onClick={() => toggleVisual(visual.id)}
-                            className={`w-full flex items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors ${
-                              isSelected
-                                ? "bg-primary/10 text-primary"
-                                : "hover:bg-muted"
-                            }`}
-                          >
-                            <div className="h-8 w-8 rounded border border-border bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden">
-                              <Image className="h-3.5 w-3.5 text-muted-foreground" />
-                            </div>
-                            <span className="text-xs font-medium">{visual.name}</span>
-                            {isSelected && (
-                              <div className="ml-auto h-4 w-4 rounded bg-primary flex items-center justify-center">
-                                <Star className="h-2.5 w-2.5 text-primary-foreground fill-primary-foreground" />
-                              </div>
-                            )}
-                          </button>
+                          <Tooltip key={v.id}>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => toggleVisual(v.id)}
+                                className={`relative rounded-lg border-2 aspect-square flex items-center justify-center transition-all ${
+                                  isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                                }`}
+                              >
+                                <Image className="h-6 w-6 text-muted-foreground/60" />
+                                {isSel && (
+                                  <div className="absolute top-1 right-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
+                                    <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                                  </div>
+                                )}
+                                <span className="absolute bottom-1 left-1 right-1 text-[7px] text-muted-foreground/60 truncate text-center">{v.name}</span>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs max-w-[200px]">{v.name}</TooltipContent>
+                          </Tooltip>
                         );
                       })}
                     </div>
