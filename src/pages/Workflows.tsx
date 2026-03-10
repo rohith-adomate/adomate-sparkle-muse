@@ -65,7 +65,7 @@ const defaultAgents: Agent[] = [
     description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
     enabled: true,
-    nextRun: "Mar 14, 2026 at 10:00 AM (CET)",
+    nextRun: "Mar 14, 2026",
   },
   {
     id: "competitor-2",
