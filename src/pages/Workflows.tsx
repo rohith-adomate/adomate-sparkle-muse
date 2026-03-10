@@ -207,13 +207,19 @@ export default function Workflows() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">{agent.description}</p>
-                  <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5">
-                    <div className="relative shrink-0">
-                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                      <Clock className="h-2 w-2 text-muted-foreground absolute -bottom-0.5 -right-0.5" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5 cursor-default">
+                        <div className="relative shrink-0">
+                          <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>Next scheduled run for this agent</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </CardContent>
               </Card>
             ))}
