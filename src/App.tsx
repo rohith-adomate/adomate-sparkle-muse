@@ -72,6 +72,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
+            <Route path="/ui-variations" element={<UIVariations />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminHome />} />
