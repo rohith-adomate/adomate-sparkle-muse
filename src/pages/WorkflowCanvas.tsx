@@ -149,6 +149,14 @@ export default function WorkflowCanvas() {
   const [dragNode, setDragNode] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
+  // Edge creation state
+  const [connecting, setConnecting] = useState<{
+    fromNodeId: string;
+    fromPort: number;
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
   const canvasRef = useRef<HTMLDivElement>(null);
 
   /* ── Zoom ── */
@@ -196,15 +204,24 @@ export default function WorkflowCanvas() {
         )
       );
     }
-  }, [isPanning, panStart, dragNode, dragOffset, pan, zoom]);
+    if (connecting) {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const canvasX = (e.clientX - rect.left - pan.x) / zoom;
+      const canvasY = (e.clientY - rect.top - pan.y) / zoom;
+      setConnecting((prev) => prev ? { ...prev, mouseX: canvasX, mouseY: canvasY } : null);
+    }
+  }, [isPanning, panStart, dragNode, dragOffset, pan, zoom, connecting]);
 
   const handleMouseUp = useCallback(() => {
     setIsPanning(false);
     setDragNode(null);
+    setConnecting(null);
   }, []);
 
   /* ── Node drag ── */
   const startNodeDrag = (e: React.MouseEvent, nodeId: string) => {
+    if (connecting) return; // Don't start node drag while connecting
     e.stopPropagation();
     const node = nodes.find((n) => n.id === nodeId);
     if (!node) return;
@@ -215,6 +232,39 @@ export default function WorkflowCanvas() {
     setDragOffset({ x: canvasX - node.x, y: canvasY - node.y });
     setDragNode(nodeId);
     setSelectedNode(nodeId);
+  };
+
+  /* ── Port interaction for edge creation ── */
+  const startConnection = (e: React.MouseEvent, nodeId: string, portIndex: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    const pos = getPortPos(node, "output", portIndex, node.outputs.length);
+    setConnecting({ fromNodeId: nodeId, fromPort: portIndex, mouseX: pos.x, mouseY: pos.y });
+  };
+
+  const finishConnection = (e: React.MouseEvent, nodeId: string, portIndex: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!connecting) return;
+    if (connecting.fromNodeId === nodeId) return; // No self-connections
+    // Check if edge already exists
+    const exists = edges.some(
+      (ed) => ed.from === connecting.fromNodeId && ed.fromPort === connecting.fromPort && ed.to === nodeId && ed.toPort === portIndex
+    );
+    if (!exists) {
+      setEdges((prev) => [
+        ...prev,
+        { id: `e-${Date.now()}`, from: connecting.fromNodeId, fromPort: connecting.fromPort, to: nodeId, toPort: portIndex },
+      ]);
+    }
+    setConnecting(null);
+  };
+
+  /* ── Delete edge ── */
+  const deleteEdge = (edgeId: string) => {
+    setEdges((prev) => prev.filter((e) => e.id !== edgeId));
   };
 
   /* ── Add node from picker ── */
@@ -400,7 +450,7 @@ export default function WorkflowCanvas() {
             }}
           >
             {/* SVG Edges */}
-            <svg className="absolute inset-0 pointer-events-none" style={{ overflow: "visible", width: 1, height: 1 }}>
+            <svg className="absolute inset-0" style={{ overflow: "visible", width: 1, height: 1, pointerEvents: "none" }}>
               <defs>
                 <marker id="dot" markerWidth="4" markerHeight="4" refX="2" refY="2">
                   <circle cx="2" cy="2" r="1.5" fill="hsl(var(--primary))" opacity="0.6" />
@@ -416,12 +466,22 @@ export default function WorkflowCanvas() {
                 const pathId = `path-${edge.id}`;
                 return (
                   <g key={edge.id}>
+                    {/* Invisible wide hitbox for clicking */}
+                    <path
+                      d={path}
+                      fill="none"
+                      stroke="transparent"
+                      strokeWidth="14"
+                      style={{ pointerEvents: "stroke", cursor: "pointer" }}
+                      onClick={(e) => { e.stopPropagation(); deleteEdge(edge.id); }}
+                    />
                     <path
                       d={path}
                       fill="none"
                       stroke="hsl(var(--border))"
                       strokeWidth="2"
                       strokeDasharray="6 4"
+                      style={{ pointerEvents: "none" }}
                     />
                     <path id={pathId} d={path} fill="none" stroke="none" />
                     <circle r="3" fill="hsl(var(--primary))" opacity="0.6">
@@ -432,6 +492,24 @@ export default function WorkflowCanvas() {
                   </g>
                 );
               })}
+              {/* Live connecting preview line */}
+              {connecting && (() => {
+                const fromNode = nodes.find((n) => n.id === connecting.fromNodeId);
+                if (!fromNode) return null;
+                const fromPos = getPortPos(fromNode, "output", connecting.fromPort, fromNode.outputs.length);
+                const path = cubicPath(fromPos.x, fromPos.y, connecting.mouseX, connecting.mouseY);
+                return (
+                  <path
+                    d={path}
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2"
+                    strokeDasharray="4 4"
+                    opacity="0.7"
+                    style={{ pointerEvents: "none" }}
+                  />
+                );
+              })()}
             </svg>
 
             {/* Nodes */}
@@ -495,11 +573,15 @@ export default function WorkflowCanvas() {
                     return (
                       <div
                         key={`in-${i}`}
-                        className="absolute w-3 h-3 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary transition-colors"
+                        className={`absolute w-4 h-4 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary hover:scale-150 transition-all cursor-crosshair z-10 ${
+                          connecting ? "ring-2 ring-primary/30 animate-pulse" : ""
+                        }`}
                         style={{
-                          left: -PORT_R,
-                          top: pos.y - node.y - PORT_R,
+                          left: -PORT_R - 2,
+                          top: pos.y - node.y - PORT_R - 2,
                         }}
+                        onMouseUp={(e) => finishConnection(e, node.id, i)}
+                        onMouseDown={(e) => e.stopPropagation()}
                       />
                     );
                   })}
@@ -510,11 +592,12 @@ export default function WorkflowCanvas() {
                     return (
                       <div
                         key={`out-${i}`}
-                        className="absolute w-3 h-3 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary transition-colors"
+                        className="absolute w-4 h-4 rounded-full border-2 border-border bg-card hover:bg-primary hover:border-primary hover:scale-150 transition-all cursor-crosshair z-10"
                         style={{
-                          left: NODE_W - PORT_R,
-                          top: pos.y - node.y - PORT_R,
+                          left: NODE_W - PORT_R - 2,
+                          top: pos.y - node.y - PORT_R - 2,
                         }}
+                        onMouseDown={(e) => startConnection(e, node.id, i)}
                       />
                     );
                   })}
