@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
-  Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, Clock, MoreVertical,
+  Trash2, Zap, CheckCircle2, X, Calendar as CalendarIcon, MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
