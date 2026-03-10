@@ -128,6 +128,7 @@ export default function WorkflowCanvas() {
   const [nodes, setNodes] = useState<CanvasNode[]>(() => getDefaultNodes(agentName));
   const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [agentEnabled, setAgentEnabled] = useState(true);
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -137,6 +138,13 @@ export default function WorkflowCanvas() {
   const [showGrid, setShowGrid] = useState(true);
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Auto-collapse main sidebar on mount, restore on unmount
+  const { setOpen: setSidebarOpen } = useSidebar();
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => { setSidebarOpen(true); };
+  }, [setSidebarOpen]);
 
   // Drag node
   const [dragNode, setDragNode] = useState<string | null>(null);
