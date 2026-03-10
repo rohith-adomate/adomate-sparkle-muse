@@ -15,6 +15,7 @@ import {
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
+import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 
 /* ── Types ── */
 
@@ -165,7 +166,8 @@ export default function WorkflowCanvas() {
   const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
   const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-
+  const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
+  const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
   const { setOpen: setSidebarOpen } = useSidebar();
   useEffect(() => {
@@ -615,13 +617,18 @@ export default function WorkflowCanvas() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedNode(node.id);
-                    if (node.type === "schedule") {
-                      setScheduleNodeId(node.id);
-                      setScheduleDrawerOpen(true);
-                    } else if (node.type === "brand-knowledge") {
-                      setBrandKnowledgeDrawerOpen(true);
-                    } else if (node.type === "product-data") {
-                      setProductDataDrawerOpen(true);
+                    if (activeTab === "executions") {
+                      setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
+                      setOutputDrawerOpen(true);
+                    } else {
+                      if (node.type === "schedule") {
+                        setScheduleNodeId(node.id);
+                        setScheduleDrawerOpen(true);
+                      } else if (node.type === "brand-knowledge") {
+                        setBrandKnowledgeDrawerOpen(true);
+                      } else if (node.type === "product-data") {
+                        setProductDataDrawerOpen(true);
+                      }
                     }
                   }}
                 >
@@ -770,6 +777,11 @@ export default function WorkflowCanvas() {
       <ProductDataDrawer
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
+      />
+      <NodeOutputDrawer
+        open={outputDrawerOpen}
+        onOpenChange={setOutputDrawerOpen}
+        node={outputDrawerNode}
       />
     </div>
   );
