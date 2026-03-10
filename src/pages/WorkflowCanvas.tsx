@@ -16,6 +16,7 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import CompetitorScrapeDrawer from "@/components/CompetitorScrapeDrawer";
+import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 
 /* ── Types ── */
@@ -168,6 +169,7 @@ export default function WorkflowCanvas() {
   const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [competitorScrapeDrawerOpen, setCompetitorScrapeDrawerOpen] = useState(false);
+  const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
@@ -632,6 +634,8 @@ export default function WorkflowCanvas() {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "competitor-scrape") {
                         setCompetitorScrapeDrawerOpen(true);
+                      } else if (node.type === "generate-concepts") {
+                        setGenerateConceptsDrawerOpen(true);
                       }
                     }
                   }}
@@ -785,6 +789,10 @@ export default function WorkflowCanvas() {
       <CompetitorScrapeDrawer
         open={competitorScrapeDrawerOpen}
         onOpenChange={setCompetitorScrapeDrawerOpen}
+      />
+      <GenerateConceptsDrawer
+        open={generateConceptsDrawerOpen}
+        onOpenChange={setGenerateConceptsDrawerOpen}
       />
       <NodeOutputDrawer
         open={outputDrawerOpen}
