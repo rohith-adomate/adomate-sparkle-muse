@@ -130,6 +130,8 @@ export default function WorkflowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(true);
+  const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
+  const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
