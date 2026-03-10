@@ -38,7 +38,7 @@ const defaultAgents: Agent[] = [
     description: "Generate festive creatives ahead of Christmas.",
     concepts: 12,
     enabled: true,
-    nextRun: "Dec 10, 2026 at 09:00 AM (CET)",
+    nextRun: "Dec 10, 2026",
   },
   {
     id: "holiday-2",
