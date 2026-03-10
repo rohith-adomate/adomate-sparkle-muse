@@ -204,15 +204,24 @@ export default function WorkflowCanvas() {
         )
       );
     }
-  }, [isPanning, panStart, dragNode, dragOffset, pan, zoom]);
+    if (connecting) {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const canvasX = (e.clientX - rect.left - pan.x) / zoom;
+      const canvasY = (e.clientY - rect.top - pan.y) / zoom;
+      setConnecting((prev) => prev ? { ...prev, mouseX: canvasX, mouseY: canvasY } : null);
+    }
+  }, [isPanning, panStart, dragNode, dragOffset, pan, zoom, connecting]);
 
   const handleMouseUp = useCallback(() => {
     setIsPanning(false);
     setDragNode(null);
+    setConnecting(null);
   }, []);
 
   /* ── Node drag ── */
   const startNodeDrag = (e: React.MouseEvent, nodeId: string) => {
+    if (connecting) return; // Don't start node drag while connecting
     e.stopPropagation();
     const node = nodes.find((n) => n.id === nodeId);
     if (!node) return;
@@ -223,6 +232,39 @@ export default function WorkflowCanvas() {
     setDragOffset({ x: canvasX - node.x, y: canvasY - node.y });
     setDragNode(nodeId);
     setSelectedNode(nodeId);
+  };
+
+  /* ── Port interaction for edge creation ── */
+  const startConnection = (e: React.MouseEvent, nodeId: string, portIndex: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    const pos = getPortPos(node, "output", portIndex, node.outputs.length);
+    setConnecting({ fromNodeId: nodeId, fromPort: portIndex, mouseX: pos.x, mouseY: pos.y });
+  };
+
+  const finishConnection = (e: React.MouseEvent, nodeId: string, portIndex: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!connecting) return;
+    if (connecting.fromNodeId === nodeId) return; // No self-connections
+    // Check if edge already exists
+    const exists = edges.some(
+      (ed) => ed.from === connecting.fromNodeId && ed.fromPort === connecting.fromPort && ed.to === nodeId && ed.toPort === portIndex
+    );
+    if (!exists) {
+      setEdges((prev) => [
+        ...prev,
+        { id: `e-${Date.now()}`, from: connecting.fromNodeId, fromPort: connecting.fromPort, to: nodeId, toPort: portIndex },
+      ]);
+    }
+    setConnecting(null);
+  };
+
+  /* ── Delete edge ── */
+  const deleteEdge = (edgeId: string) => {
+    setEdges((prev) => prev.filter((e) => e.id !== edgeId));
   };
 
   /* ── Add node from picker ── */
