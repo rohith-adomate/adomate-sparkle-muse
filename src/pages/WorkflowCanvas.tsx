@@ -630,6 +630,8 @@ export default function WorkflowCanvas() {
                         setBrandKnowledgeDrawerOpen(true);
                       } else if (node.type === "product-data") {
                         setProductDataDrawerOpen(true);
+                      } else if (node.type === "competitor-scrape") {
+                        setCompetitorScrapeDrawerOpen(true);
                       }
                     }
                   }}
