@@ -346,25 +346,23 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-8">#</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-28">Brand</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Headline</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20">Format</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Format</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">Platform</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24 text-right">
-                    <span className="inline-flex items-center gap-1">
-                      <TrendingUp className="h-2.5 w-2.5" /> Reach
-                    </span>
-                  </TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">First launched</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="h-2.5 w-2.5" /> Days
-                    </span>
+                    <span className="inline-flex items-center gap-1"><TrendingUp className="h-2.5 w-2.5" /> Reach</span>
                   </TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20">Status</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+7d</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+30d</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+3m</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+12m</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredAds.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-xs text-muted-foreground py-12">
+                    <TableCell colSpan={12} className="text-center text-xs text-muted-foreground py-12">
                       No ads match the current filters. Try adjusting competitors or thresholds.
                     </TableCell>
                   </TableRow>
@@ -394,8 +392,12 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                         </Badge>
                       </TableCell>
                       <TableCell className="py-2 text-[11px] text-muted-foreground">{ad.platform}</TableCell>
+                      <TableCell className="py-2 text-[11px] text-muted-foreground">{formatDate(ad.firstLaunched)}</TableCell>
                       <TableCell className="py-2 text-right text-[11px] font-medium tabular-nums">{formatReach(ad.reach)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{ad.daysActive}d</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach7d)}</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach30d)}</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach3m)}</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach12m)}</TableCell>
                       <TableCell className="py-2">
                         <div className="flex items-center gap-1">
                           <div className="h-1.5 w-1.5 rounded-full bg-success" />
