@@ -152,7 +152,6 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
-  const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [competitorScrapeDrawerOpen, setCompetitorScrapeDrawerOpen] = useState(false);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
