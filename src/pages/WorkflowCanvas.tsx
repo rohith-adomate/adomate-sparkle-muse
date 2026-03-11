@@ -9,14 +9,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Clock, Package, Search,
+  Package, Database,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
-import ScheduleDrawer from "@/components/ScheduleDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
-import CompetitorScrapeDrawer from "@/components/CompetitorScrapeDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
+import DatasetDrawer from "@/components/DatasetDrawer";
 
 /* ── Types ── */
 
