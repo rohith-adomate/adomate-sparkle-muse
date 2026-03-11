@@ -5,11 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, Plus, Check, ChevronDown } from "lucide-react";
+import { Info, Plus, Check, ChevronDown, X } from "lucide-react";
 
 interface CompetitorScrapeDrawerProps {
   open: boolean;
@@ -55,24 +55,47 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
           <SheetTitle className="text-base">Competitor Scrape — Settings</SheetTitle>
         </SheetHeader>
 
-        {/* Competitor Selection - Multi-select dropdown */}
+        {/* Competitor Selection - Tags + Popover */}
         <div className="space-y-3 mb-6">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Competitors
             </Label>
-            <Badge variant="secondary" className="text-[10px]">
-              {selectedCount} selected
-            </Badge>
           </div>
+
+          {/* Selected competitor tags */}
+          {selectedCount > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedCompetitors.map((c) => (
+                <div
+                  key={c.id}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-2.5 py-1.5 text-xs font-medium"
+                >
+                  <img
+                    src={c.avatar}
+                    alt={c.name}
+                    className="h-4 w-4 rounded-full object-cover bg-muted shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=16&background=random`;
+                    }}
+                  />
+                  <span>{c.name}</span>
+                  <button
+                    onClick={() => toggleCompetitor(c.id)}
+                    className="rounded-full hover:bg-muted p-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3 text-muted-foreground" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <Popover open={competitorPopoverOpen} onOpenChange={setCompetitorPopoverOpen}>
             <PopoverTrigger asChild>
-              <button className="w-full flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-left hover:bg-muted/40 transition-colors">
+              <button className="w-full flex items-center justify-between rounded-lg border border-dashed border-border px-3 py-2.5 text-left hover:bg-muted/40 transition-colors">
                 <span className="text-xs text-muted-foreground">
-                  {selectedCount > 0
-                    ? selectedCompetitors.map((c) => c.name).join(", ")
-                    : "Select competitors…"}
+                  Add competitors…
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-2" />
               </button>
@@ -119,22 +142,29 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
         <Separator className="mb-6" />
 
         {/* Max Ads */}
-        <div className="space-y-2 mb-6">
-          <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Top ads to select
-          </Label>
-          <Input
-            type="number"
-            min="1"
-            max="100"
-            value={maxAds}
-            onChange={(e) => setMaxAds(e.target.value)}
-            className="h-9 text-sm"
-          />
-          <p className="text-[10px] text-muted-foreground">
-            The best ads across all selected competitors combined.
-          </p>
-        </div>
+        <TooltipProvider>
+          <div className="space-y-2 mb-6">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
+                  Top ads to select
+                  <Info className="h-3 w-3" />
+                </Label>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-xs">
+                The best ads across all selected competitors combined.
+              </TooltipContent>
+            </Tooltip>
+            <Input
+              type="number"
+              min="1"
+              max="100"
+              value={maxAds}
+              onChange={(e) => setMaxAds(e.target.value)}
+              className="h-9 text-sm"
+            />
+          </div>
+        </TooltipProvider>
 
         <Separator className="mb-6" />
 
