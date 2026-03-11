@@ -727,25 +727,13 @@ export default function WorkflowCanvas() {
           </div>
         )}
       </div>
-      {/* Schedule Drawer */}
-      <ScheduleDrawer
-        open={scheduleDrawerOpen}
-        onOpenChange={setScheduleDrawerOpen}
-        onScheduleChange={(summary) => {
-          if (scheduleNodeId) {
-            setNodes((prev) =>
-              prev.map((n) => n.id === scheduleNodeId ? { ...n, description: summary } : n)
-            );
-          }
-        }}
+      <DatasetDrawer
+        open={datasetDrawerOpen}
+        onOpenChange={setDatasetDrawerOpen}
       />
       <ProductDataDrawer
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
-      />
-      <CompetitorScrapeDrawer
-        open={competitorScrapeDrawerOpen}
-        onOpenChange={setCompetitorScrapeDrawerOpen}
       />
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
