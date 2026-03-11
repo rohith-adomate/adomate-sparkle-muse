@@ -9,11 +9,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Clock, BookOpen, Package, Search, CheckSquare, Send,
+  Clock, Package, Search,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
-import BrandKnowledgeDrawer from "@/components/BrandKnowledgeDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import CompetitorScrapeDrawer from "@/components/CompetitorScrapeDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
@@ -56,7 +55,6 @@ const NODE_CATALOG = [
     category: "static-data" as const,
     label: "STATIC DATA",
     items: [
-      { type: "brand-knowledge", label: "Brand Knowledge", description: "Load brand guidelines & assets.", icon: BookOpen, inputs: [], outputs: ["Brand Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
@@ -72,14 +70,6 @@ const NODE_CATALOG = [
     label: "AI",
     items: [
       { type: "generate-concepts", label: "Generate Concepts", description: "Generate image ad concepts with AI.", icon: Sparkles, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
-    ],
-  },
-  {
-    category: "action" as const,
-    label: "ACTIONS",
-    items: [
-      { type: "send-approval", label: "Send for Approval", description: "Send to team for review.", icon: CheckSquare, inputs: ["Content"], outputs: ["Approved"] },
-      { type: "publish-meta", label: "Publish to Meta", description: "Publish ad to Meta Ads.", icon: Send, inputs: ["Ad"], outputs: ["Result"] },
     ],
   },
 ];
@@ -101,20 +91,16 @@ const PORT_R = 6;
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n1", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mondays at 9 AM", x: 100, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n2", type: "brand-knowledge", category: "static-data", label: "Brand Knowledge", description: "Load brand guidelines & assets.", x: 400, y: 80, inputs: [], outputs: ["Brand Data"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 180, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 310, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Concepts", description: "Generate image ad concepts with AI.", x: 700, y: 180, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
-    { id: "n4", type: "send-approval", category: "action", label: "Send for Approval", description: "Send to team for review.", x: 1000, y: 200, inputs: ["Content"], outputs: ["Approved"] },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 140, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 280, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Concepts", description: "Generate image ad concepts with AI.", x: 700, y: 200, inputs: ["Products", "Competitor Data"], outputs: ["Concepts"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
-  { id: "e5", from: "n2", fromPort: 0, to: "n5", toPort: 0 },
-  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
-  { id: "e7", from: "n3", fromPort: 0, to: "n5", toPort: 2 },
-  { id: "e8", from: "n5", fromPort: 0, to: "n4", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e7", from: "n3", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -166,7 +152,6 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
-  const [brandKnowledgeDrawerOpen, setBrandKnowledgeDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [competitorScrapeDrawerOpen, setCompetitorScrapeDrawerOpen] = useState(false);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
@@ -628,8 +613,6 @@ export default function WorkflowCanvas() {
                       if (node.type === "schedule") {
                         setScheduleNodeId(node.id);
                         setScheduleDrawerOpen(true);
-                      } else if (node.type === "brand-knowledge") {
-                        setBrandKnowledgeDrawerOpen(true);
                       } else if (node.type === "product-data") {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "competitor-scrape") {
@@ -777,10 +760,6 @@ export default function WorkflowCanvas() {
             );
           }
         }}
-      />
-      <BrandKnowledgeDrawer
-        open={brandKnowledgeDrawerOpen}
-        onOpenChange={setBrandKnowledgeDrawerOpen}
       />
       <ProductDataDrawer
         open={productDataDrawerOpen}
