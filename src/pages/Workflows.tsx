@@ -212,63 +212,69 @@ export default function Workflows() {
             <p className="text-sm text-muted-foreground mt-1">Choose an agent type to get started.</p>
           </div>
 
-          <Tabs defaultValue="competitor" className="px-6 pb-6">
-            <TabsList className="w-full mb-5">
-              <TabsTrigger value="competitor" className="flex-1">Competitor</TabsTrigger>
-              <TabsTrigger value="events" className="flex-1">Events</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="competitor" className="px-6 pb-6" orientation="vertical">
+            <div className="flex gap-5">
+              <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
+                <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
+                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Events</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="competitor" className="space-y-3 mt-0">
-              {competitorAgents.map((agent) => {
-                const Icon = agent.icon;
-                return (
-                  <Card
-                    key={agent.id}
-                    className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                    onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
-                  >
-                    <CardContent className="p-4 flex items-start gap-4">
-                      <div className="h-10 w-10 rounded-lg bg-violet-50 border border-violet-200 flex items-center justify-center shrink-0">
-                        <Icon className="h-5 w-5 text-violet-600" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="font-semibold text-sm">{agent.name}</p>
-                        <p className="text-xs text-muted-foreground">{agent.description}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </TabsContent>
+              <div className="flex-1 min-w-0">
+                <TabsContent value="competitor" className="mt-0">
+                  <div className="grid grid-cols-2 gap-3">
+                    {competitorAgents.map((agent) => {
+                      const Icon = agent.icon;
+                      return (
+                        <Card
+                          key={agent.id}
+                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
+                          onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
+                        >
+                          <CardContent className="p-4 space-y-3">
+                            <div className="h-10 w-10 rounded-lg bg-violet-50 border border-violet-200 flex items-center justify-center">
+                              <Icon className="h-5 w-5 text-violet-600" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-semibold text-sm">{agent.name}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
 
-            <TabsContent value="events" className="mt-0">
-              <div className="grid grid-cols-2 gap-3">
-                {eventAgents.map((agent) => {
-                  const Icon = agent.icon;
-                  const colorParts = agent.color.split(" ");
-                  const textColor = colorParts[0];
-                  const bgColor = colorParts[1];
-                  const borderColor = colorParts[2];
-                  return (
-                    <Card
-                      key={agent.id}
-                      className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                      onClick={() => handleSelectAgent("holiday", agent.name, agent.description)}
-                    >
-                      <CardContent className="p-4 space-y-3">
-                        <div className={`h-10 w-10 rounded-lg ${bgColor} border ${borderColor} flex items-center justify-center`}>
-                          <Icon className={`h-5 w-5 ${textColor}`} />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="font-semibold text-sm">{agent.name}</p>
-                          <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                <TabsContent value="events" className="mt-0">
+                  <div className="grid grid-cols-2 gap-3">
+                    {eventAgents.map((agent) => {
+                      const Icon = agent.icon;
+                      const colorParts = agent.color.split(" ");
+                      const textColor = colorParts[0];
+                      const bgColor = colorParts[1];
+                      const borderColor = colorParts[2];
+                      return (
+                        <Card
+                          key={agent.id}
+                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
+                          onClick={() => handleSelectAgent("holiday", agent.name, agent.description)}
+                        >
+                          <CardContent className="p-4 space-y-3">
+                            <div className={`h-10 w-10 rounded-lg ${bgColor} border ${borderColor} flex items-center justify-center`}>
+                              <Icon className={`h-5 w-5 ${textColor}`} />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-semibold text-sm">{agent.name}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
               </div>
-            </TabsContent>
+            </div>
           </Tabs>
         </DialogContent>
       </Dialog>
