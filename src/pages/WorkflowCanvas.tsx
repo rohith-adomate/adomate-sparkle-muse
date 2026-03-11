@@ -91,11 +91,9 @@ const PORT_R = 6;
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n1", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mondays at 9 AM", x: 100, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n2", type: "brand-knowledge", category: "static-data", label: "Brand Knowledge", description: "Load brand guidelines & assets.", x: 400, y: 80, inputs: [], outputs: ["Brand Data"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 180, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 310, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Concepts", description: "Generate image ad concepts with AI.", x: 700, y: 180, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
-    { id: "n4", type: "send-approval", category: "action", label: "Send for Approval", description: "Send to team for review.", x: 1000, y: 200, inputs: ["Content"], outputs: ["Approved"] },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 140, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 280, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Concepts", description: "Generate image ad concepts with AI.", x: 700, y: 200, inputs: ["Products", "Competitor Data"], outputs: ["Concepts"] },
   ];
 }
 
