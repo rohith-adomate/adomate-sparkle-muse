@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, Plus, Check, ChevronDown, X } from "lucide-react";
+import { Info, Plus, X, Search } from "lucide-react";
 
 interface CompetitorScrapeDrawerProps {
   open: boolean;
@@ -30,6 +30,7 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
   const navigate = useNavigate();
   const [competitors, setCompetitors] = useState(MOCK_COMPETITORS);
   const [competitorPopoverOpen, setCompetitorPopoverOpen] = useState(false);
+  const [competitorSearch, setCompetitorSearch] = useState("");
   const [maxAds, setMaxAds] = useState("10");
   const [minReach, setMinReach] = useState("1000");
   const [minDaysActive, setMinDaysActive] = useState("7");
@@ -45,8 +46,20 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
     );
   };
 
+  const removeCompetitor = (id: string) => {
+    setCompetitors((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, selected: false } : c))
+    );
+  };
+
   const selectedCompetitors = competitors.filter((c) => c.selected);
   const selectedCount = selectedCompetitors.length;
+
+  const unselectedCompetitors = useMemo(() => {
+    return competitors.filter(
+      (c) => !c.selected && c.name.toLowerCase().includes(competitorSearch.toLowerCase())
+    );
+  }, [competitors, competitorSearch]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -55,7 +68,7 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
           <SheetTitle className="text-base">Competitor Scrape — Settings</SheetTitle>
         </SheetHeader>
 
-        {/* Competitor Selection - Tags + Popover */}
+        {/* Competitor Selection - Badge tags + search popover (mirrors language selector) */}
         <div className="space-y-3 mb-6">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -63,80 +76,89 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
             </Label>
           </div>
 
-          {/* Selected competitor tags */}
-          {selectedCount > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {selectedCompetitors.map((c) => (
-                <div
-                  key={c.id}
-                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-2.5 py-1.5 text-xs font-medium"
-                >
-                  <img
-                    src={c.avatar}
-                    alt={c.name}
-                    className="h-4 w-4 rounded-full object-cover bg-muted shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=16&background=random`;
-                    }}
-                  />
-                  <span>{c.name}</span>
-                  <button
-                    onClick={() => toggleCompetitor(c.id)}
-                    className="rounded-full hover:bg-muted p-0.5 transition-colors"
-                  >
-                    <X className="h-3 w-3 text-muted-foreground" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <Popover open={competitorPopoverOpen} onOpenChange={setCompetitorPopoverOpen}>
-            <PopoverTrigger asChild>
-              <button className="w-full flex items-center justify-between rounded-lg border border-dashed border-border px-3 py-2.5 text-left hover:bg-muted/40 transition-colors">
-                <span className="text-xs text-muted-foreground">
-                  Add competitors…
-                </span>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-2" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-0" align="start">
-              <div className="p-1.5 space-y-0.5 max-h-[260px] overflow-y-auto">
-                {competitors.map((c) => (
-                  <button
-                    key={c.id}
-                    className="w-full flex items-center gap-3 rounded-md px-2.5 py-2 cursor-pointer hover:bg-muted/60 transition-colors"
-                    onClick={() => toggleCompetitor(c.id)}
-                  >
-                    <img
-                      src={c.avatar}
-                      alt={c.name}
-                      className="h-6 w-6 rounded-full object-cover bg-muted shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=24&background=random`;
-                      }}
-                    />
-                    <span className="text-xs font-medium flex-1 text-left">{c.name}</span>
-                    {c.selected && (
-                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
-                    )}
-                  </button>
-                ))}
-              </div>
-              <Separator />
-              <button
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/60 transition-colors text-xs font-medium text-muted-foreground"
-                onClick={() => {
-                  setCompetitorPopoverOpen(false);
-                  onOpenChange(false);
-                  navigate("/brand-data-room/competitors");
-                }}
+          <div className="flex flex-wrap gap-2">
+            {selectedCompetitors.map((c) => (
+              <Badge
+                key={c.id}
+                variant="secondary"
+                className="gap-1.5 py-1 px-2.5 text-xs font-medium"
               >
-                <Plus className="h-3.5 w-3.5" />
-                Add competitor
-              </button>
-            </PopoverContent>
-          </Popover>
+                <img
+                  src={c.avatar}
+                  alt={c.name}
+                  className="h-3.5 w-3.5 rounded-full object-cover bg-muted shrink-0"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=14&background=random`;
+                  }}
+                />
+                {c.name}
+                <button
+                  onClick={() => removeCompetitor(c.id)}
+                  className="shrink-0 hover:text-destructive transition-colors"
+                  aria-label={`Remove ${c.name}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+
+            {/* Add competitor popover */}
+            <Popover open={competitorPopoverOpen} onOpenChange={(open) => { setCompetitorPopoverOpen(open); if (!open) setCompetitorSearch(""); }}>
+              <PopoverTrigger asChild>
+                <button className="h-7 px-2.5 rounded-md border border-dashed border-muted-foreground/30 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-1">
+                  <Plus className="h-3 w-3" /> Add
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-2" align="start">
+                <div className="flex items-center gap-2 border-b pb-2 mb-1">
+                  <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                  <input
+                    value={competitorSearch}
+                    onChange={(e) => setCompetitorSearch(e.target.value)}
+                    placeholder="Search competitors..."
+                    className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
+                    autoFocus
+                  />
+                </div>
+                <div className="max-h-48 overflow-y-auto space-y-0.5">
+                  {unselectedCompetitors.length === 0 ? (
+                    <p className="text-xs text-muted-foreground p-2 text-center">No competitors found</p>
+                  ) : (
+                    unselectedCompetitors.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => toggleCompetitor(c.id)}
+                        className="w-full flex items-center gap-2.5 text-left text-sm px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                      >
+                        <img
+                          src={c.avatar}
+                          alt={c.name}
+                          className="h-5 w-5 rounded-full object-cover bg-muted shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=20&background=random`;
+                          }}
+                        />
+                        {c.name}
+                      </button>
+                    ))
+                  )}
+                </div>
+                <Separator className="my-1" />
+                <button
+                  className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded hover:bg-accent transition-colors text-xs font-medium text-muted-foreground"
+                  onClick={() => {
+                    setCompetitorPopoverOpen(false);
+                    setCompetitorSearch("");
+                    onOpenChange(false);
+                    navigate("/brand-data-room/competitors");
+                  }}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Ad Competitors
+                </button>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         <Separator className="mb-6" />
@@ -241,7 +263,6 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
             </Tooltip>
 
             <div className="space-y-3">
-              {/* Period type selector */}
               <div className="flex items-center gap-2">
                 {(["all-time", "last-week", "last-x"] as PeriodType[]).map((type) => (
                   <div
@@ -258,7 +279,6 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
                 ))}
               </div>
 
-              {/* Last X configuration */}
               {periodType === "last-x" && (
                 <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/20 p-3">
                   <span className="text-xs text-muted-foreground shrink-0">Last</span>
