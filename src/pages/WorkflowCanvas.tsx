@@ -450,7 +450,7 @@ export default function WorkflowCanvas() {
               </TooltipTrigger>
               {!canActivate && (
                 <TooltipContent side="bottom" className="text-xs max-w-[200px]">
-                  A workflow without a schedule trigger connected to other nodes cannot be activated.
+                  Add a Dataset node to activate this workflow.
                 </TooltipContent>
               )}
             </Tooltip>
