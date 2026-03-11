@@ -9,14 +9,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Clock, Package, Search,
+  Package, Database,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
-import ScheduleDrawer from "@/components/ScheduleDrawer";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
-import CompetitorScrapeDrawer from "@/components/CompetitorScrapeDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
+import DatasetDrawer from "@/components/DatasetDrawer";
 
 /* ── Types ── */
 
@@ -45,39 +44,24 @@ interface Edge {
 
 const NODE_CATALOG = [
   {
-    category: "trigger" as const,
-    label: "TRIGGERS",
-    items: [
-      { type: "schedule", label: "Schedule", description: "Run on a recurring schedule.", icon: Clock, inputs: [], outputs: ["Trigger"] },
-    ],
-  },
-  {
     category: "static-data" as const,
-    label: "STATIC DATA",
+    label: "DATA",
     items: [
+      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: [], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
-    ],
-  },
-  {
-    category: "dynamic-data" as const,
-    label: "DYNAMIC DATA",
-    items: [
-      { type: "competitor-scrape", label: "Competitor Scrape", description: "Scrape competitor ad data.", icon: Search, inputs: ["In"], outputs: ["Competitor Data"] },
     ],
   },
   {
     category: "ai" as const,
     label: "AI",
     items: [
-      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Products", "Competitor Data"], outputs: ["Variations"] },
+      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
     ],
   },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  trigger: "152 60% 42%",
   "static-data": "210 80% 55%",
-  "dynamic-data": "195 70% 50%",
   ai: "270 70% 60%",
   action: "25 95% 55%",
 };
@@ -90,17 +74,15 @@ const PORT_R = 6;
 
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
-    { id: "n1", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mondays at 9 AM", x: 100, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 140, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 280, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 200, inputs: ["Products", "Competitor Data"], outputs: ["Variations"] },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
-  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 1 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
-  { id: "e7", from: "n3", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -150,10 +132,8 @@ export default function WorkflowCanvas() {
   const [showGrid, setShowGrid] = useState(true);
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
-  const [scheduleNodeId, setScheduleNodeId] = useState<string | null>(null);
+  const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-  const [competitorScrapeDrawerOpen, setCompetitorScrapeDrawerOpen] = useState(false);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
@@ -344,21 +324,11 @@ export default function WorkflowCanvas() {
     setZoom(newZoom);
   };
 
-  /* ── Can activate? Schedule must exist and be connected ── */
+  /* ── Can activate? Dataset node must exist ── */
   const canActivate = useMemo(() => {
-    const scheduleNodes = nodes.filter((n) => n.type === "schedule");
-    if (scheduleNodes.length === 0) return false;
-    return scheduleNodes.some((sn) =>
-      edges.some((e) => e.from === sn.id || e.to === sn.id)
-    );
-  }, [nodes, edges]);
-
-  // Force inactive when schedule is not connected
-  useEffect(() => {
-    if (!canActivate && agentEnabled) {
-      setAgentEnabled(false);
-    }
-  }, [canActivate]); // eslint-disable-line react-hooks/exhaustive-deps
+    return nodes.some((n) => n.type === "dataset");
+  }, [nodes]);
+  
 
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
@@ -480,7 +450,7 @@ export default function WorkflowCanvas() {
               </TooltipTrigger>
               {!canActivate && (
                 <TooltipContent side="bottom" className="text-xs max-w-[200px]">
-                  A workflow without a schedule trigger connected to other nodes cannot be activated.
+                  Add a Dataset node to activate this workflow.
                 </TooltipContent>
               )}
             </Tooltip>
@@ -589,7 +559,7 @@ export default function WorkflowCanvas() {
               const color = CATEGORY_COLORS[node.category];
               const isSelected = selectedNode === node.id;
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
-              const Icon = catalogItem?.icon || Clock;
+              const Icon = catalogItem?.icon || Database;
 
               return (
                 <div
@@ -610,13 +580,10 @@ export default function WorkflowCanvas() {
                       setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
                       setOutputDrawerOpen(true);
                     } else {
-                      if (node.type === "schedule") {
-                        setScheduleNodeId(node.id);
-                        setScheduleDrawerOpen(true);
+                      if (node.type === "dataset") {
+                        setDatasetDrawerOpen(true);
                       } else if (node.type === "product-data") {
                         setProductDataDrawerOpen(true);
-                      } else if (node.type === "competitor-scrape") {
-                        setCompetitorScrapeDrawerOpen(true);
                       } else if (node.type === "generate-concepts") {
                         setGenerateConceptsDrawerOpen(true);
                       }
@@ -749,25 +716,13 @@ export default function WorkflowCanvas() {
           </div>
         )}
       </div>
-      {/* Schedule Drawer */}
-      <ScheduleDrawer
-        open={scheduleDrawerOpen}
-        onOpenChange={setScheduleDrawerOpen}
-        onScheduleChange={(summary) => {
-          if (scheduleNodeId) {
-            setNodes((prev) =>
-              prev.map((n) => n.id === scheduleNodeId ? { ...n, description: summary } : n)
-            );
-          }
-        }}
+      <DatasetDrawer
+        open={datasetDrawerOpen}
+        onOpenChange={setDatasetDrawerOpen}
       />
       <ProductDataDrawer
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
-      />
-      <CompetitorScrapeDrawer
-        open={competitorScrapeDrawerOpen}
-        onOpenChange={setCompetitorScrapeDrawerOpen}
       />
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
