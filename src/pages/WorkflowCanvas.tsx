@@ -61,9 +61,7 @@ const NODE_CATALOG = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  trigger: "152 60% 42%",
   "static-data": "210 80% 55%",
-  "dynamic-data": "195 70% 50%",
   ai: "270 70% 60%",
   action: "25 95% 55%",
 };
