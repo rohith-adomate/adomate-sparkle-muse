@@ -230,20 +230,23 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
                 onCheckedChange={(v) => setReachEnabled(!!v)}
               />
               <span className="text-xs text-muted-foreground">Min. estimated reach</span>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed bg-foreground text-background border-foreground">
+                  <p>Only include ads with at least this estimated reach.</p>
+                </TooltipContent>
+              </Tooltip>
             </label>
             {reachEnabled && (
-              <>
-                <Input
-                  type="number"
-                  min="0"
-                  value={minReach}
-                  onChange={(e) => setMinReach(e.target.value)}
-                  className="h-9 text-sm"
-                />
-                <p className="text-[10px] text-muted-foreground">
-                  Only include ads with at least this estimated reach.
-                </p>
-              </>
+              <Input
+                type="number"
+                min="0"
+                value={minReach}
+                onChange={(e) => setMinReach(e.target.value)}
+                className="h-9 text-sm"
+              />
             )}
           </div>
         </div>
