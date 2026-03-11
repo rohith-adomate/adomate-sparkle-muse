@@ -146,12 +146,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pb-3">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-bold">Dataset</h2>
-            <Badge variant="secondary" className="text-[10px]">
-              {filteredAds.length} ads
-            </Badge>
-          </div>
+          <h2 className="text-sm font-bold">Dataset</h2>
           <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => onOpenChange(false)}>
             <ChevronDown className="h-3.5 w-3.5 mr-1" /> Close
           </Button>
@@ -162,9 +157,11 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
         {/* Content: two columns */}
         <div className="flex h-[calc(100%-56px)] overflow-hidden">
           {/* Left: Settings panel */}
-          <div className="w-80 shrink-0 border-r border-border overflow-y-auto p-5 space-y-5">
-            {/* Competitors */}
-            <div className="space-y-2.5">
+          <div className="w-80 shrink-0 border-r border-border overflow-y-auto p-5 space-y-2">
+
+            {/* ── SECTION: Sources ── */}
+            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 mb-1">Sources</p>
+            <div className="space-y-2.5 pb-4">
               <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Competitors
               </Label>
@@ -219,50 +216,11 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
 
             <Separator />
 
-            {/* Top ads */}
-            <div className="space-y-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Top ads to select
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  The best ads across all selected competitors combined.
-                </TooltipContent>
-              </Tooltip>
-              <Input type="number" min="1" max="100" value={maxAds} onChange={(e) => setMaxAds(e.target.value)} className="h-8 text-xs" />
-            </div>
-
-            <Separator />
-
-            {/* Threshold */}
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Thresholds
-              </Label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox checked={reachEnabled} onCheckedChange={(v) => setReachEnabled(!!v)} className="h-3.5 w-3.5" />
-                <span className="text-[10px] text-muted-foreground">Min. estimated reach</span>
-                <Tooltip delayDuration={300}>
-                  <TooltipTrigger asChild>
-                    <Info className="h-2.5 w-2.5 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs text-[10px]">
-                    Only include ads with at least this estimated reach.
-                  </TooltipContent>
-                </Tooltip>
-              </label>
-              {reachEnabled && (
-                <Input type="number" min="0" value={minReach} onChange={(e) => setMinReach(e.target.value)} className="h-8 text-xs" />
-              )}
-            </div>
-
-            <Separator />
+            {/* ── SECTION: Filtering ── */}
+            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Filtering</p>
 
             {/* Time Period */}
-            <div className="space-y-2">
+            <div className="space-y-2 pb-3">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
@@ -306,7 +264,48 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               )}
             </div>
 
+            {/* Threshold */}
+            <div className="space-y-2 pb-2">
+              <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Thresholds
+              </Label>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <Checkbox checked={reachEnabled} onCheckedChange={(v) => setReachEnabled(!!v)} className="h-3.5 w-3.5" />
+                <span className="text-[10px] text-muted-foreground">Min. estimated reach</span>
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <Info className="h-2.5 w-2.5 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs text-[10px]">
+                    Only include ads with at least this estimated reach.
+                  </TooltipContent>
+                </Tooltip>
+              </label>
+              {reachEnabled && (
+                <Input type="number" min="0" value={minReach} onChange={(e) => setMinReach(e.target.value)} className="h-8 text-xs" />
+              )}
+            </div>
+
             <Separator />
+
+            {/* ── SECTION: Generation ── */}
+            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Generation</p>
+
+            {/* Top ads to select */}
+            <div className="space-y-2 pb-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
+                    Top ads to select
+                    <Info className="h-2.5 w-2.5" />
+                  </Label>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
+                  The best ads across all selected competitors combined.
+                </TooltipContent>
+              </Tooltip>
+              <Input type="number" min="1" max="100" value={maxAds} onChange={(e) => setMaxAds(e.target.value)} className="h-8 text-xs" />
+            </div>
 
             {/* Schedule */}
             <div className="space-y-2">
