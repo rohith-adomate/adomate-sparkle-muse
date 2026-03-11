@@ -349,6 +349,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-12">Preview</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-8">#</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-28">Brand</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Headline</TableHead>
