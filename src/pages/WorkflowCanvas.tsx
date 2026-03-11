@@ -570,7 +570,7 @@ export default function WorkflowCanvas() {
               const color = CATEGORY_COLORS[node.category];
               const isSelected = selectedNode === node.id;
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
-              const Icon = catalogItem?.icon || Clock;
+              const Icon = catalogItem?.icon || Database;
 
               return (
                 <div
