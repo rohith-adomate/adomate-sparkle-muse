@@ -6,6 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Sparkles, Plus, X, Check, RefreshCw, Image, Brain } from "lucide-react";
 
 const MOCK_LOGOS = [
@@ -36,6 +46,8 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
   const [selectedVisuals, setSelectedVisuals] = useState<string[]>([]);
   const [logoPopoverOpen, setLogoPopoverOpen] = useState(false);
   const [visualsPopoverOpen, setVisualsPopoverOpen] = useState(false);
+  const [brandBrainActive, setBrandBrainActive] = useState(true);
+  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
 
   const selectedLogoData = MOCK_LOGOS.find((l) => l.id === selectedLogo);
 
@@ -45,31 +57,48 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
     );
   };
 
+  const handleBrandBrainClick = () => {
+    if (brandBrainActive) {
+      setShowDeactivateDialog(true);
+    } else {
+      setBrandBrainActive(true);
+    }
+  };
+
   return (
     <TooltipProvider>
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="right" className="w-[380px] sm:w-[420px] overflow-y-auto">
           <SheetHeader className="pb-4">
-            <SheetTitle className="text-base">Generate Concepts — Settings</SheetTitle>
+            <SheetTitle className="text-base">Generate Ad Variations — Settings</SheetTitle>
           </SheetHeader>
 
           {/* Brand Brain Indicator */}
-          <div className="mb-6">
+          <div className="mb-6 flex justify-center">
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
-                <div className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 cursor-default">
-                  <div className="relative">
-                    <Brain className="h-4 w-4 text-primary" />
-                    <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-success animate-pulse" />
-                  </div>
-                  <span className="text-xs font-medium text-primary">Brand Brain active</span>
-                </div>
+                <button
+                  onClick={handleBrandBrainClick}
+                  className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors ${
+                    brandBrainActive
+                      ? "border-primary/20 bg-primary/5"
+                      : "border-border bg-muted/30"
+                  }`}
+                >
+                  <Brain className={`h-4 w-4 ${brandBrainActive ? "text-primary" : "text-muted-foreground"}`} />
+                  <span className={`text-xs font-medium ${brandBrainActive ? "text-primary" : "text-muted-foreground"}`}>
+                    {brandBrainActive ? "Brand Brain active" : "Brand Brain inactive"}
+                  </span>
+                </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-[280px] p-3 text-xs leading-relaxed">
-                <p className="font-semibold mb-1.5">Brand Knowledge is always on</p>
+                <p className="font-semibold mb-1.5">
+                  {brandBrainActive ? "Brand Knowledge is always on" : "Brand Knowledge is disabled"}
+                </p>
                 <p className="text-muted-foreground">
-                  Your brand's description, tone of voice, positioning, visual style, and colors are automatically
-                  inserted by the agent at the right point in the generation process. No manual configuration needed.
+                  {brandBrainActive
+                    ? "Your brand's description, tone of voice, positioning, visual style, and colors are automatically inserted by the agent at the right point in the generation process. No manual configuration needed."
+                    : "Brand knowledge is currently disabled. Click to re-enable and improve brand compliance of generated concepts."}
                 </p>
                 <p className="mt-1.5 text-muted-foreground">
                   Manage in{" "}
@@ -97,7 +126,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
               <Sparkles className="absolute top-2.5 right-2.5 h-3.5 w-3.5 text-muted-foreground/50" />
             </div>
             <p className="text-[10px] text-muted-foreground">
-              This prompt is combined with your brand knowledge, product data, and competitor insights to generate concepts.
+              This prompt is combined with your brand knowledge, product data, and competitor insights to generate variations.
             </p>
           </div>
 
@@ -106,7 +135,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
           {/* Number of concepts */}
           <div className="space-y-2 mb-6">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Number of concepts
+              Number of variations
             </Label>
             <Input
               type="number"
@@ -117,7 +146,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
               className="h-9 text-sm"
             />
             <p className="text-[10px] text-muted-foreground">
-              How many ad concepts to generate per run.
+              How many ad variations to generate per run.
             </p>
           </div>
 
@@ -259,25 +288,31 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
               </Popover>
             </div>
           </div>
-
-          <Separator className="mb-6" />
-
-          {/* Info */}
-          <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Inputs used</p>
-            <div className="flex flex-wrap gap-1.5">
-              {["Brand Knowledge", "Product Data", "Competitor Data"].map((input) => (
-                <span key={input} className="text-[10px] bg-primary/10 text-primary rounded-md px-2 py-0.5 font-medium">
-                  {input}
-                </span>
-              ))}
-            </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              These are automatically pulled from connected upstream nodes.
-            </p>
-          </div>
         </SheetContent>
       </Sheet>
+
+      {/* Deactivate Brand Brain Confirmation */}
+      <AlertDialog open={showDeactivateDialog} onOpenChange={setShowDeactivateDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Deactivate Brand Brain?</AlertDialogTitle>
+            <AlertDialogDescription>
+              It is <span className="font-semibold text-foreground">not recommended</span> to deactivate the Brand Brain. 
+              Disabling it will reduce the brand compliance of your generated ad variations, resulting in concepts that may 
+              not align with your brand's tone of voice, visual identity, and positioning.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep active</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => setBrandBrainActive(false)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Deactivate anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   );
 }
