@@ -85,8 +85,16 @@ const eventAgents = [
 ];
 
 const competitorAgents = [
-  { id: "visual-variations", name: "Visual Variations", description: "Recreates the same visual layout, but with your product and branding.", icon: Eye },
-  { id: "strategy-variations", name: "Strategy Variations", description: "Creates new visuals using the same marketing message and angle.", icon: Lightbulb },
+  { id: "visual-1", name: "Visual Variations", description: "Recreates the same visual layout, but with your product and branding.", icon: Eye },
+  { id: "visual-2", name: "Layout Remixes", description: "Takes top-performing competitor layouts and rebuilds them with your brand assets.", icon: Eye },
+  { id: "visual-3", name: "Visual Clones", description: "Mirrors the design structure of their best ads, swapped with your products.", icon: Eye },
+  { id: "visual-4", name: "Creative Mirrors", description: "Reproduces winning competitor visuals using your brand identity.", icon: Eye },
+  { id: "visual-5", name: "Design Respins", description: "Rebuilds their highest-reach ad layouts around your product catalog.", icon: Eye },
+  { id: "strategy-1", name: "Strategy Variations", description: "Creates new visuals using the same marketing message and angle.", icon: Lightbulb },
+  { id: "strategy-2", name: "Angle Adaptations", description: "Extracts the messaging strategy from top competitor ads and applies it to your brand.", icon: Lightbulb },
+  { id: "strategy-3", name: "Message Remakes", description: "Reinterprets their best-performing ad angles with fresh visuals for your brand.", icon: Lightbulb },
+  { id: "strategy-4", name: "Tactic Transfers", description: "Borrows proven competitor ad tactics and crafts original creatives around them.", icon: Lightbulb },
+  { id: "strategy-5", name: "Concept Pivots", description: "Takes competitor campaign themes and pivots them into unique ads for your brand.", icon: Lightbulb },
 ];
 
 /* ── Component ── */
