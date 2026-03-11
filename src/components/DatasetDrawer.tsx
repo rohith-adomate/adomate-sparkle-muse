@@ -402,7 +402,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach12m)}</TableCell>
                       <TableCell className="py-2">
                         <div className="flex items-center gap-1">
-                          <div className="h-1.5 w-1.5 rounded-full bg-success" />
+                          <div className={cn("h-1.5 w-1.5 rounded-full", ad.status === "Active" ? "bg-success" : "bg-muted-foreground/40")} />
                           <span className="text-[10px] text-muted-foreground">{ad.status}</span>
                         </div>
                       </TableCell>
