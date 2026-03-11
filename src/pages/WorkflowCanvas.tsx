@@ -72,14 +72,6 @@ const NODE_CATALOG = [
       { type: "generate-concepts", label: "Generate Concepts", description: "Generate image ad concepts with AI.", icon: Sparkles, inputs: ["Brand Data", "Products", "Competitor Data"], outputs: ["Concepts"] },
     ],
   },
-  {
-    category: "action" as const,
-    label: "ACTIONS",
-    items: [
-      { type: "send-approval", label: "Send for Approval", description: "Send to team for review.", icon: CheckSquare, inputs: ["Content"], outputs: ["Approved"] },
-      { type: "publish-meta", label: "Publish to Meta", description: "Publish ad to Meta Ads.", icon: Send, inputs: ["Ad"], outputs: ["Result"] },
-    ],
-  },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
