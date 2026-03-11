@@ -34,7 +34,6 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
   const [maxAds, setMaxAds] = useState("10");
   const [minReach, setMinReach] = useState("1000");
   const [reachEnabled, setReachEnabled] = useState(false);
-  const [reachEnabled, setReachEnabled] = useState(false);
   const [periodType, setPeriodType] = useState<PeriodType>("all-time");
   const [lastXValue, setLastXValue] = useState("30");
   const [lastXUnit, setLastXUnit] = useState<PeriodUnit>("days");
