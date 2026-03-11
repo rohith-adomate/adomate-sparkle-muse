@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   AlertDialog,
@@ -16,46 +14,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Sparkles, Plus, X, Check, RefreshCw, Image, Brain } from "lucide-react";
-
-const MOCK_LOGOS = [
-  { id: "logo-1", name: "Primary Logo", url: "/placeholder.svg" },
-  { id: "logo-2", name: "Icon Mark", url: "/placeholder.svg" },
-  { id: "logo-3", name: "Wordmark", url: "/placeholder.svg" },
-];
-
-const MOCK_VISUALS = [
-  { id: "vis-1", name: "Hero Banner", url: "/placeholder.svg" },
-  { id: "vis-2", name: "Summer Campaign Lifestyle Photography 2025", url: "/placeholder.svg" },
-  { id: "vis-3", name: "Lifestyle Shot 2", url: "/placeholder.svg" },
-  { id: "vis-4", name: "Product Scene", url: "/placeholder.svg" },
-  { id: "vis-5", name: "Brand Guidelines Background Texture Collection", url: "/placeholder.svg" },
-];
+import { Info, Brain } from "lucide-react";
 
 interface GenerateConceptsDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const SIMILARITY_LABELS = ["Low", "Medium", "High"];
+
 export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateConceptsDrawerProps) {
-  const [prompt, setPrompt] = useState(
-    "Generate modern, scroll-stopping ad creatives for social media. Use bold visuals with clean typography. Incorporate the brand colors and product imagery. Each concept should have a distinct visual style — try lifestyle, minimalist, and UGC-inspired approaches."
-  );
   const [numConcepts, setNumConcepts] = useState("6");
-  const [selectedLogo, setSelectedLogo] = useState<string | null>(null);
-  const [selectedVisuals, setSelectedVisuals] = useState<string[]>([]);
-  const [logoPopoverOpen, setLogoPopoverOpen] = useState(false);
-  const [visualsPopoverOpen, setVisualsPopoverOpen] = useState(false);
   const [brandBrainActive, setBrandBrainActive] = useState(true);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
-
-  const selectedLogoData = MOCK_LOGOS.find((l) => l.id === selectedLogo);
-
-  const toggleVisual = (id: string) => {
-    setSelectedVisuals((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
-    );
-  };
+  const [visualSimilarity, setVisualSimilarity] = useState(1); // 0=Low, 1=Medium, 2=High
+  const [strategicSimilarity, setStrategicSimilarity] = useState(1);
 
   const handleBrandBrainClick = () => {
     if (brandBrainActive) {
@@ -64,6 +37,29 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
       setBrandBrainActive(true);
     }
   };
+
+  const SimilaritySlider = ({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) => (
+    <div className="space-y-2">
+      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </Label>
+      <div className="flex items-center gap-1">
+        {SIMILARITY_LABELS.map((lbl, i) => (
+          <button
+            key={i}
+            onClick={() => onChange(i)}
+            className={`flex-1 rounded-lg border px-2 py-2 text-center cursor-pointer transition-colors text-xs font-medium ${
+              value === i
+                ? "border-primary bg-primary/10 text-foreground"
+                : "border-border text-muted-foreground hover:bg-muted/40"
+            }`}
+          >
+            {lbl}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <TooltipProvider>
@@ -110,33 +106,19 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
             </Tooltip>
           </div>
 
-          {/* Prompt */}
+          {/* Number of variations */}
           <div className="space-y-2 mb-6">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Image generation prompt
-            </Label>
-            <div className="relative">
-              <Textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                rows={8}
-                className="text-sm resize-none pr-8"
-                placeholder="Describe how the AI should generate your ad concepts…"
-              />
-              <Sparkles className="absolute top-2.5 right-2.5 h-3.5 w-3.5 text-muted-foreground/50" />
-            </div>
-            <p className="text-[10px] text-muted-foreground">
-              This prompt is combined with your brand knowledge, product data, and competitor insights to generate variations.
-            </p>
-          </div>
-
-          <Separator className="mb-6" />
-
-          {/* Number of concepts */}
-          <div className="space-y-2 mb-6">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Number of variations
-            </Label>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
+                  Number of variations
+                  <Info className="h-3 w-3" />
+                </Label>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[240px] text-xs">
+                How many unique ad variations the agent will generate per run based on the competitor inputs and your brand profile.
+              </TooltipContent>
+            </Tooltip>
             <Input
               type="number"
               min="1"
@@ -145,148 +127,22 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
               onChange={(e) => setNumConcepts(e.target.value)}
               className="h-9 text-sm"
             />
-            <p className="text-[10px] text-muted-foreground">
-              How many ad variations to generate per run.
-            </p>
           </div>
 
           <Separator className="mb-6" />
 
-          {/* Logo selection */}
-          <div className="space-y-2 mb-6">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Logo
-            </Label>
-            <div className="flex items-center gap-2">
-              {selectedLogoData ? (
-                <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
-                  <div className="relative group">
-                    <PopoverTrigger asChild>
-                      <button className="rounded-lg border border-primary/30 bg-primary/5 p-2 h-14 w-14 flex items-center justify-center cursor-pointer">
-                        <img src={selectedLogoData.url} alt={selectedLogoData.name} className="max-h-full max-w-full object-contain opacity-60" />
-                      </button>
-                    </PopoverTrigger>
-                    <div className="absolute -top-1 -left-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-accent">
-                      <PopoverTrigger asChild>
-                        <RefreshCw className="h-2.5 w-2.5 text-muted-foreground" />
-                      </PopoverTrigger>
-                    </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setSelectedLogo(null); }}
-                      className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                  </div>
-                  <PopoverContent align="start" className="w-[240px] p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Replace logo</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {MOCK_LOGOS.map((l) => {
-                        const isSel = selectedLogo === l.id;
-                        return (
-                          <button
-                            key={l.id}
-                            onClick={() => { setSelectedLogo(l.id); setLogoPopoverOpen(false); }}
-                            className={`relative rounded-lg border-2 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all ${
-                              isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                            }`}
-                          >
-                            <img src={l.url} alt={l.name} className="h-8 w-8 object-contain opacity-60" />
-                            <span className="text-[9px] text-muted-foreground truncate w-full text-center">{l.name}</span>
-                            {isSel && <div className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <Popover open={logoPopoverOpen} onOpenChange={setLogoPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
-                      <Plus className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-[240px] p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Select a logo</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {MOCK_LOGOS.map((l) => (
-                        <button
-                          key={l.id}
-                          onClick={() => { setSelectedLogo(l.id); setLogoPopoverOpen(false); }}
-                          className="relative rounded-lg border-2 border-border hover:border-muted-foreground/30 p-2 aspect-square flex flex-col items-center justify-center gap-1 transition-all"
-                        >
-                          <img src={l.url} alt={l.name} className="h-8 w-8 object-contain opacity-60" />
-                          <span className="text-[9px] text-muted-foreground truncate w-full text-center">{l.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              )}
-            </div>
-          </div>
-
-          {/* Brand Visuals */}
-          <div className="space-y-2 mb-6">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Brand Visuals
-            </Label>
-            <div className="flex flex-wrap items-center gap-2">
-              {selectedVisuals.map((vId) => {
-                const visual = MOCK_VISUALS.find((v) => v.id === vId);
-                if (!visual) return null;
-                return (
-                  <div
-                    key={visual.id}
-                    className="relative rounded-lg border border-border bg-muted/30 h-14 w-14 flex items-center justify-center group"
-                  >
-                    <Image className="h-5 w-5 text-muted-foreground" />
-                    <button
-                      onClick={() => toggleVisual(visual.id)}
-                      className="absolute -top-1 -right-1 rounded-full bg-muted border border-border p-0.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                  </div>
-                );
-              })}
-              <Popover open={visualsPopoverOpen} onOpenChange={setVisualsPopoverOpen}>
-                <PopoverTrigger asChild>
-                  <button className="rounded-lg border-2 border-dashed border-border hover:border-muted-foreground/40 h-14 w-14 flex items-center justify-center transition-colors">
-                    <Plus className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-[260px] p-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    {MOCK_VISUALS.map((v) => {
-                      const isSel = selectedVisuals.includes(v.id);
-                      return (
-                        <Tooltip key={v.id}>
-                          <TooltipTrigger asChild>
-                            <button
-                              onClick={() => toggleVisual(v.id)}
-                              className={`relative rounded-lg border-2 aspect-square flex items-center justify-center transition-all ${
-                                isSel ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                              }`}
-                            >
-                              <Image className="h-6 w-6 text-muted-foreground/60" />
-                              {isSel && (
-                                <div className="absolute top-1 right-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
-                                  <Check className="h-2.5 w-2.5 text-primary-foreground" />
-                                </div>
-                              )}
-                              <span className="absolute bottom-1 left-1 right-1 text-[7px] text-muted-foreground/60 truncate text-center">{v.name}</span>
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent className="text-xs max-w-[200px]">{v.name}</TooltipContent>
-                        </Tooltip>
-                      );
-                    })}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
+          {/* Similarity Sliders */}
+          <div className="space-y-5">
+            <SimilaritySlider
+              label="Visual similarity"
+              value={visualSimilarity}
+              onChange={setVisualSimilarity}
+            />
+            <SimilaritySlider
+              label="Strategic similarity"
+              value={strategicSimilarity}
+              onChange={setStrategicSimilarity}
+            />
           </div>
         </SheetContent>
       </Sheet>
