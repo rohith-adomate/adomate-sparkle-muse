@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, Plus, Check, ChevronDown } from "lucide-react";
+import { Info, Plus, Check, ChevronDown, X } from "lucide-react";
 
 interface CompetitorScrapeDrawerProps {
   open: boolean;
