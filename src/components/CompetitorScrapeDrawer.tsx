@@ -55,24 +55,47 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
           <SheetTitle className="text-base">Competitor Scrape — Settings</SheetTitle>
         </SheetHeader>
 
-        {/* Competitor Selection - Multi-select dropdown */}
+        {/* Competitor Selection - Tags + Popover */}
         <div className="space-y-3 mb-6">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Competitors
             </Label>
-            <Badge variant="secondary" className="text-[10px]">
-              {selectedCount} selected
-            </Badge>
           </div>
+
+          {/* Selected competitor tags */}
+          {selectedCount > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedCompetitors.map((c) => (
+                <div
+                  key={c.id}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-2.5 py-1.5 text-xs font-medium"
+                >
+                  <img
+                    src={c.avatar}
+                    alt={c.name}
+                    className="h-4 w-4 rounded-full object-cover bg-muted shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=16&background=random`;
+                    }}
+                  />
+                  <span>{c.name}</span>
+                  <button
+                    onClick={() => toggleCompetitor(c.id)}
+                    className="rounded-full hover:bg-muted p-0.5 transition-colors"
+                  >
+                    <X className="h-3 w-3 text-muted-foreground" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <Popover open={competitorPopoverOpen} onOpenChange={setCompetitorPopoverOpen}>
             <PopoverTrigger asChild>
-              <button className="w-full flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-left hover:bg-muted/40 transition-colors">
+              <button className="w-full flex items-center justify-between rounded-lg border border-dashed border-border px-3 py-2.5 text-left hover:bg-muted/40 transition-colors">
                 <span className="text-xs text-muted-foreground">
-                  {selectedCount > 0
-                    ? selectedCompetitors.map((c) => c.name).join(", ")
-                    : "Select competitors…"}
+                  Add competitors…
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-2" />
               </button>
