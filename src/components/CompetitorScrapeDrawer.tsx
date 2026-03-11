@@ -203,20 +203,23 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
                 onCheckedChange={(v) => setDaysActiveEnabled(!!v)}
               />
               <span className="text-xs text-muted-foreground">Min. days active</span>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed bg-foreground text-background border-foreground">
+                  <p>Only include ads that have been active for at least this many days.</p>
+                </TooltipContent>
+              </Tooltip>
             </label>
             {daysActiveEnabled && (
-              <>
-                <Input
-                  type="number"
-                  min="0"
-                  value={minDaysActive}
-                  onChange={(e) => setMinDaysActive(e.target.value)}
-                  className="h-9 text-sm"
-                />
-                <p className="text-[10px] text-muted-foreground">
-                  Only include ads that have been active for at least this many days.
-                </p>
-              </>
+              <Input
+                type="number"
+                min="0"
+                value={minDaysActive}
+                onChange={(e) => setMinDaysActive(e.target.value)}
+                className="h-9 text-sm"
+              />
             )}
           </div>
 
