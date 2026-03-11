@@ -142,22 +142,29 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
         <Separator className="mb-6" />
 
         {/* Max Ads */}
-        <div className="space-y-2 mb-6">
-          <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Top ads to select
-          </Label>
-          <Input
-            type="number"
-            min="1"
-            max="100"
-            value={maxAds}
-            onChange={(e) => setMaxAds(e.target.value)}
-            className="h-9 text-sm"
-          />
-          <p className="text-[10px] text-muted-foreground">
-            The best ads across all selected competitors combined.
-          </p>
-        </div>
+        <TooltipProvider>
+          <div className="space-y-2 mb-6">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
+                  Top ads to select
+                  <Info className="h-3 w-3" />
+                </Label>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-xs">
+                The best ads across all selected competitors combined.
+              </TooltipContent>
+            </Tooltip>
+            <Input
+              type="number"
+              min="1"
+              max="100"
+              value={maxAds}
+              onChange={(e) => setMaxAds(e.target.value)}
+              className="h-9 text-sm"
+            />
+          </div>
+        </TooltipProvider>
 
         <Separator className="mb-6" />
 
