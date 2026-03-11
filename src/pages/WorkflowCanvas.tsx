@@ -591,13 +591,10 @@ export default function WorkflowCanvas() {
                       setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
                       setOutputDrawerOpen(true);
                     } else {
-                      if (node.type === "schedule") {
-                        setScheduleNodeId(node.id);
-                        setScheduleDrawerOpen(true);
+                      if (node.type === "dataset") {
+                        setDatasetDrawerOpen(true);
                       } else if (node.type === "product-data") {
                         setProductDataDrawerOpen(true);
-                      } else if (node.type === "competitor-scrape") {
-                        setCompetitorScrapeDrawerOpen(true);
                       } else if (node.type === "generate-concepts") {
                         setGenerateConceptsDrawerOpen(true);
                       }
