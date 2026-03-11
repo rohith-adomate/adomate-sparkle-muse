@@ -55,7 +55,6 @@ const NODE_CATALOG = [
     category: "static-data" as const,
     label: "STATIC DATA",
     items: [
-      { type: "brand-knowledge", label: "Brand Knowledge", description: "Load brand guidelines & assets.", icon: BookOpen, inputs: [], outputs: ["Brand Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
