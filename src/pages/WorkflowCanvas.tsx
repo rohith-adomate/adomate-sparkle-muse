@@ -74,17 +74,15 @@ const PORT_R = 6;
 
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
-    { id: "n1", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mondays at 9 AM", x: 100, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 140, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n3", type: "competitor-scrape", category: "dynamic-data", label: "Competitor Scrape", description: "Scrape competitor ad data.", x: 400, y: 280, inputs: ["In"], outputs: ["Competitor Data"], status: "running" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 200, inputs: ["Products", "Competitor Data"], outputs: ["Variations"] },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
-  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 1 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
-  { id: "e7", from: "n3", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
