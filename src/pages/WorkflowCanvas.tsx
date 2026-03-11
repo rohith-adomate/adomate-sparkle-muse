@@ -328,7 +328,7 @@ export default function WorkflowCanvas() {
   const canActivate = useMemo(() => {
     return nodes.some((n) => n.type === "dataset");
   }, [nodes]);
-  }, [canActivate]); // eslint-disable-line react-hooks/exhaustive-deps
+  
 
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
