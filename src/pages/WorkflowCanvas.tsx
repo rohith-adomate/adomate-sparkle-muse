@@ -44,31 +44,18 @@ interface Edge {
 
 const NODE_CATALOG = [
   {
-    category: "trigger" as const,
-    label: "TRIGGERS",
-    items: [
-      { type: "schedule", label: "Schedule", description: "Run on a recurring schedule.", icon: Clock, inputs: [], outputs: ["Trigger"] },
-    ],
-  },
-  {
     category: "static-data" as const,
-    label: "STATIC DATA",
+    label: "DATA",
     items: [
+      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: [], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
-    ],
-  },
-  {
-    category: "dynamic-data" as const,
-    label: "DYNAMIC DATA",
-    items: [
-      { type: "competitor-scrape", label: "Competitor Scrape", description: "Scrape competitor ad data.", icon: Search, inputs: ["In"], outputs: ["Competitor Data"] },
     ],
   },
   {
     category: "ai" as const,
     label: "AI",
     items: [
-      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Products", "Competitor Data"], outputs: ["Variations"] },
+      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
     ],
   },
 ];
