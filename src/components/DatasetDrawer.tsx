@@ -349,6 +349,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-12">Preview</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-8">#</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-28">Brand</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Headline</TableHead>
@@ -368,13 +369,18 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               <TableBody>
                 {filteredAds.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={12} className="text-center text-xs text-muted-foreground py-12">
+                    <TableCell colSpan={13} className="text-center text-xs text-muted-foreground py-12">
                       No ads match the current filters. Try adjusting competitors or thresholds.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredAds.map((ad, idx) => (
                     <TableRow key={ad.id} className="group hover:bg-muted/20">
+                      <TableCell className="py-1.5">
+                        <div className="w-8 rounded overflow-hidden bg-muted" style={{ aspectRatio: "4/5" }}>
+                          <img src="/placeholder.svg" alt="Ad preview" className="w-full h-full object-cover" />
+                        </div>
+                      </TableCell>
                       <TableCell className="py-2 text-[10px] text-muted-foreground font-mono">{idx + 1}</TableCell>
                       <TableCell className="py-2">
                         <div className="flex items-center gap-1.5">
