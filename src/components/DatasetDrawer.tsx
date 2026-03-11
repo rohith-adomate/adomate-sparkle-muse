@@ -383,17 +383,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       </TableCell>
                       <TableCell className="py-2 text-[10px] text-muted-foreground font-mono">{idx + 1}</TableCell>
                       <TableCell className="py-2">
-                        <div className="flex items-center gap-1.5">
-                          <img
-                            src={ad.brandAvatar}
-                            alt={ad.brand}
-                            className="h-4 w-4 rounded-full object-cover bg-muted shrink-0"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(ad.brand)}&size=16&background=random`;
-                            }}
-                          />
-                          <span className="text-[11px] font-medium truncate">{ad.brand}</span>
-                        </div>
+                        <span className="text-[11px] font-medium truncate">{ad.brand}</span>
                       </TableCell>
                       <TableCell className="py-2">
                         <span className="text-[11px] line-clamp-1">{ad.headline}</span>
