@@ -37,20 +37,27 @@ const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
+  // High reach (100K+)
   { id: "1", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Facebook", reach: 245000, firstLaunched: "2025-08-12", reach7d: 18000, reach30d: 67000, reach3m: 145000, reach12m: 245000, status: "Active" },
   { id: "2", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Instagram", reach: 189000, firstLaunched: "2025-11-03", reach7d: 12000, reach30d: 54000, reach3m: 189000, reach12m: null, status: "Active" },
   { id: "3", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Image", platform: "Facebook", reach: 312000, firstLaunched: "2025-06-20", reach7d: 9500, reach30d: 48000, reach3m: 178000, reach12m: 312000, status: "Active" },
-  { id: "4", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Instagram", reach: 156000, firstLaunched: "2026-01-15", reach7d: 22000, reach30d: 98000, reach3m: null, reach12m: null, status: "Active" },
-  { id: "5", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Facebook", reach: 278000, firstLaunched: "2025-09-28", reach7d: 15000, reach30d: 61000, reach3m: 172000, reach12m: null, status: "Active" },
-  { id: "6", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Instagram", reach: 198000, firstLaunched: "2025-12-01", reach7d: 8200, reach30d: 42000, reach3m: 198000, reach12m: null, status: "Active" },
-  { id: "7", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Facebook", reach: 134000, firstLaunched: "2026-02-18", reach7d: 31000, reach30d: null, reach3m: null, reach12m: null, status: "Active" },
-  { id: "8", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Instagram", reach: 223000, firstLaunched: "2025-10-10", reach7d: 11000, reach30d: 52000, reach3m: 160000, reach12m: null, status: "Active" },
+  { id: "4", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Instagram", reach: 198000, firstLaunched: "2025-12-01", reach7d: 8200, reach30d: 42000, reach3m: 198000, reach12m: null, status: "Active" },
+  // Mid reach (10K–99K)
+  { id: "5", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Facebook", reach: 47000, firstLaunched: "2025-09-28", reach7d: 6200, reach30d: 21000, reach3m: 47000, reach12m: null, status: "Active" },
+  { id: "6", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Instagram", reach: 23000, firstLaunched: "2026-01-15", reach7d: 4800, reach30d: 23000, reach3m: null, reach12m: null, status: "Active" },
+  { id: "7", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Facebook", reach: 68000, firstLaunched: "2025-10-10", reach7d: 8100, reach30d: 34000, reach3m: 68000, reach12m: null, status: "Active" },
+  { id: "8", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Instagram", reach: 15000, firstLaunched: "2026-02-05", reach7d: 3400, reach30d: 15000, reach3m: null, reach12m: null, status: "Active" },
+  // Low reach (under 10K)
+  { id: "9", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Instagram", reach: 4200, firstLaunched: "2026-02-28", reach7d: 1800, reach30d: null, reach3m: null, reach12m: null, status: "Active" },
+  { id: "10", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Glycolic Acid 7% Toning Solution", format: "Image", platform: "Facebook", reach: 7300, firstLaunched: "2026-02-18", reach7d: 2900, reach30d: null, reach3m: null, reach12m: null, status: "Active" },
+  { id: "11", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Facebook", reach: 1850, firstLaunched: "2026-03-04", reach7d: 620, reach30d: null, reach3m: null, reach12m: null, status: "Active" },
+  { id: "12", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Instagram", reach: 3100, firstLaunched: "2026-03-01", reach7d: 980, reach30d: null, reach3m: null, reach12m: null, status: "Active" },
 ];
 
 function formatReach(n: number | null): string {
   if (n == null) return "—";
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
-  if (n >= 1000) return `${(n / 1000).toFixed(0)}K`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
   return String(n);
 }
 
