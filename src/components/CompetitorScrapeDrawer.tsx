@@ -121,7 +121,7 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
         {/* Max Ads */}
         <div className="space-y-2 mb-6">
           <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Max ads per competitor
+            Top ads to select
           </Label>
           <Input
             type="number"
@@ -132,7 +132,7 @@ export default function CompetitorScrapeDrawer({ open, onOpenChange }: Competito
             className="h-9 text-sm"
           />
           <p className="text-[10px] text-muted-foreground">
-            Limit how many ads are fetched per competitor.
+            The best ads across all selected competitors combined.
           </p>
         </div>
 
