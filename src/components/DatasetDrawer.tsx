@@ -323,41 +323,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               <Input type="number" min="1" max="100" value={maxAds} onChange={(e) => setMaxAds(e.target.value)} className="h-8 text-xs" />
             </div>
 
-            {/* Schedule */}
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
-                <Clock className="h-2.5 w-2.5" /> Schedule
-              </Label>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] text-muted-foreground shrink-0">Every</span>
-                <Input
-                  type="number"
-                  min={1}
-                  max={99}
-                  value={interval}
-                  onChange={(e) => setScheduleInterval(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-12 h-7 text-center text-xs"
-                />
-                <Select value={recurrenceType} onValueChange={(v) => setRecurrenceType(v as RecurrenceType)}>
-                  <SelectTrigger className="h-7 flex-1 text-[10px]"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="days">Day(s)</SelectItem>
-                    <SelectItem value="weeks">Week(s)</SelectItem>
-                    <SelectItem value="months">Month(s)</SelectItem>
-                    <SelectItem value="years">Year(s)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {recurrenceType === "weeks" && (
-                <ToggleGroup type="multiple" value={weekDays} onValueChange={(v) => setWeekDays(v.length > 0 ? v : weekDays)} className="flex flex-wrap gap-0.5">
-                  {DAYS_OF_WEEK.map((day) => (
-                    <ToggleGroupItem key={day} value={day} className="h-6 w-8 text-[9px] font-medium rounded data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-                      {day}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              )}
-            </div>
           </div>
 
           {/* Right: Excel-like table */}

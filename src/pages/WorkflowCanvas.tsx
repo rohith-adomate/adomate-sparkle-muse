@@ -747,6 +747,10 @@ export default function WorkflowCanvas() {
         onOpenChange={setOutputDrawerOpen}
         node={outputDrawerNode}
       />
+      <ScheduleDrawer
+        open={scheduleDrawerOpen}
+        onOpenChange={setScheduleDrawerOpen}
+      />
     </div>
   );
 }
