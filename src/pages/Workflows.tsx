@@ -81,7 +81,7 @@ const eventAgents = [
   { id: "black-friday", name: "Black Friday", description: "Deal-focused creatives with urgency-driven messaging.", icon: ShoppingCart, color: "text-foreground bg-muted border-border" },
   { id: "valentines", name: "Valentine's Day", description: "Romantic-themed creatives for Valentine's Day campaigns.", icon: Heart, color: "text-pink-600 bg-pink-50 border-pink-200" },
   { id: "new-year", name: "New Year", description: "Fresh-start messaging and celebratory visuals for the new year.", icon: PartyPopper, color: "text-amber-600 bg-amber-50 border-amber-200" },
-  { id: "custom", name: "Custom Event", description: "Create a custom event agent for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
+  { id: "custom", name: "Custom Theme", description: "Create a custom thematic workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
 ];
 
 const competitorAgents = [
@@ -113,13 +113,13 @@ export default function Workflows() {
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
-    toast.success(`Agent "${name}" created!`);
+    toast.success(`Workflow "${name}" created!`);
   };
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
     setAgents((prev) => prev.filter((a) => a.id !== deleteTarget));
-    toast.success("Agent deleted");
+    toast.success("Workflow deleted");
     setDeleteTarget(null);
   };
 
@@ -139,23 +139,23 @@ export default function Workflows() {
           <h1 className="text-2xl font-bold tracking-tight">Workflows</h1>
           <p className="text-muted-foreground text-sm">Manage and customize your creative workflows.</p>
         </div>
-        <Button variant="outline" onClick={openCreate}>Create agent</Button>
+        <Button variant="outline" onClick={openCreate}>Create workflow</Button>
       </div>
 
       {/* Your agents */}
       <Card className="border border-border/60">
         <CardContent className="p-6">
-          <h2 className="text-base font-semibold mb-4">Your agents</h2>
+          <h2 className="text-base font-semibold mb-4">Your workflows</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
               <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`)}>
-                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} />
+                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} /> 
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
                       <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "EVENT" : "COMPETITOR"}
+                        {agent.type === "holiday" ? "THEMATIC" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
@@ -168,7 +168,7 @@ export default function Workflows() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
-                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete agent
+                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -185,7 +185,7 @@ export default function Workflows() {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                      <p>Next scheduled run for this agent</p>
+                      <p>Next scheduled run for this workflow</p>
                     </TooltipContent>
                   </Tooltip>
                 </CardContent>
@@ -200,7 +200,7 @@ export default function Workflows() {
         <CardContent className="p-6">
           <h2 className="text-base font-semibold">Run History</h2>
           <p className="text-sm text-muted-foreground mt-1">No runs yet.</p>
-          <Button variant="secondary" size="sm" className="mt-3">Run agent manually</Button>
+          <Button variant="secondary" size="sm" className="mt-3">Run workflow manually</Button>
         </CardContent>
       </Card>
 
@@ -208,15 +208,15 @@ export default function Workflows() {
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
         <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
           <div className="px-6 pt-6 pb-4">
-            <h2 className="text-lg font-semibold">Create agent</h2>
-            <p className="text-sm text-muted-foreground mt-1">Choose an agent type to get started.</p>
+             <h2 className="text-lg font-semibold">Create workflow</h2>
+            <p className="text-sm text-muted-foreground mt-1">Choose a workflow type to get started.</p>
           </div>
 
           <Tabs defaultValue="competitor" className="px-6 pb-6" orientation="vertical">
             <div className="flex gap-5">
               <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
-                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Events</TabsTrigger>
+                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Thematic</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 min-w-0">
@@ -283,9 +283,9 @@ export default function Workflows() {
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete agent</DialogTitle>
+            <DialogTitle>Delete workflow</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this agent? This action cannot be undone.
+              Are you sure you want to delete this workflow? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
