@@ -92,8 +92,8 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
 
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
-  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 1 },
-  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
