@@ -24,7 +24,7 @@ import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 interface CanvasNode {
   id: string;
   type: string;
-  category: "trigger" | "static-data" | "dynamic-data" | "ai" | "action";
+  category: "trigger" | "static-data" | "dynamic-data" | "select" | "ai" | "action";
   label: string;
   description: string;
   x: number;
@@ -57,8 +57,14 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
-      { type: "top-select", label: "Select Top Ads", description: "Pick top-performing ads by reach.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
+    ],
+  },
+  {
+    category: "select" as const,
+    label: "SELECT",
+    items: [
+      { type: "top-select", label: "Select", description: "Top 10 ads by new reach", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
     ],
   },
   {
@@ -73,6 +79,7 @@ const NODE_CATALOG = [
 const CATEGORY_COLORS: Record<string, string> = {
   trigger: "142 70% 45%",
   "static-data": "210 80% 55%",
+  select: "28 85% 56%",
   ai: "270 70% 60%",
   action: "25 95% 55%",
 };
@@ -87,7 +94,7 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Set when this workflow runs.", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
     { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
-    { id: "n3", type: "top-select", category: "static-data", label: "Select Top Ads", description: "Pick top-performing ads by reach.", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
+    { id: "n3", type: "top-select", category: "select", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
@@ -152,6 +159,18 @@ export default function WorkflowCanvas() {
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
+  const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
+
+  // Update top-select node description when config changes
+  const handleTopSelectChange = useCallback((count: number, sortBy: "new-reach" | "total-reach") => {
+    setTopSelectConfig({ count, sortBy });
+    const label = sortBy === "new-reach" ? "new reach" : "total reach";
+    setNodes((prev) =>
+      prev.map((n) =>
+        n.type === "top-select" ? { ...n, description: `Top ${count} ads by ${label}` } : n
+      )
+    );
+  }, []);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
@@ -761,6 +780,9 @@ export default function WorkflowCanvas() {
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
+        count={topSelectConfig.count}
+        sortBy={topSelectConfig.sortBy}
+        onConfigChange={handleTopSelectChange}
       />
     </div>
   );

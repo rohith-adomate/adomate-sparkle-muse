@@ -10,11 +10,25 @@ import { Info, ListFilter } from "lucide-react";
 interface TopAdsSelectionDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  count?: number;
+  sortBy?: "new-reach" | "total-reach";
+  onConfigChange?: (count: number, sortBy: "new-reach" | "total-reach") => void;
 }
 
-export default function TopAdsSelectionDrawer({ open, onOpenChange }: TopAdsSelectionDrawerProps) {
-  const [topCount, setTopCount] = useState("10");
-  const [sortBy, setSortBy] = useState<"new-reach" | "total-reach">("new-reach");
+export default function TopAdsSelectionDrawer({ open, onOpenChange, count: initialCount = 10, sortBy: initialSortBy = "new-reach", onConfigChange }: TopAdsSelectionDrawerProps) {
+  const [topCount, setTopCount] = useState(String(initialCount));
+  const [sortBy, setSortBy] = useState<"new-reach" | "total-reach">(initialSortBy);
+
+  const handleCountChange = (val: string) => {
+    setTopCount(val);
+    const n = parseInt(val) || 10;
+    onConfigChange?.(n, sortBy);
+  };
+
+  const handleSortChange = (val: "new-reach" | "total-reach") => {
+    setSortBy(val);
+    onConfigChange?.(parseInt(topCount) || 10, val);
+  };
 
   const count = parseInt(topCount) || 10;
 
@@ -23,7 +37,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange }: TopAdsSele
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="right" className="w-[360px] sm:w-[400px] overflow-y-auto">
           <SheetHeader className="pb-5">
-            <SheetTitle className="text-base">Select Top Ads</SheetTitle>
+            <SheetTitle className="text-base">Select — Settings</SheetTitle>
           </SheetHeader>
 
           {/* Summary card */}
@@ -66,7 +80,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange }: TopAdsSele
                 min="1"
                 max="100"
                 value={topCount}
-                onChange={(e) => setTopCount(e.target.value)}
+                onChange={(e) => handleCountChange(e.target.value)}
                 className="h-9 text-sm"
               />
             </div>
@@ -84,7 +98,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange }: TopAdsSele
                   Choose how ads are ranked. "New reach" measures recent growth, while "Total reach" uses the all-time estimated impressions.
                 </TooltipContent>
               </Tooltip>
-              <Select value={sortBy} onValueChange={(v) => setSortBy(v as "new-reach" | "total-reach")}>
+              <Select value={sortBy} onValueChange={(v) => handleSortChange(v as "new-reach" | "total-reach")}>
                 <SelectTrigger className="h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
