@@ -63,7 +63,7 @@ const NODE_CATALOG = [
     category: "ai" as const,
     label: "AI",
     items: [
-      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
+      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Ads Data", "Products"], outputs: ["Variations"] },
     ],
   },
 ];
