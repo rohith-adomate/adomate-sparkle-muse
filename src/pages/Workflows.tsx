@@ -185,7 +185,7 @@ export default function Workflows() {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                      <p>Next scheduled run for this agent</p>
+                      <p>Next scheduled run for this workflow</p>
                     </TooltipContent>
                   </Tooltip>
                 </CardContent>
