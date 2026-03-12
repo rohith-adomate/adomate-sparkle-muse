@@ -210,7 +210,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
   );
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[360px] sm:max-w-[360px] flex flex-col gap-0 p-0">
         <SheetHeader className="px-5 pt-5 pb-4 border-b border-border">
           <div className="flex items-center gap-2">
