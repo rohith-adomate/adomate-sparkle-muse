@@ -17,6 +17,7 @@ import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
+import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 
 /* ── Types ── */
 
