@@ -208,8 +208,8 @@ export default function Workflows() {
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
         <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
           <div className="px-6 pt-6 pb-4">
-            <h2 className="text-lg font-semibold">Create agent</h2>
-            <p className="text-sm text-muted-foreground mt-1">Choose an agent type to get started.</p>
+             <h2 className="text-lg font-semibold">Create workflow</h2>
+            <p className="text-sm text-muted-foreground mt-1">Choose a workflow type to get started.</p>
           </div>
 
           <Tabs defaultValue="competitor" className="px-6 pb-6" orientation="vertical">
