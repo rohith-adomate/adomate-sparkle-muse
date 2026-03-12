@@ -393,7 +393,7 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               <TableBody>
                 {filteredAds.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={13} className="text-center text-xs text-muted-foreground py-12">
+                    <TableCell colSpan={14} className="text-center text-xs text-muted-foreground py-12">
                       No ads match the current filters. Try adjusting competitors or thresholds.
                     </TableCell>
                   </TableRow>
