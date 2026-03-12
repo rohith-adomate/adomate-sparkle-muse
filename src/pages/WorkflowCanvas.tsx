@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Package, Database, Clock,
+  Package, Database, Clock, ListFilter,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
