@@ -758,6 +758,9 @@ export default function WorkflowCanvas() {
         open={scheduleDrawerOpen}
         onOpenChange={setScheduleDrawerOpen}
       />
+      <TopAdsSelectionDrawer
+        open={topSelectDrawerOpen}
+        onOpenChange={setTopSelectDrawerOpen}
     </div>
   );
 }
