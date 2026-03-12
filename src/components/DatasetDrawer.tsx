@@ -131,9 +131,8 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
       ads = ads.filter((ad) => ad.reach >= min);
     }
     ads.sort((a, b) => b.reach - a.reach);
-    const max = parseInt(maxAds) || 10;
-    return ads.slice(0, max);
-  }, [selectedCompetitors, reachEnabled, minReach, maxAds]);
+    return ads;
+  }, [selectedCompetitors, reachEnabled, minReach]);
 
   if (!open) return null;
 
