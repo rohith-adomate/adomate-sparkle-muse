@@ -45,10 +45,17 @@ interface Edge {
 
 const NODE_CATALOG = [
   {
+    category: "trigger" as const,
+    label: "TRIGGER",
+    items: [
+      { type: "schedule", label: "Schedule", description: "Set when this workflow runs.", icon: Clock, inputs: [], outputs: ["Trigger"] },
+    ],
+  },
+  {
     category: "static-data" as const,
     label: "DATA",
     items: [
-      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: [], outputs: ["Ads Data"] },
+      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
