@@ -61,7 +61,33 @@ function formatReach(n: number | null): string {
 function formatDate(d: string | null): string {
   if (!d) return "—";
   const date = new Date(d);
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const day = date.getDate().toString().padStart(2, "0");
+  const mon = date.toLocaleDateString("en-US", { month: "short" });
+  const year = date.getFullYear();
+  return `${day} ${mon} ${year}`;
+}
+
+function daysOnline(d: string): number {
+  const launched = new Date(d);
+  const now = new Date("2026-03-12");
+  return Math.max(0, Math.floor((now.getTime() - launched.getTime()) / (1000 * 60 * 60 * 24)));
+}
+
+function MiniSparkline({ data }: { data: number[] }) {
+  if (data.length === 0) return <span className="text-[10px] text-muted-foreground">—</span>;
+  const max = Math.max(...data);
+  const h = 20;
+  const w = 48;
+  const points = data.map((v, i) => {
+    const x = data.length === 1 ? w / 2 : (i / (data.length - 1)) * w;
+    const y = max === 0 ? h / 2 : h - (v / max) * (h - 2);
+    return `${x},${y}`;
+  }).join(" ");
+  return (
+    <svg width={w} height={h} className="shrink-0">
+      <polyline points={points} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
 }
 
 export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps) {
