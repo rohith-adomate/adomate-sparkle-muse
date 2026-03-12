@@ -31,9 +31,6 @@ const MOCK_COMPETITORS = [
 
 type PeriodType = "all-time" | "last-week" | "last-x";
 type PeriodUnit = "days" | "weeks" | "months";
-type RecurrenceType = "days" | "weeks" | "months" | "years";
-
-const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
