@@ -10,11 +10,25 @@ import { Info, ListFilter } from "lucide-react";
 interface TopAdsSelectionDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  count?: number;
+  sortBy?: "new-reach" | "total-reach";
+  onConfigChange?: (count: number, sortBy: "new-reach" | "total-reach") => void;
 }
 
-export default function TopAdsSelectionDrawer({ open, onOpenChange }: TopAdsSelectionDrawerProps) {
-  const [topCount, setTopCount] = useState("10");
-  const [sortBy, setSortBy] = useState<"new-reach" | "total-reach">("new-reach");
+export default function TopAdsSelectionDrawer({ open, onOpenChange, count: initialCount = 10, sortBy: initialSortBy = "new-reach", onConfigChange }: TopAdsSelectionDrawerProps) {
+  const [topCount, setTopCount] = useState(String(initialCount));
+  const [sortBy, setSortBy] = useState<"new-reach" | "total-reach">(initialSortBy);
+
+  const handleCountChange = (val: string) => {
+    setTopCount(val);
+    const n = parseInt(val) || 10;
+    onConfigChange?.(n, sortBy);
+  };
+
+  const handleSortChange = (val: "new-reach" | "total-reach") => {
+    setSortBy(val);
+    onConfigChange?.(parseInt(topCount) || 10, val);
+  };
 
   const count = parseInt(topCount) || 10;
 
