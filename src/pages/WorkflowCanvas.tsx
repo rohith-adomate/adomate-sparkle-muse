@@ -64,7 +64,7 @@ const NODE_CATALOG = [
     category: "select" as const,
     label: "SELECT",
     items: [
-      { type: "top-select", label: "Select", description: "Top 10 ads by new reach", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
+      { type: "top-select", label: "Select", description: "Select top ads ranked by a metric.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
     ],
   },
   {
