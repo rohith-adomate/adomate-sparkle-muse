@@ -198,20 +198,16 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
   const [monthDayType, setMonthDayType] = useState("day");
   const [yearMonth, setYearMonth] = useState("january");
 
-  const summary = useMemo(
-    () => buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
-  );
+  const summary = useMemo(() => {
+    const s = buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth);
+    onScheduleChange?.(s);
+    return s;
+  }, [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth]);
 
   const nextRuns = useMemo(
     () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
     [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
   );
-
-  const handleOpenChange = (val: boolean) => {
-    if (!val && onScheduleChange) onScheduleChange(summary);
-    onOpenChange(val);
-  };
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
