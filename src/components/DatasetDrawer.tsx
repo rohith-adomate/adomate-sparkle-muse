@@ -419,16 +419,23 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       </TableCell>
                       <TableCell className="py-2 text-[11px] text-muted-foreground">{ad.platform}</TableCell>
                       <TableCell className="py-2 text-[11px] text-muted-foreground">{formatDate(ad.firstLaunched)}</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{daysOnline(ad.firstLaunched)}</TableCell>
                       <TableCell className="py-2 text-right text-[11px] font-medium tabular-nums">{formatReach(ad.reach)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach7d)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach30d)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach3m)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{formatReach(ad.reach12m)}</TableCell>
+                      <TableCell className="py-2"><MiniSparkline data={ad.reachTrend} /></TableCell>
                       <TableCell className="py-2">
                         <div className="flex items-center gap-1">
                           <div className={cn("h-1.5 w-1.5 rounded-full", ad.status === "Active" ? "bg-success" : "bg-muted-foreground/40")} />
                           <span className="text-[10px] text-muted-foreground">{ad.status}</span>
                         </div>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal">{ad.funnelStage}</Badge>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <span className="text-[10px] text-muted-foreground line-clamp-1">{ad.hook}</span>
+                      </TableCell>
+                      <TableCell className="py-2 text-center">
+                        <div className={cn("h-2 w-2 rounded-full mx-auto", ad.offerPresent ? "bg-primary" : "bg-muted-foreground/20")} />
                       </TableCell>
                     </TableRow>
                   ))
