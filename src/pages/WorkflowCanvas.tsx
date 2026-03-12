@@ -780,6 +780,9 @@ export default function WorkflowCanvas() {
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
+        count={topSelectConfig.count}
+        sortBy={topSelectConfig.sortBy}
+        onConfigChange={handleTopSelectChange}
       />
     </div>
   );

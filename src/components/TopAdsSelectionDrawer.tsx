@@ -98,7 +98,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange, count: initi
                   Choose how ads are ranked. "New reach" measures recent growth, while "Total reach" uses the all-time estimated impressions.
                 </TooltipContent>
               </Tooltip>
-              <Select value={sortBy} onValueChange={(v) => setSortBy(v as "new-reach" | "total-reach")}>
+              <Select value={sortBy} onValueChange={(v) => handleSortChange(v as "new-reach" | "total-reach")}>
                 <SelectTrigger className="h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
