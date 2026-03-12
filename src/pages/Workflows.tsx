@@ -200,7 +200,7 @@ export default function Workflows() {
         <CardContent className="p-6">
           <h2 className="text-base font-semibold">Run History</h2>
           <p className="text-sm text-muted-foreground mt-1">No runs yet.</p>
-          <Button variant="secondary" size="sm" className="mt-3">Run agent manually</Button>
+          <Button variant="secondary" size="sm" className="mt-3">Run workflow manually</Button>
         </CardContent>
       </Card>
 
