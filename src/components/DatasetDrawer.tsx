@@ -11,10 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 import {
   Info, Plus, X, Search, ChevronDown, ChevronUp,
-  Clock, ExternalLink, Eye, TrendingUp,
+  ExternalLink, Eye, TrendingUp,
 } from "lucide-react";
 
 interface DatasetDrawerProps {
@@ -31,9 +31,6 @@ const MOCK_COMPETITORS = [
 
 type PeriodType = "all-time" | "last-week" | "last-x";
 type PeriodUnit = "days" | "weeks" | "months";
-type RecurrenceType = "days" | "weeks" | "months" | "years";
-
-const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
@@ -106,10 +103,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const [lastXValue, setLastXValue] = useState("30");
   const [lastXUnit, setLastXUnit] = useState<PeriodUnit>("days");
 
-  // Schedule state
-  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
-  const [interval, setScheduleInterval] = useState(1);
-  const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
 
   const toggleCompetitor = (id: string) => {
     setCompetitors((prev) =>
@@ -330,41 +323,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               <Input type="number" min="1" max="100" value={maxAds} onChange={(e) => setMaxAds(e.target.value)} className="h-8 text-xs" />
             </div>
 
-            {/* Schedule */}
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
-                <Clock className="h-2.5 w-2.5" /> Schedule
-              </Label>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] text-muted-foreground shrink-0">Every</span>
-                <Input
-                  type="number"
-                  min={1}
-                  max={99}
-                  value={interval}
-                  onChange={(e) => setScheduleInterval(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-12 h-7 text-center text-xs"
-                />
-                <Select value={recurrenceType} onValueChange={(v) => setRecurrenceType(v as RecurrenceType)}>
-                  <SelectTrigger className="h-7 flex-1 text-[10px]"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="days">Day(s)</SelectItem>
-                    <SelectItem value="weeks">Week(s)</SelectItem>
-                    <SelectItem value="months">Month(s)</SelectItem>
-                    <SelectItem value="years">Year(s)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {recurrenceType === "weeks" && (
-                <ToggleGroup type="multiple" value={weekDays} onValueChange={(v) => setWeekDays(v.length > 0 ? v : weekDays)} className="flex flex-wrap gap-0.5">
-                  {DAYS_OF_WEEK.map((day) => (
-                    <ToggleGroupItem key={day} value={day} className="h-6 w-8 text-[9px] font-medium rounded data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-                      {day}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              )}
-            </div>
           </div>
 
           {/* Right: Excel-like table */}

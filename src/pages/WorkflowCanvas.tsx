@@ -9,13 +9,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Package, Database,
+  Package, Database, Clock,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetDrawer from "@/components/DatasetDrawer";
+import ScheduleDrawer from "@/components/ScheduleDrawer";
 
 /* ── Types ── */
 
@@ -44,10 +45,17 @@ interface Edge {
 
 const NODE_CATALOG = [
   {
+    category: "trigger" as const,
+    label: "TRIGGER",
+    items: [
+      { type: "schedule", label: "Schedule", description: "Set when this workflow runs.", icon: Clock, inputs: [], outputs: ["Trigger"] },
+    ],
+  },
+  {
     category: "static-data" as const,
     label: "DATA",
     items: [
-      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: [], outputs: ["Ads Data"] },
+      { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
@@ -61,6 +69,7 @@ const NODE_CATALOG = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
+  trigger: "142 70% 45%",
   "static-data": "210 80% 55%",
   ai: "270 70% 60%",
   action: "25 95% 55%",
@@ -74,13 +83,15 @@ const PORT_R = 6;
 
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
-    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: "success" },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Set when this workflow runs.", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 1 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
 ];
@@ -135,6 +146,7 @@ export default function WorkflowCanvas() {
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
+  const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
@@ -586,6 +598,8 @@ export default function WorkflowCanvas() {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "generate-concepts") {
                         setGenerateConceptsDrawerOpen(true);
+                      } else if (node.type === "schedule") {
+                        setScheduleDrawerOpen(true);
                       }
                     }
                   }}
@@ -732,6 +746,10 @@ export default function WorkflowCanvas() {
         open={outputDrawerOpen}
         onOpenChange={setOutputDrawerOpen}
         node={outputDrawerNode}
+      />
+      <ScheduleDrawer
+        open={scheduleDrawerOpen}
+        onOpenChange={setScheduleDrawerOpen}
       />
     </div>
   );
