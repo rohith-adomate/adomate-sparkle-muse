@@ -80,7 +80,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange, count: initi
                 min="1"
                 max="100"
                 value={topCount}
-                onChange={(e) => setTopCount(e.target.value)}
+                onChange={(e) => handleCountChange(e.target.value)}
                 className="h-9 text-sm"
               />
             </div>
