@@ -216,7 +216,7 @@ export default function Workflows() {
             <div className="flex gap-5">
               <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
-                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Thematic</TabsTrigger>
+                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Seasonal</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 min-w-0">
