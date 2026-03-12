@@ -57,6 +57,7 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
+      { type: "top-select", label: "Select Top Ads", description: "Pick top-performing ads by reach.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
