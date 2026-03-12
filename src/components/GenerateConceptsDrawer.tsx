@@ -123,8 +123,26 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
             </Tooltip>
           </div>
 
+          <Separator className="mb-6" />
+
+          {/* Similarity Sliders */}
+          <div className="space-y-5">
+            <SimilaritySlider
+              label="Visual similarity"
+              value={visualSimilarity}
+              onChange={setVisualSimilarity}
+            />
+            <SimilaritySlider
+              label="Messaging similarity"
+              value={strategicSimilarity}
+              onChange={setStrategicSimilarity}
+            />
+          </div>
+
+          <Separator className="my-6" />
+
           {/* Number of variations */}
-          <div className="space-y-2 mb-6">
+          <div className="space-y-2">
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
                 <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
@@ -143,22 +161,6 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
               value={numConcepts}
               onChange={(e) => setNumConcepts(e.target.value)}
               className="h-9 text-sm"
-            />
-          </div>
-
-          <Separator className="mb-6" />
-
-          {/* Similarity Sliders */}
-          <div className="space-y-5">
-            <SimilaritySlider
-              label="Visual similarity"
-              value={visualSimilarity}
-              onChange={setVisualSimilarity}
-            />
-            <SimilaritySlider
-              label="Strategic similarity"
-              value={strategicSimilarity}
-              onChange={setStrategicSimilarity}
             />
           </div>
         </SheetContent>
