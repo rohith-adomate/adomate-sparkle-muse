@@ -119,7 +119,7 @@ export default function Workflows() {
   const confirmDelete = () => {
     if (!deleteTarget) return;
     setAgents((prev) => prev.filter((a) => a.id !== deleteTarget));
-    toast.success("Agent deleted");
+    toast.success("Workflow deleted");
     setDeleteTarget(null);
   };
 
