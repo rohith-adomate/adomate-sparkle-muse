@@ -14,7 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Info, Plus, X, Search, ChevronDown, ChevronUp,
-  Clock, ExternalLink, Eye, TrendingUp,
+  ExternalLink, Eye, TrendingUp,
 } from "lucide-react";
 
 interface DatasetDrawerProps {
