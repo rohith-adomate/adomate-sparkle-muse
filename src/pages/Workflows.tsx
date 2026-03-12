@@ -113,7 +113,7 @@ export default function Workflows() {
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
-    toast.success(`Agent "${name}" created!`);
+    toast.success(`Workflow "${name}" created!`);
   };
 
   const confirmDelete = () => {
