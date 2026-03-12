@@ -41,7 +41,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
 
   const SIMILARITY_TOOLTIPS: Record<string, string> = {
     "Visual similarity": "Controls how closely the generated ad variations match the visual style (colors, layout, imagery) of the competitor ads in your dataset.",
-    "Strategic similarity": "Controls how closely the generated ad variations follow the strategic approach (messaging angle, audience targeting, positioning) of the competitor ads.",
+    "Messaging similarity": "Controls how closely the generated ad variations follow the messaging approach (copy angle, audience targeting, positioning) of the competitor ads.",
   };
 
   const SimilaritySlider = ({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) => (
