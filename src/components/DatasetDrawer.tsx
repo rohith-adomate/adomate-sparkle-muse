@@ -160,8 +160,11 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pb-3">
-          <h2 className="text-sm font-bold">Dataset</h2>
-          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => onOpenChange(false)}>
+          <div>
+            <h2 className="text-sm font-bold">Dataset</h2>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Collection, enrichment and filtering of competitor ads — all in one place.</p>
+          </div>
+          <Button variant="ghost" size="sm" className="h-7 text-xs shrink-0" onClick={() => onOpenChange(false)}>
             <ChevronDown className="h-3.5 w-3.5 mr-1" /> Close
           </Button>
         </div>
