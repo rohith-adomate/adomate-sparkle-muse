@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
-  Package, Database, Clock,
+  Package, Database, Clock, ListFilter,
   PanelLeftClose, PanelLeft, Trash2, Sparkles,
 } from "lucide-react";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
@@ -17,6 +17,7 @@ import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
+import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 
 /* ── Types ── */
 
@@ -56,6 +57,7 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
+      { type: "top-select", label: "Select Top Ads", description: "Pick top-performing ads by reach.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
@@ -63,7 +65,7 @@ const NODE_CATALOG = [
     category: "ai" as const,
     label: "AI",
     items: [
-      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Ads Data", "Products"], outputs: ["Variations"] },
+      { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
     ],
   },
 ];
@@ -85,14 +87,16 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Set when this workflow runs.", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
     { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Ads Data", "Products"], outputs: ["Variations"] },
+    { id: "n3", type: "top-select", category: "static-data", label: "Select Top Ads", description: "Pick top-performing ads by reach.", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
-  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
@@ -147,6 +151,7 @@ export default function WorkflowCanvas() {
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
+  const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
@@ -600,6 +605,8 @@ export default function WorkflowCanvas() {
                         setGenerateConceptsDrawerOpen(true);
                       } else if (node.type === "schedule") {
                         setScheduleDrawerOpen(true);
+                      } else if (node.type === "top-select") {
+                        setTopSelectDrawerOpen(true);
                       }
                     }
                   }}
@@ -750,6 +757,10 @@ export default function WorkflowCanvas() {
       <ScheduleDrawer
         open={scheduleDrawerOpen}
         onOpenChange={setScheduleDrawerOpen}
+      />
+      <TopAdsSelectionDrawer
+        open={topSelectDrawerOpen}
+        onOpenChange={setTopSelectDrawerOpen}
       />
     </div>
   );
