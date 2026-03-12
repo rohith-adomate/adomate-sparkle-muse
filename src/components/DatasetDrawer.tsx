@@ -379,14 +379,15 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Format</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">Platform</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">First launched</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-right">Days</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">
                     <span className="inline-flex items-center gap-1"><TrendingUp className="h-2.5 w-2.5" /> Reach</span>
                   </TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+7d</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+30d</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+3m</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16 text-right">+12m</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14">Trend</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Status</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Funnel</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Hook</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-center">Offer</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
