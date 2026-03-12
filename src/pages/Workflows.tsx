@@ -81,7 +81,7 @@ const eventAgents = [
   { id: "black-friday", name: "Black Friday", description: "Deal-focused creatives with urgency-driven messaging.", icon: ShoppingCart, color: "text-foreground bg-muted border-border" },
   { id: "valentines", name: "Valentine's Day", description: "Romantic-themed creatives for Valentine's Day campaigns.", icon: Heart, color: "text-pink-600 bg-pink-50 border-pink-200" },
   { id: "new-year", name: "New Year", description: "Fresh-start messaging and celebratory visuals for the new year.", icon: PartyPopper, color: "text-amber-600 bg-amber-50 border-amber-200" },
-  { id: "custom", name: "Custom Theme", description: "Create a custom thematic workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
+  { id: "custom", name: "Custom Season", description: "Create a custom seasonal workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
 ];
 
 const competitorAgents = [
