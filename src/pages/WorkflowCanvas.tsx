@@ -598,6 +598,8 @@ export default function WorkflowCanvas() {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "generate-concepts") {
                         setGenerateConceptsDrawerOpen(true);
+                      } else if (node.type === "schedule") {
+                        setScheduleDrawerOpen(true);
                       }
                     }
                   }}
