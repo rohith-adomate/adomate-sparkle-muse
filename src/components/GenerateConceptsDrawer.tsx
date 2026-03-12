@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   AlertDialog,
@@ -38,25 +39,41 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
     }
   };
 
+  const SIMILARITY_TOOLTIPS: Record<string, string> = {
+    "Visual similarity": "Controls how closely the generated ad variations match the visual style (colors, layout, imagery) of the competitor ads in your dataset.",
+    "Strategic similarity": "Controls how closely the generated ad variations follow the strategic approach (messaging angle, audience targeting, positioning) of the competitor ads.",
+  };
+
   const SimilaritySlider = ({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) => (
-    <div className="space-y-2">
-      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </Label>
-      <div className="flex items-center gap-1">
-        {SIMILARITY_LABELS.map((lbl, i) => (
-          <button
-            key={i}
-            onClick={() => onChange(i)}
-            className={`flex-1 rounded-lg border px-2 py-2 text-center cursor-pointer transition-colors text-xs font-medium ${
-              value === i
-                ? "border-primary bg-primary/10 text-foreground"
-                : "border-border text-muted-foreground hover:bg-muted/40"
-            }`}
-          >
-            {lbl}
-          </button>
-        ))}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
+              {label}
+              <Info className="h-3 w-3" />
+            </Label>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[260px] text-xs">
+            {SIMILARITY_TOOLTIPS[label]}
+          </TooltipContent>
+        </Tooltip>
+        <span className="text-xs font-medium text-foreground">{SIMILARITY_LABELS[value]}</span>
+      </div>
+      <div className="px-0.5">
+        <Slider
+          min={0}
+          max={2}
+          step={1}
+          value={[value]}
+          onValueChange={([v]) => onChange(v)}
+          className="w-full"
+        />
+        <div className="flex justify-between mt-1">
+          {SIMILARITY_LABELS.map((lbl) => (
+            <span key={lbl} className="text-[10px] text-muted-foreground">{lbl}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
