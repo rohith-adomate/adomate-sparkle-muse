@@ -103,10 +103,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const [lastXValue, setLastXValue] = useState("30");
   const [lastXUnit, setLastXUnit] = useState<PeriodUnit>("days");
 
-  // Schedule state
-  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
-  const [interval, setScheduleInterval] = useState(1);
-  const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
 
   const toggleCompetitor = (id: string) => {
     setCompetitors((prev) =>
