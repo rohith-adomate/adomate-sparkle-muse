@@ -139,7 +139,7 @@ export default function Workflows() {
           <h1 className="text-2xl font-bold tracking-tight">Workflows</h1>
           <p className="text-muted-foreground text-sm">Manage and customize your creative workflows.</p>
         </div>
-        <Button variant="outline" onClick={openCreate}>Create agent</Button>
+        <Button variant="outline" onClick={openCreate}>Create workflow</Button>
       </div>
 
       {/* Your agents */}
