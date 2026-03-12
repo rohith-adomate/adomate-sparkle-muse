@@ -605,6 +605,8 @@ export default function WorkflowCanvas() {
                         setGenerateConceptsDrawerOpen(true);
                       } else if (node.type === "schedule") {
                         setScheduleDrawerOpen(true);
+                      } else if (node.type === "top-select") {
+                        setTopSelectDrawerOpen(true);
                       }
                     }
                   }}
