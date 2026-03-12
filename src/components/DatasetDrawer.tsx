@@ -300,26 +300,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               )}
             </div>
 
-            <Separator />
-
-            {/* ── SECTION: Generation ── */}
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Generation</p>
-
-            {/* Top ads to select */}
-            <div className="space-y-2 pb-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Top ads to select
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  The best ads across all selected competitors combined.
-                </TooltipContent>
-              </Tooltip>
-              <Input type="number" min="1" max="100" value={maxAds} onChange={(e) => setMaxAds(e.target.value)} className="h-8 text-xs" />
-            </div>
 
           </div>
 
