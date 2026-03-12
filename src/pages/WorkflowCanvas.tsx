@@ -24,7 +24,7 @@ import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 interface CanvasNode {
   id: string;
   type: string;
-  category: "trigger" | "static-data" | "dynamic-data" | "ai" | "action";
+  category: "trigger" | "static-data" | "dynamic-data" | "select" | "ai" | "action";
   label: string;
   description: string;
   x: number;
