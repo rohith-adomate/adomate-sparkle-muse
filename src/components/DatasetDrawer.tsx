@@ -96,7 +96,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const [competitorSearch, setCompetitorSearch] = useState("");
 
   // Filter state
-  const [maxAds, setMaxAds] = useState("10");
   const [minReach, setMinReach] = useState("1000");
   const [reachEnabled, setReachEnabled] = useState(false);
   const [periodType, setPeriodType] = useState<PeriodType>("all-time");
