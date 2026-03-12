@@ -83,13 +83,15 @@ const PORT_R = 6;
 
 function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
-    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: "success" },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Set when this workflow runs.", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Products", "Ads Data"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 1 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 0 },
 ];
