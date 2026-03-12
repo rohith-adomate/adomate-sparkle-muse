@@ -283,9 +283,9 @@ export default function Workflows() {
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete agent</DialogTitle>
+            <DialogTitle>Delete workflow</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this agent? This action cannot be undone.
+              Are you sure you want to delete this workflow? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
