@@ -168,7 +168,7 @@ export default function Workflows() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
-                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete agent
+                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
