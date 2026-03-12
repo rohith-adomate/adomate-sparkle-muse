@@ -776,6 +776,13 @@ export default function WorkflowCanvas() {
       <ScheduleDrawer
         open={scheduleDrawerOpen}
         onOpenChange={setScheduleDrawerOpen}
+        onScheduleChange={(summary) => {
+          setNodes((prev) =>
+            prev.map((n) =>
+              n.type === "schedule" ? { ...n, description: summary } : n
+            )
+          );
+        }}
       />
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
