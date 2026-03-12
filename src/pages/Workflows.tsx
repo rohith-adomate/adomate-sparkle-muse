@@ -81,7 +81,7 @@ const eventAgents = [
   { id: "black-friday", name: "Black Friday", description: "Deal-focused creatives with urgency-driven messaging.", icon: ShoppingCart, color: "text-foreground bg-muted border-border" },
   { id: "valentines", name: "Valentine's Day", description: "Romantic-themed creatives for Valentine's Day campaigns.", icon: Heart, color: "text-pink-600 bg-pink-50 border-pink-200" },
   { id: "new-year", name: "New Year", description: "Fresh-start messaging and celebratory visuals for the new year.", icon: PartyPopper, color: "text-amber-600 bg-amber-50 border-amber-200" },
-  { id: "custom", name: "Custom Theme", description: "Create a custom thematic workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
+  { id: "custom", name: "Custom Season", description: "Create a custom seasonal workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
 ];
 
 const competitorAgents = [
@@ -155,7 +155,7 @@ export default function Workflows() {
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
                       <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "THEMATIC" : "COMPETITOR"}
+                        {agent.type === "holiday" ? "SEASONAL" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
@@ -216,7 +216,7 @@ export default function Workflows() {
             <div className="flex gap-5">
               <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
-                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Thematic</TabsTrigger>
+                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Seasonal</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 min-w-0">
