@@ -87,14 +87,16 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
   return [
     { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Set when this workflow runs.", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
     { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Competitor ads dataset with filters.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Ads Data", "Products"], outputs: ["Variations"] },
+    { id: "n3", type: "top-select", category: "static-data", label: "Select Top Ads", description: "Pick top-performing ads by reach.", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
-  { id: "e1", from: "n1", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
