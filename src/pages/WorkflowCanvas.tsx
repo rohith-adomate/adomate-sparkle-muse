@@ -159,6 +159,18 @@ export default function WorkflowCanvas() {
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
+  const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
+
+  // Update top-select node description when config changes
+  const handleTopSelectChange = useCallback((count: number, sortBy: "new-reach" | "total-reach") => {
+    setTopSelectConfig({ count, sortBy });
+    const label = sortBy === "new-reach" ? "new reach" : "total reach";
+    setNodes((prev) =>
+      prev.map((n) =>
+        n.type === "top-select" ? { ...n, description: `Top ${count} ads by ${label}` } : n
+      )
+    );
+  }, []);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
