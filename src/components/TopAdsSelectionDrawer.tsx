@@ -37,7 +37,7 @@ export default function TopAdsSelectionDrawer({ open, onOpenChange, count: initi
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="right" className="w-[360px] sm:w-[400px] overflow-y-auto">
           <SheetHeader className="pb-5">
-            <SheetTitle className="text-base">Select Top Ads</SheetTitle>
+            <SheetTitle className="text-base">Select — Settings</SheetTitle>
           </SheetHeader>
 
           {/* Summary card */}
