@@ -167,10 +167,308 @@ function buildSummary(
   type: RecurrenceType,
   interval: number,
   weekDays: string[],
-  monthOrdinal: string,
-  monthDayType: string,
-  yearMonth: string,
+  monthEntries: { ordinal: string; dayType: string }[],
+  yearEntries: { ordinal: string; dayType: string; month: string }[],
 ): string {
+  if (type === "days") {
+    return interval === 1 ? "Every day" : `Every ${interval} days`;
+  }
+  if (type === "weeks") {
+    const days = weekDays.length > 0 ? weekDays.join(", ") : "Mon";
+    return interval === 1 ? `Weekly on ${days}` : `Every ${interval} weeks on ${days}`;
+  }
+  if (type === "months") {
+    const parts = monthEntries.map((e) => {
+      const ordLabel = ORDINALS.find((o) => o.value === e.ordinal)?.label || e.ordinal;
+      const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === e.dayType)?.label || e.dayType;
+      return `${ordLabel} ${dayLabel}`;
+    });
+    const joined = parts.join(", ");
+    return interval === 1
+      ? `Monthly on the ${joined}`
+      : `Every ${interval} months on the ${joined}`;
+  }
+  const parts = yearEntries.map((e) => {
+    const ordLabel = ORDINALS.find((o) => o.value === e.ordinal)?.label || e.ordinal;
+    const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === e.dayType)?.label || e.dayType;
+    const monthLabel = MONTHS_OF_YEAR.find((m) => m.value === e.month)?.label || e.month;
+    return `${ordLabel} ${dayLabel} of ${monthLabel}`;
+  });
+  const joined = parts.join(", ");
+  return interval === 1
+    ? `Yearly on the ${joined}`
+    : `Every ${interval} years on the ${joined}`;
+}
+
+export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }: ScheduleDrawerProps) {
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
+  const [interval, setInterval] = useState(1);
+  const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
+  const [monthEntries, setMonthEntries] = useState<{ ordinal: string; dayType: string }[]>([
+    { ordinal: "1", dayType: "day" },
+  ]);
+  const [yearEntries, setYearEntries] = useState<{ ordinal: string; dayType: string; month: string }[]>([
+    { ordinal: "1", dayType: "day", month: "january" },
+  ]);
+
+  const summary = useMemo(() => {
+    const s = buildSummary(recurrenceType, interval, weekDays, monthEntries, yearEntries);
+    onScheduleChange?.(s);
+    return s;
+  }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
+
+  const nextRuns = useMemo(() => {
+    const me = monthEntries[0] || { ordinal: "1", dayType: "day" };
+    const ye = yearEntries[0] || { ordinal: "1", dayType: "day", month: "january" };
+    return getNextRuns(recurrenceType, interval, weekDays, me.ordinal, me.dayType, ye.month);
+  }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
+
+  const updateMonthEntry = (index: number, field: "ordinal" | "dayType", value: string) => {
+    setMonthEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
+  };
+
+  const updateYearEntry = (index: number, field: "ordinal" | "dayType" | "month", value: string) => {
+    setYearEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-[360px] sm:max-w-[360px] flex flex-col gap-0 p-0">
+        <SheetHeader className="px-5 pt-5 pb-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <div className="rounded-md p-1.5 bg-success/10">
+              <Clock className="h-4 w-4 text-success" />
+            </div>
+            <div>
+              <SheetTitle className="text-sm">Schedule Configuration</SheetTitle>
+              <SheetDescription className="text-xs">Set when this workflow runs automatically.</SheetDescription>
+            </div>
+          </div>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
+          {/* Recurrence type */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Repeat every</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                min={1}
+                max={99}
+                value={interval}
+                onChange={(e) => setInterval(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-16 h-9 text-center text-sm"
+              />
+              <Select value={recurrenceType} onValueChange={(v) => setRecurrenceType(v as RecurrenceType)}>
+                <SelectTrigger className="h-9 flex-1 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="days">Day(s)</SelectItem>
+                  <SelectItem value="weeks">Week(s)</SelectItem>
+                  <SelectItem value="months">Month(s)</SelectItem>
+                  <SelectItem value="years">Year(s)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Weekly: day picker */}
+          {recurrenceType === "weeks" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On</Label>
+              <ToggleGroup
+                type="multiple"
+                value={weekDays}
+                onValueChange={(v) => setWeekDays(v.length > 0 ? v : weekDays)}
+                className="flex flex-wrap gap-1"
+              >
+                {DAYS_OF_WEEK.map((day) => (
+                  <ToggleGroupItem
+                    key={day}
+                    value={day}
+                    className="h-8 w-10 text-[11px] font-medium rounded-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  >
+                    {day}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+          )}
+
+          {/* Monthly: multiple ordinal + day type entries */}
+          {recurrenceType === "months" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
+              <div className="space-y-2">
+                {monthEntries.map((entry, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Select value={entry.ordinal} onValueChange={(v) => updateMonthEntry(i, "ordinal", v)}>
+                      <SelectTrigger className="h-9 w-24 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-52">
+                        {ORDINALS.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.dayType} onValueChange={(v) => updateMonthEntry(i, "dayType", v)}>
+                      <SelectTrigger className="h-9 flex-1 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTH_DAY_TYPE.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {monthEntries.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => setMonthEntries((prev) => prev.filter((_, j) => j !== i))}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {monthEntries.length < 10 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 text-xs"
+                  onClick={() => setMonthEntries((prev) => [...prev, { ordinal: "1", dayType: "day" }])}
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Add date
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Yearly: multiple entries on single row */}
+          {recurrenceType === "years" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
+              <div className="space-y-2">
+                {yearEntries.map((entry, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <Select value={entry.ordinal} onValueChange={(v) => updateYearEntry(i, "ordinal", v)}>
+                      <SelectTrigger className="h-9 w-[72px] text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-52">
+                        {ORDINALS.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.dayType} onValueChange={(v) => updateYearEntry(i, "dayType", v)}>
+                      <SelectTrigger className="h-9 flex-1 text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTH_DAY_TYPE.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.month} onValueChange={(v) => updateYearEntry(i, "month", v)}>
+                      <SelectTrigger className="h-9 w-[90px] text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTHS_OF_YEAR.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {yearEntries.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => setYearEntries((prev) => prev.filter((_, j) => j !== i))}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {yearEntries.length < 10 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 text-xs"
+                  onClick={() => setYearEntries((prev) => [...prev, { ordinal: "1", dayType: "day", month: "january" }])}
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Add date
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Summary */}
+          <div className="rounded-lg border border-border bg-muted/30 p-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">Summary</p>
+            <p className="text-sm font-medium">{summary}</p>
+          </div>
+
+          {/* Next runs */}
+          <div className="space-y-2">
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5 cursor-help w-fit">
+                  <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-help">
+                    Next runs
+                  </Label>
+                  <Info className="h-3 w-3 text-muted-foreground/50" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="text-xs max-w-[220px]">
+                Next scheduled execution dates. This repeats indefinitely.
+              </TooltipContent>
+            </Tooltip>
+            {nextRuns.length > 0 ? (
+              <div className="flex items-stretch gap-1.5">
+                {nextRuns.map((d, i) => {
+                  const now = new Date();
+                  const showYear = d.getFullYear() !== now.getFullYear();
+                  return (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-md bg-muted/40 border border-border/40 p-2 text-center"
+                    >
+                      <p className="text-[10px] text-muted-foreground/60 uppercase">
+                        {d.toLocaleDateString("en-US", { weekday: "short" })}
+                      </p>
+                      <p className="text-sm font-semibold text-foreground/80">{d.getDate()}</p>
+                      <p className="text-[10px] text-muted-foreground/60">
+                        {d.toLocaleDateString("en-US", { month: "short" })}
+                        {showYear && ` '${String(d.getFullYear()).slice(2)}`}
+                      </p>
+                    </div>
+                  );
+                })}
+                <div className="flex items-center px-1">
+                  <MoreHorizontal className="h-4 w-4 text-muted-foreground/20" />
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground italic">No upcoming runs found.</p>
+            )}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
   if (type === "days") {
     return interval === 1 ? "Every day" : `Every ${interval} days`;
   }
