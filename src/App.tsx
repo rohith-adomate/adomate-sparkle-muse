@@ -72,6 +72,7 @@ const App = () => (
             <Route path="/performance" element={<Performance />} />
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/workflows/:id" element={<WorkflowCanvas />} />
+            <Route path="/run-history-showcase" element={<RunHistoryShowcase />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
