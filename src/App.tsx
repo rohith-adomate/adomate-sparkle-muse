@@ -24,6 +24,7 @@ import CalendarPage from "./pages/CalendarPage";
 import Performance from "./pages/Performance";
 import Workflows from "./pages/Workflows";
 import WorkflowCanvas from "./pages/WorkflowCanvas";
+import RunHistoryShowcase from "./pages/RunHistoryShowcase";
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
