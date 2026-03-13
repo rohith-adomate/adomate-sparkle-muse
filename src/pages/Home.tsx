@@ -26,6 +26,34 @@ export default function Home() {
         </CardContent>
       </Card>
 
+      {/* Invite your team */}
+      <Card className="border border-border/60 relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
+        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/8 blur-2xl pointer-events-none group-hover:bg-primary/12 transition-colors duration-500" />
+        <CardContent className="p-6 relative flex items-center gap-5">
+          <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
+            <Users className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-semibold">Invite your team</h2>
+              <Sparkles className="h-3.5 w-3.5 text-primary/60" />
+            </div>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Bring teammates into your brand to collaborate on campaigns and approvals.
+            </p>
+          </div>
+          <Button
+            size="sm"
+            className="shrink-0 gap-1.5 group/btn"
+            onClick={() => {/* TODO: open invite modal */}}
+          >
+            Invite team members
+            <ArrowRight className="h-3.5 w-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Two stat cards */}
       <div className="grid grid-cols-2 gap-4">
         <Card className="border border-border/60">
