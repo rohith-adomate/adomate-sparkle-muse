@@ -27,26 +27,18 @@ export default function Home() {
       </Card>
 
       {/* Invite your team */}
-      <Card className="border-0 relative overflow-hidden group hover:shadow-lg transition-all duration-500 bg-gradient-to-r from-primary/[0.03] via-card to-card">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-        <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-primary/[0.06] blur-3xl pointer-events-none" />
-        <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-primary/[0.04] blur-3xl pointer-events-none group-hover:bg-primary/[0.08] transition-colors duration-700" />
-        
-        {/* Dotted pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(hsl(var(--foreground)) 0.5px, transparent 0.5px)',
-          backgroundSize: '16px 16px'
-        }} />
+      <Card className="border border-primary/15 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        {/* Top accent line */}
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20" />
 
         <CardContent className="p-6 relative">
           <div className="flex items-start gap-5">
-            {/* Animated icon container */}
+            {/* Icon */}
             <div className="relative shrink-0">
-              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center border border-primary/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                <Users className="h-6 w-6 text-primary" />
+              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                <Users className="h-7 w-7 text-primary" />
               </div>
-              <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-accent border-2 border-card flex items-center justify-center">
+              <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center">
                 <Sparkles className="h-2.5 w-2.5 text-primary" />
               </div>
             </div>
@@ -57,32 +49,29 @@ export default function Home() {
                 Bring teammates into your brand to collaborate on campaigns and approvals.
               </p>
 
-              {/* Avatars hint + CTA row */}
+              {/* Avatars + CTA */}
               <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2">
-                  {/* Ghost avatar slots */}
-                  <div className="flex -space-x-2">
-                    {[...Array(3)].map((_, i) => (
+                <div className="flex items-center gap-2.5">
+                  <div className="flex -space-x-1.5">
+                    {['A', 'B', 'C'].map((letter, i) => (
                       <div
-                        key={i}
+                        key={letter}
                         className="h-7 w-7 rounded-full border-2 border-card bg-muted flex items-center justify-center"
-                        style={{ opacity: 1 - i * 0.25 }}
+                        style={{ opacity: 1 - i * 0.2 }}
                       >
-                        <span className="text-[10px] text-muted-foreground font-medium">
-                          {['A', 'B', 'C'][i]}
-                        </span>
+                        <span className="text-[10px] text-muted-foreground font-medium">{letter}</span>
                       </div>
                     ))}
-                    <div className="h-7 w-7 rounded-full border-2 border-card bg-primary/10 flex items-center justify-center border-dashed border-primary/30">
+                    <div className="h-7 w-7 rounded-full border-2 border-dashed border-primary/30 bg-primary/10 flex items-center justify-center">
                       <span className="text-[10px] text-primary font-bold">+</span>
                     </div>
                   </div>
-                  <span className="text-xs text-muted-foreground ml-1">Add collaborators</span>
+                  <span className="text-xs text-muted-foreground">Add collaborators</span>
                 </div>
 
                 <Button
                   size="sm"
-                  className="shrink-0 gap-1.5 group/btn shadow-sm hover:shadow-md transition-shadow"
+                  className="shrink-0 gap-1.5 rounded-full px-5 group/btn"
                   onClick={() => {/* TODO: open invite modal */}}
                 >
                   Invite team members
