@@ -89,10 +89,6 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
   };
 
   const handleSendInvite = () => {
-    const expiresDate = new Date();
-    expiresDate.setDate(expiresDate.getDate() + 7);
-    const expires = expiresDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-
     const brandsLabel = isAdmin
       ? "All brands"
       : selectedBrands.map((b) => b.name).join(", ");
@@ -102,7 +98,6 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
       email,
       role,
       status: "Pending",
-      expires,
       brands: brandsLabel,
     });
 
