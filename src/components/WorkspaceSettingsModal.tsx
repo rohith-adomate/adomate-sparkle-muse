@@ -50,7 +50,6 @@ interface PendingInvite {
   email: string;
   role: string;
   status: "Pending";
-  expires: string;
   brands: string;
 }
 
@@ -90,10 +89,6 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
   };
 
   const handleSendInvite = () => {
-    const expiresDate = new Date();
-    expiresDate.setDate(expiresDate.getDate() + 7);
-    const expires = expiresDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-
     const brandsLabel = isAdmin
       ? "All brands"
       : selectedBrands.map((b) => b.name).join(", ");
@@ -103,7 +98,6 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
       email,
       role,
       status: "Pending",
-      expires,
       brands: brandsLabel,
     });
 
@@ -359,14 +353,13 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                 <TableHead className="font-semibold text-foreground">Role</TableHead>
                                 <TableHead className="font-semibold text-foreground">Brands</TableHead>
                                 <TableHead className="font-semibold text-foreground">Status</TableHead>
-                                <TableHead className="font-semibold text-foreground">Expires</TableHead>
                                 <TableHead className="w-10"></TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
                               {pendingInvites.length === 0 ? (
                                 <TableRow>
-                                  <TableCell colSpan={6} className="text-sm text-muted-foreground">
+                                  <TableCell colSpan={5} className="text-sm text-muted-foreground">
                                     No pending invites. Invite a user to get started.
                                   </TableCell>
                                 </TableRow>
@@ -388,7 +381,6 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                         {inv.status}
                                       </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs text-muted-foreground">{inv.expires}</TableCell>
                                     <TableCell>
                                       <button
                                         onClick={() => setPendingInvites((prev) => prev.filter((i) => i.id !== inv.id))}
