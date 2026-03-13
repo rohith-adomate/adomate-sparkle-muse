@@ -9,7 +9,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Settings, Users, Trash2, X, UserPlus, Mail, Plus, Search, ShieldCheck, Info } from "lucide-react";
+import { Settings, Users, Trash2, X, UserPlus, Mail, Plus, Search, ShieldCheck, Info, Clock } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -45,12 +45,27 @@ const ROLE_TOOLTIPS: Record<string, string> = {
   Member: "Limited access: can view and work within assigned brands only. Cannot invite users, change settings, or access other brands.",
 };
 
+interface PendingInvite {
+  id: string;
+  email: string;
+  role: string;
+  status: "Pending";
+  expires: string;
+  brands: string;
+}
+
 interface WorkspaceSettingsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-function InviteUserModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+interface InviteUserModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onInviteSent: (invite: PendingInvite) => void;
+}
+
+function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalProps) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Member");
   const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>(["1", "2"]);
@@ -75,6 +90,23 @@ function InviteUserModal({ open, onOpenChange }: { open: boolean; onOpenChange: 
   };
 
   const handleSendInvite = () => {
+    const expiresDate = new Date();
+    expiresDate.setDate(expiresDate.getDate() + 7);
+    const expires = expiresDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+    const brandsLabel = isAdmin
+      ? "All brands"
+      : selectedBrands.map((b) => b.name).join(", ");
+
+    onInviteSent({
+      id: crypto.randomUUID(),
+      email,
+      role,
+      status: "Pending",
+      expires,
+      brands: brandsLabel,
+    });
+
     setEmail("");
     setRole("Member");
     setSelectedBrandIds(["1", "2"]);
@@ -96,7 +128,6 @@ function InviteUserModal({ open, onOpenChange }: { open: boolean; onOpenChange: 
 
         <TooltipProvider delayDuration={200}>
           <div className="space-y-5 pt-2">
-            {/* Email + Role in one row */}
             <div className="flex items-end gap-3">
               <div className="flex-[3] space-y-1.5">
                 <Label>Email address</Label>
@@ -208,6 +239,13 @@ function InviteUserModal({ open, onOpenChange }: { open: boolean; onOpenChange: 
 
 export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettingsModalProps) {
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
+  const [activeTab, setActiveTab] = useState("members");
+
+  const handleInviteSent = (invite: PendingInvite) => {
+    setPendingInvites((prev) => [invite, ...prev]);
+    setActiveTab("invites");
+  };
 
   return (
     <>
@@ -221,7 +259,6 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
           </DialogHeader>
 
           <div className="flex gap-0 p-6 pt-4">
-            {/* Sidebar */}
             <div className="w-56 shrink-0 pr-6">
               <p className="text-xs text-muted-foreground mb-2">Workspace</p>
               <button className="w-full flex items-center gap-2 rounded-lg bg-primary/10 text-primary px-3 py-2 text-sm font-medium">
@@ -230,7 +267,6 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
               </button>
             </div>
 
-            {/* Content */}
             <div className="flex-1 space-y-5">
               <Card className="border border-border/60">
                 <CardContent className="p-5">
@@ -239,10 +275,17 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                 </CardContent>
               </Card>
 
-              <Tabs defaultValue="members" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="w-full justify-start">
                   <TabsTrigger value="members">Members</TabsTrigger>
-                  <TabsTrigger value="invites">Invites</TabsTrigger>
+                  <TabsTrigger value="invites" className="gap-1.5">
+                    Invites
+                    {pendingInvites.length > 0 && (
+                      <Badge variant="secondary" className="h-5 min-w-[20px] px-1.5 text-[10px] font-semibold">
+                        {pendingInvites.length}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
                 </TabsList>
 
                 <div className="min-h-[400px]">
@@ -302,7 +345,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                     <Card className="border border-border/60 mt-2">
                       <CardContent className="p-5">
                         <div className="flex items-center justify-between mb-3">
-                          <p className="font-semibold">Pending & past invites</p>
+                          <p className="font-semibold">Pending invites</p>
                           <Button size="sm" onClick={() => setInviteOpen(true)}>
                             <UserPlus className="h-4 w-4 mr-1" />
                             Invite user
@@ -314,16 +357,49 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                               <TableRow className="bg-muted/30">
                                 <TableHead className="font-semibold text-foreground">Email</TableHead>
                                 <TableHead className="font-semibold text-foreground">Role</TableHead>
+                                <TableHead className="font-semibold text-foreground">Brands</TableHead>
                                 <TableHead className="font-semibold text-foreground">Status</TableHead>
                                 <TableHead className="font-semibold text-foreground">Expires</TableHead>
+                                <TableHead className="w-10"></TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              <TableRow>
-                                <TableCell colSpan={4} className="text-sm text-muted-foreground">
-                                  No invites yet. Invite a user to get started.
-                                </TableCell>
-                              </TableRow>
+                              {pendingInvites.length === 0 ? (
+                                <TableRow>
+                                  <TableCell colSpan={6} className="text-sm text-muted-foreground">
+                                    No pending invites. Invite a user to get started.
+                                  </TableCell>
+                                </TableRow>
+                              ) : (
+                                pendingInvites.map((inv) => (
+                                  <TableRow key={inv.id}>
+                                    <TableCell className="font-medium">{inv.email}</TableCell>
+                                    <TableCell>
+                                      <Badge variant="outline" className="text-xs font-medium">
+                                        {inv.role}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs text-muted-foreground max-w-[160px] truncate">
+                                      {inv.brands}
+                                    </TableCell>
+                                    <TableCell>
+                                      <Badge className="gap-1 bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/10">
+                                        <Clock className="h-3 w-3" />
+                                        {inv.status}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs text-muted-foreground">{inv.expires}</TableCell>
+                                    <TableCell>
+                                      <button
+                                        onClick={() => setPendingInvites((prev) => prev.filter((i) => i.id !== inv.id))}
+                                        className="text-destructive hover:text-destructive/80"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              )}
                             </TableBody>
                           </Table>
                         </div>
@@ -337,7 +413,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
         </DialogContent>
       </Dialog>
 
-      <InviteUserModal open={inviteOpen} onOpenChange={setInviteOpen} />
+      <InviteUserModal open={inviteOpen} onOpenChange={setInviteOpen} onInviteSent={handleInviteSent} />
     </>
   );
 }
