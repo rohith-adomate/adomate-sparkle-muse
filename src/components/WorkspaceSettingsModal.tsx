@@ -365,7 +365,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                             <TableBody>
                               {pendingInvites.length === 0 ? (
                                 <TableRow>
-                                  <TableCell colSpan={6} className="text-sm text-muted-foreground">
+                                  <TableCell colSpan={5} className="text-sm text-muted-foreground">
                                     No pending invites. Invite a user to get started.
                                   </TableCell>
                                 </TableRow>
