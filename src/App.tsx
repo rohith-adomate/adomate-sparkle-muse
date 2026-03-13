@@ -24,6 +24,7 @@ import CalendarPage from "./pages/CalendarPage";
 import Performance from "./pages/Performance";
 import Workflows from "./pages/Workflows";
 import WorkflowCanvas from "./pages/WorkflowCanvas";
+import RunHistoryShowcase from "./pages/RunHistoryShowcase";
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
 import NotFound from "./pages/NotFound";
@@ -71,6 +72,7 @@ const App = () => (
             <Route path="/performance" element={<Performance />} />
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/workflows/:id" element={<WorkflowCanvas />} />
+            <Route path="/run-history-showcase" element={<RunHistoryShowcase />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
