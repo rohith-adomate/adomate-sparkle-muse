@@ -3,7 +3,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Clock, Info, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Info, MoreHorizontal, Plus, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
@@ -166,9 +167,8 @@ function buildSummary(
   type: RecurrenceType,
   interval: number,
   weekDays: string[],
-  monthOrdinal: string,
-  monthDayType: string,
-  yearMonth: string,
+  monthEntries: { ordinal: string; dayType: string }[],
+  yearEntries: { ordinal: string; dayType: string; month: string }[],
 ): string {
   if (type === "days") {
     return interval === 1 ? "Every day" : `Every ${interval} days`;
@@ -177,37 +177,59 @@ function buildSummary(
     const days = weekDays.length > 0 ? weekDays.join(", ") : "Mon";
     return interval === 1 ? `Weekly on ${days}` : `Every ${interval} weeks on ${days}`;
   }
-  const ordLabel = ORDINALS.find((o) => o.value === monthOrdinal)?.label || monthOrdinal;
-  const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === monthDayType)?.label || monthDayType;
-  if (type === "years") {
-    const monthLabel = MONTHS_OF_YEAR.find((m) => m.value === yearMonth)?.label || yearMonth;
+  if (type === "months") {
+    const parts = monthEntries.map((e) => {
+      const ordLabel = ORDINALS.find((o) => o.value === e.ordinal)?.label || e.ordinal;
+      const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === e.dayType)?.label || e.dayType;
+      return `${ordLabel} ${dayLabel}`;
+    });
+    const joined = parts.join(", ");
     return interval === 1
-      ? `Yearly on the ${ordLabel} ${dayLabel} of ${monthLabel}`
-      : `Every ${interval} years on the ${ordLabel} ${dayLabel} of ${monthLabel}`;
+      ? `Monthly on the ${joined}`
+      : `Every ${interval} months on the ${joined}`;
   }
+  const parts = yearEntries.map((e) => {
+    const ordLabel = ORDINALS.find((o) => o.value === e.ordinal)?.label || e.ordinal;
+    const dayLabel = MONTH_DAY_TYPE.find((m) => m.value === e.dayType)?.label || e.dayType;
+    const monthLabel = MONTHS_OF_YEAR.find((m) => m.value === e.month)?.label || e.month;
+    return `${ordLabel} ${dayLabel} of ${monthLabel}`;
+  });
+  const joined = parts.join(", ");
   return interval === 1
-    ? `Monthly on the ${ordLabel} ${dayLabel}`
-    : `Every ${interval} months on the ${ordLabel} ${dayLabel}`;
+    ? `Yearly on the ${joined}`
+    : `Every ${interval} years on the ${joined}`;
 }
 
 export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }: ScheduleDrawerProps) {
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
   const [interval, setInterval] = useState(1);
   const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
-  const [monthOrdinal, setMonthOrdinal] = useState("1");
-  const [monthDayType, setMonthDayType] = useState("day");
-  const [yearMonth, setYearMonth] = useState("january");
+  const [monthEntries, setMonthEntries] = useState<{ ordinal: string; dayType: string }[]>([
+    { ordinal: "1", dayType: "day" },
+  ]);
+  const [yearEntries, setYearEntries] = useState<{ ordinal: string; dayType: string; month: string }[]>([
+    { ordinal: "1", dayType: "day", month: "january" },
+  ]);
 
   const summary = useMemo(() => {
-    const s = buildSummary(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth);
+    const s = buildSummary(recurrenceType, interval, weekDays, monthEntries, yearEntries);
     onScheduleChange?.(s);
     return s;
-  }, [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth]);
+  }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
 
-  const nextRuns = useMemo(
-    () => getNextRuns(recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth),
-    [recurrenceType, interval, weekDays, monthOrdinal, monthDayType, yearMonth],
-  );
+  const nextRuns = useMemo(() => {
+    const me = monthEntries[0] || { ordinal: "1", dayType: "day" };
+    const ye = yearEntries[0] || { ordinal: "1", dayType: "day", month: "january" };
+    return getNextRuns(recurrenceType, interval, weekDays, me.ordinal, me.dayType, ye.month);
+  }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
+
+  const updateMonthEntry = (index: number, field: "ordinal" | "dayType", value: string) => {
+    setMonthEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
+  };
+
+  const updateYearEntry = (index: number, field: "ordinal" | "dayType" | "month", value: string) => {
+    setYearEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -274,72 +296,121 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
             </div>
           )}
 
-          {/* Yearly: ordinal + day type + month */}
-          {recurrenceType === "years" && (
-            <div className="space-y-2">
-              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
-              <div className="flex items-center gap-2">
-                <Select value={monthOrdinal} onValueChange={setMonthOrdinal}>
-                  <SelectTrigger className="h-9 w-24 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-52">
-                    {ORDINALS.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={monthDayType} onValueChange={setMonthDayType}>
-                  <SelectTrigger className="h-9 flex-1 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MONTH_DAY_TYPE.map((m) => (
-                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Of</Label>
-              <Select value={yearMonth} onValueChange={setYearMonth}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {MONTHS_OF_YEAR.map((m) => (
-                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Monthly: ordinal + day type */}
+          {/* Monthly: multiple ordinal + day type entries */}
           {recurrenceType === "months" && (
             <div className="space-y-2">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
-              <div className="flex items-center gap-2">
-                <Select value={monthOrdinal} onValueChange={setMonthOrdinal}>
-                  <SelectTrigger className="h-9 w-24 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-52">
-                    {ORDINALS.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={monthDayType} onValueChange={setMonthDayType}>
-                  <SelectTrigger className="h-9 flex-1 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MONTH_DAY_TYPE.map((m) => (
-                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="space-y-2">
+                {monthEntries.map((entry, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Select value={entry.ordinal} onValueChange={(v) => updateMonthEntry(i, "ordinal", v)}>
+                      <SelectTrigger className="h-9 w-24 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-52">
+                        {ORDINALS.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.dayType} onValueChange={(v) => updateMonthEntry(i, "dayType", v)}>
+                      <SelectTrigger className="h-9 flex-1 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTH_DAY_TYPE.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {monthEntries.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => setMonthEntries((prev) => prev.filter((_, j) => j !== i))}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
+              {monthEntries.length < 10 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 text-xs"
+                  onClick={() => setMonthEntries((prev) => [...prev, { ordinal: "1", dayType: "day" }])}
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Add date
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Yearly: multiple entries on single row */}
+          {recurrenceType === "years" && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On the</Label>
+              <div className="space-y-2">
+                {yearEntries.map((entry, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <Select value={entry.ordinal} onValueChange={(v) => updateYearEntry(i, "ordinal", v)}>
+                      <SelectTrigger className="h-9 w-[72px] text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-52">
+                        {ORDINALS.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.dayType} onValueChange={(v) => updateYearEntry(i, "dayType", v)}>
+                      <SelectTrigger className="h-9 flex-1 text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTH_DAY_TYPE.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={entry.month} onValueChange={(v) => updateYearEntry(i, "month", v)}>
+                      <SelectTrigger className="h-9 w-[90px] text-xs px-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTHS_OF_YEAR.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {yearEntries.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => setYearEntries((prev) => prev.filter((_, j) => j !== i))}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {yearEntries.length < 10 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-8 text-xs"
+                  onClick={() => setYearEntries((prev) => [...prev, { ordinal: "1", dayType: "day", month: "january" }])}
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Add date
+                </Button>
+              )}
             </div>
           )}
 
