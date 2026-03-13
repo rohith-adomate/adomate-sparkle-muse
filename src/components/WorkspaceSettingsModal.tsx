@@ -271,7 +271,12 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
 
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="w-full justify-start">
-                  <TabsTrigger value="members">Members</TabsTrigger>
+                  <TabsTrigger value="members" className="gap-1.5">
+                    Members
+                    <Badge variant="secondary" className="h-5 min-w-[20px] px-1.5 text-[10px] font-semibold">
+                      {members.length}
+                    </Badge>
+                  </TabsTrigger>
                   <TabsTrigger value="invites" className="gap-1.5">
                     Invites
                     {pendingInvites.length > 0 && (
