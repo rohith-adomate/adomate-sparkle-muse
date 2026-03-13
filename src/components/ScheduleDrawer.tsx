@@ -469,9 +469,6 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
     </Sheet>
   );
 }
-  if (type === "days") {
-    return interval === 1 ? "Every day" : `Every ${interval} days`;
-  }
   if (type === "weeks") {
     const days = weekDays.length > 0 ? weekDays.join(", ") : "Mon";
     return interval === 1 ? `Weekly on ${days}` : `Every ${interval} weeks on ${days}`;
