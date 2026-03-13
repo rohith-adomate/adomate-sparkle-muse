@@ -68,7 +68,7 @@ interface InviteUserModalProps {
 function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalProps) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Member");
-  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>(["1", "2"]);
+  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
   const [brandPopoverOpen, setBrandPopoverOpen] = useState(false);
   const [brandSearch, setBrandSearch] = useState("");
 
