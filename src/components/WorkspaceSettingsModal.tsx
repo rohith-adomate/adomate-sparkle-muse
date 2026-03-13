@@ -387,7 +387,6 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                         {inv.status}
                                       </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs text-muted-foreground">{inv.expires}</TableCell>
                                     <TableCell>
                                       <button
                                         onClick={() => setPendingInvites((prev) => prev.filter((i) => i.id !== inv.id))}
