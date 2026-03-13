@@ -325,6 +325,35 @@ export default function Workflows() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Title/Description */}
+      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Edit workflow</DialogTitle>
+            <DialogDescription>Update the title and description of this workflow.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label>Title</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Description</Label>
+              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={2} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setEditTarget(null)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!editTarget) return;
+              setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a));
+              toast.success("Workflow updated");
+              setEditTarget(null);
+            }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
