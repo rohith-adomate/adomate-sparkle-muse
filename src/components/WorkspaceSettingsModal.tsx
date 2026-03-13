@@ -50,7 +50,6 @@ interface PendingInvite {
   email: string;
   role: string;
   status: "Pending";
-  expires: string;
   brands: string;
 }
 
