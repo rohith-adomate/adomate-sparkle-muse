@@ -104,9 +104,18 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
 
     setEmail("");
     setRole("Member");
-    setSelectedBrandIds(["1", "2"]);
+    setSelectedBrandIds([]);
     onOpenChange(false);
   };
+
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const needsBrands = !isAdmin && selectedBrandIds.length === 0;
+  const isDisabled = !isValidEmail || needsBrands;
+  const disabledReason = !isValidEmail
+    ? "Please enter a valid email address."
+    : needsBrands
+      ? "At least one brand must be selected to grant access."
+      : "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
