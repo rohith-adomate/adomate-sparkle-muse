@@ -359,7 +359,6 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                 <TableHead className="font-semibold text-foreground">Role</TableHead>
                                 <TableHead className="font-semibold text-foreground">Brands</TableHead>
                                 <TableHead className="font-semibold text-foreground">Status</TableHead>
-                                <TableHead className="font-semibold text-foreground">Expires</TableHead>
                                 <TableHead className="w-10"></TableHead>
                               </TableRow>
                             </TableHeader>
