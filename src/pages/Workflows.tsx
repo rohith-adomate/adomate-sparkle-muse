@@ -1,4 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -6,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Trash2, Calendar as CalendarIcon, MoreVertical, Eye, Lightbulb, TreePine, Ghost, ShoppingCart, PartyPopper, Heart, Sparkles, ChevronRight,
+  Trash2, Calendar as CalendarIcon, MoreVertical, Eye, Lightbulb, TreePine, Ghost, ShoppingCart, PartyPopper, Heart, Sparkles, ChevronRight, Pencil,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -96,6 +99,9 @@ export default function Workflows() {
   const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [editTarget, setEditTarget] = useState<Agent | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
 
   const openCreate = () => {
     setShowCreateModal(true);
@@ -167,6 +173,9 @@ export default function Workflows() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditTarget(agent); setEditName(agent.name); setEditDescription(agent.description); }}>
+                            <Pencil className="h-3.5 w-3.5 mr-2" /> Edit title
+                          </DropdownMenuItem>
                           <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
                             <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
                           </DropdownMenuItem>
@@ -313,6 +322,35 @@ export default function Workflows() {
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="ghost" onClick={() => setDeleteTarget(null)}>Cancel</Button>
             <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Title/Description */}
+      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Edit workflow</DialogTitle>
+            <DialogDescription>Update the title and description of this workflow.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label>Title</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Description</Label>
+              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={2} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setEditTarget(null)}>Cancel</Button>
+            <Button onClick={() => {
+              if (!editTarget) return;
+              setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a));
+              toast.success("Workflow updated");
+              setEditTarget(null);
+            }}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
