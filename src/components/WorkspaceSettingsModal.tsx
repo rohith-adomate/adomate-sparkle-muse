@@ -191,32 +191,34 @@ function EditMemberModal({
 
         <TooltipProvider delayDuration={200}>
           <div className="space-y-5 pt-2">
-            <div className="space-y-1.5">
-              <Label>Email</Label>
-              <Input value={member.email} disabled className="opacity-60" />
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-1">
-                <Label>Role</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[240px] text-xs">
-                    {ROLE_TOOLTIPS[role]}
-                  </TooltipContent>
-                </Tooltip>
+            <div className="flex gap-3">
+              <div className="flex-1 space-y-1.5">
+                <Label>Email</Label>
+                <Input value={member.email} disabled className="opacity-60" />
               </div>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Member">Member</SelectItem>
-                </SelectContent>
-              </Select>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1">
+                  <Label>Role</Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[240px] text-xs">
+                      {ROLE_TOOLTIPS[role]}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <Select value={role} onValueChange={setRole}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Member">Member</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {isAdmin ? (
