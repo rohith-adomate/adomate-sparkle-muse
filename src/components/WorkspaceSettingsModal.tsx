@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -235,6 +236,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
   const [inviteOpen, setInviteOpen] = useState(false);
   const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
   const [activeTab, setActiveTab] = useState("members");
+  const [deleteConfirm, setDeleteConfirm] = useState<{ type: "member" | "invite"; id: string; label: string } | null>(null);
 
   const handleInviteSent = (invite: PendingInvite) => {
     setPendingInvites((prev) => [invite, ...prev]);
@@ -248,7 +250,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="flex items-center gap-2 text-lg">
               <Settings className="h-5 w-5" />
-              Workspace Settings
+              Settings
             </DialogTitle>
           </DialogHeader>
 
@@ -257,7 +259,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
               <p className="text-xs text-muted-foreground mb-2">Workspace</p>
               <button className="w-full flex items-center gap-2 rounded-lg bg-primary/10 text-primary px-3 py-2 text-sm font-medium">
                 <Users className="h-4 w-4" />
-                Team management
+                New
               </button>
             </div>
 
@@ -327,7 +329,10 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                   </TableCell>
                                   <TableCell>{m.access}</TableCell>
                                   <TableCell>
-                                    <button className="text-destructive hover:text-destructive/80">
+                                    <button
+                                      onClick={() => setDeleteConfirm({ type: "member", id: m.email, label: m.name })}
+                                      className="text-destructive hover:text-destructive/80"
+                                    >
                                       <Trash2 className="h-4 w-4" />
                                     </button>
                                   </TableCell>
@@ -388,7 +393,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                     </TableCell>
                                     <TableCell>
                                       <button
-                                        onClick={() => setPendingInvites((prev) => prev.filter((i) => i.id !== inv.id))}
+                                        onClick={() => setDeleteConfirm({ type: "invite", id: inv.id, label: inv.email })}
                                         className="text-destructive hover:text-destructive/80"
                                       >
                                         <Trash2 className="h-4 w-4" />
@@ -411,6 +416,33 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
       </Dialog>
 
       <InviteUserModal open={inviteOpen} onOpenChange={setInviteOpen} onInviteSent={handleInviteSent} />
+
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(o) => { if (!o) setDeleteConfirm(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteConfirm?.type === "member"
+                ? `This will remove ${deleteConfirm?.label} from the workspace. This action cannot be undone.`
+                : `This will revoke the invitation sent to ${deleteConfirm?.label}. This action cannot be undone.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteConfirm?.type === "invite") {
+                  setPendingInvites((prev) => prev.filter((i) => i.id !== deleteConfirm.id));
+                }
+                setDeleteConfirm(null);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
