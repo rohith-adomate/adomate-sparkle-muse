@@ -259,7 +259,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
               <p className="text-xs text-muted-foreground mb-2">Workspace</p>
               <button className="w-full flex items-center gap-2 rounded-lg bg-primary/10 text-primary px-3 py-2 text-sm font-medium">
                 <Users className="h-4 w-4" />
-                New
+                Team
               </button>
             </div>
 
