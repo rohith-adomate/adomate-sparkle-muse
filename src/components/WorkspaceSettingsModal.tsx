@@ -50,9 +50,37 @@ function BrandAvatar({ name, avatar, size = "sm" }: { name: string; avatar?: str
 }
 
 const ROLE_TOOLTIPS: Record<string, string> = {
-  Admin: "Full access: can manage members, billing, workspace settings, and all brands. Use for team leads or account owners.",
-  Member: "Limited access: can view and work within assigned brands only. Cannot invite users, change settings, or access other brands.",
+  Admin: "Can manage team members, billing, settings, and access all brands.",
+  Member: "Can only view and work within assigned brands. No access to settings or team management.",
 };
+
+/* Reusable role select with inline tooltips on each option */
+function RoleSelect({ value, onValueChange }: { value: string; onValueChange: (v: string) => void }) {
+  return (
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger className="w-40">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {(["Admin", "Member"] as const).map((r) => (
+          <Tooltip key={r}>
+            <TooltipTrigger asChild>
+              <SelectItem value={r}>
+                <span className="flex items-center gap-1.5">
+                  {r}
+                  <Info className="h-3 w-3 text-muted-foreground" />
+                </span>
+              </SelectItem>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="max-w-[220px] text-xs">
+              {ROLE_TOOLTIPS[r]}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
 
 interface PendingInvite {
   id: string;
@@ -198,26 +226,8 @@ function EditMemberModal({
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex items-center gap-1">
-                  <Label>Role</Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-[240px] text-xs">
-                      {ROLE_TOOLTIPS[role]}
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Member">Member</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Role</Label>
+                <RoleSelect value={role} onValueChange={setRole} />
               </div>
             </div>
 
@@ -295,26 +305,8 @@ function EditInviteModal({
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex items-center gap-1">
-                <Label>Role</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[240px] text-xs">
-                    {ROLE_TOOLTIPS[role]}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Member">Member</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Role</Label>
+              <RoleSelect value={role} onValueChange={setRole} />
             </div>
 
             {isAdmin ? (
@@ -415,24 +407,8 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
                 />
               </div>
               <div className="flex-1 space-y-1.5">
-                <div className="flex items-center gap-1">
-                  <Label>Role</Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-[240px] text-xs">
-                      {ROLE_TOOLTIPS[role]}
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Member">Member</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Role</Label>
+                <RoleSelect value={role} onValueChange={setRole} />
               </div>
             </div>
 
