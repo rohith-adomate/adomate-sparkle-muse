@@ -229,10 +229,26 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
 
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button onClick={handleSendInvite} disabled={!email}>
-                <Mail className="h-4 w-4 mr-1" />
-                Send invite
-              </Button>
+              {isDisabled ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span tabIndex={0} className="inline-flex">
+                      <Button disabled className="pointer-events-none">
+                        <Mail className="h-4 w-4 mr-1" />
+                        Send invite
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs">
+                    {disabledReason}
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Button onClick={handleSendInvite}>
+                  <Mail className="h-4 w-4 mr-1" />
+                  Send invite
+                </Button>
+              )}
             </div>
           </div>
         </TooltipProvider>
