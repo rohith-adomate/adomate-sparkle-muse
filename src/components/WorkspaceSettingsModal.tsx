@@ -10,11 +10,19 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Settings, Users, Trash2, X, UserPlus, Mail, Plus, Search, ShieldCheck, Info, Clock } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Settings, Users, Trash2, X, UserPlus, Mail, Plus, Search, ShieldCheck, Info, Clock, MoreHorizontal, Pencil } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-const members = [
+interface Member {
+  name: string;
+  email: string;
+  role: string;
+  access: string;
+}
+
+const initialMembers: Member[] = [
   { name: "Lucas Desard", email: "lucas@adomate.com", role: "Admin", access: "All brands" },
   { name: "Simon Logghe", email: "simon@adomate.com", role: "Admin", access: "All brands" },
   { name: "Diego Goethals", email: "diego@adomate.com", role: "Admin", access: "All brands" },
@@ -52,6 +60,7 @@ interface PendingInvite {
   role: string;
   status: "Pending";
   brands: string;
+  brandIds: string[];
 }
 
 interface WorkspaceSettingsModalProps {
@@ -65,14 +74,16 @@ interface InviteUserModalProps {
   onInviteSent: (invite: PendingInvite) => void;
 }
 
-function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalProps) {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("Member");
-  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
+/* ── Brand Access Picker (shared) ── */
+function BrandAccessPicker({
+  selectedBrandIds,
+  setSelectedBrandIds,
+}: {
+  selectedBrandIds: string[];
+  setSelectedBrandIds: React.Dispatch<React.SetStateAction<string[]>>;
+}) {
   const [brandPopoverOpen, setBrandPopoverOpen] = useState(false);
   const [brandSearch, setBrandSearch] = useState("");
-
-  const isAdmin = role === "Admin";
 
   const selectedBrands = ALL_BRANDS.filter((b) => selectedBrandIds.includes(b.id));
   const unselectedBrands = useMemo(() => {
@@ -81,13 +92,271 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
     );
   }, [selectedBrandIds, brandSearch]);
 
-  const removeBrand = (id: string) => {
-    setSelectedBrandIds((prev) => prev.filter((bid) => bid !== id));
-  };
+  return (
+    <div className="space-y-1.5">
+      <Label>Brand access</Label>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {selectedBrands.map((brand) => (
+          <Badge key={brand.id} variant="secondary" className="gap-1 py-0.5 px-2 text-[11px]">
+            <BrandAvatar name={brand.name} avatar={brand.avatar} size="xs" />
+            {brand.name}
+            <button
+              onClick={() => setSelectedBrandIds((prev) => prev.filter((id) => id !== brand.id))}
+              className="shrink-0 hover:text-destructive transition-colors"
+              aria-label={`Remove ${brand.name}`}
+            >
+              <X className="h-2.5 w-2.5" />
+            </button>
+          </Badge>
+        ))}
+        <Popover open={brandPopoverOpen} onOpenChange={(o) => { setBrandPopoverOpen(o); if (!o) setBrandSearch(""); }}>
+          <PopoverTrigger asChild>
+            <button className="h-6 px-2 rounded-md border border-dashed border-muted-foreground/30 text-[10px] text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-0.5">
+              <Plus className="h-2.5 w-2.5" /> Add
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 p-2" align="start">
+            <div className="flex items-center gap-2 border-b pb-2 mb-1">
+              <Search className="h-3 w-3 text-muted-foreground shrink-0" />
+              <input
+                value={brandSearch}
+                onChange={(e) => setBrandSearch(e.target.value)}
+                placeholder="Search brands..."
+                className="flex-1 text-xs bg-transparent outline-none placeholder:text-muted-foreground"
+                autoFocus
+              />
+            </div>
+            <div className="max-h-40 overflow-y-auto space-y-0.5">
+              {unselectedBrands.length === 0 ? (
+                <p className="text-[10px] text-muted-foreground p-2 text-center">No brands found</p>
+              ) : (
+                unselectedBrands.map((b) => (
+                  <button
+                    key={b.id}
+                    onClick={() => setSelectedBrandIds((prev) => [...prev, b.id])}
+                    className="w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                  >
+                    <BrandAvatar name={b.name} avatar={b.avatar} size="sm" />
+                    {b.name}
+                  </button>
+                ))
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
+  );
+}
 
-  const addBrand = (id: string) => {
-    setSelectedBrandIds((prev) => [...prev, id]);
-  };
+/* ── Edit Member Modal ── */
+function EditMemberModal({
+  open,
+  onOpenChange,
+  member,
+  onSave,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  member: Member | null;
+  onSave: (updated: Member) => void;
+}) {
+  const [role, setRole] = useState(member?.role ?? "Admin");
+  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
+
+  const isAdmin = role === "Admin";
+
+  // Reset when member changes
+  if (member && role !== member.role && !open) {
+    setRole(member.role);
+    setSelectedBrandIds([]);
+  }
+
+  if (!member) return null;
+
+  const selectedBrands = ALL_BRANDS.filter((b) => selectedBrandIds.includes(b.id));
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="h-5 w-5 text-primary" />
+            Edit member
+          </DialogTitle>
+          <DialogDescription>
+            Update role and access for <strong>{member.name}</strong>.
+          </DialogDescription>
+        </DialogHeader>
+
+        <TooltipProvider delayDuration={200}>
+          <div className="space-y-5 pt-2">
+            <div className="space-y-1.5">
+              <Label>Email</Label>
+              <Input value={member.email} disabled className="opacity-60" />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1">
+                <Label>Role</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs">
+                    {ROLE_TOOLTIPS[role]}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Member">Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {isAdmin ? (
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5">
+                <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
+                <p className="text-xs text-foreground">
+                  Admins automatically have access to <strong>all brands</strong>.
+                </p>
+              </div>
+            ) : (
+              <BrandAccessPicker selectedBrandIds={selectedBrandIds} setSelectedBrandIds={setSelectedBrandIds} />
+            )}
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  onSave({
+                    ...member,
+                    role,
+                    access: isAdmin ? "All brands" : selectedBrands.map((b) => b.name).join(", ") || "No brands",
+                  });
+                  onOpenChange(false);
+                }}
+              >
+                Save changes
+              </Button>
+            </div>
+          </div>
+        </TooltipProvider>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* ── Edit Invite Modal ── */
+function EditInviteModal({
+  open,
+  onOpenChange,
+  invite,
+  onSave,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  invite: PendingInvite | null;
+  onSave: (updated: PendingInvite) => void;
+}) {
+  const [role, setRole] = useState(invite?.role ?? "Member");
+  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>(invite?.brandIds ?? []);
+
+  const isAdmin = role === "Admin";
+  const selectedBrands = ALL_BRANDS.filter((b) => selectedBrandIds.includes(b.id));
+
+  if (!invite) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="h-5 w-5 text-primary" />
+            Edit invite
+          </DialogTitle>
+          <DialogDescription>
+            Update the pending invitation for <strong>{invite.email}</strong>.
+          </DialogDescription>
+        </DialogHeader>
+
+        <TooltipProvider delayDuration={200}>
+          <div className="space-y-5 pt-2">
+            <div className="space-y-1.5">
+              <Label>Email</Label>
+              <Input value={invite.email} disabled className="opacity-60" />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1">
+                <Label>Role</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs">
+                    {ROLE_TOOLTIPS[role]}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Member">Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {isAdmin ? (
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5">
+                <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
+                <p className="text-xs text-foreground">
+                  Admins automatically have access to <strong>all brands</strong>.
+                </p>
+              </div>
+            ) : (
+              <BrandAccessPicker selectedBrandIds={selectedBrandIds} setSelectedBrandIds={setSelectedBrandIds} />
+            )}
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  onSave({
+                    ...invite,
+                    role,
+                    brandIds: isAdmin ? [] : selectedBrandIds,
+                    brands: isAdmin ? "All brands" : selectedBrands.map((b) => b.name).join(", ") || "No brands",
+                  });
+                  onOpenChange(false);
+                }}
+              >
+                Save changes
+              </Button>
+            </div>
+          </div>
+        </TooltipProvider>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* ── Invite User Modal ── */
+function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalProps) {
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("Member");
+  const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
+
+  const isAdmin = role === "Admin";
+  const selectedBrands = ALL_BRANDS.filter((b) => selectedBrandIds.includes(b.id));
 
   const handleSendInvite = () => {
     const brandsLabel = isAdmin
@@ -100,6 +369,7 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
       role,
       status: "Pending",
       brands: brandsLabel,
+      brandIds: isAdmin ? [] : selectedBrandIds,
     });
 
     setEmail("");
@@ -172,59 +442,7 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
                 </p>
               </div>
             ) : (
-              <div className="space-y-1.5">
-                <Label>Brand access</Label>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {selectedBrands.map((brand) => (
-                    <Badge key={brand.id} variant="secondary" className="gap-1 py-0.5 px-2 text-[11px]">
-                      <BrandAvatar name={brand.name} avatar={brand.avatar} size="xs" />
-                      {brand.name}
-                      <button
-                        onClick={() => removeBrand(brand.id)}
-                        className="shrink-0 hover:text-destructive transition-colors"
-                        aria-label={`Remove ${brand.name}`}
-                      >
-                        <X className="h-2.5 w-2.5" />
-                      </button>
-                    </Badge>
-                  ))}
-                  <Popover open={brandPopoverOpen} onOpenChange={(o) => { setBrandPopoverOpen(o); if (!o) setBrandSearch(""); }}>
-                    <PopoverTrigger asChild>
-                      <button className="h-6 px-2 rounded-md border border-dashed border-muted-foreground/30 text-[10px] text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-0.5">
-                        <Plus className="h-2.5 w-2.5" /> Add
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-56 p-2" align="start">
-                      <div className="flex items-center gap-2 border-b pb-2 mb-1">
-                        <Search className="h-3 w-3 text-muted-foreground shrink-0" />
-                        <input
-                          value={brandSearch}
-                          onChange={(e) => setBrandSearch(e.target.value)}
-                          placeholder="Search brands..."
-                          className="flex-1 text-xs bg-transparent outline-none placeholder:text-muted-foreground"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="max-h-40 overflow-y-auto space-y-0.5">
-                        {unselectedBrands.length === 0 ? (
-                          <p className="text-[10px] text-muted-foreground p-2 text-center">No brands found</p>
-                        ) : (
-                          unselectedBrands.map((b) => (
-                            <button
-                              key={b.id}
-                              onClick={() => addBrand(b.id)}
-                              className="w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded hover:bg-accent transition-colors"
-                            >
-                              <BrandAvatar name={b.name} avatar={b.avatar} size="sm" />
-                              {b.name}
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
+              <BrandAccessPicker selectedBrandIds={selectedBrandIds} setSelectedBrandIds={setSelectedBrandIds} />
             )}
 
             <div className="flex justify-end gap-2 pt-2">
@@ -257,11 +475,15 @@ function InviteUserModal({ open, onOpenChange, onInviteSent }: InviteUserModalPr
   );
 }
 
+/* ── Main Settings Modal ── */
 export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettingsModalProps) {
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [membersList, setMembersList] = useState<Member[]>(initialMembers);
   const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
   const [activeTab, setActiveTab] = useState("members");
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "member" | "invite"; id: string; label: string } | null>(null);
+  const [editMember, setEditMember] = useState<Member | null>(null);
+  const [editInvite, setEditInvite] = useState<PendingInvite | null>(null);
 
   const handleInviteSent = (invite: PendingInvite) => {
     setPendingInvites((prev) => [invite, ...prev]);
@@ -301,7 +523,7 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                   <TabsTrigger value="members" className="gap-1.5">
                     Members
                     <Badge variant="secondary" className="h-5 min-w-[20px] px-1.5 text-[10px] font-semibold">
-                      {members.length}
+                      {membersList.length}
                     </Badge>
                   </TabsTrigger>
                   <TabsTrigger value="invites" className="gap-1.5">
@@ -337,29 +559,37 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {members.map((m) => (
+                              {membersList.map((m) => (
                                 <TableRow key={m.email}>
                                   <TableCell className="font-medium">{m.name}</TableCell>
                                   <TableCell>{m.email}</TableCell>
                                   <TableCell>
-                                    <Select defaultValue={m.role}>
-                                      <SelectTrigger className="w-28 h-8 text-xs">
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="Admin">Admin</SelectItem>
-                                        <SelectItem value="Member">Member</SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                    <Badge variant="outline" className="text-xs font-medium">
+                                      {m.role}
+                                    </Badge>
                                   </TableCell>
                                   <TableCell>{m.access}</TableCell>
                                   <TableCell>
-                                    <button
-                                      onClick={() => setDeleteConfirm({ type: "member", id: m.email, label: m.name })}
-                                      className="text-destructive hover:text-destructive/80"
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </button>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors">
+                                          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                        </button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => setEditMember(m)}>
+                                          <Pencil className="h-4 w-4 mr-2" />
+                                          Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          className="text-destructive focus:text-destructive"
+                                          onClick={() => setDeleteConfirm({ type: "member", id: m.email, label: m.name })}
+                                        >
+                                          <Trash2 className="h-4 w-4 mr-2" />
+                                          Delete
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -417,12 +647,26 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
                                       </Badge>
                                     </TableCell>
                                     <TableCell>
-                                      <button
-                                        onClick={() => setDeleteConfirm({ type: "invite", id: inv.id, label: inv.email })}
-                                        className="text-destructive hover:text-destructive/80"
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </button>
+                                      <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                          <button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors">
+                                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                          </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                          <DropdownMenuItem onClick={() => setEditInvite(inv)}>
+                                            <Pencil className="h-4 w-4 mr-2" />
+                                            Edit
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            className="text-destructive focus:text-destructive"
+                                            onClick={() => setDeleteConfirm({ type: "invite", id: inv.id, label: inv.email })}
+                                          >
+                                            <Trash2 className="h-4 w-4 mr-2" />
+                                            Delete
+                                          </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                      </DropdownMenu>
                                     </TableCell>
                                   </TableRow>
                                 ))
@@ -442,6 +686,24 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
 
       <InviteUserModal open={inviteOpen} onOpenChange={setInviteOpen} onInviteSent={handleInviteSent} />
 
+      <EditMemberModal
+        open={!!editMember}
+        onOpenChange={(o) => { if (!o) setEditMember(null); }}
+        member={editMember}
+        onSave={(updated) => {
+          setMembersList((prev) => prev.map((m) => m.email === updated.email ? updated : m));
+        }}
+      />
+
+      <EditInviteModal
+        open={!!editInvite}
+        onOpenChange={(o) => { if (!o) setEditInvite(null); }}
+        invite={editInvite}
+        onSave={(updated) => {
+          setPendingInvites((prev) => prev.map((i) => i.id === updated.id ? updated : i));
+        }}
+      />
+
       <AlertDialog open={!!deleteConfirm} onOpenChange={(o) => { if (!o) setDeleteConfirm(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -459,6 +721,8 @@ export function WorkspaceSettingsModal({ open, onOpenChange }: WorkspaceSettings
               onClick={() => {
                 if (deleteConfirm?.type === "invite") {
                   setPendingInvites((prev) => prev.filter((i) => i.id !== deleteConfirm.id));
+                } else if (deleteConfirm?.type === "member") {
+                  setMembersList((prev) => prev.filter((m) => m.email !== deleteConfirm.id));
                 }
                 setDeleteConfirm(null);
               }}
