@@ -170,6 +170,9 @@ export default function Workflows() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditTarget(agent); setEditName(agent.name); setEditDescription(agent.description); }}>
+                            <Pencil className="h-3.5 w-3.5 mr-2" /> Edit title
+                          </DropdownMenuItem>
                           <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
                             <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
                           </DropdownMenuItem>
