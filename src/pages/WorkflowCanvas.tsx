@@ -502,7 +502,9 @@ export default function WorkflowCanvas() {
               </TooltipTrigger>
               {!canActivate && (
                 <TooltipContent side="bottom" className="text-xs max-w-[200px]">
-                  Add a Dataset node to activate this workflow.
+                  {hasManualImageInput
+                    ? "Manual Image Input nodes require manual runs. Scheduling is disabled."
+                    : "Add a Dataset node to activate this workflow."}
                 </TooltipContent>
               )}
             </Tooltip>
