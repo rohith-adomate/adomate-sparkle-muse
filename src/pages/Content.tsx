@@ -234,7 +234,7 @@ function DeliverySettingsModal({
                       )}
                     >
                       <CalendarIcon className="h-3 w-3 mr-1.5" />
-                      {startDate ? format(startDate, "MMM d, yyyy") : "Pick date"}
+                      {startDate ? format(startDate, "d MMM yyyy") : "Pick date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
