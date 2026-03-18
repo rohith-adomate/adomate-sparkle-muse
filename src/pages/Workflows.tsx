@@ -295,7 +295,7 @@ export default function Workflows() {
                           className="relative border border-border/60 opacity-75 cursor-default select-none overflow-hidden"
                         >
                           {/* Coming Soon ribbon */}
-                          <div className="absolute top-4 -right-7 rotate-45 bg-pink-500 text-white text-[8px] font-bold tracking-wider uppercase px-8 py-0.5 pointer-events-none shadow-sm">
+                          <div className="absolute top-5 -right-9 rotate-45 bg-pink-500 text-white text-[8px] font-bold tracking-wider uppercase px-10 py-0.5 pointer-events-none shadow-sm">
                             Coming Soon
                           </div>
                           <CardContent className="p-4 space-y-3">
