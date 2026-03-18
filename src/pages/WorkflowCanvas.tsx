@@ -901,8 +901,8 @@ export default function WorkflowCanvas() {
           </span>
         </div>
 
-        {/* Delete hint */}
-        {selectedNode && (
+        {/* Delete hint - editor mode only */}
+        {selectedNode && activeTab === "editor" && (
           <div className="absolute top-14 right-3 z-20">
             <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10" onClick={deleteSelected}>
               <Trash2 className="h-3 w-3" /> Delete
