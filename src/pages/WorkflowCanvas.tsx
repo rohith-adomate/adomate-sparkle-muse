@@ -345,6 +345,16 @@ export default function WorkflowCanvas() {
   /* ── Delete selected node ── */
   const deleteSelected = () => {
     if (!selectedNode) return;
+    // Close all drawers/modals
+    setDatasetDrawerOpen(false);
+    setProductDataDrawerOpen(false);
+    setGenerateConceptsDrawerOpen(false);
+    setScheduleDrawerOpen(false);
+    setTopSelectDrawerOpen(false);
+    setManualImageDrawerOpen(false);
+    setOutputDrawerOpen(false);
+    setOutputDrawerNode(null);
+    // Remove node and connected edges
     setNodes((prev) => prev.filter((n) => n.id !== selectedNode));
     setEdges((prev) => prev.filter((e) => e.from !== selectedNode && e.to !== selectedNode));
     setSelectedNode(null);
