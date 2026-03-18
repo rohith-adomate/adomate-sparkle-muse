@@ -159,13 +159,13 @@ export default function Workflows() {
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
               <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`)}>
-                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} /> 
+                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : agent.type === "manual" ? "bg-amber-400" : "bg-violet-400"}`} /> 
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "SEASONAL" : "COMPETITOR"}
+                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
