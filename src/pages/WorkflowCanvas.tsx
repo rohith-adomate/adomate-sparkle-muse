@@ -145,6 +145,8 @@ function cubicPath(x1: number, y1: number, x2: number, y2: number) {
 export default function WorkflowCanvas() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isManualWorkflow = (location.state as any)?.type === "manual";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -158,10 +160,10 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => getDefaultNodes(agentName));
-  const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : getDefaultNodes(agentName));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [agentEnabled, setAgentEnabled] = useState(true);
+  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
 
   // Canvas state
