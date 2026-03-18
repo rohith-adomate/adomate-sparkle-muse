@@ -368,11 +368,19 @@ export default function WorkflowCanvas() {
     setZoom(newZoom);
   };
 
-  /* ── Can activate? Dataset node must exist ── */
+  /* ── Can activate? Dataset node must exist AND no manual-image-input node ── */
+  const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
+    if (hasManualImageInput) return false;
     return nodes.some((n) => n.type === "dataset");
-  }, [nodes]);
-  
+  }, [nodes, hasManualImageInput]);
+
+  // Force agent off when manual image input node exists
+  useEffect(() => {
+    if (hasManualImageInput && agentEnabled) {
+      setAgentEnabled(false);
+    }
+  }, [hasManualImageInput]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
