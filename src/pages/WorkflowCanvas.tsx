@@ -10,8 +10,9 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus,
 } from "lucide-react";
+import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
