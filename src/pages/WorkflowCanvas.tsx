@@ -105,11 +105,24 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
   ];
 }
 
+function getManualNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "manual-image-input", category: "dynamic-data", label: "Manual Image Input", description: "Upload images at run time.", x: 100, y: 200, inputs: [], outputs: ["Images"] },
+    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"] },
+    { id: "n2", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Images", "Products"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+];
+
+const MANUAL_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n2", toPort: 1 },
 ];
 
 /* ── Helpers ── */
