@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import {
   ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
-  AlertTriangle, Timer, Filter, Hash, BarChart3, Eye,
+  AlertTriangle, Filter, Hash, BarChart3, Eye,
 } from "lucide-react";
 
 /* ── Execution mock data types ── */
