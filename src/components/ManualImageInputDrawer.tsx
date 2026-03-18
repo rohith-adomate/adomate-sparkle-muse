@@ -57,7 +57,11 @@ export default function ManualImageInputDrawer({ open, onOpenChange, uploadedIma
             </div>
           )}
 
-          <HoverExplainer text="Backend: When Run is clicked, uploaded images are stored temporarily and their references are injected into the workflow context as input_images[]. Downstream nodes like Generate Ad Variations receive these as base creatives for variation generation." />
+          <HoverExplainer text="Backend: When Run is clicked, uploaded images are stored temporarily and their references are injected into the workflow context as input_images[]. Downstream nodes like Generate Ad Variations receive these as base creatives for variation generation.">
+            <p className="text-[10px] text-muted-foreground/60 italic cursor-help hover:text-muted-foreground transition-colors">
+              Hover for backend details
+            </p>
+          </HoverExplainer>
         </div>
       </SheetContent>
     </Sheet>
