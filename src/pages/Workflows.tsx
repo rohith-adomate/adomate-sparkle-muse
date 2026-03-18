@@ -309,6 +309,31 @@ export default function Workflows() {
                     })}
                   </div>
                 </TabsContent>
+
+                <TabsContent value="manual" className="mt-0">
+                  <div className="grid grid-cols-2 gap-3">
+                    {manualAgents.map((agent) => {
+                      const Icon = agent.icon;
+                      return (
+                        <Card
+                          key={agent.id}
+                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
+                          onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
+                        >
+                          <CardContent className="p-4 space-y-3">
+                            <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
+                              <Icon className="h-5 w-5 text-amber-600" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-semibold text-sm">{agent.name}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
               </div>
             </div>
           </Tabs>
