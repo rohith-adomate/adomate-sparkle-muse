@@ -76,18 +76,18 @@ export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
   },
 ];
 
-/* ── Panel height config per node type ── */
+/* ── Drawer width config per node type ── */
 
-const PANEL_HEIGHTS: Record<string, { height: string; minHeight: number; maxHeight: string }> = {
-  schedule:            { height: "18vh", minHeight: 140, maxHeight: "22vh" },
-  dataset:             { height: "24vh", minHeight: 180, maxHeight: "30vh" },
-  "product-data":      { height: "30vh", minHeight: 200, maxHeight: "38vh" },
-  "top-select":        { height: "50vh", minHeight: 340, maxHeight: "60vh" },
-  "generate-concepts": { height: "48vh", minHeight: 320, maxHeight: "58vh" },
-  "manual-image-input":{ height: "30vh", minHeight: 200, maxHeight: "38vh" },
+const DRAWER_WIDTHS: Record<string, string> = {
+  schedule:             "w-[340px]",
+  dataset:              "w-[400px]",
+  "product-data":       "w-[440px]",
+  "top-select":         "w-[560px]",
+  "generate-concepts":  "w-[520px]",
+  "manual-image-input": "w-[420px]",
 };
 
-const DEFAULT_HEIGHT = { height: "30vh", minHeight: 200, maxHeight: "40vh" };
+const DEFAULT_WIDTH = "w-[420px]";
 
 /* ── Per-node output content ── */
 
