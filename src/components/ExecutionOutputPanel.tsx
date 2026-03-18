@@ -402,27 +402,22 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
   );
 }
 
-/* Generate Ad Variations output */
+/* Generate Ad Variations output — 10 variations */
+const PREVIEW_SEEDS = ["gen-c1", "gen-c2", "gen-c3", "gen-c4", "gen-c5"];
+const GEN_SETTINGS = [
+  { label: "Concepts per image", value: "6" },
+  { label: "Visual similarity", value: "Medium", progress: 50 },
+  { label: "Messaging similarity", value: "Medium", progress: 50 },
+  { label: "Total generated", value: "15 concepts" },
+];
+
 function GenerateVariationsOutput() {
-  const navigate = useNavigate();
-  const [hovering, setHovering] = useState(false);
-
-  const settings = [
-    { label: "Concepts per image", value: "6" },
-    { label: "Visual similarity", value: "Medium", progress: 50 },
-    { label: "Messaging similarity", value: "Medium", progress: 50 },
-    { label: "Total generated", value: "15 concepts" },
-  ];
-
-  const previewSeeds = ["gen-concept-1", "gen-concept-2", "gen-concept-3"];
-
   return (
-    <div className="space-y-4">
-      {/* Settings cards */}
+    <div className="space-y-6">
       <div>
         <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generation Settings</p>
         <div className="grid grid-cols-2 gap-2">
-          {settings.map((s, i) => (
+          {GEN_SETTINGS.map((s, i) => (
             <div key={i} className="rounded-lg border border-border bg-card px-3 py-2.5">
               <p className="text-[9px] text-muted-foreground">{s.label}</p>
               {s.progress !== undefined ? (
@@ -440,69 +435,284 @@ function GenerateVariationsOutput() {
         </div>
       </div>
 
-      {/* Preview grid — 3 images + "+12 more" card */}
-      <div>
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generated Concepts</p>
-        <div
-          className="grid grid-cols-4 gap-2 cursor-pointer"
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
-          onClick={() => navigate("/concepts/competitor-ad-variation-1")}
-        >
-          {previewSeeds.map((seed, i) => (
-            <div
-              key={i}
-              className={cn(
-                "rounded-lg border overflow-hidden aspect-[4/5] relative transition-all duration-200",
-                hovering
-                  ? "border-primary ring-2 ring-primary/20 scale-[1.02]"
-                  : "border-border"
-              )}
-            >
-              <img
-                src={`https://picsum.photos/seed/${seed}/320/400`}
-                alt={`Concept ${i + 1}`}
-                className="h-full w-full object-cover"
-              />
-              {hovering && (
-                <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
-                  <ExternalLink className="h-4 w-4 text-primary drop-shadow-md" />
-                </div>
-              )}
-            </div>
-          ))}
-          {/* +12 more card */}
-          <div
-            className={cn(
-              "rounded-lg border overflow-hidden aspect-[4/5] flex flex-col items-center justify-center bg-muted/40 transition-all duration-200",
-              hovering
-                ? "border-primary ring-2 ring-primary/20 scale-[1.02] bg-primary/5"
-                : "border-border"
-            )}
-          >
-            <span className={cn(
-              "text-lg font-bold transition-colors",
-              hovering ? "text-primary" : "text-muted-foreground"
-            )}>+12</span>
-            <span className={cn(
-              "text-[9px] font-medium transition-colors mt-0.5",
-              hovering ? "text-primary" : "text-muted-foreground"
-            )}>View all</span>
-            {hovering && (
-              <ExternalLink className="h-3 w-3 text-primary mt-1.5" />
-            )}
+      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">10 Concept Grid Variations — Choose your favorite</p>
+
+      {/* V1: 1×4 — Minimal hover ring */}
+      <ConceptsV1 />
+      {/* V2: 2×2 — Glassmorphism overlay */}
+      <ConceptsV2 />
+      {/* V3: 1×4 — Bottom gradient label */}
+      <ConceptsV3 />
+      {/* V4: 2×2 — Numbered badges */}
+      <ConceptsV4 />
+      {/* V5: 1×4 — Scale-up with arrow */}
+      <ConceptsV5 />
+      {/* V6: 2×2 — Border glow pulse */}
+      <ConceptsV6 />
+      {/* V7: 1×4 — Slide-up frosted panel */}
+      <ConceptsV7 />
+      {/* V8: 2×2 — Checkbox-select style */}
+      <ConceptsV8 />
+      {/* V9: 1×4 — Polaroid style */}
+      <ConceptsV9 />
+      {/* V10: 2×2 — Magazine layout */}
+      <ConceptsV10 />
+    </div>
+  );
+}
+
+/* ── V1: 1×4 row — subtle ring on hover ── */
+function ConceptsV1() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V1 — Minimal Ring (1×4)</p>
+      <div className="grid grid-cols-4 gap-2 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-lg border overflow-hidden aspect-[4/5] transition-all duration-200", h ? "border-primary ring-2 ring-primary/20" : "border-border")}>
+            <img src={`https://picsum.photos/seed/${seed}/320/400`} alt="" className="h-full w-full object-cover" />
           </div>
+        ))}
+        <div className={cn("rounded-lg border aspect-[4/5] flex flex-col items-center justify-center transition-all duration-200", h ? "border-primary ring-2 ring-primary/20 bg-primary/5" : "border-border bg-muted/40")}>
+          <span className={cn("text-lg font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[9px]", h ? "text-primary" : "text-muted-foreground")}>View all</span>
         </div>
-        {hovering && (
-          <p className="text-[10px] text-primary font-medium text-center mt-2 animate-in fade-in-0 duration-150">
-            Click to view all 15 generated concepts →
-          </p>
-        )}
       </div>
     </div>
   );
 }
 
+/* ── V2: 2×2 — Glassmorphism overlay on hover ── */
+function ConceptsV2() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  const seeds = [PREVIEW_SEEDS[0], PREVIEW_SEEDS[1], PREVIEW_SEEDS[2]];
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V2 — Glass Overlay (2×2)</p>
+      <div className="grid grid-cols-2 gap-2 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {seeds.map((seed, i) => (
+          <div key={i} className="rounded-lg border border-border overflow-hidden aspect-square relative">
+            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className="h-full w-full object-cover" />
+            {h && (
+              <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <Eye className="h-5 w-5 text-white drop-shadow-lg" />
+              </div>
+            )}
+          </div>
+        ))}
+        <div className={cn("rounded-lg border aspect-square flex flex-col items-center justify-center transition-colors", h ? "border-primary bg-primary/10" : "border-dashed border-border bg-muted/30")}>
+          <span className={cn("text-xl font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[10px] font-medium mt-1", h ? "text-primary" : "text-muted-foreground")}>See all concepts</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V3: 1×4 — Bottom gradient label ── */
+function ConceptsV3() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V3 — Gradient Label (1×4)</p>
+      <div className="grid grid-cols-4 gap-1.5 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-md overflow-hidden aspect-[4/5] relative transition-all duration-200", h && "scale-[1.03]")}>
+            <img src={`https://picsum.photos/seed/${seed}/320/400`} alt="" className="h-full w-full object-cover" />
+            <div className={cn("absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 transition-opacity", h ? "opacity-100" : "opacity-0")}>
+              <p className="text-[9px] text-white font-medium">Concept {i + 1}</p>
+            </div>
+          </div>
+        ))}
+        <div className={cn("rounded-md aspect-[4/5] flex flex-col items-center justify-center border transition-all duration-200", h ? "border-primary bg-primary/5 scale-[1.03]" : "border-dashed border-muted-foreground/30 bg-muted/20")}>
+          <span className={cn("text-base font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[8px] mt-0.5", h ? "text-primary" : "text-muted-foreground")}>more</span>
+        </div>
+      </div>
+      {h && <p className="text-[10px] text-primary text-center mt-1.5 font-medium">Click to explore all concepts →</p>}
+    </div>
+  );
+}
+
+/* ── V4: 2×2 — Numbered corner badges ── */
+function ConceptsV4() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V4 — Numbered Badges (2×2)</p>
+      <div className="grid grid-cols-2 gap-2 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-xl overflow-hidden aspect-square relative border transition-all duration-200", h ? "border-primary shadow-lg shadow-primary/10" : "border-border")}>
+            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className="h-full w-full object-cover" />
+            <div className={cn("absolute top-1.5 left-1.5 h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-bold transition-colors", h ? "bg-primary text-primary-foreground" : "bg-background/80 text-foreground")}>
+              {i + 1}
+            </div>
+          </div>
+        ))}
+        <div className={cn("rounded-xl border aspect-square flex flex-col items-center justify-center gap-1 transition-all duration-200", h ? "border-primary bg-primary/5 shadow-lg shadow-primary/10" : "border-border bg-card")}>
+          <div className={cn("h-10 w-10 rounded-full flex items-center justify-center transition-colors", h ? "bg-primary/15" : "bg-muted")}>
+            <span className={cn("text-sm font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          </div>
+          <span className={cn("text-[9px] font-medium", h ? "text-primary" : "text-muted-foreground")}>View all</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V5: 1×4 — Scale-up with centered arrow ── */
+function ConceptsV5() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V5 — Scale Arrow (1×4)</p>
+      <div className="grid grid-cols-4 gap-2 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-lg overflow-hidden aspect-[4/5] relative border transition-all duration-300", h ? "border-primary scale-105" : "border-border")}>
+            <img src={`https://picsum.photos/seed/${seed}/320/400`} alt="" className="h-full w-full object-cover" />
+            {h && (
+              <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                <ExternalLink className="h-4 w-4 text-primary drop-shadow" />
+              </div>
+            )}
+          </div>
+        ))}
+        <div className={cn("rounded-lg border aspect-[4/5] flex flex-col items-center justify-center transition-all duration-300", h ? "border-primary scale-105 bg-primary/10" : "border-border bg-muted/40")}>
+          <span className={cn("text-lg font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <ExternalLink className={cn("h-3 w-3 mt-1 transition-colors", h ? "text-primary" : "text-muted-foreground/50")} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V6: 2×2 — Animated border glow ── */
+function ConceptsV6() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V6 — Border Glow (2×2)</p>
+      <div className="grid grid-cols-2 gap-2.5 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-xl overflow-hidden aspect-square border-2 transition-all duration-300", h ? "border-primary shadow-[0_0_12px_-2px] shadow-primary/40" : "border-transparent")}>
+            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className="h-full w-full object-cover" />
+          </div>
+        ))}
+        <div className={cn("rounded-xl aspect-square border-2 flex flex-col items-center justify-center transition-all duration-300", h ? "border-primary shadow-[0_0_12px_-2px] shadow-primary/40 bg-primary/5" : "border-muted bg-muted/20")}>
+          <Sparkles className={cn("h-5 w-5 mb-1 transition-colors", h ? "text-primary" : "text-muted-foreground/40")} />
+          <span className={cn("text-lg font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[9px]", h ? "text-primary" : "text-muted-foreground")}>Explore</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V7: 1×4 — Slide-up frosted info panel ── */
+function ConceptsV7() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V7 — Frosted Slide-Up (1×4)</p>
+      <div className="grid grid-cols-4 gap-1.5 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className="rounded-lg overflow-hidden aspect-[4/5] relative border border-border">
+            <img src={`https://picsum.photos/seed/${seed}/320/400`} alt="" className="h-full w-full object-cover" />
+            <div className={cn("absolute inset-x-1 bottom-1 rounded-md bg-white/20 backdrop-blur-md border border-white/30 px-2 py-1 transition-all duration-200", h ? "translate-y-0 opacity-100" : "translate-y-[calc(100%+8px)] opacity-0")}>
+              <p className="text-[8px] text-white font-semibold">Concept {i + 1}</p>
+            </div>
+          </div>
+        ))}
+        <div className={cn("rounded-lg border aspect-[4/5] flex flex-col items-center justify-center transition-all duration-200", h ? "border-primary/60 bg-primary/5" : "border-dashed border-border bg-muted/30")}>
+          <span className={cn("text-base font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[8px] mt-0.5", h ? "text-primary" : "text-muted-foreground")}>View all</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V8: 2×2 — Checkbox-select style ── */
+function ConceptsV8() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V8 — Checkbox Style (2×2)</p>
+      <div className="grid grid-cols-2 gap-2 cursor-pointer" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-lg overflow-hidden aspect-square relative border transition-all duration-200", h ? "border-primary" : "border-border")}>
+            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className="h-full w-full object-cover" />
+            <div className={cn("absolute top-1.5 right-1.5 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all", h ? "border-primary bg-primary" : "border-white/60 bg-white/20")}>
+              {h && <CheckCircle2 className="h-3.5 w-3.5 text-primary-foreground" />}
+            </div>
+          </div>
+        ))}
+        <div className={cn("rounded-lg border aspect-square flex flex-col items-center justify-center transition-all", h ? "border-primary bg-primary/5" : "border-border bg-card")}>
+          <span className={cn("text-xl font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[10px] mt-0.5", h ? "text-primary font-medium" : "text-muted-foreground")}>Open gallery</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V9: 1×4 — Polaroid style with tilt ── */
+function ConceptsV9() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  const tilts = ["-rotate-1", "rotate-1", "-rotate-2"];
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V9 — Polaroid (1×4)</p>
+      <div className="grid grid-cols-4 gap-3 cursor-pointer py-2" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className={cn("rounded-sm bg-card border border-border p-1 pb-3 shadow-sm transition-all duration-300", tilts[i], h && "rotate-0 shadow-md shadow-primary/10 border-primary/40")}>
+            <div className="aspect-square overflow-hidden rounded-sm bg-muted">
+              <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className="h-full w-full object-cover" />
+            </div>
+            <p className={cn("text-[8px] text-center mt-1.5 font-medium transition-colors", h ? "text-primary" : "text-muted-foreground")}>#{i + 1}</p>
+          </div>
+        ))}
+        <div className={cn("rounded-sm border p-1 pb-3 flex flex-col items-center justify-center transition-all duration-300 rotate-2", h ? "rotate-0 border-primary/40 bg-primary/5 shadow-md shadow-primary/10" : "border-dashed border-border bg-card")}>
+          <span className={cn("text-base font-bold", h ? "text-primary" : "text-muted-foreground")}>+12</span>
+          <span className={cn("text-[8px]", h ? "text-primary" : "text-muted-foreground")}>more</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── V10: 2×2 — Magazine / editorial layout ── */
+function ConceptsV10() {
+  const navigate = useNavigate();
+  const [h, setH] = useState(false);
+  return (
+    <div>
+      <p className="text-[8px] text-muted-foreground mb-1.5">V10 — Magazine (2×2)</p>
+      <div className="grid grid-cols-2 gap-1 cursor-pointer rounded-xl overflow-hidden border border-border" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
+        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          <div key={i} className="aspect-square relative overflow-hidden">
+            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className={cn("h-full w-full object-cover transition-transform duration-500", h && "scale-110")} />
+            {h && <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />}
+          </div>
+        ))}
+        <div className={cn("aspect-square flex flex-col items-center justify-center transition-colors duration-300", h ? "bg-primary/10" : "bg-muted/40")}>
+          <span className={cn("text-2xl font-bold tracking-tight transition-colors", h ? "text-primary" : "text-muted-foreground/60")}>+12</span>
+          <span className={cn("text-[10px] font-medium tracking-wide uppercase mt-1 transition-colors", h ? "text-primary" : "text-muted-foreground/40")}>View All</span>
+          {h && <ExternalLink className="h-3.5 w-3.5 text-primary mt-2" />}
+        </div>
+      </div>
+    </div>
+  );
+}
 /* Manual Image Input output */
 function ManualInputOutput() {
   const images = [
