@@ -474,7 +474,7 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
   if (!open || !node) return null;
 
   const Icon = NODE_ICONS[node.type] || Database;
-  const sizing = PANEL_HEIGHTS[node.type] || DEFAULT_HEIGHT;
+  const widthClass = DRAWER_WIDTHS[node.type] || DEFAULT_WIDTH;
   const statusCfg = STATUS_CONFIG[node.status] || STATUS_CONFIG.success;
 
   const renderOutput = () => {
@@ -494,27 +494,18 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
       {/* Backdrop */}
       <div className="fixed inset-0 z-40 bg-background/40 backdrop-blur-[2px]" onClick={onClose} />
 
-      {/* Bottom panel — dynamic height */}
+      {/* Right-side drawer */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border",
-          "shadow-[0_-8px_30px_-12px_rgba(0,0,0,0.15)]",
-          "transition-all duration-300 ease-out",
-          open ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+          "fixed top-0 right-0 bottom-0 z-50 bg-card border-l border-border",
+          "shadow-[-8px_0_30px_-12px_rgba(0,0,0,0.15)]",
+          "transition-all duration-300 ease-out flex flex-col",
+          widthClass,
+          open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         )}
-        style={{
-          height: sizing.height,
-          minHeight: sizing.minHeight,
-          maxHeight: sizing.maxHeight,
-        }}
       >
-        {/* Handle bar */}
-        <div className="flex items-center justify-center py-1 cursor-grab">
-          <div className="w-8 h-0.5 rounded-full bg-border" />
-        </div>
-
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pb-2.5">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-md bg-muted/60 flex items-center justify-center">
               <Icon className="h-3.5 w-3.5 text-muted-foreground" />
@@ -528,12 +519,12 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
             </div>
           </div>
           <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
-            <ChevronDown className="h-3 w-3" /> Close
+            <XCircle className="h-3.5 w-3.5" /> Close
           </Button>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto px-5 pb-5" style={{ maxHeight: `calc(${sizing.height} - 56px)` }}>
+        <div className="flex-1 overflow-y-auto px-5 py-4">
           {renderOutput()}
         </div>
       </div>
