@@ -1,6 +1,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ImagePlus, Info } from "lucide-react";
-import HoverExplainer from "./HoverExplainer";
+import { HoverExplainer } from "./HoverExplainer";
 
 interface ManualImageInputDrawerProps {
   open: boolean;
