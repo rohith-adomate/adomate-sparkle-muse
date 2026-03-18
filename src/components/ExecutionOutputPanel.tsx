@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
-  AlertTriangle, Filter, Hash, BarChart3, Eye,
+  AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen,
 } from "lucide-react";
 
 /* ── Run mock data types ── */
