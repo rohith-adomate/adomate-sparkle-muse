@@ -212,18 +212,25 @@ function DatasetOutput() {
   );
 }
 
+/* Format reach: ≤9999 shown in full, above that use K/M notation */
+function formatReach(n: number): string {
+  if (n <= 9999) return n.toLocaleString();
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+  return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+}
+
 /* Select output */
 const SELECTED_ADS = [
-  { id: 1, brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", reach: "245K", ctr: "3.2%", spend: "$1.2K" },
-  { id: 2, brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", reach: "312K", ctr: "4.1%", spend: "$980" },
-  { id: 3, brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", reach: "198K", ctr: "2.8%", spend: "$760" },
-  { id: 4, brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", reach: "189K", ctr: "3.5%", spend: "$1.1K" },
-  { id: 5, brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", reach: "47K", ctr: "2.1%", spend: "$420" },
-  { id: 6, brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", reach: "68K", ctr: "2.6%", spend: "$550" },
-  { id: 7, brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", reach: "23K", ctr: "1.9%", spend: "$310" },
-  { id: 8, brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", reach: "15K", ctr: "1.4%", spend: "$280" },
-  { id: 9, brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", reach: "4.2K", ctr: "0.8%", spend: "$120" },
-  { id: 10, brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", reach: "7.3K", ctr: "1.1%", spend: "$190" },
+  { id: 1, brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", reach: 245000, ctr: "3.2%", spend: "$1.2K" },
+  { id: 2, brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", reach: 312000, ctr: "4.1%", spend: "$980" },
+  { id: 3, brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", reach: 198000, ctr: "2.8%", spend: "$760" },
+  { id: 4, brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", reach: 189000, ctr: "3.5%", spend: "$1.1K" },
+  { id: 5, brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", reach: 47000, ctr: "2.1%", spend: "$420" },
+  { id: 6, brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", reach: 68000, ctr: "2.6%", spend: "$550" },
+  { id: 7, brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", reach: 23000, ctr: "1.9%", spend: "$310" },
+  { id: 8, brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", reach: 15000, ctr: "1.4%", spend: "$280" },
+  { id: 9, brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", reach: 4200, ctr: "0.8%", spend: "$120" },
+  { id: 10, brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", reach: 7300, ctr: "1.1%", spend: "$190" },
 ];
 
 function SelectOutput() {
@@ -258,7 +265,14 @@ function SelectOutput() {
                       <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
                       <span className="text-[9px] font-semibold text-white">{ad.brand}</span>
                     </div>
-                    <span className="text-[9px] font-bold text-white">{ad.reach}</span>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <span className="text-[9px] font-bold text-white cursor-help">{formatReach(ad.reach)}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-[10px]">
+                        Total reach: {ad.reach.toLocaleString()} impressions
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
