@@ -21,6 +21,11 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
+import ExecutionOutputPanel, {
+  MOCK_EXECUTIONS, MOCK_MANUAL_EXECUTIONS,
+  type ExecutionRun, type ExecutionNodeOutput,
+} from "@/components/ExecutionOutputPanel";
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 /* ── Types ── */
 
@@ -163,6 +168,11 @@ export default function WorkflowCanvas() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
+  const [selectedExecution, setSelectedExecution] = useState<ExecutionRun | null>(null);
+  const [executionOutputNode, setExecutionOutputNode] = useState<ExecutionNodeOutput | null>(null);
+  const [executionPanelOpen, setExecutionPanelOpen] = useState(false);
+
+  const executions = isManualWorkflow ? MOCK_MANUAL_EXECUTIONS : MOCK_EXECUTIONS;
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -417,65 +427,139 @@ export default function WorkflowCanvas() {
     })).filter((g) => g.items.length > 0);
   }, [searchQuery]);
 
+  // Select first execution when switching to executions tab
+  const selectExecution = useCallback((exec: ExecutionRun) => {
+    setSelectedExecution(exec);
+    setExecutionPanelOpen(false);
+    setExecutionOutputNode(null);
+    // Update node statuses based on execution
+    setNodes((prev) =>
+      prev.map((n) => ({
+        ...n,
+        status: exec.nodeStatuses[n.id] || undefined,
+      }))
+    );
+  }, []);
+
+  const handleTabChange = useCallback((tab: "editor" | "executions") => {
+    setActiveTab(tab);
+    if (tab === "executions" && executions.length > 0) {
+      selectExecution(executions[0]);
+    } else if (tab === "editor") {
+      setSelectedExecution(null);
+      setExecutionPanelOpen(false);
+      setExecutionOutputNode(null);
+      // Reset node statuses to editor defaults
+      setNodes((prev) =>
+        prev.map((n) => ({
+          ...n,
+          status: isManualWorkflow ? undefined : (n.type === "generate-concepts" ? undefined : "success"),
+        }))
+      );
+    }
+  }, [executions, selectExecution, isManualWorkflow]);
+
   return (
     <div className="flex h-[calc(100vh-3.5rem)] -m-6 bg-background">
-      {/* ── Left Panel: Node Picker ── */}
+      {/* ── Left Panel ── */}
       {showPicker && (
         <div className="w-60 border-r border-border bg-card flex flex-col shrink-0">
-          <div className="p-3 border-b border-border">
-            <Input
-              placeholder="Search nodes…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-8 text-xs"
-            />
-          </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-4">
-            {filteredCatalog.map((group) => (
-              <div key={group.label}>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  {group.label}
-                </p>
-                <div className="space-y-1.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    const color = CATEGORY_COLORS[group.category];
-                    const isScheduleDisabled = item.type === "schedule" && nodes.some((n) => n.type === "schedule");
-                    const btn = (
-                      <button
-                        key={item.type}
-                        disabled={isScheduleDisabled}
-                        className={cn(
-                          "w-full flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors",
-                          isScheduleDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-muted/60"
-                        )}
-                        onClick={() => !isScheduleDisabled && addNode(item, group.category)}
-                      >
-                        <div
-                          className="shrink-0 rounded-md p-1.5 mt-0.5"
-                          style={{ background: `hsl(${color} / 0.12)` }}
-                        >
-                          <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold truncate">{item.label}</p>
-                          <p className="text-[10px] text-muted-foreground leading-tight">{item.description}</p>
-                        </div>
-                      </button>
-                    );
-                    return isScheduleDisabled ? (
-                      <Tooltip key={item.type} delayDuration={200}>
-                        <TooltipTrigger asChild>{btn}</TooltipTrigger>
-                        <TooltipContent side="right" className="text-xs">Only one Schedule node can be present in a workflow</TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <span key={item.type}>{btn}</span>
-                    );
-                  })}
-                </div>
+          {activeTab === "executions" ? (
+            /* ── Execution runs list ── */
+            <>
+              <div className="p-3 border-b border-border">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Execution History</p>
               </div>
-            ))}
-          </div>
+              <div className="flex-1 overflow-y-auto">
+                {executions.map((exec) => {
+                  const isActive = selectedExecution?.id === exec.id;
+                  return (
+                    <button
+                      key={exec.id}
+                      onClick={() => selectExecution(exec)}
+                      className={cn(
+                        "w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors border-b border-border/50",
+                        isActive ? "bg-primary/5 border-l-2 border-l-primary" : "hover:bg-muted/40"
+                      )}
+                    >
+                      <div className="shrink-0">
+                        {exec.status === "success" ? (
+                          <CheckCircle2 className="h-4 w-4 text-success" />
+                        ) : exec.status === "failed" ? (
+                          <XCircle className="h-4 w-4 text-destructive" />
+                        ) : (
+                          <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold">Execution #{exec.number}</p>
+                        <p className="text-[10px] text-muted-foreground leading-tight">{exec.startedAt}</p>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground shrink-0">{exec.duration}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            /* ── Node Picker (editor mode) ── */
+            <>
+              <div className="p-3 border-b border-border">
+                <Input
+                  placeholder="Search nodes…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-8 text-xs"
+                />
+              </div>
+              <div className="flex-1 overflow-y-auto p-3 space-y-4">
+                {filteredCatalog.map((group) => (
+                  <div key={group.label}>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                      {group.label}
+                    </p>
+                    <div className="space-y-1.5">
+                      {group.items.map((item) => {
+                        const Icon = item.icon;
+                        const color = CATEGORY_COLORS[group.category];
+                        const isScheduleDisabled = item.type === "schedule" && nodes.some((n) => n.type === "schedule");
+                        const btn = (
+                          <button
+                            key={item.type}
+                            disabled={isScheduleDisabled}
+                            className={cn(
+                              "w-full flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors",
+                              isScheduleDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-muted/60"
+                            )}
+                            onClick={() => !isScheduleDisabled && addNode(item, group.category)}
+                          >
+                            <div
+                              className="shrink-0 rounded-md p-1.5 mt-0.5"
+                              style={{ background: `hsl(${color} / 0.12)` }}
+                            >
+                              <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-semibold truncate">{item.label}</p>
+                              <p className="text-[10px] text-muted-foreground leading-tight">{item.description}</p>
+                            </div>
+                          </button>
+                        );
+                        return isScheduleDisabled ? (
+                          <Tooltip key={item.type} delayDuration={200}>
+                            <TooltipTrigger asChild>{btn}</TooltipTrigger>
+                            <TooltipContent side="right" className="text-xs">Only one Schedule node can be present in a workflow</TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <span key={item.type}>{btn}</span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -506,7 +590,7 @@ export default function WorkflowCanvas() {
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                onClick={() => setActiveTab("editor")}
+                onClick={() => handleTabChange("editor")}
               >
                 Editor
               </button>
@@ -517,7 +601,7 @@ export default function WorkflowCanvas() {
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                onClick={() => setActiveTab("executions")}
+                onClick={() => handleTabChange("executions")}
               >
                 Executions
               </button>
@@ -664,21 +748,25 @@ export default function WorkflowCanvas() {
               return (
                 <div
                   key={node.id}
-                  className={`absolute rounded-xl border bg-card shadow-sm transition-shadow ${
-                    isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
-                  }`}
+                  className={cn(
+                    "absolute rounded-xl border bg-card shadow-sm transition-shadow",
+                    isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md",
+                    activeTab === "executions" && node.status === "success" && "ring-2 ring-success",
+                    activeTab === "executions" && node.status === "error" && "ring-2 ring-destructive",
+                    activeTab === "executions" && node.status === "running" && "ring-2 ring-primary animate-pulse",
+                  )}
                   style={{
                     left: node.x,
                     top: node.y,
                     width: NODE_W,
                   }}
-                  onMouseDown={(e) => startNodeDrag(e, node.id)}
+                  onMouseDown={(e) => activeTab !== "executions" && startNodeDrag(e, node.id)}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedNode(node.id);
                     if (activeTab === "executions") {
-                      setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
-                      setOutputDrawerOpen(true);
+                      setExecutionOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
+                      setExecutionPanelOpen(true);
                     } else {
                       if (node.type === "dataset") {
                         setDatasetDrawerOpen(true);
@@ -813,8 +901,8 @@ export default function WorkflowCanvas() {
           </span>
         </div>
 
-        {/* Delete hint */}
-        {selectedNode && (
+        {/* Delete hint - editor mode only */}
+        {selectedNode && activeTab === "editor" && (
           <div className="absolute top-14 right-3 z-20">
             <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10" onClick={deleteSelected}>
               <Trash2 className="h-3 w-3" /> Delete
@@ -871,6 +959,12 @@ export default function WorkflowCanvas() {
           setManualImageUploadModalOpen(false);
           toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
         }}
+      />
+      <ExecutionOutputPanel
+        open={executionPanelOpen}
+        onClose={() => setExecutionPanelOpen(false)}
+        node={executionOutputNode}
+        runNumber={selectedExecution?.number}
       />
     </div>
   );
