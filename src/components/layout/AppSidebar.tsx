@@ -175,7 +175,6 @@ export function AppSidebar() {
                     >
                       <CreditCard className="h-4 w-4 text-muted-foreground" />
                       <span className="text-xs font-bold text-primary">0</span>
-                      <span className="text-[10px] text-muted-foreground">Buy</span>
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">Credits</TooltipContent>
@@ -183,13 +182,14 @@ export function AppSidebar() {
               ) : (
                 <button
                   onClick={() => nav("/credits")}
-                  className="w-full rounded-lg border border-border/60 bg-muted/50 p-2.5 flex items-center justify-between hover:bg-muted transition-colors"
+                  className="group/credits w-full rounded-lg border border-border/60 bg-muted/50 p-2.5 flex items-center justify-between hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Credits</span>
+                    <CreditCard className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-bold text-primary">0</span>
+                    <span className="text-xs text-muted-foreground">credits</span>
                   </div>
-                  <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md">Buy credits</span>
+                  <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md opacity-0 group-hover/credits:opacity-100 transition-opacity">Buy</span>
                 </button>
               )}
             </div>
