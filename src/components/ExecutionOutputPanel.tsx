@@ -243,177 +243,29 @@ function SelectOutput() {
         </div>
       </div>
 
-      {/* Ad cards grid — each card has a unique UI style */}
+      {/* Ad cards grid */}
       <div className="grid grid-cols-3 gap-2.5">
-        {SELECTED_ADS.map((ad, idx) => {
+        {SELECTED_ADS.map((ad) => {
           const logo = `https://logo.clearbit.com/${ad.brand === "CeraVe" ? "cerave.com" : "theordinary.com"}`;
           const imgSrc = `https://picsum.photos/seed/ad-select-${ad.id}/400/500`;
           return (
-            <SelectAdCard key={ad.id} ad={ad} logo={logo} imgSrc={imgSrc} variationIndex={idx} />
+            <div key={ad.id} className="rounded-lg border border-border overflow-hidden bg-card group">
+              <div className="aspect-[4/5] bg-muted relative">
+                <img src={imgSrc} alt="" className="h-full w-full object-cover" />
+                <div className="absolute inset-x-2 bottom-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 p-1.5 translate-y-[calc(100%+8px)] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-200 ease-out">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
+                      <span className="text-[9px] font-semibold text-white">{ad.brand}</span>
+                    </div>
+                    <span className="text-[9px] font-bold text-white">{ad.reach}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           );
         })}
       </div>
-    </div>
-  );
-}
-
-/* Each card gets a different UI treatment for brand + reach */
-function SelectAdCard({ ad, logo, imgSrc, variationIndex }: {
-  ad: typeof SELECTED_ADS[0]; logo: string; imgSrc: string; variationIndex: number;
-}) {
-  switch (variationIndex) {
-    /* V1: Bottom bar — always visible brand + reach in a dark bar */
-    case 0: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-        </div>
-        <div className="px-2 py-1.5 flex items-center justify-between bg-foreground/5">
-          <div className="flex items-center gap-1.5">
-            <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-            <span className="text-[10px] font-medium truncate">{ad.brand}</span>
-          </div>
-          <span className="text-[9px] font-semibold text-muted-foreground">{ad.reach}</span>
-        </div>
-      </div>
-    );
-
-    /* V2: Hover overlay — brand + reach appear on hover as centered overlay */
-    case 1: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card group">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-            <img src={logo} alt="" className="h-5 w-5 rounded-full ring-1 ring-white/30" />
-            <span className="text-[10px] font-semibold text-white">{ad.brand}</span>
-            <span className="text-[9px] text-white/70">{ad.reach} reach</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V3: Top-left floating pill — always visible */
-    case 2: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full bg-white/90 backdrop-blur-sm pl-0.5 pr-2 py-0.5 shadow-sm">
-            <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-            <span className="text-[8px] font-semibold text-foreground">{ad.reach}</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V4: Bottom gradient strip — brand left, reach right */
-    case 3: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-2 pb-1.5 pt-4 flex items-end justify-between">
-            <div className="flex items-center gap-1">
-              <img src={logo} alt="" className="h-3 w-3 rounded-full" />
-              <span className="text-[9px] font-medium text-white">{ad.brand}</span>
-            </div>
-            <span className="text-[9px] font-bold text-white/80">{ad.reach}</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V5: Hover slide-up panel — slides from bottom */
-    case 4: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card group">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute bottom-0 inset-x-0 bg-card/95 backdrop-blur-sm px-2 py-1.5 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-            <div className="flex items-center gap-1.5">
-              <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-              <span className="text-[10px] font-medium">{ad.brand}</span>
-            </div>
-            <span className="text-[9px] text-muted-foreground">{ad.reach} reach</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V6: Corner badge — top-right reach badge, bottom-left brand */
-    case 5: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute top-1.5 right-1.5 rounded-md bg-primary/90 px-1.5 py-0.5">
-            <span className="text-[8px] font-bold text-primary-foreground">{ad.reach}</span>
-          </div>
-          <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm pl-0.5 pr-1.5 py-0.5">
-            <img src={logo} alt="" className="h-3 w-3 rounded-full" />
-            <span className="text-[8px] font-medium text-white">{ad.brand}</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V7: Side strip — vertical bar on the left with brand icon + reach stacked */
-    case 6: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card flex">
-        <div className="w-7 bg-muted/60 flex flex-col items-center justify-center gap-1.5 py-2 shrink-0">
-          <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-          <span className="text-[7px] font-bold text-muted-foreground writing-mode-vertical [writing-mode:vertical-rl] rotate-180">{ad.reach}</span>
-        </div>
-        <div className="aspect-[4/5] bg-muted flex-1">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-        </div>
-      </div>
-    );
-
-    /* V8: Glassmorphism hover — frosted glass card on hover */
-    case 7: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card group">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-x-2 bottom-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-                <span className="text-[9px] font-semibold text-white">{ad.brand}</span>
-              </div>
-              <span className="text-[9px] font-bold text-white">{ad.reach}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V9: Bottom card with accent line — always visible */
-    case 8: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-        </div>
-        <div className="border-t-2 border-primary px-2 py-1.5">
-          <div className="flex items-center gap-1.5">
-            <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
-            <span className="text-[10px] font-semibold truncate">{ad.brand}</span>
-            <span className="ml-auto text-[9px] font-bold text-primary">{ad.reach}</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    /* V10: Minimal dot indicator — tiny brand dot top-left, reach on hover bottom-right */
-    default: return (
-      <div className="rounded-lg border border-border overflow-hidden bg-card group">
-        <div className="aspect-[4/5] bg-muted relative">
-          <img src={imgSrc} alt="" className="h-full w-full object-cover" />
-          <img src={logo} alt="" className="absolute top-1.5 left-1.5 h-4 w-4 rounded-full ring-2 ring-white shadow-sm" />
-          <div className="absolute bottom-1.5 right-1.5 rounded-md bg-foreground/80 px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-[8px] font-bold text-background">{ad.reach}</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
 
 /* Product Data output */
 const SELECTED_PRODUCTS = [
