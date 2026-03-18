@@ -19,6 +19,8 @@ import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
+import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
+import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 
 /* ── Types ── */
 
