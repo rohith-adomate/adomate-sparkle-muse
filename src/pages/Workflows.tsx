@@ -292,10 +292,10 @@ export default function Workflows() {
                       return (
                         <Card
                           key={agent.id}
-                          className="relative border border-border/60 opacity-60 cursor-default select-none overflow-hidden"
+                          className="relative border border-border/60 opacity-75 cursor-default select-none overflow-hidden"
                         >
                           {/* Coming Soon ribbon */}
-                          <div className="absolute top-3 -right-8 rotate-45 bg-muted-foreground/15 text-muted-foreground text-[9px] font-semibold tracking-widest uppercase px-8 py-0.5 pointer-events-none">
+                          <div className="absolute top-4 -right-7 rotate-45 bg-pink-500 text-white text-[8px] font-bold tracking-wider uppercase px-8 py-0.5 pointer-events-none shadow-sm">
                             Coming Soon
                           </div>
                           <CardContent className="p-4 space-y-3">
