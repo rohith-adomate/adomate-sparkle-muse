@@ -321,7 +321,7 @@ export default function Workflows() {
                         <Card
                           key={agent.id}
                           className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
+                          onClick={() => handleSelectAgent("manual", agent.name, agent.description)}
                         >
                           <CardContent className="p-4 space-y-3">
                             <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
