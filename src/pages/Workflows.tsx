@@ -92,6 +92,10 @@ const competitorAgents = [
   { id: "strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle.", icon: Lightbulb },
 ];
 
+const manualAgents = [
+  { id: "manual-image-input", name: "Manual Image Input", description: "Upload your own images at run time and generate ad variations from them. Cannot be scheduled.", icon: ImagePlus },
+];
+
 /* ── Component ── */
 
 export default function Workflows() {
