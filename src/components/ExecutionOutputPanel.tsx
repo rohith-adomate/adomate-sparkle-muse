@@ -132,7 +132,7 @@ function ScheduleOutput() {
           <Clock className="h-3 w-3 text-muted-foreground" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
         </div>
-        <p className="text-sm font-medium text-foreground">Mar 18, 2026 · 09:00 AM</p>
+        <p className="text-sm font-medium text-foreground">18 Mar 2026 · 09:00 AM</p>
       </div>
     </div>
   );
