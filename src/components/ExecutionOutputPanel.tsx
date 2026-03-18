@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import {
   ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
-  AlertTriangle, Timer, Filter, Hash, BarChart3, Eye,
+  AlertTriangle, Filter, Hash, BarChart3, Eye,
 } from "lucide-react";
 
 /* ── Execution mock data types ── */
@@ -76,18 +76,18 @@ export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
   },
 ];
 
-/* ── Panel height config per node type ── */
+/* ── Drawer width config per node type ── */
 
-const PANEL_HEIGHTS: Record<string, { height: string; minHeight: number; maxHeight: string }> = {
-  schedule:            { height: "18vh", minHeight: 140, maxHeight: "22vh" },
-  dataset:             { height: "24vh", minHeight: 180, maxHeight: "30vh" },
-  "product-data":      { height: "30vh", minHeight: 200, maxHeight: "38vh" },
-  "top-select":        { height: "50vh", minHeight: 340, maxHeight: "60vh" },
-  "generate-concepts": { height: "48vh", minHeight: 320, maxHeight: "58vh" },
-  "manual-image-input":{ height: "30vh", minHeight: 200, maxHeight: "38vh" },
+const DRAWER_WIDTHS: Record<string, string> = {
+  schedule:             "w-[340px]",
+  dataset:              "w-[400px]",
+  "product-data":       "w-[440px]",
+  "top-select":         "w-[560px]",
+  "generate-concepts":  "w-[520px]",
+  "manual-image-input": "w-[420px]",
 };
 
-const DEFAULT_HEIGHT = { height: "30vh", minHeight: 200, maxHeight: "40vh" };
+const DEFAULT_WIDTH = "w-[420px]";
 
 /* ── Per-node output content ── */
 
@@ -116,22 +116,24 @@ function StatCard({ icon: IconComp, label, children, accent }: {
   );
 }
 
-/* Schedule output */
+/* Schedule output — Split Card (Variation 4) */
 function ScheduleOutput() {
   return (
-    <div className="grid grid-cols-3 gap-2.5">
-      <StatCard icon={CheckCircle2} label="Status" accent="text-emerald-600">
-        <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Triggered successfully
+    <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
         </div>
-      </StatCard>
-      <StatCard icon={Clock} label="Run started">
-        Mar 18, 2026 · 09:00 AM
-      </StatCard>
-      <StatCard icon={Timer} label="Latency">
-        0.3s trigger delay
-      </StatCard>
+        <p className="text-sm font-medium text-emerald-600">Triggered successfully</p>
+      </div>
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <Clock className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
+        </div>
+        <p className="text-sm font-medium text-foreground">Mar 18, 2026 · 09:00 AM</p>
+      </div>
     </div>
   );
 }
@@ -472,7 +474,7 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
   if (!open || !node) return null;
 
   const Icon = NODE_ICONS[node.type] || Database;
-  const sizing = PANEL_HEIGHTS[node.type] || DEFAULT_HEIGHT;
+  const widthClass = DRAWER_WIDTHS[node.type] || DEFAULT_WIDTH;
   const statusCfg = STATUS_CONFIG[node.status] || STATUS_CONFIG.success;
 
   const renderOutput = () => {
@@ -492,27 +494,18 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
       {/* Backdrop */}
       <div className="fixed inset-0 z-40 bg-background/40 backdrop-blur-[2px]" onClick={onClose} />
 
-      {/* Bottom panel — dynamic height */}
+      {/* Right-side drawer */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border",
-          "shadow-[0_-8px_30px_-12px_rgba(0,0,0,0.15)]",
-          "transition-all duration-300 ease-out",
-          open ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+          "fixed top-0 right-0 bottom-0 z-50 bg-card border-l border-border",
+          "shadow-[-8px_0_30px_-12px_rgba(0,0,0,0.15)]",
+          "transition-all duration-300 ease-out flex flex-col",
+          widthClass,
+          open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         )}
-        style={{
-          height: sizing.height,
-          minHeight: sizing.minHeight,
-          maxHeight: sizing.maxHeight,
-        }}
       >
-        {/* Handle bar */}
-        <div className="flex items-center justify-center py-1 cursor-grab">
-          <div className="w-8 h-0.5 rounded-full bg-border" />
-        </div>
-
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pb-2.5">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-md bg-muted/60 flex items-center justify-center">
               <Icon className="h-3.5 w-3.5 text-muted-foreground" />
@@ -526,12 +519,12 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
             </div>
           </div>
           <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
-            <ChevronDown className="h-3 w-3" /> Close
+            <XCircle className="h-3.5 w-3.5" /> Close
           </Button>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto px-5 pb-5" style={{ maxHeight: `calc(${sizing.height} - 56px)` }}>
+        <div className="flex-1 overflow-y-auto px-5 py-4">
           {renderOutput()}
         </div>
       </div>
