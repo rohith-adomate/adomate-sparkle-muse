@@ -430,11 +430,16 @@ export default function WorkflowCanvas() {
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const color = CATEGORY_COLORS[group.category];
-                    return (
+                    const isScheduleDisabled = item.type === "schedule" && nodes.some((n) => n.type === "schedule");
+                    const btn = (
                       <button
                         key={item.type}
-                        className="w-full flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-left hover:bg-muted/60 transition-colors"
-                        onClick={() => addNode(item, group.category)}
+                        disabled={isScheduleDisabled}
+                        className={cn(
+                          "w-full flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors",
+                          isScheduleDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-muted/60"
+                        )}
+                        onClick={() => !isScheduleDisabled && addNode(item, group.category)}
                       >
                         <div
                           className="shrink-0 rounded-md p-1.5 mt-0.5"
@@ -447,6 +452,14 @@ export default function WorkflowCanvas() {
                           <p className="text-[10px] text-muted-foreground leading-tight">{item.description}</p>
                         </div>
                       </button>
+                    );
+                    return isScheduleDisabled ? (
+                      <Tooltip key={item.type} delayDuration={200}>
+                        <TooltipTrigger asChild>{btn}</TooltipTrigger>
+                        <TooltipContent side="right" className="text-xs">Only one Schedule node can be present in a workflow</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <span key={item.type}>{btn}</span>
                     );
                   })}
                 </div>
