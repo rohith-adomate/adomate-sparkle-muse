@@ -284,67 +284,288 @@ function SelectOutput() {
   );
 }
 
-/* Product Data output */
-const SELECTED_PRODUCTS = [
-  {
-    name: "Hydra Glow Serum",
-    sku: "HGS-001",
-    images: 1,
-    imageSeeds: ["prod-0a"],
-    knowledge: "Lightweight hydrating serum with hyaluronic acid for daily use. Targets young professionals aged 22–35. Key claims: 48hr hydration, non-comedogenic, fragrance-free.",
-  },
-  {
-    name: "Retinol Night Recovery Mask",
-    sku: "RNR-042",
-    images: 3,
-    imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
-    knowledge: "Premium night recovery mask with 0.3% retinol. Anti-aging focus, 35+ demographic. Claims: reduces fine lines in 4 weeks, dermatologist tested.",
-  },
-];
+/* Product Data output — 10 card variations */
+const PRODUCT = {
+  name: "Retinol Night Recovery Mask",
+  imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
+  knowledge: "Premium night recovery mask with 0.3% retinol. Anti-aging focus, 35+ demographic. Claims: reduces fine lines in 4 weeks, dermatologist tested.",
+};
 
 function ProductDataOutput() {
   return (
-    <div className="space-y-2">
-      {SELECTED_PRODUCTS.map((p, i) => (
-        <div key={i} className="rounded-lg border border-border bg-card p-3">
-          <div className="flex items-start gap-3">
-            {/* Product images */}
-            <div className="flex gap-1.5 shrink-0">
-              {p.imageSeeds.map((seed, j) => (
-                <div key={j} className="h-12 w-12 rounded-md overflow-hidden bg-muted border border-border">
-                  <img
-                    src={`https://picsum.photos/seed/${seed}/96/96`}
-                    alt={p.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="text-xs font-semibold">{p.name}</p>
-                <Badge variant="outline" className="text-[8px] py-0 px-1.5 font-mono">{p.sku}</Badge>
+    <div className="space-y-3">
+      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">10 Card Variations — Choose your favorite</p>
+      
+      {/* V1: Horizontal row — images left, info right */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 1 — Horizontal</p>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1 shrink-0">
+            {PRODUCT.imageSeeds.map((s, i) => (
+              <div key={i} className="h-11 w-11 rounded-md overflow-hidden bg-muted border border-border">
+                <img src={`https://picsum.photos/seed/${s}/96/96`} alt="" className="h-full w-full object-cover" />
               </div>
-              <div className="flex items-center gap-3 mt-1">
-                <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
-                  <Image className="h-2.5 w-2.5" /> {p.images} image{p.images !== 1 ? "s" : ""}
-                </Badge>
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <button className="text-[9px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
-                      <Info className="h-2.5 w-2.5" /> View knowledge context
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[300px] text-[10px] leading-relaxed">
-                    {p.knowledge}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+            ))}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
+                <Image className="h-2.5 w-2.5" /> 3 images
+              </Badge>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <button className="text-[9px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
+                    <Info className="h-2.5 w-2.5" /> Knowledge
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
-      ))}
+      </div>
+
+      {/* V2: Stacked — images on top, name + knowledge below */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 2 — Stacked</p>
+        <div className="flex gap-1.5 mb-2">
+          {PRODUCT.imageSeeds.map((s, i) => (
+            <div key={i} className="flex-1 aspect-square rounded-md overflow-hidden bg-muted border border-border">
+              <img src={`https://picsum.photos/seed/${s}/96/96`} alt="" className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+        <p className="text-xs font-semibold">{PRODUCT.name}</p>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <button className="text-[9px] text-muted-foreground hover:text-foreground mt-1 flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
+              <Info className="h-2.5 w-2.5" /> View knowledge
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+        </Tooltip>
+      </div>
+
+      {/* V3: Hero image + thumbnails — first image large, rest small */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 3 — Hero + Thumbnails</p>
+        <div className="flex gap-2">
+          <div className="w-20 aspect-[4/5] rounded-md overflow-hidden bg-muted border border-border shrink-0">
+            <img src={`https://picsum.photos/seed/${PRODUCT.imageSeeds[0]}/160/200`} alt="" className="h-full w-full object-cover" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-semibold mb-1.5">{PRODUCT.name}</p>
+            <div className="flex gap-1 mb-2">
+              {PRODUCT.imageSeeds.slice(1).map((s, i) => (
+                <div key={i} className="h-9 w-9 rounded-md overflow-hidden bg-muted border border-border">
+                  <img src={`https://picsum.photos/seed/${s}/72/72`} alt="" className="h-full w-full object-cover" />
+                </div>
+              ))}
+              <div className="h-9 w-9 rounded-md bg-muted/40 border border-dashed border-border flex items-center justify-center">
+                <span className="text-[8px] font-bold text-muted-foreground">3</span>
+              </div>
+            </div>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <button className="text-[9px] text-muted-foreground hover:text-foreground flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
+                  <Info className="h-2.5 w-2.5" /> Knowledge
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+
+      {/* V4: Compact pill — single line with overlapping avatars */}
+      <div className="rounded-xl border border-border bg-card px-3 py-2.5">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 4 — Compact Pill</p>
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-2">
+            {PRODUCT.imageSeeds.map((s, i) => (
+              <div key={i} className="h-8 w-8 rounded-full overflow-hidden border-2 border-card bg-muted">
+                <img src={`https://picsum.photos/seed/${s}/64/64`} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+            <span className="text-[9px] text-muted-foreground">3 images selected</span>
+          </div>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <button className="shrink-0 h-6 w-6 rounded-full bg-muted/60 flex items-center justify-center hover:bg-muted transition-colors">
+                <Info className="h-3 w-3 text-muted-foreground" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+          </Tooltip>
+        </div>
+      </div>
+
+      {/* V5: Card with hover-reveal knowledge */}
+      <div className="rounded-xl border border-border bg-card p-3 group/v5">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 5 — Hover Reveal</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Package className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+          </div>
+          <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
+            <Image className="h-2.5 w-2.5" /> 3
+          </Badge>
+        </div>
+        <div className="flex gap-1.5 mt-2">
+          {PRODUCT.imageSeeds.map((s, i) => (
+            <div key={i} className="h-10 w-10 rounded-md overflow-hidden bg-muted border border-border">
+              <img src={`https://picsum.photos/seed/${s}/80/80`} alt="" className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+        <div className="max-h-0 group-hover/v5:max-h-20 overflow-hidden transition-all duration-300 ease-out">
+          <p className="text-[10px] text-muted-foreground mt-2 leading-relaxed">{PRODUCT.knowledge}</p>
+        </div>
+      </div>
+
+      {/* V6: Split card — image grid left, info right with divider */}
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <p className="text-[8px] text-muted-foreground px-3 pt-2 mb-1.5">Variation 6 — Split</p>
+        <div className="flex">
+          <div className="grid grid-cols-2 gap-0.5 p-1.5 shrink-0">
+            {PRODUCT.imageSeeds.map((s, i) => (
+              <div key={i} className="h-10 w-10 rounded overflow-hidden bg-muted">
+                <img src={`https://picsum.photos/seed/${s}/80/80`} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+            <div className="h-10 w-10 rounded bg-muted/30 flex items-center justify-center">
+              <Image className="h-3 w-3 text-muted-foreground/40" />
+            </div>
+          </div>
+          <div className="border-l border-border px-3 py-2 flex flex-col justify-center">
+            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+            <p className="text-[9px] text-muted-foreground mt-0.5">3 images selected</p>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <button className="text-[9px] text-primary hover:text-primary/80 mt-1 flex items-center gap-0.5 font-medium">
+                  <Info className="h-2.5 w-2.5" /> View knowledge
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+
+      {/* V7: Minimal line — icon + name + count + knowledge icon */}
+      <div className="rounded-xl border border-border bg-card px-3 py-2.5">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 7 — Minimal Line</p>
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <Package className="h-4 w-4 text-primary" />
+          </div>
+          <p className="text-xs font-semibold flex-1">{PRODUCT.name}</p>
+          <div className="flex items-center gap-1.5">
+            <div className="flex -space-x-1.5">
+              {PRODUCT.imageSeeds.map((s, i) => (
+                <div key={i} className="h-5 w-5 rounded-full overflow-hidden border border-card bg-muted">
+                  <img src={`https://picsum.photos/seed/${s}/40/40`} alt="" className="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <button className="h-5 w-5 rounded-full bg-muted/60 flex items-center justify-center hover:bg-muted">
+                  <Info className="h-2.5 w-2.5 text-muted-foreground" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+
+      {/* V8: Glassmorphism card — frosted background with images as strip */}
+      <div className="rounded-xl border border-white/20 bg-gradient-to-br from-muted/40 to-muted/10 backdrop-blur-sm p-3">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 8 — Glass</p>
+        <p className="text-xs font-semibold mb-2">{PRODUCT.name}</p>
+        <div className="flex gap-1.5">
+          {PRODUCT.imageSeeds.map((s, i) => (
+            <div key={i} className="flex-1 aspect-[4/5] rounded-lg overflow-hidden border border-white/20 shadow-sm">
+              <img src={`https://picsum.photos/seed/${s}/160/200`} alt="" className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <button className="text-[9px] text-muted-foreground hover:text-foreground mt-2 flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
+              <Info className="h-2.5 w-2.5" /> View knowledge context
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+        </Tooltip>
+      </div>
+
+      {/* V9: Accordion-style — click to expand knowledge */}
+      <ProductCardV9 />
+
+      {/* V10: Badge cluster — images as circular badges with floating info */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-1.5">Variation 10 — Badge Cluster</p>
+        <div className="flex items-start gap-3">
+          <div className="flex flex-col items-center gap-1">
+            {PRODUCT.imageSeeds.map((s, i) => (
+              <div key={i} className="h-10 w-10 rounded-full overflow-hidden border-2 border-border bg-muted shadow-sm">
+                <img src={`https://picsum.photos/seed/${s}/80/80`} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+          <div className="flex-1 pt-1">
+            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+            <p className="text-[9px] text-muted-foreground mt-0.5">3 product images included</p>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <button className="mt-1.5 rounded-md border border-border bg-muted/40 px-2 py-1 text-[9px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-1">
+                  <Info className="h-2.5 w-2.5" /> Knowledge context
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[280px] text-[10px] leading-relaxed">{PRODUCT.knowledge}</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* V9 needs state for accordion */
+function ProductCardV9() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl border border-border bg-card p-3">
+      <p className="text-[8px] text-muted-foreground mb-1.5">Variation 9 — Accordion</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1">
+            {PRODUCT.imageSeeds.map((s, i) => (
+              <div key={i} className="h-9 w-9 rounded-md overflow-hidden bg-muted border border-border">
+                <img src={`https://picsum.photos/seed/${s}/72/72`} alt="" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+          <p className="text-xs font-semibold">{PRODUCT.name}</p>
+        </div>
+        <button
+          onClick={() => setOpen(!open)}
+          className="h-6 px-2 rounded-md border border-border bg-muted/40 text-[9px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-1"
+        >
+          <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
+          Knowledge
+        </button>
+      </div>
+      <div className={cn("overflow-hidden transition-all duration-200", open ? "max-h-24 mt-2" : "max-h-0")}>
+        <p className="text-[10px] text-muted-foreground leading-relaxed border-t border-border pt-2">{PRODUCT.knowledge}</p>
+      </div>
     </div>
   );
 }
