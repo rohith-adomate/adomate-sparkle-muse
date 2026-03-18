@@ -32,33 +32,6 @@ interface Agent {
 
 const defaultAgents: Agent[] = [
   {
-    id: "holiday-1",
-    name: "Christmas Campaign",
-    type: "holiday",
-    description: "Generate festive creatives ahead of Christmas.",
-    concepts: 12,
-    enabled: true,
-    nextRun: "Dec 10, 2026",
-  },
-  {
-    id: "holiday-2",
-    name: "Black Friday Blitz",
-    type: "holiday",
-    description: "Automated deal-focused ads for Black Friday.",
-    concepts: 8,
-    enabled: true,
-    nextRun: "Nov 15, 2026",
-  },
-  {
-    id: "holiday-3",
-    name: "Valentine's Day Specials",
-    type: "holiday",
-    description: "Romantic-themed creatives for Valentine's Day.",
-    concepts: 6,
-    enabled: true,
-    nextRun: "Feb 1, 2027",
-  },
-  {
     id: "competitor-1",
     name: "Nike Ad Monitor",
     type: "competitor",
@@ -75,6 +48,15 @@ const defaultAgents: Agent[] = [
     concepts: 5,
     enabled: true,
     nextRun: "Mar 21, 2026",
+  },
+  {
+    id: "manual-1",
+    name: "Manual Image Pipeline",
+    type: "manual",
+    description: "Upload your own images and generate ad variations on demand.",
+    concepts: 0,
+    enabled: false,
+    nextRun: "Manual only",
   },
 ];
 
