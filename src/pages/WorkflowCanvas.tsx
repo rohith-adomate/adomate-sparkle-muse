@@ -960,6 +960,12 @@ export default function WorkflowCanvas() {
           toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
         }}
       />
+      <ExecutionOutputPanel
+        open={executionPanelOpen}
+        onClose={() => setExecutionPanelOpen(false)}
+        node={executionOutputNode}
+        runNumber={selectedExecution?.number}
+      />
     </div>
   );
 }
