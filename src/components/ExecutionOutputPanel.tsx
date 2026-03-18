@@ -13,7 +13,7 @@ import {
 
 /* ── Execution mock data types ── */
 
-export interface ExecutionRun {
+export interface WorkflowRun {
   id: string;
   number: number;
   status: "success" | "failed" | "running";
@@ -22,7 +22,7 @@ export interface ExecutionRun {
   nodeStatuses: Record<string, "success" | "error" | "running">;
 }
 
-export interface ExecutionNodeOutput {
+export interface RunNodeOutput {
   type: string;
   label: string;
   status: "success" | "error" | "running";
@@ -30,7 +30,7 @@ export interface ExecutionNodeOutput {
 
 /* ── Mock execution runs ── */
 
-export const MOCK_EXECUTIONS: ExecutionRun[] = [
+export const MOCK_RUNS: WorkflowRun[] = [
   {
     id: "exec-13", number: 13, status: "success", startedAt: "18 Mar 2026 · 09:00", duration: "2m 14s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
@@ -61,7 +61,7 @@ export const MOCK_EXECUTIONS: ExecutionRun[] = [
   },
 ];
 
-export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
+export const MOCK_MANUAL_RUNS: WorkflowRun[] = [
   {
     id: "mexec-5", number: 5, status: "success", startedAt: "18 Mar 2026 · 11:32", duration: "1m 45s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
@@ -91,10 +91,10 @@ const DEFAULT_WIDTH = "w-[420px]";
 
 /* ── Per-node output content ── */
 
-interface ExecutionOutputPanelProps {
+interface RunOutputPanelProps {
   open: boolean;
   onClose: () => void;
-  node: ExecutionNodeOutput | null;
+  node: RunNodeOutput | null;
   runNumber?: number;
 }
 
@@ -470,7 +470,7 @@ const STATUS_CONFIG = {
 
 /* ── Main component ── */
 
-export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionOutputPanelProps) {
+export default function RunOutputPanel({ open, onClose, node }: RunOutputPanelProps) {
   if (!open || !node) return null;
 
   const Icon = NODE_ICONS[node.type] || Database;

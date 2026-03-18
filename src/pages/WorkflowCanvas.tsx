@@ -21,10 +21,10 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
-import ExecutionOutputPanel, {
-  MOCK_EXECUTIONS, MOCK_MANUAL_EXECUTIONS,
-  type ExecutionRun, type ExecutionNodeOutput,
-} from "@/components/ExecutionOutputPanel";
+import RunOutputPanel, {
+  MOCK_RUNS, MOCK_MANUAL_RUNS,
+  type WorkflowRun, type RunNodeOutput,
+} from "@/components/RunOutputPanel";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 /* ── Types ── */
@@ -167,12 +167,12 @@ export default function WorkflowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
-  const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
-  const [selectedExecution, setSelectedExecution] = useState<ExecutionRun | null>(null);
-  const [executionOutputNode, setExecutionOutputNode] = useState<ExecutionNodeOutput | null>(null);
-  const [executionPanelOpen, setExecutionPanelOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
+  const [selectedRun, setSelectedExecution] = useState<WorkflowRun | null>(null);
+  const [runOutputNode, setExecutionOutputNode] = useState<RunNodeOutput | null>(null);
+  const [runPanelOpen, setExecutionPanelOpen] = useState(false);
 
-  const executions = isManualWorkflow ? MOCK_MANUAL_EXECUTIONS : MOCK_EXECUTIONS;
+  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : MOCK_RUNS;
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -427,8 +427,8 @@ export default function WorkflowCanvas() {
     })).filter((g) => g.items.length > 0);
   }, [searchQuery]);
 
-  // Select first execution when switching to executions tab
-  const selectExecution = useCallback((exec: ExecutionRun) => {
+  // Select first execution when switching to runs tab
+  const selectRun = useCallback((exec: WorkflowRun) => {
     setSelectedExecution(exec);
     setExecutionPanelOpen(false);
     setExecutionOutputNode(null);
@@ -441,10 +441,10 @@ export default function WorkflowCanvas() {
     );
   }, []);
 
-  const handleTabChange = useCallback((tab: "editor" | "executions") => {
+  const handleTabChange = useCallback((tab: "editor" | "runs") => {
     setActiveTab(tab);
-    if (tab === "executions" && executions.length > 0) {
-      selectExecution(executions[0]);
+    if (tab === "runs" && runs.length > 0) {
+      selectRun(runs[0]);
     } else if (tab === "editor") {
       setSelectedExecution(null);
       setExecutionPanelOpen(false);
@@ -457,26 +457,26 @@ export default function WorkflowCanvas() {
         }))
       );
     }
-  }, [executions, selectExecution, isManualWorkflow]);
+  }, [runs, selectRun, isManualWorkflow]);
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] -m-6 bg-background">
       {/* ── Left Panel ── */}
       {showPicker && (
         <div className="w-60 border-r border-border bg-card flex flex-col shrink-0">
-          {activeTab === "executions" ? (
+          {activeTab === "runs" ? (
             /* ── Execution runs list ── */
             <>
               <div className="p-3 border-b border-border">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Execution History</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Run History</p>
               </div>
               <div className="flex-1 overflow-y-auto">
-                {executions.map((exec) => {
-                  const isActive = selectedExecution?.id === exec.id;
+                {runs.map((exec) => {
+                  const isActive = selectedRun?.id === exec.id;
                   return (
                     <button
                       key={exec.id}
-                      onClick={() => selectExecution(exec)}
+                      onClick={() => selectRun(exec)}
                       className={cn(
                         "w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors border-b border-border/50",
                         isActive ? "bg-primary/5 border-l-2 border-l-primary" : "hover:bg-muted/40"
@@ -492,7 +492,7 @@ export default function WorkflowCanvas() {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold">Execution #{exec.number}</p>
+                        <p className="text-xs font-semibold">Run #{exec.number}</p>
                         <p className="text-[10px] text-muted-foreground leading-tight">{exec.startedAt}</p>
                       </div>
                       <span className="text-[10px] text-muted-foreground shrink-0">{exec.duration}</span>
@@ -597,13 +597,13 @@ export default function WorkflowCanvas() {
               <button
                 className={cn(
                   "px-3 py-1 text-xs font-medium rounded-md transition-colors",
-                  activeTab === "executions"
+                  activeTab === "runs"
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                onClick={() => handleTabChange("executions")}
+                onClick={() => handleTabChange("runs")}
               >
-                Executions
+                Runs
               </button>
             </div>
           </div>
@@ -751,20 +751,20 @@ export default function WorkflowCanvas() {
                   className={cn(
                     "absolute rounded-xl border bg-card shadow-sm transition-shadow",
                     isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md",
-                    activeTab === "executions" && node.status === "success" && "ring-2 ring-success",
-                    activeTab === "executions" && node.status === "error" && "ring-2 ring-destructive",
-                    activeTab === "executions" && node.status === "running" && "ring-2 ring-primary animate-pulse",
+                    activeTab === "runs" && node.status === "success" && "ring-2 ring-success",
+                    activeTab === "runs" && node.status === "error" && "ring-2 ring-destructive",
+                    activeTab === "runs" && node.status === "running" && "ring-2 ring-primary animate-pulse",
                   )}
                   style={{
                     left: node.x,
                     top: node.y,
                     width: NODE_W,
                   }}
-                  onMouseDown={(e) => activeTab !== "executions" && startNodeDrag(e, node.id)}
+                  onMouseDown={(e) => activeTab !== "runs" && startNodeDrag(e, node.id)}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedNode(node.id);
-                    if (activeTab === "executions") {
+                    if (activeTab === "runs") {
                       setExecutionOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
                       setExecutionPanelOpen(true);
                     } else {
@@ -960,11 +960,11 @@ export default function WorkflowCanvas() {
           toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
         }}
       />
-      <ExecutionOutputPanel
-        open={executionPanelOpen}
+      <RunOutputPanel
+        open={runPanelOpen}
         onClose={() => setExecutionPanelOpen(false)}
-        node={executionOutputNode}
-        runNumber={selectedExecution?.number}
+        node={runOutputNode}
+        runNumber={selectedRun?.number}
       />
     </div>
   );
