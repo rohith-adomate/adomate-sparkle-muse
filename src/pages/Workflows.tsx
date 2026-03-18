@@ -117,9 +117,9 @@ export default function Workflows() {
       name,
       type,
       description,
-      concepts: 6,
-      enabled: true,
-      nextRun: "Pending",
+      concepts: 0,
+      enabled: type !== "manual",
+      nextRun: type === "manual" ? "Manual only" : "Pending",
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
