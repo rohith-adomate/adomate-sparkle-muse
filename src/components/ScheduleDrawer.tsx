@@ -431,7 +431,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs max-w-[220px]">
-                Next scheduled execution dates. This repeats indefinitely.
+                Next scheduled run dates. This repeats indefinitely.
               </TooltipContent>
             </Tooltip>
             {nextRuns.length > 0 ? (

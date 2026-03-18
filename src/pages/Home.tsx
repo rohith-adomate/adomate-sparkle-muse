@@ -22,7 +22,7 @@ export default function Home() {
       <Card className="border border-border/60">
         <CardContent className="p-6">
           <h1 className="text-3xl font-bold tracking-tight">Welcome back, Ankit 👋</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Here's your execution snapshot for this brand.</p>
+          <p className="text-muted-foreground mt-1 text-sm">Here's your activity snapshot for this brand.</p>
         </CardContent>
       </Card>
 

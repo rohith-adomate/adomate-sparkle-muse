@@ -11,7 +11,7 @@ import {
   AlertTriangle, Filter, Hash, BarChart3, Eye,
 } from "lucide-react";
 
-/* ── Execution mock data types ── */
+/* ── Run mock data types ── */
 
 export interface WorkflowRun {
   id: string;
@@ -28,7 +28,7 @@ export interface RunNodeOutput {
   status: "success" | "error" | "running";
 }
 
-/* ── Mock execution runs ── */
+/* ── Mock runs ── */
 
 export const MOCK_RUNS: WorkflowRun[] = [
   {

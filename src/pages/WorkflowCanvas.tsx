@@ -168,9 +168,9 @@ export default function WorkflowCanvas() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
-  const [selectedRun, setSelectedExecution] = useState<WorkflowRun | null>(null);
-  const [runOutputNode, setExecutionOutputNode] = useState<RunNodeOutput | null>(null);
-  const [runPanelOpen, setExecutionPanelOpen] = useState(false);
+  const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(null);
+  const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
+  const [runPanelOpen, setRunPanelOpen] = useState(false);
 
   const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : MOCK_RUNS;
 
@@ -427,12 +427,12 @@ export default function WorkflowCanvas() {
     })).filter((g) => g.items.length > 0);
   }, [searchQuery]);
 
-  // Select first execution when switching to runs tab
+  // Select first run when switching to runs tab
   const selectRun = useCallback((exec: WorkflowRun) => {
-    setSelectedExecution(exec);
-    setExecutionPanelOpen(false);
-    setExecutionOutputNode(null);
-    // Update node statuses based on execution
+    setSelectedRun(exec);
+    setRunPanelOpen(false);
+    setRunOutputNode(null);
+    // Update node statuses based on run
     setNodes((prev) =>
       prev.map((n) => ({
         ...n,
@@ -446,9 +446,9 @@ export default function WorkflowCanvas() {
     if (tab === "runs" && runs.length > 0) {
       selectRun(runs[0]);
     } else if (tab === "editor") {
-      setSelectedExecution(null);
-      setExecutionPanelOpen(false);
-      setExecutionOutputNode(null);
+      setSelectedRun(null);
+      setRunPanelOpen(false);
+      setRunOutputNode(null);
       // Reset node statuses to editor defaults
       setNodes((prev) =>
         prev.map((n) => ({
@@ -465,7 +465,7 @@ export default function WorkflowCanvas() {
       {showPicker && (
         <div className="w-60 border-r border-border bg-card flex flex-col shrink-0">
           {activeTab === "runs" ? (
-            /* ── Execution runs list ── */
+            /* ── Runs list ── */
             <>
               <div className="p-3 border-b border-border">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Run History</p>
@@ -765,8 +765,8 @@ export default function WorkflowCanvas() {
                     e.stopPropagation();
                     setSelectedNode(node.id);
                     if (activeTab === "runs") {
-                      setExecutionOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
-                      setExecutionPanelOpen(true);
+                      setRunOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
+                      setRunPanelOpen(true);
                     } else {
                       if (node.type === "dataset") {
                         setDatasetDrawerOpen(true);
@@ -962,7 +962,7 @@ export default function WorkflowCanvas() {
       />
       <RunOutputPanel
         open={runPanelOpen}
-        onClose={() => setExecutionPanelOpen(false)}
+        onClose={() => setRunPanelOpen(false)}
         node={runOutputNode}
         runNumber={selectedRun?.number}
       />
