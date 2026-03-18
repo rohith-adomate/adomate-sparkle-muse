@@ -821,6 +821,21 @@ export default function WorkflowCanvas() {
         sortBy={topSelectConfig.sortBy}
         onConfigChange={handleTopSelectChange}
       />
+      <ManualImageInputDrawer
+        open={manualImageDrawerOpen}
+        onOpenChange={setManualImageDrawerOpen}
+        uploadedImages={uploadedImages}
+      />
+      <ManualImageUploadModal
+        open={manualImageUploadModalOpen}
+        onOpenChange={setManualImageUploadModalOpen}
+        onConfirm={(files) => {
+          const urls = files.map((f) => URL.createObjectURL(f));
+          setUploadedImages(urls);
+          setManualImageUploadModalOpen(false);
+          toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
+        }}
+      />
     </div>
   );
 }
