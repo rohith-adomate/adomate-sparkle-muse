@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Search } from "lucide-react";
 
 const companies = [
-  { name: "Whitespace", created: "Mar 5, 2026", credits: 0 },
+  { name: "Whitespace", created: "5 Mar 2026", credits: 0 },
 ];
 
 export default function AdminCredits() {

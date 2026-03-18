@@ -5,9 +5,9 @@ import { Play, CheckCircle2, Clock, Lightbulb, ArrowRight } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const campaignData: Record<string, { name: string; workflow: string; status: string; concepts: number; startedAt: string }> = {
-  "1": { name: "Summer Kickoff", workflow: "Weekly Ad Sprint", status: "Completed", concepts: 12, startedAt: "Feb 10, 2026 9:00 AM" },
-  "2": { name: "Valentine's Push", workflow: "Retail Ads", status: "Running", concepts: 6, startedAt: "Feb 8, 2026 11:30 AM" },
-  "3": { name: "Q1 Evergreen", workflow: "Standard Weekly Sprint", status: "Completed", concepts: 18, startedAt: "Feb 5, 2026 8:00 AM" },
+  "1": { name: "Summer Kickoff", workflow: "Weekly Ad Sprint", status: "Completed", concepts: 12, startedAt: "10 Feb 2026 9:00 AM" },
+  "2": { name: "Valentine's Push", workflow: "Retail Ads", status: "Running", concepts: 6, startedAt: "8 Feb 2026 11:30 AM" },
+  "3": { name: "Q1 Evergreen", workflow: "Standard Weekly Sprint", status: "Completed", concepts: 18, startedAt: "5 Feb 2026 8:00 AM" },
 };
 
 const timeline = [

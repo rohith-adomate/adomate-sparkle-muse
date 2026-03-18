@@ -20,9 +20,9 @@ type Competitor = {
 };
 
 const initialCompetitors: Competitor[] = [
-  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", lastScraped: "Mar 4, 2026", status: "success" },
-  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", lastScraped: "Mar 3, 2026", status: "success" },
-  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", lastScraped: "Mar 1, 2026", status: "success" },
+  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", lastScraped: "4 Mar 2026", status: "success" },
+  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", lastScraped: "3 Mar 2026", status: "success" },
+  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", lastScraped: "1 Mar 2026", status: "success" },
 ];
 
 type SearchResult = { id: string; name: string; avatarUrl: string; category: string };

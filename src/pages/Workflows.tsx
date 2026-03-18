@@ -38,7 +38,7 @@ const defaultAgents: Agent[] = [
     description: "Weekly scan of Nike ads → generate on-brand variations.",
     concepts: 9,
     enabled: true,
-    nextRun: "Mar 14, 2026",
+    nextRun: "14 Mar 2026",
   },
   {
     id: "competitor-2",
@@ -47,7 +47,7 @@ const defaultAgents: Agent[] = [
     description: "Monitor Adidas campaigns and produce counter-creatives.",
     concepts: 5,
     enabled: true,
-    nextRun: "Mar 21, 2026",
+    nextRun: "21 Mar 2026",
   },
   {
     id: "manual-1",
@@ -196,9 +196,9 @@ export default function Workflows() {
           <h2 className="text-base font-semibold mb-4">Run History</h2>
           <div className="divide-y divide-border/50">
             {[
-              { id: "run-1", workflow: "Nike Ad Monitor", type: "competitor" as const, status: "completed" as const, concepts: 9, date: "Mar 12, 2026", time: "14:32", duration: "3m 12s" },
-              { id: "run-2", workflow: "Manual Image Pipeline", type: "manual" as const, status: "completed" as const, concepts: 4, date: "Mar 10, 2026", time: "09:15", duration: "2m 05s" },
-              { id: "run-3", workflow: "Adidas Creative Tracker", type: "competitor" as const, status: "failed" as const, concepts: 0, date: "Mar 8, 2026", time: "11:05", duration: "1m 03s" },
+              { id: "run-1", workflow: "Nike Ad Monitor", type: "competitor" as const, status: "completed" as const, concepts: 9, date: "12 Mar 2026", time: "14:32", duration: "3m 12s" },
+              { id: "run-2", workflow: "Manual Image Pipeline", type: "manual" as const, status: "completed" as const, concepts: 4, date: "10 Mar 2026", time: "09:15", duration: "2m 05s" },
+              { id: "run-3", workflow: "Adidas Creative Tracker", type: "competitor" as const, status: "failed" as const, concepts: 0, date: "8 Mar 2026", time: "11:05", duration: "1m 03s" },
             ].map((run) => (
               <div key={run.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0 group cursor-pointer">
                 <div className="flex items-center gap-3">

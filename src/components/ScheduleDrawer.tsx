@@ -155,12 +155,11 @@ function getNextRuns(
 }
 
 function formatDate(d: Date): string {
-  return d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const day = d.getDate();
+  const month = d.toLocaleDateString("en-US", { month: "short" });
+  const year = d.getFullYear();
+  const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+  return `${weekday}, ${day} ${month} ${year}`;
 }
 
 function buildSummary(

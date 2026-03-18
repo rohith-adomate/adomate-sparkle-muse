@@ -12,9 +12,9 @@ import { toast } from "sonner";
 import { HoverExplainer } from "@/components/HoverExplainer";
 
 const campaigns = [
-  { id: "1", name: "Summer Kickoff", workflow: "Weekly Ad Sprint", lastRun: "Feb 10, 2026", status: "Completed", concepts: 12, statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { id: "2", name: "Valentine's Push", workflow: "Retail Ads", lastRun: "Feb 8, 2026", status: "Running", concepts: 6, statusColor: "bg-blue-100 text-blue-700 border-blue-200" },
-  { id: "3", name: "Q1 Evergreen", workflow: "Standard Weekly Sprint", lastRun: "Feb 5, 2026", status: "Completed", concepts: 18, statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { id: "1", name: "Summer Kickoff", workflow: "Weekly Ad Sprint", lastRun: "10 Feb 2026", status: "Completed", concepts: 12, statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { id: "2", name: "Valentine's Push", workflow: "Retail Ads", lastRun: "8 Feb 2026", status: "Running", concepts: 6, statusColor: "bg-blue-100 text-blue-700 border-blue-200" },
+  { id: "3", name: "Q1 Evergreen", workflow: "Standard Weekly Sprint", lastRun: "5 Feb 2026", status: "Completed", concepts: 18, statusColor: "bg-emerald-100 text-emerald-700 border-emerald-200" },
 ];
 
 const templates = [

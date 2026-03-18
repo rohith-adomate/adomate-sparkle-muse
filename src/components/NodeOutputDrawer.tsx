@@ -16,14 +16,14 @@ interface NodeOutputDrawerProps {
 const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entries: { label: string; preview: string }[] }> = {
   schedule: {
     duration: "0.1s",
-    timestamp: "Mar 10, 2026 09:00 AM",
+    timestamp: "10 Mar 2026 09:00 AM",
     entries: [
       { label: "Trigger event", preview: "Scheduled run triggered successfully." },
     ],
   },
   "brand-knowledge": {
     duration: "1.2s",
-    timestamp: "Mar 10, 2026 09:00 AM",
+    timestamp: "10 Mar 2026 09:00 AM",
     entries: [
       { label: "Logo", preview: "adomate-logo.png (1 file loaded)" },
       { label: "Brand colors", preview: "#DB2777, #1E1E2F, #FFFFFF" },
@@ -33,7 +33,7 @@ const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entrie
   },
   "product-data": {
     duration: "2.4s",
-    timestamp: "Mar 10, 2026 09:01 AM",
+    timestamp: "10 Mar 2026 09:01 AM",
     entries: [
       { label: "Products loaded", preview: "4 products fetched from catalog" },
       { label: "Product images", preview: "12 images across all products" },
@@ -42,7 +42,7 @@ const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entrie
   },
   "competitor-scrape": {
     duration: "8.7s",
-    timestamp: "Mar 10, 2026 09:01 AM",
+    timestamp: "10 Mar 2026 09:01 AM",
     entries: [
       { label: "Competitors scraped", preview: "Nike, Adidas (2 of 3 selected)" },
       { label: "Config", preview: "Max 10 ads/competitor · Min 7 days active · Min 1,000 reach · All time" },
@@ -59,7 +59,7 @@ const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entrie
   },
   "generate-concepts": {
     duration: "14.3s",
-    timestamp: "Mar 10, 2026 09:02 AM",
+    timestamp: "10 Mar 2026 09:02 AM",
     entries: [
       { label: "Prompt used", preview: "Generate modern, scroll-stopping ad creatives for social media. Use bold visuals with clean typography…" },
       { label: "Inputs received", preview: "Brand Knowledge ✓ · Product Data ✓ · Competitor Data ✓" },
@@ -76,7 +76,7 @@ const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entrie
   },
   "send-approval": {
     duration: "0.8s",
-    timestamp: "Mar 10, 2026 09:02 AM",
+    timestamp: "10 Mar 2026 09:02 AM",
     entries: [
       { label: "Sent to", preview: "ankit@adomate.ai, sarah@adomate.ai" },
       { label: "Status", preview: "Awaiting approval (2/6 concepts approved)" },
@@ -84,7 +84,7 @@ const MOCK_OUTPUTS: Record<string, { duration: string; timestamp: string; entrie
   },
   "publish-meta": {
     duration: "3.1s",
-    timestamp: "Mar 10, 2026 09:05 AM",
+    timestamp: "10 Mar 2026 09:05 AM",
     entries: [
       { label: "Published ads", preview: "2 ads published to Meta Ads Manager" },
       { label: "Campaign", preview: "Christmas Campaign — Ad Set: Holiday Promos" },

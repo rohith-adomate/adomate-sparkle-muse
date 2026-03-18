@@ -32,46 +32,46 @@ export interface ExecutionNodeOutput {
 
 export const MOCK_EXECUTIONS: ExecutionRun[] = [
   {
-    id: "exec-13", number: 13, status: "success", startedAt: "Mar 18, 2026 · 09:00", duration: "2m 14s",
+    id: "exec-13", number: 13, status: "success", startedAt: "18 Mar 2026 · 09:00", duration: "2m 14s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
   },
   {
-    id: "exec-12", number: 12, status: "failed", startedAt: "Mar 17, 2026 · 09:00", duration: "1m 42s",
+    id: "exec-12", number: 12, status: "failed", startedAt: "17 Mar 2026 · 09:00", duration: "1m 42s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "error" },
   },
   {
-    id: "exec-11", number: 11, status: "success", startedAt: "Mar 16, 2026 · 09:00", duration: "2m 08s",
+    id: "exec-11", number: 11, status: "success", startedAt: "16 Mar 2026 · 09:00", duration: "2m 08s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
   },
   {
-    id: "exec-10", number: 10, status: "success", startedAt: "Mar 15, 2026 · 09:00", duration: "1m 55s",
+    id: "exec-10", number: 10, status: "success", startedAt: "15 Mar 2026 · 09:00", duration: "1m 55s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
   },
   {
-    id: "exec-9", number: 9, status: "failed", startedAt: "Mar 14, 2026 · 09:00", duration: "0m 32s",
+    id: "exec-9", number: 9, status: "failed", startedAt: "14 Mar 2026 · 09:00", duration: "0m 32s",
     nodeStatuses: { "n0": "success", "n1": "error", "n3": "error", "n2b": "success", "n5": "error" },
   },
   {
-    id: "exec-8", number: 8, status: "success", startedAt: "Mar 13, 2026 · 09:00", duration: "2m 21s",
+    id: "exec-8", number: 8, status: "success", startedAt: "13 Mar 2026 · 09:00", duration: "2m 21s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
   },
   {
-    id: "exec-7", number: 7, status: "success", startedAt: "Mar 12, 2026 · 09:00", duration: "1m 48s",
+    id: "exec-7", number: 7, status: "success", startedAt: "12 Mar 2026 · 09:00", duration: "1m 48s",
     nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
   },
 ];
 
 export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
   {
-    id: "mexec-5", number: 5, status: "success", startedAt: "Mar 18, 2026 · 11:32", duration: "1m 45s",
+    id: "mexec-5", number: 5, status: "success", startedAt: "18 Mar 2026 · 11:32", duration: "1m 45s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
   },
   {
-    id: "mexec-4", number: 4, status: "success", startedAt: "Mar 17, 2026 · 14:10", duration: "1m 22s",
+    id: "mexec-4", number: 4, status: "success", startedAt: "17 Mar 2026 · 14:10", duration: "1m 22s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
   },
   {
-    id: "mexec-3", number: 3, status: "failed", startedAt: "Mar 16, 2026 · 10:05", duration: "0m 48s",
+    id: "mexec-3", number: 3, status: "failed", startedAt: "16 Mar 2026 · 10:05", duration: "0m 48s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "error" },
   },
 ];
@@ -132,7 +132,7 @@ function ScheduleOutput() {
           <Clock className="h-3 w-3 text-muted-foreground" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
         </div>
-        <p className="text-sm font-medium text-foreground">Mar 18, 2026 · 09:00 AM</p>
+        <p className="text-sm font-medium text-foreground">18 Mar 2026 · 09:00 AM</p>
       </div>
     </div>
   );
@@ -518,9 +518,13 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
               <span className={cn("text-[9px] font-medium", statusCfg.color)}>{statusCfg.label}</span>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
-            <XCircle className="h-3.5 w-3.5" /> Close
-          </Button>
+          <button
+            onClick={onClose}
+            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            <XCircle className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
         </div>
 
         {/* Content */}
