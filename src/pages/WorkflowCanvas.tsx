@@ -168,6 +168,11 @@ export default function WorkflowCanvas() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
+  const [selectedExecution, setSelectedExecution] = useState<ExecutionRun | null>(null);
+  const [executionOutputNode, setExecutionOutputNode] = useState<ExecutionNodeOutput | null>(null);
+  const [executionPanelOpen, setExecutionPanelOpen] = useState(false);
+
+  const executions = isManualWorkflow ? MOCK_MANUAL_EXECUTIONS : MOCK_EXECUTIONS;
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
