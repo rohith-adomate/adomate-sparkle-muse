@@ -24,7 +24,7 @@ import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 import RunOutputPanel, {
   MOCK_RUNS, MOCK_MANUAL_RUNS,
   type WorkflowRun, type RunNodeOutput,
-} from "@/components/RunOutputPanel";
+} from "@/components/ExecutionOutputPanel";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 /* ── Types ── */
