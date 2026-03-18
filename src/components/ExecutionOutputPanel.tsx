@@ -266,6 +266,9 @@ function SelectOutput() {
           );
         })}
       </div>
+    </div>
+  );
+}
 
 /* Product Data output */
 const SELECTED_PRODUCTS = [
