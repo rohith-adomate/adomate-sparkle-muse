@@ -21,6 +21,11 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
+import ExecutionOutputPanel, {
+  MOCK_EXECUTIONS, MOCK_MANUAL_EXECUTIONS,
+  type ExecutionRun, type ExecutionNodeOutput,
+} from "@/components/ExecutionOutputPanel";
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 /* ── Types ── */
 
