@@ -64,6 +64,13 @@ const NODE_CATALOG = [
     ],
   },
   {
+    category: "dynamic-data" as const,
+    label: "DYNAMIC DATA",
+    items: [
+      { type: "manual-image-input", label: "Manual Image Input", description: "Upload images at run time.", icon: ImagePlus, inputs: [], outputs: ["Images"] },
+    ],
+  },
+  {
     category: "ai" as const,
     label: "AGENT",
     items: [
