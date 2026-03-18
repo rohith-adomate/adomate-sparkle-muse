@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,11 +105,24 @@ function getDefaultNodes(agentName: string): CanvasNode[] {
   ];
 }
 
+function getManualNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "manual-image-input", category: "dynamic-data", label: "Manual Image Input", description: "Upload images at run time.", x: 100, y: 200, inputs: [], outputs: ["Images"] },
+    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"] },
+    { id: "n2", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Images", "Products"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+];
+
+const MANUAL_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n2", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -132,6 +145,8 @@ function cubicPath(x1: number, y1: number, x2: number, y2: number) {
 export default function WorkflowCanvas() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isManualWorkflow = (location.state as any)?.type === "manual";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -145,10 +160,10 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => getDefaultNodes(agentName));
-  const [edges, setEdges] = useState<Edge[]>(DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : getDefaultNodes(agentName));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [agentEnabled, setAgentEnabled] = useState(true);
+  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "executions">("editor");
 
   // Canvas state

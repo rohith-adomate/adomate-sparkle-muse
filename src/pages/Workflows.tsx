@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 /* ── Types & Data ── */
 
-type AgentType = "holiday" | "competitor";
+type AgentType = "holiday" | "competitor" | "manual";
 
 interface Agent {
   id: string;
@@ -117,9 +117,9 @@ export default function Workflows() {
       name,
       type,
       description,
-      concepts: 6,
-      enabled: true,
-      nextRun: "Pending",
+      concepts: 0,
+      enabled: type !== "manual",
+      nextRun: type === "manual" ? "Manual only" : "Pending",
     };
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
@@ -158,14 +158,14 @@ export default function Workflows() {
           <h2 className="text-base font-semibold mb-4">Your workflows</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
-              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`)}>
-                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : "bg-violet-400"}`} /> 
+              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`, { state: { type: agent.type } })}>
+                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : agent.type === "manual" ? "bg-amber-400" : "bg-violet-400"}`} /> 
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "SEASONAL" : "COMPETITOR"}
+                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
@@ -251,7 +251,7 @@ export default function Workflows() {
             <div className="flex gap-5">
               <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
-                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Seasonal</TabsTrigger>
+                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md gap-2">Seasonal <Badge variant="outline" className="text-[9px] px-1.5 py-0 border-muted-foreground/30 text-muted-foreground font-normal">Soon</Badge></TabsTrigger>
                 <TabsTrigger value="manual" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Manual</TabsTrigger>
               </TabsList>
 
@@ -292,9 +292,12 @@ export default function Workflows() {
                       return (
                         <Card
                           key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("holiday", agent.name, agent.description)}
+                          className="relative border border-border/60 opacity-60 cursor-default select-none overflow-hidden"
                         >
+                          {/* Coming Soon ribbon */}
+                          <div className="absolute top-3 -right-8 rotate-45 bg-muted-foreground/15 text-muted-foreground text-[9px] font-semibold tracking-widest uppercase px-8 py-0.5 pointer-events-none">
+                            Coming Soon
+                          </div>
                           <CardContent className="p-4 space-y-3">
                             <div className={`h-10 w-10 rounded-lg ${bgColor} border ${borderColor} flex items-center justify-center`}>
                               <Icon className={`h-5 w-5 ${textColor}`} />
@@ -318,7 +321,7 @@ export default function Workflows() {
                         <Card
                           key={agent.id}
                           className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
+                          onClick={() => handleSelectAgent("manual", agent.name, agent.description)}
                         >
                           <CardContent className="p-4 space-y-3">
                             <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
