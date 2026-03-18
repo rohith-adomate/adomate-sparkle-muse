@@ -292,9 +292,12 @@ export default function Workflows() {
                       return (
                         <Card
                           key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("holiday", agent.name, agent.description)}
+                          className="relative border border-border/60 opacity-60 cursor-default select-none overflow-hidden"
                         >
+                          {/* Coming Soon ribbon */}
+                          <div className="absolute top-3 -right-8 rotate-45 bg-muted-foreground/15 text-muted-foreground text-[9px] font-semibold tracking-widest uppercase px-8 py-0.5 pointer-events-none">
+                            Coming Soon
+                          </div>
                           <CardContent className="p-4 space-y-3">
                             <div className={`h-10 w-10 rounded-lg ${bgColor} border ${borderColor} flex items-center justify-center`}>
                               <Icon className={`h-5 w-5 ${textColor}`} />
