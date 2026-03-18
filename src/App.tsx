@@ -78,6 +78,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
+            <Route path="/dataset-match-variations" element={<DatasetMatchVariations />} />
             
           </Route>
           <Route element={<AdminLayout />}>
