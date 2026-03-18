@@ -10,14 +10,17 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus,
 } from "lucide-react";
+import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
+import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
+import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 
 /* ── Types ── */
 
@@ -61,6 +64,13 @@ const NODE_CATALOG = [
     ],
   },
   {
+    category: "dynamic-data" as const,
+    label: "DYNAMIC DATA",
+    items: [
+      { type: "manual-image-input", label: "Manual Image Input", description: "Upload images at run time.", icon: ImagePlus, inputs: [], outputs: ["Images"] },
+    ],
+  },
+  {
     category: "ai" as const,
     label: "AGENT",
     items: [
@@ -73,6 +83,7 @@ const NODE_CATALOG = [
 const CATEGORY_COLORS: Record<string, string> = {
   trigger: "142 70% 45%",
   "static-data": "210 80% 55%",
+  "dynamic-data": "35 90% 55%",
   select: "28 85% 56%",
   ai: "270 70% 60%",
   action: "25 95% 55%",
@@ -153,6 +164,9 @@ export default function WorkflowCanvas() {
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
+  const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
+  const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
 
   // Update top-select node description when config changes
@@ -354,11 +368,19 @@ export default function WorkflowCanvas() {
     setZoom(newZoom);
   };
 
-  /* ── Can activate? Dataset node must exist ── */
+  /* ── Can activate? Dataset node must exist AND no manual-image-input node ── */
+  const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
+    if (hasManualImageInput) return false;
     return nodes.some((n) => n.type === "dataset");
-  }, [nodes]);
-  
+  }, [nodes, hasManualImageInput]);
+
+  // Force agent off when manual image input node exists
+  useEffect(() => {
+    if (hasManualImageInput && agentEnabled) {
+      setAgentEnabled(false);
+    }
+  }, [hasManualImageInput]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
@@ -480,11 +502,23 @@ export default function WorkflowCanvas() {
               </TooltipTrigger>
               {!canActivate && (
                 <TooltipContent side="bottom" className="text-xs max-w-[200px]">
-                  Add a Dataset node to activate this workflow.
+                  {hasManualImageInput
+                    ? "Manual Image Input nodes require manual runs. Scheduling is disabled."
+                    : "Add a Dataset node to activate this workflow."}
                 </TooltipContent>
               )}
             </Tooltip>
-            <Button size="sm" className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground">
+            <Button
+              size="sm"
+              className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground"
+              onClick={() => {
+                if (hasManualImageInput) {
+                  setManualImageUploadModalOpen(true);
+                } else {
+                  toast.success("Workflow run started");
+                }
+              }}
+            >
               <Play className="h-3.5 w-3.5" /> Run
             </Button>
           </div>
@@ -620,6 +654,8 @@ export default function WorkflowCanvas() {
                         setScheduleDrawerOpen(true);
                       } else if (node.type === "top-select") {
                         setTopSelectDrawerOpen(true);
+                      } else if (node.type === "manual-image-input") {
+                        setManualImageDrawerOpen(true);
                       }
                     }
                   }}
@@ -784,6 +820,21 @@ export default function WorkflowCanvas() {
         count={topSelectConfig.count}
         sortBy={topSelectConfig.sortBy}
         onConfigChange={handleTopSelectChange}
+      />
+      <ManualImageInputDrawer
+        open={manualImageDrawerOpen}
+        onOpenChange={setManualImageDrawerOpen}
+        uploadedImages={uploadedImages}
+      />
+      <ManualImageUploadModal
+        open={manualImageUploadModalOpen}
+        onOpenChange={setManualImageUploadModalOpen}
+        onConfirm={(files) => {
+          const urls = files.map((f) => URL.createObjectURL(f));
+          setUploadedImages(urls);
+          setManualImageUploadModalOpen(false);
+          toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
+        }}
       />
     </div>
   );
