@@ -590,7 +590,7 @@ export default function WorkflowCanvas() {
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                onClick={() => setActiveTab("editor")}
+                onClick={() => handleTabChange("editor")}
               >
                 Editor
               </button>
@@ -601,7 +601,7 @@ export default function WorkflowCanvas() {
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                onClick={() => setActiveTab("executions")}
+                onClick={() => handleTabChange("executions")}
               >
                 Executions
               </button>
