@@ -748,21 +748,25 @@ export default function WorkflowCanvas() {
               return (
                 <div
                   key={node.id}
-                  className={`absolute rounded-xl border bg-card shadow-sm transition-shadow ${
-                    isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
-                  }`}
+                  className={cn(
+                    "absolute rounded-xl border bg-card shadow-sm transition-shadow",
+                    isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md",
+                    activeTab === "executions" && node.status === "success" && "ring-2 ring-success",
+                    activeTab === "executions" && node.status === "error" && "ring-2 ring-destructive",
+                    activeTab === "executions" && node.status === "running" && "ring-2 ring-primary animate-pulse",
+                  )}
                   style={{
                     left: node.x,
                     top: node.y,
                     width: NODE_W,
                   }}
-                  onMouseDown={(e) => startNodeDrag(e, node.id)}
+                  onMouseDown={(e) => activeTab !== "executions" && startNodeDrag(e, node.id)}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedNode(node.id);
                     if (activeTab === "executions") {
-                      setOutputDrawerNode({ label: node.label, type: node.type, status: node.status });
-                      setOutputDrawerOpen(true);
+                      setExecutionOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
+                      setExecutionPanelOpen(true);
                     } else {
                       if (node.type === "dataset") {
                         setDatasetDrawerOpen(true);
