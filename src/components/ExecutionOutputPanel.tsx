@@ -403,108 +403,101 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
 }
 
 /* Generate Ad Variations output */
-const GENERATED_CONCEPTS = [
-  { id: "c1", title: "Bold Statement", seed: "bold-statement", rating: 4.2 },
-  { id: "c2", title: "Social Proof UGC", seed: "social-proof", rating: 3.8 },
-  { id: "c3", title: "Gradient Pop", seed: "gradient-pop", rating: 4.5 },
-  { id: "c4", title: "Street Style", seed: "street-style", rating: 3.1 },
-];
-
 function GenerateVariationsOutput() {
   const navigate = useNavigate();
-  const [previewIdx, setPreviewIdx] = useState(0);
+  const [hovering, setHovering] = useState(false);
+
+  const settings = [
+    { label: "Concepts per image", value: "6" },
+    { label: "Visual similarity", value: "Medium", progress: 50 },
+    { label: "Messaging similarity", value: "Medium", progress: 50 },
+    { label: "Total generated", value: "15 concepts" },
+  ];
+
+  const previewSeeds = ["gen-concept-1", "gen-concept-2", "gen-concept-3"];
 
   return (
-    <div className="flex gap-4">
-      {/* Left: settings summary */}
-      <div className="w-48 shrink-0 space-y-2">
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Generation settings</p>
-        <div className="space-y-1.5">
-          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
-            <p className="text-[9px] text-muted-foreground">Concepts per image</p>
-            <p className="text-xs font-semibold">6</p>
-          </div>
-          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
-            <p className="text-[9px] text-muted-foreground">Visual similarity</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-1/2 rounded-full bg-primary" />
-              </div>
-              <span className="text-[9px] font-medium">Medium</span>
+    <div className="space-y-4">
+      {/* Settings cards */}
+      <div>
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generation Settings</p>
+        <div className="grid grid-cols-2 gap-2">
+          {settings.map((s, i) => (
+            <div key={i} className="rounded-lg border border-border bg-card px-3 py-2.5">
+              <p className="text-[9px] text-muted-foreground">{s.label}</p>
+              {s.progress !== undefined ? (
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full bg-primary" style={{ width: `${s.progress}%` }} />
+                  </div>
+                  <span className="text-[10px] font-semibold">{s.value}</span>
+                </div>
+              ) : (
+                <p className="text-sm font-semibold mt-0.5">{s.value}</p>
+              )}
             </div>
-          </div>
-          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
-            <p className="text-[9px] text-muted-foreground">Messaging similarity</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-1/2 rounded-full bg-primary" />
-              </div>
-              <span className="text-[9px] font-medium">Medium</span>
-            </div>
-          </div>
-          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
-            <p className="text-[9px] text-muted-foreground">Total generated</p>
-            <p className="text-xs font-semibold">24 concepts</p>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Right: preview grid */}
-      <div className="flex-1 space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Preview (4 of 24)</p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-6 text-[10px] gap-1"
-            onClick={() => navigate("/concepts/competitor-ad-variation-1")}
-          >
-            <ExternalLink className="h-3 w-3" /> View all concepts
-          </Button>
-        </div>
-
-        {/* Main preview */}
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
-          <div className="aspect-[16/9] relative bg-muted">
-            <img
-              src={`https://picsum.photos/seed/${GENERATED_CONCEPTS[previewIdx].seed}/640/360`}
-              alt={GENERATED_CONCEPTS[previewIdx].title}
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 py-2.5">
-              <p className="text-xs font-semibold text-white">{GENERATED_CONCEPTS[previewIdx].title}</p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[10px] text-white/70">Rating: {GENERATED_CONCEPTS[previewIdx].rating}/5</span>
-                <button
-                  onClick={() => navigate("/concepts/competitor-ad-variation-1")}
-                  className="text-[10px] text-white/90 hover:text-white underline underline-offset-2 flex items-center gap-0.5"
-                >
-                  <Eye className="h-2.5 w-2.5" /> View detail
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Thumbnails */}
-        <div className="flex items-center gap-1.5">
-          {GENERATED_CONCEPTS.map((c, i) => (
-            <button
-              key={c.id}
-              onClick={() => setPreviewIdx(i)}
+      {/* Preview grid — 3 images + "+12 more" card */}
+      <div>
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generated Concepts</p>
+        <div
+          className="grid grid-cols-4 gap-2 cursor-pointer"
+          onMouseEnter={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
+          onClick={() => navigate("/concepts/competitor-ad-variation-1")}
+        >
+          {previewSeeds.map((seed, i) => (
+            <div
+              key={i}
               className={cn(
-                "h-12 w-12 rounded-md overflow-hidden border-2 transition-all shrink-0",
-                i === previewIdx ? "border-primary ring-2 ring-primary/20 scale-105" : "border-border opacity-50 hover:opacity-100"
+                "rounded-lg border overflow-hidden aspect-[4/5] relative transition-all duration-200",
+                hovering
+                  ? "border-primary ring-2 ring-primary/20 scale-[1.02]"
+                  : "border-border"
               )}
             >
               <img
-                src={`https://picsum.photos/seed/${c.seed}/96/96`}
-                alt={c.title}
+                src={`https://picsum.photos/seed/${seed}/320/400`}
+                alt={`Concept ${i + 1}`}
                 className="h-full w-full object-cover"
               />
-            </button>
+              {hovering && (
+                <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                  <ExternalLink className="h-4 w-4 text-primary drop-shadow-md" />
+                </div>
+              )}
+            </div>
           ))}
+          {/* +12 more card */}
+          <div
+            className={cn(
+              "rounded-lg border overflow-hidden aspect-[4/5] flex flex-col items-center justify-center bg-muted/40 transition-all duration-200",
+              hovering
+                ? "border-primary ring-2 ring-primary/20 scale-[1.02] bg-primary/5"
+                : "border-border"
+            )}
+          >
+            <span className={cn(
+              "text-lg font-bold transition-colors",
+              hovering ? "text-primary" : "text-muted-foreground"
+            )}>+12</span>
+            <span className={cn(
+              "text-[9px] font-medium transition-colors mt-0.5",
+              hovering ? "text-primary" : "text-muted-foreground"
+            )}>View all</span>
+            {hovering && (
+              <ExternalLink className="h-3 w-3 text-primary mt-1.5" />
+            )}
+          </div>
         </div>
+        {hovering && (
+          <p className="text-[10px] text-primary font-medium text-center mt-2 animate-in fade-in-0 duration-150">
+            Click to view all 15 generated concepts →
+          </p>
+        )}
       </div>
     </div>
   );
