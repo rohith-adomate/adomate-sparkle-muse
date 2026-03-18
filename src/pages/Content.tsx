@@ -261,7 +261,7 @@ function DeliverySettingsModal({
                       )}
                     >
                       <CalendarIcon className="h-3 w-3 mr-1.5" />
-                      {endDate ? format(endDate, "MMM d, yyyy") : "No end date"}
+                      {endDate ? format(endDate, "d MMM yyyy") : "No end date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">

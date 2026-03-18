@@ -518,9 +518,13 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
               <span className={cn("text-[9px] font-medium", statusCfg.color)}>{statusCfg.label}</span>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
-            <XCircle className="h-3.5 w-3.5" /> Close
-          </Button>
+          <button
+            onClick={onClose}
+            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            <XCircle className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
         </div>
 
         {/* Content */}
