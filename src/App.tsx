@@ -24,7 +24,7 @@ import CalendarPage from "./pages/CalendarPage";
 import Performance from "./pages/Performance";
 import Workflows from "./pages/Workflows";
 import WorkflowCanvas from "./pages/WorkflowCanvas";
-
+import DatasetMatchVariations from "./pages/DatasetMatchVariations";
 
 import Settings from "./pages/Settings";
 import NotificationsSpec from "./pages/NotificationsSpec";
@@ -78,6 +78,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
             <Route path="/credits" element={<Credits />} />
+            <Route path="/dataset-match-variations" element={<DatasetMatchVariations />} />
             
           </Route>
           <Route element={<AdminLayout />}>

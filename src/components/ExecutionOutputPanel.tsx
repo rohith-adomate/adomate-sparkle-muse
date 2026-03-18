@@ -141,31 +141,60 @@ function ScheduleOutput() {
 /* Dataset output */
 function DatasetOutput() {
   return (
-    <div className="space-y-2.5">
-      <div className="grid grid-cols-3 gap-2.5">
-        <StatCard icon={Filter} label="Competitors">
-          <div className="flex flex-wrap gap-1 mt-0.5">
-            <Badge variant="secondary" className="text-[9px] gap-1 py-0 h-5">
-              <img src="https://logo.clearbit.com/cerave.com" alt="" className="h-3 w-3 rounded-full" /> CeraVe
-            </Badge>
-            <Badge variant="secondary" className="text-[9px] gap-1 py-0 h-5">
-              <img src="https://logo.clearbit.com/theordinary.com" alt="" className="h-3 w-3 rounded-full" /> The Ordinary
-            </Badge>
-          </div>
-        </StatCard>
-        <StatCard icon={Clock} label="Time range">
-          Last 30 days
-        </StatCard>
-        <StatCard icon={BarChart3} label="Min. reach">
-          1,000 impressions
-        </StatCard>
+    <div className="space-y-4">
+      {/* Sources */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2.5">Sources</p>
+        <div className="flex items-center gap-2">
+          {[
+            { name: "CeraVe", logo: "https://logo.clearbit.com/cerave.com" },
+            { name: "The Ordinary", logo: "https://logo.clearbit.com/theordinary.com" },
+          ].map((c) => (
+            <div key={c.name} className="flex items-center gap-1.5 rounded-full border border-border bg-muted/40 pl-1 pr-2.5 py-1">
+              <img src={c.logo} alt="" className="h-4 w-4 rounded-full" />
+              <span className="text-[10px] font-medium">{c.name}</span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 flex items-center justify-between">
+
+      {/* Filters */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2.5">Filters</p>
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-lg border border-border bg-muted/20 p-2.5">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Clock className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Time range</span>
+            </div>
+            <p className="text-xs font-medium">Last 30 days</p>
+          </div>
+          <div className="rounded-lg border border-border bg-muted/20 p-2.5">
+            <div className="flex items-center gap-1.5 mb-1">
+              <BarChart3 className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Min. reach</span>
+            </div>
+            <p className="text-xs font-medium">1,000 impressions</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Match summary */}
+      <DatasetMatchSummary />
+    </div>
+  );
+}
+
+/* Default match summary — will be swapped after user picks a variation */
+function DatasetMatchSummary() {
+  return (
+    <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Database className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs"><span className="font-semibold">12 ads</span> matched filters <span className="text-muted-foreground">(of 48 total scraped)</span></span>
+          <span className="text-xs font-medium"><span className="font-semibold">12 ads</span> matched filters</span>
         </div>
-        <Badge variant="outline" className="text-[9px]">Full view coming soon</Badge>
+        <span className="text-[10px] text-muted-foreground">of 48 scraped</span>
       </div>
     </div>
   );
