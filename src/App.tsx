@@ -73,7 +73,7 @@ const App = () => (
             <Route path="/performance" element={<Performance />} />
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/workflows/:id" element={<WorkflowCanvas />} />
-            <Route path="/schedule-variations" element={<ScheduleNodeVariations />} />
+            
             
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications-spec" element={<NotificationsSpec />} />
