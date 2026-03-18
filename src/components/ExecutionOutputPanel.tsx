@@ -116,24 +116,23 @@ function StatCard({ icon: IconComp, label, children, accent }: {
   );
 }
 
-/* Schedule output — Split Card (Variation 4) */
+/* Schedule output */
 function ScheduleOutput() {
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-lg border border-border bg-muted/30 p-3">
-        <div className="flex items-center gap-1.5 mb-1.5">
-          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
-        </div>
-        <p className="text-sm font-medium text-emerald-600">Triggered successfully</p>
+    <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Clock className="h-3 w-3 text-muted-foreground" />
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[220px] text-[10px]">
+            The exact date and time this workflow run was triggered by the schedule.
+          </TooltipContent>
+        </Tooltip>
       </div>
-      <div className="rounded-lg border border-border bg-muted/30 p-3">
-        <div className="flex items-center gap-1.5 mb-1.5">
-          <Clock className="h-3 w-3 text-muted-foreground" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
-        </div>
-        <p className="text-sm font-medium text-foreground">18 Mar 2026 · 09:00 AM</p>
-      </div>
+      <p className="text-sm font-medium text-foreground">18 Mar 2026 · 09:00 AM</p>
     </div>
   );
 }
@@ -144,7 +143,17 @@ function DatasetOutput() {
     <div className="space-y-4">
       {/* Sources */}
       <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2.5">Sources</p>
+        <div className="flex items-center gap-1.5 mb-2.5">
+          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Sources</p>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[240px] text-[10px]">
+              The competitor brands whose ads were scraped and collected for this run.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <div className="flex items-center gap-2">
           {[
             { name: "CeraVe", logo: "https://logo.clearbit.com/cerave.com" },
@@ -160,7 +169,17 @@ function DatasetOutput() {
 
       {/* Filters */}
       <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2.5">Filters</p>
+        <div className="flex items-center gap-1.5 mb-2.5">
+          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Filters</p>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[260px] text-[10px]">
+              Criteria used to narrow down scraped ads — time range limits recency, and minimum reach sets the lowest audience threshold.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <div className="grid grid-cols-2 gap-2.5">
           <div className="rounded-lg border border-border bg-muted/20 p-2.5">
             <div className="flex items-center gap-1.5 mb-1">
@@ -179,22 +198,15 @@ function DatasetOutput() {
         </div>
       </div>
 
-      {/* Match summary */}
-      <DatasetMatchSummary />
-    </div>
-  );
-}
-
-/* Default match summary — will be swapped after user picks a variation */
-function DatasetMatchSummary() {
-  return (
-    <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Database className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium"><span className="font-semibold">12 ads</span> matched filters</span>
-        </div>
-        <span className="text-[10px] text-muted-foreground">of 48 scraped</span>
+      {/* Match summary — Inline Badges (Variation 4) */}
+      <div className="rounded-xl border border-border bg-card shadow-sm px-3.5 py-3 flex items-center gap-2.5">
+        <Database className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+        <span className="text-xs font-medium">
+          <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 text-primary px-1.5 py-0.5 font-bold text-[11px]">12</span>
+          {" "}qualifying ads from{" "}
+          <span className="inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 font-bold text-[11px] text-muted-foreground">48</span>
+          {" "}collected
+        </span>
       </div>
     </div>
   );
