@@ -406,14 +406,24 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
 const PREVIEW_SEEDS = ["gen-c1", "gen-c2", "gen-c3", "gen-c4", "gen-c5"];
 
 /* Knob component for similarity — 3 positions: Low, Medium, High */
-function SimilarityKnob({ label, value }: { label: string; value: "Low" | "Medium" | "High" }) {
+function SimilarityKnob({ label, value, tooltip }: { label: string; value: "Low" | "Medium" | "High"; tooltip: string }) {
   const positions = ["Low", "Medium", "High"] as const;
   const idx = positions.indexOf(value);
   const angle = -45 + idx * 45;
 
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <p className="text-[9px] text-muted-foreground font-medium">{label}</p>
+      <div className="flex items-center gap-1">
+        <p className="text-[9px] text-muted-foreground font-medium">{label}</p>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <button className="h-3.5 w-3.5 rounded-full flex items-center justify-center hover:bg-muted transition-colors">
+              <Info className="h-2.5 w-2.5 text-muted-foreground/50" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[220px] text-[10px] leading-relaxed">{tooltip}</TooltipContent>
+        </Tooltip>
+      </div>
       <div className="relative h-12 w-12 rounded-full border-2 border-border bg-card shadow-sm">
         {positions.map((pos, i) => {
           const tickAngle = -45 + i * 45;
