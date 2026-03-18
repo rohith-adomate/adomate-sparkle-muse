@@ -116,22 +116,24 @@ function StatCard({ icon: IconComp, label, children, accent }: {
   );
 }
 
-/* Schedule output */
+/* Schedule output — Split Card (Variation 4) */
 function ScheduleOutput() {
   return (
-    <div className="grid grid-cols-3 gap-2.5">
-      <StatCard icon={CheckCircle2} label="Status" accent="text-emerald-600">
-        <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Triggered successfully
+    <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
         </div>
-      </StatCard>
-      <StatCard icon={Clock} label="Run started">
-        Mar 18, 2026 · 09:00 AM
-      </StatCard>
-      <StatCard icon={Timer} label="Latency">
-        0.3s trigger delay
-      </StatCard>
+        <p className="text-sm font-medium text-emerald-600">Triggered successfully</p>
+      </div>
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <Clock className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Run Started</span>
+        </div>
+        <p className="text-sm font-medium text-foreground">Mar 18, 2026 · 09:00 AM</p>
+      </div>
     </div>
   );
 }
