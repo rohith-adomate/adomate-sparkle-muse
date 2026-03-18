@@ -402,14 +402,40 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
   );
 }
 
-/* Generate Ad Variations output — 10 variations */
+/* Generate Ad Variations output */
 const PREVIEW_SEEDS = ["gen-c1", "gen-c2", "gen-c3", "gen-c4", "gen-c5"];
-const GEN_SETTINGS = [
-  { label: "Concepts per image", value: "6" },
-  { label: "Visual similarity", value: "Medium", progress: 50 },
-  { label: "Messaging similarity", value: "Medium", progress: 50 },
-  { label: "Total generated", value: "15 concepts" },
-];
+
+/* Knob component for similarity — 3 positions: Low, Medium, High */
+function SimilarityKnob({ label, value }: { label: string; value: "Low" | "Medium" | "High" }) {
+  const positions = ["Low", "Medium", "High"] as const;
+  const idx = positions.indexOf(value);
+  const angle = -45 + idx * 45;
+
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <p className="text-[9px] text-muted-foreground font-medium">{label}</p>
+      <div className="relative h-12 w-12 rounded-full border-2 border-border bg-card shadow-sm">
+        {positions.map((pos, i) => {
+          const tickAngle = -45 + i * 45;
+          return (
+            <div key={pos} className="absolute inset-0 flex justify-center" style={{ transform: `rotate(${tickAngle}deg)` }}>
+              <div className={cn("w-0.5 h-1.5 rounded-full mt-0.5", i === idx ? "bg-primary" : "bg-muted-foreground/30")} />
+            </div>
+          );
+        })}
+        <div className="absolute inset-0 flex justify-center transition-transform duration-300" style={{ transform: `rotate(${angle}deg)` }}>
+          <div className="w-1 h-4 mt-1.5 rounded-full bg-primary" />
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-2.5 w-2.5 rounded-full bg-muted border border-border" />
+        </div>
+      </div>
+      <span className="text-[9px] font-semibold text-foreground">{value}</span>
+    </div>
+  );
+}
+
+const TOTAL_TOOLTIP = "10 ads (Select) × 2 products × 3 concepts/image = 60 concepts";
 
 function GenerateVariationsOutput() {
   const navigate = useNavigate();
@@ -417,27 +443,272 @@ function GenerateVariationsOutput() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generation Settings</p>
-        <div className="grid grid-cols-2 gap-2">
-          {GEN_SETTINGS.map((s, i) => (
-            <div key={i} className="rounded-lg border border-border bg-card px-3 py-2.5">
-              <p className="text-[9px] text-muted-foreground">{s.label}</p>
-              {s.progress !== undefined ? (
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${s.progress}%` }} />
-                  </div>
-                  <span className="text-[10px] font-semibold">{s.value}</span>
-                </div>
-              ) : (
-                <p className="text-sm font-semibold mt-0.5">{s.value}</p>
-              )}
+      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Generation Settings — 10 Variations</p>
+
+      {/* V1: Clean Split — left stack, right knobs */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V1 — Clean Split</p>
+        <div className="flex gap-4">
+          <div className="flex-1 space-y-2">
+            <div className="rounded-md border border-border bg-muted/30 px-3 py-2">
+              <p className="text-[9px] text-muted-foreground">Concepts per image</p>
+              <p className="text-sm font-semibold">3</p>
             </div>
-          ))}
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="rounded-md border border-border bg-muted/30 px-3 py-2 cursor-help">
+                  <p className="text-[9px] text-muted-foreground">Total generated</p>
+                  <p className="text-sm font-semibold">60 concepts</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px] leading-relaxed max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex items-center gap-4">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
         </div>
       </div>
 
+      {/* V2: Compact Bar */}
+      <div className="rounded-xl border border-border bg-card px-3 py-2.5">
+        <p className="text-[8px] text-muted-foreground mb-2">V2 — Compact Bar</p>
+        <div className="flex items-center gap-3">
+          <div className="flex-1 flex items-center gap-2">
+            <div className="rounded-md bg-primary/10 px-2.5 py-1.5">
+              <p className="text-[8px] text-muted-foreground">Per image</p>
+              <p className="text-xs font-bold text-primary">3</p>
+            </div>
+            <span className="text-muted-foreground/40 text-xs">×</span>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="rounded-md bg-primary/10 px-2.5 py-1.5 cursor-help">
+                  <p className="text-[8px] text-muted-foreground">Total</p>
+                  <p className="text-xs font-bold text-primary">60</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="h-8 w-px bg-border" />
+          <div className="flex items-center gap-3">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V3: Card Grid 2×2 */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V3 — Card Grid</p>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="rounded-lg border border-border px-3 py-2.5">
+            <p className="text-[9px] text-muted-foreground">Concepts per image</p>
+            <p className="text-lg font-bold">3</p>
+          </div>
+          <div className="rounded-lg border border-border px-3 py-2.5 flex flex-col items-center justify-center">
+            <SimilarityKnob label="Visual" value="Medium" />
+          </div>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <div className="rounded-lg border border-border px-3 py-2.5 cursor-help">
+                <p className="text-[9px] text-muted-foreground">Total generated</p>
+                <p className="text-lg font-bold">60</p>
+                <p className="text-[8px] text-muted-foreground">concepts</p>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+          </Tooltip>
+          <div className="rounded-lg border border-border px-3 py-2.5 flex flex-col items-center justify-center">
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V4: Big Numbers */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V4 — Big Numbers</p>
+        <div className="flex gap-4">
+          <div className="flex-1 space-y-1">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold">3</span>
+              <span className="text-[10px] text-muted-foreground">concepts per image</span>
+            </div>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="flex items-baseline gap-2 cursor-help">
+                  <span className="text-2xl font-bold">60</span>
+                  <span className="text-[10px] text-muted-foreground underline underline-offset-2 decoration-dashed">total concepts</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex items-center gap-4 border-l border-border pl-4">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V5: Pill Badges */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V5 — Pill Badges</p>
+        <div className="flex flex-wrap gap-2 mb-3">
+          <Badge variant="secondary" className="text-[10px] py-1 px-3 gap-1">
+            <Hash className="h-3 w-3" /> 3 per image
+          </Badge>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-[10px] py-1 px-3 gap-1 cursor-help">
+                <BarChart3 className="h-3 w-3" /> 60 total
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="flex items-center gap-5 justify-center">
+          <SimilarityKnob label="Visual" value="Medium" />
+          <SimilarityKnob label="Messaging" value="Medium" />
+        </div>
+      </div>
+
+      {/* V6: Vertical List */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V6 — Vertical List</p>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between rounded-md bg-muted/30 px-3 py-2">
+            <span className="text-[10px] text-muted-foreground">Concepts per image</span>
+            <span className="text-xs font-bold">3</span>
+          </div>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <div className="flex items-center justify-between rounded-md bg-muted/30 px-3 py-2 cursor-help">
+                <span className="text-[10px] text-muted-foreground">Total generated</span>
+                <span className="text-xs font-bold">60 concepts</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+          </Tooltip>
+          <div className="flex items-center justify-around pt-1">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V7: Dashboard Metrics */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V7 — Dashboard Metrics</p>
+        <div className="flex items-stretch gap-2">
+          <div className="flex-1 rounded-lg bg-primary/5 border border-primary/20 p-2.5 text-center">
+            <p className="text-xl font-bold text-primary">3</p>
+            <p className="text-[8px] text-muted-foreground mt-0.5">per image</p>
+          </div>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <div className="flex-1 rounded-lg bg-primary/5 border border-primary/20 p-2.5 text-center cursor-help">
+                <p className="text-xl font-bold text-primary">60</p>
+                <p className="text-[8px] text-muted-foreground mt-0.5">total concepts</p>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+          </Tooltip>
+          <div className="flex-1 rounded-lg border border-border p-2 flex items-center justify-center">
+            <SimilarityKnob label="Visual" value="Medium" />
+          </div>
+          <div className="flex-1 rounded-lg border border-border p-2 flex items-center justify-center">
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V8: Minimal Text */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V8 — Minimal Text</p>
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <p className="text-xs"><span className="font-bold">3</span> <span className="text-muted-foreground">concepts per image</span></p>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <p className="text-xs cursor-help"><span className="font-bold">60</span> <span className="text-muted-foreground underline underline-offset-2 decoration-dashed">total concepts generated</span></p>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex gap-3">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* V9: Equation */}
+      <div className="rounded-xl border border-border bg-card p-3">
+        <p className="text-[8px] text-muted-foreground mb-2">V9 — Equation</p>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-1.5 cursor-help mb-3">
+              <div className="rounded-md bg-muted px-2 py-1 text-center">
+                <p className="text-[8px] text-muted-foreground">Ads</p>
+                <p className="text-xs font-bold">10</p>
+              </div>
+              <span className="text-muted-foreground text-xs">×</span>
+              <div className="rounded-md bg-muted px-2 py-1 text-center">
+                <p className="text-[8px] text-muted-foreground">Products</p>
+                <p className="text-xs font-bold">2</p>
+              </div>
+              <span className="text-muted-foreground text-xs">×</span>
+              <div className="rounded-md bg-muted px-2 py-1 text-center">
+                <p className="text-[8px] text-muted-foreground">Per image</p>
+                <p className="text-xs font-bold">3</p>
+              </div>
+              <span className="text-muted-foreground text-xs">=</span>
+              <div className="rounded-md bg-primary/10 border border-primary/20 px-2 py-1 text-center">
+                <p className="text-[8px] text-primary">Total</p>
+                <p className="text-xs font-bold text-primary">60</p>
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+        </Tooltip>
+        <div className="flex items-center justify-center gap-5">
+          <SimilarityKnob label="Visual" value="Medium" />
+          <SimilarityKnob label="Messaging" value="Medium" />
+        </div>
+      </div>
+
+      {/* V10: Glass */}
+      <div className="rounded-xl border border-white/20 bg-gradient-to-br from-muted/40 to-muted/10 backdrop-blur-sm p-4">
+        <p className="text-[8px] text-muted-foreground mb-2">V10 — Glass</p>
+        <div className="flex gap-4">
+          <div className="flex-1 space-y-2">
+            <div className="rounded-lg bg-white/10 border border-white/20 px-3 py-2">
+              <p className="text-[9px] text-muted-foreground">Concepts per image</p>
+              <p className="text-sm font-semibold">3</p>
+            </div>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="rounded-lg bg-white/10 border border-white/20 px-3 py-2 cursor-help">
+                  <div className="flex items-center gap-1">
+                    <p className="text-[9px] text-muted-foreground">Total generated</p>
+                    <Info className="h-2.5 w-2.5 text-muted-foreground/50" />
+                  </div>
+                  <p className="text-sm font-semibold">60 concepts</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px] max-w-[240px]">{TOTAL_TOOLTIP}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex items-center gap-4">
+            <SimilarityKnob label="Visual" value="Medium" />
+            <SimilarityKnob label="Messaging" value="Medium" />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Generated Concepts Grid (Magazine) ── */}
       <div>
         <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generated Concepts</p>
         <div className="grid grid-cols-2 gap-1 cursor-pointer rounded-xl overflow-hidden border border-border" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
@@ -448,33 +719,10 @@ function GenerateVariationsOutput() {
             </div>
           ))}
           <div className={cn("aspect-square flex flex-col items-center justify-center transition-colors duration-300", h ? "bg-primary/10" : "bg-muted/40")}>
-            <span className={cn("text-2xl font-bold tracking-tight transition-colors", h ? "text-primary" : "text-muted-foreground/60")}>+12</span>
+            <span className={cn("text-2xl font-bold tracking-tight transition-colors", h ? "text-primary" : "text-muted-foreground/60")}>+57</span>
             <span className={cn("text-[10px] font-medium tracking-wide uppercase mt-1 transition-colors", h ? "text-primary" : "text-muted-foreground/40")}>View All</span>
             {h && <ExternalLink className="h-3.5 w-3.5 text-primary mt-2" />}
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-/* ── V10: 2×2 — Magazine / editorial layout ── */
-function ConceptsV10() {
-  const navigate = useNavigate();
-  const [h, setH] = useState(false);
-  return (
-    <div>
-      <p className="text-[8px] text-muted-foreground mb-1.5">V10 — Magazine (2×2)</p>
-      <div className="grid grid-cols-2 gap-1 cursor-pointer rounded-xl overflow-hidden border border-border" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
-        {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
-          <div key={i} className="aspect-square relative overflow-hidden">
-            <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className={cn("h-full w-full object-cover transition-transform duration-500", h && "scale-110")} />
-            {h && <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />}
-          </div>
-        ))}
-        <div className={cn("aspect-square flex flex-col items-center justify-center transition-colors duration-300", h ? "bg-primary/10" : "bg-muted/40")}>
-          <span className={cn("text-2xl font-bold tracking-tight transition-colors", h ? "text-primary" : "text-muted-foreground/60")}>+12</span>
-          <span className={cn("text-[10px] font-medium tracking-wide uppercase mt-1 transition-colors", h ? "text-primary" : "text-muted-foreground/40")}>View All</span>
-          {h && <ExternalLink className="h-3.5 w-3.5 text-primary mt-2" />}
         </div>
       </div>
     </div>
