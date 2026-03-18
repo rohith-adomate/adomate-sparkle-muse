@@ -151,11 +151,9 @@ export default function WorkflowCanvas() {
   // Derive agent name from id
   const agentName = useMemo(() => {
     const names: Record<string, string> = {
-      "holiday-1": "Christmas Campaign",
-      "holiday-2": "Black Friday Blitz",
-      "holiday-3": "Valentine's Day Specials",
       "competitor-1": "Nike Ad Monitor",
       "competitor-2": "Adidas Creative Tracker",
+      "manual-1": "Manual Image Pipeline",
     };
     return names[id || ""] || "Workflow";
   }, [id]);
