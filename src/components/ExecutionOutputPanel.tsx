@@ -63,15 +63,15 @@ export const MOCK_EXECUTIONS: ExecutionRun[] = [
 
 export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
   {
-    id: "mexec-5", number: 5, status: "success", startedAt: "Mar 18, 2026 · 11:32", duration: "1m 45s",
+    id: "mexec-5", number: 5, status: "success", startedAt: "18 Mar 2026 · 11:32", duration: "1m 45s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
   },
   {
-    id: "mexec-4", number: 4, status: "success", startedAt: "Mar 17, 2026 · 14:10", duration: "1m 22s",
+    id: "mexec-4", number: 4, status: "success", startedAt: "17 Mar 2026 · 14:10", duration: "1m 22s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
   },
   {
-    id: "mexec-3", number: 3, status: "failed", startedAt: "Mar 16, 2026 · 10:05", duration: "0m 48s",
+    id: "mexec-3", number: 3, status: "failed", startedAt: "16 Mar 2026 · 10:05", duration: "0m 48s",
     nodeStatuses: { "n0": "success", "n1": "success", "n2": "error" },
   },
 ];
