@@ -654,6 +654,8 @@ export default function WorkflowCanvas() {
                         setScheduleDrawerOpen(true);
                       } else if (node.type === "top-select") {
                         setTopSelectDrawerOpen(true);
+                      } else if (node.type === "manual-image-input") {
+                        setManualImageDrawerOpen(true);
                       }
                     }
                   }}
