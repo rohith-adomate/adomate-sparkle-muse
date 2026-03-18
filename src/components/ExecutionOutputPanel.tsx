@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  ChevronDown, CheckCircle2, Clock, ExternalLink, Eye, Info, Image,
-  Package, Sparkles, Database, ListFilter, ImagePlus,
+  ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
+  Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
+  AlertTriangle, Timer, Filter, Hash, BarChart3, Eye,
 } from "lucide-react";
 
 /* ── Execution mock data types ── */
@@ -75,6 +76,19 @@ export const MOCK_MANUAL_EXECUTIONS: ExecutionRun[] = [
   },
 ];
 
+/* ── Panel height config per node type ── */
+
+const PANEL_HEIGHTS: Record<string, { height: string; minHeight: number; maxHeight: string }> = {
+  schedule:            { height: "18vh", minHeight: 140, maxHeight: "22vh" },
+  dataset:             { height: "24vh", minHeight: 180, maxHeight: "30vh" },
+  "product-data":      { height: "30vh", minHeight: 200, maxHeight: "38vh" },
+  "top-select":        { height: "50vh", minHeight: 340, maxHeight: "60vh" },
+  "generate-concepts": { height: "48vh", minHeight: 320, maxHeight: "58vh" },
+  "manual-image-input":{ height: "30vh", minHeight: 200, maxHeight: "38vh" },
+};
+
+const DEFAULT_HEIGHT = { height: "30vh", minHeight: 200, maxHeight: "40vh" };
+
 /* ── Per-node output content ── */
 
 interface ExecutionOutputPanelProps {
@@ -84,24 +98,40 @@ interface ExecutionOutputPanelProps {
   runNumber?: number;
 }
 
+/* ── Shared stat card ── */
+function StatCard({ icon: IconComp, label, children, accent }: {
+  icon: React.ElementType;
+  label: string;
+  children: React.ReactNode;
+  accent?: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 flex flex-col gap-1.5">
+      <div className="flex items-center gap-1.5">
+        <IconComp className="h-3 w-3 text-muted-foreground" />
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">{label}</p>
+      </div>
+      <div className={cn("text-xs font-medium", accent)}>{children}</div>
+    </div>
+  );
+}
+
 /* Schedule output */
 function ScheduleOutput() {
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Status</p>
+    <div className="grid grid-cols-3 gap-2.5">
+      <StatCard icon={CheckCircle2} label="Status" accent="text-emerald-600">
         <div className="flex items-center gap-1.5">
-          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-          <span className="text-xs font-medium">Triggered successfully</span>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          Triggered successfully
         </div>
-      </div>
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Run started</p>
-        <div className="flex items-center gap-1.5">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs">Mar 18, 2026 · 09:00 AM</span>
-        </div>
-      </div>
+      </StatCard>
+      <StatCard icon={Clock} label="Run started">
+        Mar 18, 2026 · 09:00 AM
+      </StatCard>
+      <StatCard icon={Timer} label="Latency">
+        0.3s trigger delay
+      </StatCard>
     </div>
   );
 }
@@ -109,24 +139,31 @@ function ScheduleOutput() {
 /* Dataset output */
 function DatasetOutput() {
   return (
-    <div className="space-y-3">
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Active filters at runtime</p>
-        <div className="flex flex-wrap gap-1.5">
-          <Badge variant="secondary" className="text-[10px] gap-1">
-            <img src="https://logo.clearbit.com/cerave.com" alt="" className="h-3 w-3 rounded-full" /> CeraVe
-          </Badge>
-          <Badge variant="secondary" className="text-[10px] gap-1">
-            <img src="https://logo.clearbit.com/theordinary.com" alt="" className="h-3 w-3 rounded-full" /> The Ordinary
-          </Badge>
-          <Badge variant="outline" className="text-[10px]">Last 30 days</Badge>
-          <Badge variant="outline" className="text-[10px]">Min. reach: 1,000</Badge>
-        </div>
+    <div className="space-y-2.5">
+      <div className="grid grid-cols-3 gap-2.5">
+        <StatCard icon={Filter} label="Competitors">
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            <Badge variant="secondary" className="text-[9px] gap-1 py-0 h-5">
+              <img src="https://logo.clearbit.com/cerave.com" alt="" className="h-3 w-3 rounded-full" /> CeraVe
+            </Badge>
+            <Badge variant="secondary" className="text-[9px] gap-1 py-0 h-5">
+              <img src="https://logo.clearbit.com/theordinary.com" alt="" className="h-3 w-3 rounded-full" /> The Ordinary
+            </Badge>
+          </div>
+        </StatCard>
+        <StatCard icon={Clock} label="Time range">
+          Last 30 days
+        </StatCard>
+        <StatCard icon={BarChart3} label="Min. reach">
+          1,000 impressions
+        </StatCard>
       </div>
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Result</p>
-        <p className="text-xs">12 ads matched filters (of 48 total scraped)</p>
-        <p className="text-[10px] text-muted-foreground mt-1">Full dataset view coming in a future update.</p>
+      <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Database className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs"><span className="font-semibold">12 ads</span> matched filters <span className="text-muted-foreground">(of 48 total scraped)</span></span>
+        </div>
+        <Badge variant="outline" className="text-[9px]">Full view coming soon</Badge>
       </div>
     </div>
   );
@@ -134,42 +171,71 @@ function DatasetOutput() {
 
 /* Select output */
 const SELECTED_ADS = [
-  { id: 1, brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", reach: "245K", format: "Image" },
-  { id: 2, brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", reach: "312K", format: "Image" },
-  { id: 3, brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", reach: "198K", format: "Image" },
-  { id: 4, brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", reach: "189K", format: "Image" },
-  { id: 5, brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", reach: "47K", format: "Image" },
-  { id: 6, brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", reach: "68K", format: "Image" },
-  { id: 7, brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", reach: "23K", format: "Image" },
-  { id: 8, brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", reach: "15K", format: "Image" },
-  { id: 9, brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", reach: "4.2K", format: "Image" },
-  { id: 10, brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", reach: "7.3K", format: "Image" },
+  { id: 1, brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", reach: "245K", ctr: "3.2%", spend: "$1.2K" },
+  { id: 2, brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", reach: "312K", ctr: "4.1%", spend: "$980" },
+  { id: 3, brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", reach: "198K", ctr: "2.8%", spend: "$760" },
+  { id: 4, brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", reach: "189K", ctr: "3.5%", spend: "$1.1K" },
+  { id: 5, brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", reach: "47K", ctr: "2.1%", spend: "$420" },
+  { id: 6, brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", reach: "68K", ctr: "2.6%", spend: "$550" },
+  { id: 7, brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", reach: "23K", ctr: "1.9%", spend: "$310" },
+  { id: 8, brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", reach: "15K", ctr: "1.4%", spend: "$280" },
+  { id: 9, brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", reach: "4.2K", ctr: "0.8%", spend: "$120" },
+  { id: 10, brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", reach: "7.3K", ctr: "1.1%", spend: "$190" },
 ];
 
 function SelectOutput() {
   return (
-    <div className="space-y-3">
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Settings used</p>
-        <p className="text-xs">Top <span className="font-semibold">10</span> ads ranked by <span className="font-semibold">new reach</span></p>
+    <div className="space-y-2.5">
+      {/* Settings row */}
+      <div className="flex items-center gap-3">
+        <div className="rounded-lg border border-border bg-card px-3 py-2 flex items-center gap-2">
+          <Hash className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] text-muted-foreground">Count:</span>
+          <span className="text-xs font-semibold">Top 10</span>
+        </div>
+        <div className="rounded-lg border border-border bg-card px-3 py-2 flex items-center gap-2">
+          <BarChart3 className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] text-muted-foreground">Ranked by:</span>
+          <span className="text-xs font-semibold">New Reach</span>
+        </div>
+        <div className="rounded-lg border border-border bg-card px-3 py-2 flex items-center gap-2">
+          <Database className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] text-muted-foreground">Source:</span>
+          <span className="text-xs font-semibold">12 ads from Dataset</span>
+        </div>
       </div>
+
+      {/* Table */}
       <div className="rounded-lg border border-border overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/30 hover:bg-muted/30">
+            <TableRow className="bg-muted/40 hover:bg-muted/40">
               <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-8">#</TableHead>
-              <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-24">Brand</TableHead>
+              <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-20">Brand</TableHead>
               <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider">Headline</TableHead>
               <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-16 text-right">Reach</TableHead>
+              <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-14 text-right">CTR</TableHead>
+              <TableHead className="h-7 text-[9px] font-bold uppercase tracking-wider w-16 text-right">Spend</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {SELECTED_ADS.map((ad) => (
-              <TableRow key={ad.id} className="hover:bg-muted/20">
-                <TableCell className="py-1.5 text-[10px] text-muted-foreground">{ad.id}</TableCell>
-                <TableCell className="py-1.5 text-[10px] font-medium">{ad.brand}</TableCell>
-                <TableCell className="py-1.5 text-[10px] line-clamp-1">{ad.headline}</TableCell>
-                <TableCell className="py-1.5 text-[10px] text-right font-medium">{ad.reach}</TableCell>
+            {SELECTED_ADS.map((ad, idx) => (
+              <TableRow key={ad.id} className={cn("hover:bg-muted/20", idx % 2 === 0 && "bg-muted/10")}>
+                <TableCell className="py-1.5 text-[10px] text-muted-foreground font-mono">{ad.id}</TableCell>
+                <TableCell className="py-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <img
+                      src={`https://logo.clearbit.com/${ad.brand === "CeraVe" ? "cerave.com" : "theordinary.com"}`}
+                      alt=""
+                      className="h-3.5 w-3.5 rounded-full"
+                    />
+                    <span className="text-[10px] font-medium">{ad.brand}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="py-1.5 text-[10px] max-w-[300px] truncate">{ad.headline}</TableCell>
+                <TableCell className="py-1.5 text-[10px] text-right font-semibold">{ad.reach}</TableCell>
+                <TableCell className="py-1.5 text-[10px] text-right text-muted-foreground">{ad.ctr}</TableCell>
+                <TableCell className="py-1.5 text-[10px] text-right text-muted-foreground">{ad.spend}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -181,38 +247,61 @@ function SelectOutput() {
 
 /* Product Data output */
 const SELECTED_PRODUCTS = [
-  { name: "Hydra Glow Serum", images: 1, knowledge: "Lightweight hydrating serum with hyaluronic acid for daily use. Targets young professionals." },
-  { name: "Retinol Night Recovery Mask", images: 3, knowledge: "Premium night recovery mask with retinol. Anti-aging focus, 35+ demographic." },
+  {
+    name: "Hydra Glow Serum",
+    sku: "HGS-001",
+    images: 1,
+    imageSeeds: ["prod-0a"],
+    knowledge: "Lightweight hydrating serum with hyaluronic acid for daily use. Targets young professionals aged 22–35. Key claims: 48hr hydration, non-comedogenic, fragrance-free.",
+  },
+  {
+    name: "Retinol Night Recovery Mask",
+    sku: "RNR-042",
+    images: 3,
+    imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
+    knowledge: "Premium night recovery mask with 0.3% retinol. Anti-aging focus, 35+ demographic. Claims: reduces fine lines in 4 weeks, dermatologist tested.",
+  },
 ];
 
 function ProductDataOutput() {
   return (
     <div className="space-y-2">
       {SELECTED_PRODUCTS.map((p, i) => (
-        <div key={i} className="rounded-lg border border-border bg-card p-3 flex items-start gap-3">
-          <div className="h-10 w-10 rounded-md overflow-hidden bg-muted shrink-0">
-            <img
-              src={`https://picsum.photos/seed/prod-${i}/80/80`}
-              alt={p.name}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold">{p.name}</p>
-            <div className="flex items-center gap-2 mt-0.5">
-              <Badge variant="outline" className="text-[9px] gap-0.5 py-0 px-1.5">
-                <Image className="h-2.5 w-2.5" /> {p.images} image{p.images !== 1 ? "s" : ""}
-              </Badge>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <button className="text-[9px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5">
-                    <Info className="h-2.5 w-2.5" /> Knowledge
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-[260px] text-[10px]">
-                  {p.knowledge}
-                </TooltipContent>
-              </Tooltip>
+        <div key={i} className="rounded-lg border border-border bg-card p-3">
+          <div className="flex items-start gap-3">
+            {/* Product images */}
+            <div className="flex gap-1.5 shrink-0">
+              {p.imageSeeds.map((seed, j) => (
+                <div key={j} className="h-12 w-12 rounded-md overflow-hidden bg-muted border border-border">
+                  <img
+                    src={`https://picsum.photos/seed/${seed}/96/96`}
+                    alt={p.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-semibold">{p.name}</p>
+                <Badge variant="outline" className="text-[8px] py-0 px-1.5 font-mono">{p.sku}</Badge>
+              </div>
+              <div className="flex items-center gap-3 mt-1">
+                <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
+                  <Image className="h-2.5 w-2.5" /> {p.images} image{p.images !== 1 ? "s" : ""}
+                </Badge>
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button className="text-[9px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5 underline underline-offset-2 decoration-dashed">
+                      <Info className="h-2.5 w-2.5" /> View knowledge context
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[300px] text-[10px] leading-relaxed">
+                    {p.knowledge}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </div>
@@ -223,10 +312,10 @@ function ProductDataOutput() {
 
 /* Generate Ad Variations output */
 const GENERATED_CONCEPTS = [
-  { id: "c1", title: "Bold Statement", seed: "bold-statement" },
-  { id: "c2", title: "Social Proof UGC", seed: "social-proof" },
-  { id: "c3", title: "Gradient Pop", seed: "gradient-pop" },
-  { id: "c4", title: "Street Style", seed: "street-style" },
+  { id: "c1", title: "Bold Statement", seed: "bold-statement", rating: 4.2 },
+  { id: "c2", title: "Social Proof UGC", seed: "social-proof", rating: 3.8 },
+  { id: "c3", title: "Gradient Pop", seed: "gradient-pop", rating: 4.5 },
+  { id: "c4", title: "Street Style", seed: "street-style", rating: 3.1 },
 ];
 
 function GenerateVariationsOutput() {
@@ -234,56 +323,95 @@ function GenerateVariationsOutput() {
   const [previewIdx, setPreviewIdx] = useState(0);
 
   return (
-    <div className="space-y-3">
-      {/* Settings summary */}
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Settings used</p>
-        <div className="flex flex-wrap gap-2 text-[10px]">
-          <Badge variant="outline" className="text-[10px]">6 concepts per image</Badge>
-          <Badge variant="outline" className="text-[10px]">Visual: Medium</Badge>
-          <Badge variant="outline" className="text-[10px]">Messaging: Medium</Badge>
+    <div className="flex gap-4">
+      {/* Left: settings summary */}
+      <div className="w-48 shrink-0 space-y-2">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Generation settings</p>
+        <div className="space-y-1.5">
+          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
+            <p className="text-[9px] text-muted-foreground">Concepts per image</p>
+            <p className="text-xs font-semibold">6</p>
+          </div>
+          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
+            <p className="text-[9px] text-muted-foreground">Visual similarity</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full w-1/2 rounded-full bg-primary" />
+              </div>
+              <span className="text-[9px] font-medium">Medium</span>
+            </div>
+          </div>
+          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
+            <p className="text-[9px] text-muted-foreground">Messaging similarity</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full w-1/2 rounded-full bg-primary" />
+              </div>
+              <span className="text-[9px] font-medium">Medium</span>
+            </div>
+          </div>
+          <div className="rounded-md border border-border bg-card px-2.5 py-1.5">
+            <p className="text-[9px] text-muted-foreground">Total generated</p>
+            <p className="text-xs font-semibold">24 concepts</p>
+          </div>
         </div>
       </div>
 
-      {/* Preview with toggle */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
-        <div className="aspect-[4/3] relative bg-muted">
-          <img
-            src={`https://picsum.photos/seed/${GENERATED_CONCEPTS[previewIdx].seed}/400/300`}
-            alt={GENERATED_CONCEPTS[previewIdx].title}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
-            <p className="text-xs font-semibold text-white">{GENERATED_CONCEPTS[previewIdx].title}</p>
+      {/* Right: preview grid */}
+      <div className="flex-1 space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Preview (4 of 24)</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-6 text-[10px] gap-1"
+            onClick={() => navigate("/concepts/competitor-ad-variation-1")}
+          >
+            <ExternalLink className="h-3 w-3" /> View all concepts
+          </Button>
+        </div>
+
+        {/* Main preview */}
+        <div className="rounded-lg border border-border bg-card overflow-hidden">
+          <div className="aspect-[16/9] relative bg-muted">
+            <img
+              src={`https://picsum.photos/seed/${GENERATED_CONCEPTS[previewIdx].seed}/640/360`}
+              alt={GENERATED_CONCEPTS[previewIdx].title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 py-2.5">
+              <p className="text-xs font-semibold text-white">{GENERATED_CONCEPTS[previewIdx].title}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] text-white/70">Rating: {GENERATED_CONCEPTS[previewIdx].rating}/5</span>
+                <button
+                  onClick={() => navigate("/concepts/competitor-ad-variation-1")}
+                  className="text-[10px] text-white/90 hover:text-white underline underline-offset-2 flex items-center gap-0.5"
+                >
+                  <Eye className="h-2.5 w-2.5" /> View detail
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        {/* Thumbnails toggle */}
-        <div className="flex items-center gap-1.5 p-2 border-t border-border">
+
+        {/* Thumbnails */}
+        <div className="flex items-center gap-1.5">
           {GENERATED_CONCEPTS.map((c, i) => (
             <button
               key={c.id}
               onClick={() => setPreviewIdx(i)}
               className={cn(
-                "h-10 w-10 rounded-md overflow-hidden border-2 transition-all shrink-0",
-                i === previewIdx ? "border-primary ring-1 ring-primary/30" : "border-transparent opacity-60 hover:opacity-100"
+                "h-12 w-12 rounded-md overflow-hidden border-2 transition-all shrink-0",
+                i === previewIdx ? "border-primary ring-2 ring-primary/20 scale-105" : "border-border opacity-50 hover:opacity-100"
               )}
             >
               <img
-                src={`https://picsum.photos/seed/${c.seed}/80/80`}
+                src={`https://picsum.photos/seed/${c.seed}/96/96`}
                 alt={c.title}
                 className="h-full w-full object-cover"
               />
             </button>
           ))}
-          <div className="flex-1" />
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 text-[10px] gap-1 shrink-0"
-            onClick={() => navigate("/concepts/competitor-ad-variation-1")}
-          >
-            <ExternalLink className="h-3 w-3" /> View all concepts
-          </Button>
         </div>
       </div>
     </div>
@@ -293,21 +421,27 @@ function GenerateVariationsOutput() {
 /* Manual Image Input output */
 function ManualInputOutput() {
   const images = [
-    "https://picsum.photos/seed/manual-1/200/200",
-    "https://picsum.photos/seed/manual-2/200/200",
-    "https://picsum.photos/seed/manual-3/200/200",
+    { src: "https://picsum.photos/seed/manual-1/200/200", name: "hero-shot.jpg", size: "1.2 MB" },
+    { src: "https://picsum.photos/seed/manual-2/200/200", name: "lifestyle-02.png", size: "890 KB" },
+    { src: "https://picsum.photos/seed/manual-3/200/200", name: "product-flat.jpg", size: "2.1 MB" },
   ];
 
   return (
-    <div className="space-y-3">
-      <div className="rounded-lg border border-border bg-card p-3">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Uploaded images</p>
-        <p className="text-xs text-muted-foreground">{images.length} images provided at runtime</p>
+    <div className="space-y-2.5">
+      <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 flex items-center gap-2">
+        <ImagePlus className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-xs"><span className="font-semibold">{images.length} images</span> uploaded at runtime</span>
       </div>
-      <div className="grid grid-cols-4 gap-2">
-        {images.map((src, i) => (
-          <div key={i} className="aspect-square rounded-md overflow-hidden border border-border bg-muted">
-            <img src={src} alt={`Upload ${i + 1}`} className="h-full w-full object-cover" />
+      <div className="grid grid-cols-3 gap-2.5">
+        {images.map((img, i) => (
+          <div key={i} className="rounded-lg border border-border bg-card overflow-hidden group">
+            <div className="aspect-square bg-muted">
+              <img src={img.src} alt={img.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
+            </div>
+            <div className="px-2 py-1.5">
+              <p className="text-[10px] font-medium truncate">{img.name}</p>
+              <p className="text-[9px] text-muted-foreground">{img.size}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -325,12 +459,21 @@ const NODE_ICONS: Record<string, typeof Clock> = {
   "manual-image-input": ImagePlus,
 };
 
+/* ── Status colors ── */
+const STATUS_CONFIG = {
+  success: { label: "Completed", color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", dot: "bg-emerald-500" },
+  error: { label: "Failed", color: "text-destructive", bg: "bg-destructive/10 border-destructive/20", dot: "bg-destructive" },
+  running: { label: "Running", color: "text-blue-600", bg: "bg-blue-500/10 border-blue-500/20", dot: "bg-blue-500 animate-pulse" },
+};
+
 /* ── Main component ── */
 
 export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionOutputPanelProps) {
   if (!open || !node) return null;
 
   const Icon = NODE_ICONS[node.type] || Database;
+  const sizing = PANEL_HEIGHTS[node.type] || DEFAULT_HEIGHT;
+  const statusCfg = STATUS_CONFIG[node.status] || STATUS_CONFIG.success;
 
   const renderOutput = () => {
     switch (node.type) {
@@ -347,41 +490,48 @@ export default function ExecutionOutputPanel({ open, onClose, node }: ExecutionO
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-background/40 backdrop-blur-[2px]" onClick={onClose} />
 
-      {/* Bottom panel */}
+      {/* Bottom panel — dynamic height */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-2xl",
-          "transition-transform duration-300 ease-out",
-          open ? "translate-y-0" : "translate-y-full"
+          "fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border",
+          "shadow-[0_-8px_30px_-12px_rgba(0,0,0,0.15)]",
+          "transition-all duration-300 ease-out",
+          open ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
         )}
-        style={{ height: "45vh", minHeight: 280, maxHeight: "55vh" }}
+        style={{
+          height: sizing.height,
+          minHeight: sizing.minHeight,
+          maxHeight: sizing.maxHeight,
+        }}
       >
-        {/* Handle */}
-        <div className="flex items-center justify-center py-1.5 cursor-grab">
-          <div className="w-10 h-1 rounded-full bg-border" />
+        {/* Handle bar */}
+        <div className="flex items-center justify-center py-1 cursor-grab">
+          <div className="w-8 h-0.5 rounded-full bg-border" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pb-3">
-          <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-bold">{node.label}</h3>
-            <Badge
-              variant={node.status === "success" ? "default" : node.status === "error" ? "destructive" : "secondary"}
-              className="text-[9px] px-1.5 py-0"
-            >
-              {node.status === "success" ? "Completed" : node.status === "error" ? "Failed" : "Running"}
-            </Badge>
+        <div className="flex items-center justify-between px-5 pb-2.5">
+          <div className="flex items-center gap-2.5">
+            <div className="h-7 w-7 rounded-md bg-muted/60 flex items-center justify-center">
+              <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold leading-tight">{node.label}</h3>
+            </div>
+            <div className={cn("flex items-center gap-1.5 rounded-full border px-2 py-0.5", statusCfg.bg)}>
+              <span className={cn("h-1.5 w-1.5 rounded-full", statusCfg.dot)} />
+              <span className={cn("text-[9px] font-medium", statusCfg.color)}>{statusCfg.label}</span>
+            </div>
           </div>
-          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={onClose}>
-            <ChevronDown className="h-3.5 w-3.5 mr-1" /> Close
+          <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
+            <ChevronDown className="h-3 w-3" /> Close
           </Button>
         </div>
 
-        {/* Scrollable content */}
-        <div className="overflow-y-auto px-6 pb-6" style={{ maxHeight: "calc(45vh - 72px)" }}>
+        {/* Content */}
+        <div className="overflow-y-auto px-5 pb-5" style={{ maxHeight: `calc(${sizing.height} - 56px)` }}>
           {renderOutput()}
         </div>
       </div>
