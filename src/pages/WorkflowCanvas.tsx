@@ -508,7 +508,17 @@ export default function WorkflowCanvas() {
                 </TooltipContent>
               )}
             </Tooltip>
-            <Button size="sm" className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground">
+            <Button
+              size="sm"
+              className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground"
+              onClick={() => {
+                if (hasManualImageInput) {
+                  setManualImageUploadModalOpen(true);
+                } else {
+                  toast.success("Workflow run started");
+                }
+              }}
+            >
               <Play className="h-3.5 w-3.5" /> Run
             </Button>
           </div>
