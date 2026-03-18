@@ -164,6 +164,9 @@ export default function WorkflowCanvas() {
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
+  const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
+  const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
 
   // Update top-select node description when config changes
