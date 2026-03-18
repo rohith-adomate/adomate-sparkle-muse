@@ -287,28 +287,49 @@ function SelectOutput() {
 }
 
 /* Product Data output — V5 style with knowledge modal */
-const PRODUCT = {
-  name: "Retinol Night Recovery Mask",
-  imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
-  knowledge: {
-    "Product Description": "A luxurious overnight recovery mask formulated with 0.3% encapsulated retinol and ceramide complex. Designed to accelerate cell turnover while maintaining the skin's moisture barrier during sleep.",
-    "Target Demographic": "Women aged 35–55 with visible signs of aging including fine lines, uneven skin tone, and loss of firmness. Primary markets: US, UK, and Western Europe.",
-    "Key Claims": "- Clinically proven to reduce fine lines by 42% in 4 weeks\n- Dermatologist tested and approved\n- Non-comedogenic formula\n- 94% of users reported smoother skin after first use",
-    "Ingredients Highlights": "Encapsulated Retinol 0.3%, Niacinamide 5%, Hyaluronic Acid, Squalane, Ceramide NP, Peptide Complex, Vitamin E",
-    "Brand Positioning": "Premium skincare positioned at the intersection of clinical efficacy and sensorial luxury. Price point: $68 USD for 50ml. Competes with brands like Drunk Elephant, Paula's Choice, and Sunday Riley.",
-    "Tone of Voice": "Confident yet approachable. Scientific credibility balanced with warmth. Avoids fear-based aging language — focuses on skin health and radiance rather than anti-aging anxiety.",
+const PRODUCTS = [
+  {
+    name: "Retinol Night Recovery Mask",
+    imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
+    knowledge: {
+      "Product Description": "A luxurious overnight recovery mask formulated with 0.3% encapsulated retinol and ceramide complex. Designed to accelerate cell turnover while maintaining the skin's moisture barrier during sleep.",
+      "Target Demographic": "Women aged 35–55 with visible signs of aging including fine lines, uneven skin tone, and loss of firmness. Primary markets: US, UK, and Western Europe.",
+      "Key Claims": "- Clinically proven to reduce fine lines by 42% in 4 weeks\n- Dermatologist tested and approved\n- Non-comedogenic formula\n- 94% of users reported smoother skin after first use",
+      "Ingredients Highlights": "Encapsulated Retinol 0.3%, Niacinamide 5%, Hyaluronic Acid, Squalane, Ceramide NP, Peptide Complex, Vitamin E",
+      "Brand Positioning": "Premium skincare positioned at the intersection of clinical efficacy and sensorial luxury. Price point: $68 USD for 50ml. Competes with brands like Drunk Elephant, Paula's Choice, and Sunday Riley.",
+      "Tone of Voice": "Confident yet approachable. Scientific credibility balanced with warmth. Avoids fear-based aging language — focuses on skin health and radiance rather than anti-aging anxiety.",
+    },
   },
-};
+  {
+    name: "Hydra Glow Serum",
+    imageSeeds: ["prod-2a"],
+    knowledge: {
+      "Product Description": "A lightweight, fast-absorbing hydration serum with triple-weight hyaluronic acid and vitamin C. Delivers instant plumping and a dewy, glass-skin finish.",
+      "Target Demographic": "Women and men aged 25–45 seeking daily hydration and glow. Suitable for all skin types including sensitive skin.",
+      "Key Claims": "- 72-hour hydration lock technology\n- Visible plumping effect within 15 minutes\n- Fragrance-free and vegan certified\n- Compatible with all skincare routines",
+      "Ingredients Highlights": "Triple-Weight Hyaluronic Acid, Vitamin C (Ascorbyl Glucoside) 10%, Niacinamide 4%, Aloe Vera Extract, Beta-Glucan",
+      "Brand Positioning": "Accessible premium hydration serum. Price point: $42 USD for 30ml. Entry-level hero product designed to recruit new customers into the brand ecosystem.",
+    },
+  },
+];
 
 function ProductDataOutput() {
   return (
     <div className="space-y-3">
-      <ProductCardWithKnowledgeModal />
+      {PRODUCTS.map((product, idx) => (
+        <ProductCardWithKnowledgeModal key={idx} product={product} />
+      ))}
     </div>
   );
 }
 
-function ProductCardWithKnowledgeModal() {
+interface ProductInfo {
+  name: string;
+  imageSeeds: string[];
+  knowledge: Record<string, string>;
+}
+
+function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
 
   return (
@@ -317,25 +338,25 @@ function ProductCardWithKnowledgeModal() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-semibold">{PRODUCT.name}</p>
+            <p className="text-xs font-semibold">{product.name}</p>
           </div>
           <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
-            <Image className="h-2.5 w-2.5" /> 3
+            <Image className="h-2.5 w-2.5" /> {product.imageSeeds.length}
           </Badge>
         </div>
         <div className="flex gap-1.5 mt-2">
-          {PRODUCT.imageSeeds.map((s, i) => (
+          {product.imageSeeds.map((s, i) => (
             <div key={i} className="h-10 w-10 rounded-md overflow-hidden bg-muted border border-border">
               <img src={`https://picsum.photos/seed/${s}/80/80`} alt="" className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
-        {/* Subtle knowledge button — always slightly visible, more visible on hover */}
+        {/* Subtle knowledge button */}
         <button
           onClick={() => setKnowledgeOpen(true)}
-          className="absolute bottom-2 right-2 h-6 w-6 rounded-md flex items-center justify-center bg-muted/30 text-muted-foreground/40 hover:bg-muted hover:text-foreground transition-all duration-200 group-hover/v5:bg-muted/60 group-hover/v5:text-muted-foreground"
+          className="absolute bottom-2.5 right-2.5 h-7 w-7 rounded-lg flex items-center justify-center bg-muted/30 text-muted-foreground/40 hover:bg-muted hover:text-foreground transition-all duration-200 group-hover/v5:bg-muted/60 group-hover/v5:text-muted-foreground"
         >
-          <BookOpen className="h-3 w-3" />
+          <BookOpen className="h-3.5 w-3.5" />
         </button>
       </div>
 
@@ -351,16 +372,19 @@ function ProductCardWithKnowledgeModal() {
                     <Info className="h-3 w-3 text-muted-foreground" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[260px] text-[11px] leading-relaxed">
-                  This is a snapshot of the product knowledge that was used during this specific run. Since knowledge can be updated over time, this may differ from the current version in your Data Room.
+                <TooltipContent side="right" className="max-w-[280px] text-[11px] leading-relaxed">
+                  This is a snapshot of the product knowledge that was used during this specific run. Since knowledge can be updated over time, this may differ from the current version in your{" "}
+                  <Link to="/brand-data-room/products" className="underline underline-offset-2 font-medium text-primary hover:text-primary/80">
+                    Product Data Room
+                  </Link>.
                 </TooltipContent>
               </Tooltip>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{PRODUCT.name}</p>
+            <p className="text-xs text-muted-foreground mt-1">{product.name}</p>
           </DialogHeader>
           <ScrollArea className="flex-1 px-6 pb-6 pt-4">
             <div className="prose prose-sm max-w-none dark:prose-invert">
-              {Object.entries(PRODUCT.knowledge).map(([key, value]) => (
+              {Object.entries(product.knowledge).map(([key, value]) => (
                 <div key={key} className="mb-4 last:mb-0">
                   <h3 className="text-sm font-semibold mt-0 mb-1.5">{key}</h3>
                   {value.split("\n").map((line, i) => (
