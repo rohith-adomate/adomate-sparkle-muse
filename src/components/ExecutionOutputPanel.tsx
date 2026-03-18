@@ -265,7 +265,14 @@ function SelectOutput() {
                       <img src={logo} alt="" className="h-3.5 w-3.5 rounded-full" />
                       <span className="text-[9px] font-semibold text-white">{ad.brand}</span>
                     </div>
-                    <span className="text-[9px] font-bold text-white">{ad.reach}</span>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <span className="text-[9px] font-bold text-white cursor-help">{formatReach(ad.reach)}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-[10px]">
+                        Total reach: {ad.reach.toLocaleString()} impressions
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
