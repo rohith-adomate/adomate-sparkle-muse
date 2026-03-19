@@ -465,7 +465,7 @@ function SimilarityKnob({ label, value, tooltip }: { label: string; value: "Low"
   );
 }
 
-const TOTAL_TOOLTIP = "10 ads (Select) × 2 products × 3 concepts/image = 60 concepts";
+const TOTAL_TOOLTIP = "10 ads × 2 products × 3 concepts/image = 60 concepts";
 
 function GenerateVariationsOutput() {
   const navigate = useNavigate();
