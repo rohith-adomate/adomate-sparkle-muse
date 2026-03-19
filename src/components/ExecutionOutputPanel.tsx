@@ -187,6 +187,16 @@ function DatasetOutput() {
             <div className="flex items-center gap-1.5 mb-1">
               <Clock className="h-3 w-3 text-muted-foreground" />
               <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Time range</span>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <button className="h-3.5 w-3.5 rounded-full flex items-center justify-center hover:bg-muted transition-colors">
+                    <Info className="h-2.5 w-2.5 text-muted-foreground/50" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[220px] text-[10px] leading-relaxed">
+                  Only ads launched within this period are included in the dataset.
+                </TooltipContent>
+              </Tooltip>
             </div>
             <p className="text-xs font-medium">Last 30 days</p>
           </div>
@@ -194,6 +204,16 @@ function DatasetOutput() {
             <div className="flex items-center gap-1.5 mb-1">
               <BarChart3 className="h-3 w-3 text-muted-foreground" />
               <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Min. reach</span>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <button className="h-3.5 w-3.5 rounded-full flex items-center justify-center hover:bg-muted transition-colors">
+                    <Info className="h-2.5 w-2.5 text-muted-foreground/50" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[220px] text-[10px] leading-relaxed">
+                  Ads below this audience threshold are excluded from the dataset.
+                </TooltipContent>
+              </Tooltip>
             </div>
             <p className="text-xs font-medium">1,000 impressions</p>
           </div>
@@ -445,7 +465,7 @@ function SimilarityKnob({ label, value, tooltip }: { label: string; value: "Low"
   );
 }
 
-const TOTAL_TOOLTIP = "10 ads (Select) × 2 products × 3 concepts/image = 60 concepts";
+const TOTAL_TOOLTIP = "10 ads × 2 products × 3 concepts/image = 60 concepts";
 
 function GenerateVariationsOutput() {
   const navigate = useNavigate();
