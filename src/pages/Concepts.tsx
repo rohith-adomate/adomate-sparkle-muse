@@ -54,7 +54,7 @@ export default function Concepts() {
             <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
           </div>
           <div className="flex gap-2">
-            <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Workflows</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
+            <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Campaigns</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-28 h-8"><SelectValue /></SelectTrigger>
               <SelectContent>
