@@ -23,9 +23,9 @@ export const agentRuns: AgentRun[] = [
     time: "Mar 20, 2026 · 15:11",
     seen: false,
     concepts: [
-      { id: "c1", title: "What if your soap was your deodorant?", source: "Manual Upload", status: "accepted", campaign: "Spring Fresh", imgSeed: "soap-deodorant", img: "/concepts/concept-1.avif" },
+      { id: "c3", title: "Stop odor at the source, gently.", source: "Manual Upload", status: "accepted", campaign: "Spring Fresh", imgSeed: "stop-odor", img: "/concepts/concept-3.avif" },
       { id: "c2", title: "The art of 3-in-1 freshness.", source: "Manual Upload", status: "pending", campaign: "Spring Fresh", imgSeed: "art-freshness", img: "/concepts/concept-2.avif" },
-      { id: "c3", title: "Stop odor at the source, gently.", source: "Manual Upload", status: "pending", campaign: "Spring Fresh", imgSeed: "stop-odor", img: "/concepts/concept-3.avif" },
+      { id: "c1", title: "What if your soap was your deodorant?", source: "Manual Upload", status: "pending", campaign: "Spring Fresh", imgSeed: "soap-deodorant", img: "/concepts/concept-1.avif" },
     ],
   },
   {
