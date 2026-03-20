@@ -79,10 +79,10 @@ export const agentRuns: AgentRun[] = [
     time: "Mar 19, 2026 · 10:15",
     seen: true,
     concepts: [
-      { id: "c50", title: "Fresh all day, naturally.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "fresh-all-day" },
-      { id: "c51", title: "Your skin deserves better.", source: "AI Studio", status: "accepted", campaign: "International", imgSeed: "skin-deserves" },
-      { id: "c52", title: "Clean confidence, zero compromise.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "clean-confidence" },
-      { id: "c53", title: "The science of fresh.", source: "AI Studio", status: "rejected", campaign: "International", imgSeed: "science-fresh" },
+      { id: "c50", title: "Fresh all day, naturally.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "fresh-all-day", img: "/concepts/concept-7.avif" },
+      { id: "c51", title: "Your skin deserves better.", source: "AI Studio", status: "accepted", campaign: "International", imgSeed: "skin-deserves", img: "/concepts/concept-8.avif" },
+      { id: "c52", title: "Clean confidence, zero compromise.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "clean-confidence", img: "/concepts/concept-9.avif" },
+      { id: "c53", title: "The science of fresh.", source: "AI Studio", status: "rejected", campaign: "International", imgSeed: "science-fresh", img: "/concepts/concept-1.avif" },
     ],
   },
 ];
