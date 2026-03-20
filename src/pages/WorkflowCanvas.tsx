@@ -987,6 +987,7 @@ export default function WorkflowCanvas() {
       <AdAccountDrawer
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
+      />
       <RunOutputPanel
         open={runPanelOpen}
         onClose={() => setRunPanelOpen(false)}
