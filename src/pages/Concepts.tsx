@@ -51,7 +51,7 @@ export default function Concepts() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
-            <p className="text-muted-foreground text-sm">Review, accept, or iterate on generated concepts.</p>
+            <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
           </div>
           <div className="flex gap-2">
             <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Workflows</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
