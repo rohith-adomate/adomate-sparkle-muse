@@ -383,6 +383,7 @@ export default function WorkflowCanvas() {
     setScheduleDrawerOpen(false);
     setTopSelectDrawerOpen(false);
     setManualImageDrawerOpen(false);
+    setAdAccountDrawerOpen(false);
     setOutputDrawerOpen(false);
     setOutputDrawerNode(null);
     // Remove node and connected edges
