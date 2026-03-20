@@ -243,6 +243,7 @@ export default function Workflows() {
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
                 <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md gap-2">Seasonal <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pink-100 text-pink-600 font-medium leading-none">Soon</span></TabsTrigger>
                 <TabsTrigger value="manual" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Manual</TabsTrigger>
+                <TabsTrigger value="ad-account" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">My Ad Account</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 min-w-0">
