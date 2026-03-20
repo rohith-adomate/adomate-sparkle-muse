@@ -154,8 +154,8 @@ export default function Workflows() {
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : "COMPETITOR"}
+                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : agent.type === "ad-account" ? "border-teal-200 text-teal-700 bg-teal-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : agent.type === "ad-account" ? "AD ACCOUNT" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
