@@ -522,27 +522,29 @@ function GenerateVariationsOutput() {
 /* Manual Image Input output */
 function ManualInputOutput() {
   const images = [
-    { src: "https://picsum.photos/seed/manual-1/200/200", name: "hero-shot.jpg", size: "1.2 MB" },
-    { src: "https://picsum.photos/seed/manual-2/200/200", name: "lifestyle-02.png", size: "890 KB" },
-    { src: "https://picsum.photos/seed/manual-3/200/200", name: "product-flat.jpg", size: "2.1 MB" },
+    { src: "https://picsum.photos/seed/manual-1/200/200", name: "hero-shot.jpg" },
+    { src: "https://picsum.photos/seed/manual-2/200/200", name: "lifestyle-02.png" },
+    { src: "https://picsum.photos/seed/manual-3/200/200", name: "summer-campaign-2026-product-flatlay-final-v3.jpg" },
   ];
 
   return (
     <div className="space-y-2.5">
-      <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 flex items-center gap-2">
-        <ImagePlus className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs"><span className="font-semibold">{images.length} images</span> uploaded at runtime</span>
-      </div>
       <div className="grid grid-cols-3 gap-2.5">
         {images.map((img, i) => (
           <div key={i} className="rounded-lg border border-border bg-card overflow-hidden group">
             <div className="aspect-square bg-muted">
               <img src={img.src} alt={img.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
             </div>
-            <div className="px-2 py-1.5">
-              <p className="text-[10px] font-medium truncate">{img.name}</p>
-              <p className="text-[9px] text-muted-foreground">{img.size}</p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="px-2 py-1.5">
+                  <p className="text-[10px] font-medium truncate">{img.name}</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[220px] text-[10px] break-all">
+                {img.name}
+              </TooltipContent>
+            </Tooltip>
           </div>
         ))}
       </div>
