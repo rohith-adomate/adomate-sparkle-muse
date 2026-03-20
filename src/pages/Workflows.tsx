@@ -78,6 +78,11 @@ const manualAgents = [
   { id: "manual-image-input", name: "Manual Image Input", description: "Upload your own images at run time and generate ad variations from them. Cannot be scheduled.", icon: ImagePlus },
 ];
 
+const adAccountAgents = [
+  { id: "ad-visual-variations", name: "Visual Variations", description: "Takes top-performing ads from your ad account and rebuilds them with fresh creative variations.", icon: Eye },
+  { id: "ad-strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle from your own ads.", icon: Lightbulb },
+];
+
 /* ── Component ── */
 
 export default function Workflows() {
