@@ -802,6 +802,8 @@ export default function WorkflowCanvas() {
                         setTopSelectDrawerOpen(true);
                       } else if (node.type === "manual-image-input") {
                         setManualImageDrawerOpen(true);
+                      } else if (node.type === "ad-account") {
+                        setAdAccountDrawerOpen(true);
                       }
                     }
                   }}
