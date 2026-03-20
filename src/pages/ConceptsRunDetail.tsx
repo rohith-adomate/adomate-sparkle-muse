@@ -62,7 +62,7 @@ export default function ConceptsRunDetail() {
             <CardContent className="p-0">
               <div className="aspect-square relative overflow-hidden bg-muted">
                 <img
-                  src={`https://picsum.photos/seed/${c.imgSeed}/400/400`}
+                  src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
                   alt={c.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
