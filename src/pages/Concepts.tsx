@@ -51,10 +51,10 @@ export default function Concepts() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
-            <p className="text-muted-foreground text-sm">Review, accept, or iterate on generated concepts.</p>
+            <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
           </div>
           <div className="flex gap-2">
-            <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Workflows</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
+            <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Campaigns</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-28 h-8"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -106,11 +106,13 @@ export default function Concepts() {
               ))}
 
               {hasOverflow && (
-                <div className={`rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all ${style.overflowIdle} ${style.overflowHover}`}>
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center group-hover/run:bg-primary/10 transition-colors">
-                    <Plus className="h-5 w-5 text-muted-foreground group-hover/run:text-primary transition-colors" />
+                <div className={`rounded-lg border flex flex-col items-center justify-center gap-2 transition-all ${style.overflowIdle} ${style.overflowHover}`}>
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Plus className="h-5 w-5 text-primary" />
                   </div>
-                  <span className="text-xs text-muted-foreground group-hover/run:text-primary font-medium transition-colors">+{overflowCount} more</span>
+                  <span className="text-sm font-semibold text-foreground">Explore more</span>
+                  <span className="text-xs text-muted-foreground text-center">+{overflowCount} more concepts<br/>available</span>
+                  <span className="text-xs text-primary font-medium flex items-center gap-1">See more <span>→</span></span>
                 </div>
               )}
             </div>
