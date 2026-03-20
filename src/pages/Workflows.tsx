@@ -111,6 +111,9 @@ export default function Workflows() {
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
     toast.success(`Workflow "${name}" created!`);
+    if (type === "ad-account") {
+      navigate(`/workflows/${newAgent.id}`, { state: { type: "ad-account" } });
+    }
   };
 
   const confirmDelete = () => {
