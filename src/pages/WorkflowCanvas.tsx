@@ -171,6 +171,7 @@ export default function WorkflowCanvas() {
   const navigate = useNavigate();
   const location = useLocation();
   const isManualWorkflow = (location.state as any)?.type === "manual";
+  const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -182,8 +183,8 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : getDefaultNodes(agentName));
-  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : getDefaultNodes(agentName));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
