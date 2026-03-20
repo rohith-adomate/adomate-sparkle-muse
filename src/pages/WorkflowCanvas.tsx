@@ -120,6 +120,16 @@ function getManualNodes(): CanvasNode[] {
   ];
 }
 
+function getAdAccountNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: "All campaigns · All ad sets", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
@@ -130,6 +140,13 @@ const DEFAULT_EDGES: Edge[] = [
 const MANUAL_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n2", toPort: 1 },
+];
+
+const AD_ACCOUNT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
