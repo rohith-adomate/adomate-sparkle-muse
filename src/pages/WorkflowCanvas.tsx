@@ -10,7 +10,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
@@ -20,6 +20,7 @@ import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
+import AdAccountDrawer from "@/components/AdAccountDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 import RunOutputPanel, {
   MOCK_RUNS, MOCK_MANUAL_RUNS,
@@ -65,6 +66,7 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
+      { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
     ],
   },
@@ -118,6 +120,16 @@ function getManualNodes(): CanvasNode[] {
   ];
 }
 
+function getAdAccountNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: "All campaigns · All ad sets", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
@@ -128,6 +140,13 @@ const DEFAULT_EDGES: Edge[] = [
 const MANUAL_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n2", toPort: 1 },
+];
+
+const AD_ACCOUNT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -152,6 +171,7 @@ export default function WorkflowCanvas() {
   const navigate = useNavigate();
   const location = useLocation();
   const isManualWorkflow = (location.state as any)?.type === "manual";
+  const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -163,8 +183,8 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : getDefaultNodes(agentName));
-  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : getDefaultNodes(agentName));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
@@ -188,6 +208,7 @@ export default function WorkflowCanvas() {
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
   const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
+  const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
@@ -362,6 +383,7 @@ export default function WorkflowCanvas() {
     setScheduleDrawerOpen(false);
     setTopSelectDrawerOpen(false);
     setManualImageDrawerOpen(false);
+    setAdAccountDrawerOpen(false);
     setOutputDrawerOpen(false);
     setOutputDrawerNode(null);
     // Remove node and connected edges
@@ -780,6 +802,8 @@ export default function WorkflowCanvas() {
                         setTopSelectDrawerOpen(true);
                       } else if (node.type === "manual-image-input") {
                         setManualImageDrawerOpen(true);
+                      } else if (node.type === "ad-account") {
+                        setAdAccountDrawerOpen(true);
                       }
                     }
                   }}
@@ -959,6 +983,10 @@ export default function WorkflowCanvas() {
           setManualImageUploadModalOpen(false);
           toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
         }}
+      />
+      <AdAccountDrawer
+        open={adAccountDrawerOpen}
+        onOpenChange={setAdAccountDrawerOpen}
       />
       <RunOutputPanel
         open={runPanelOpen}

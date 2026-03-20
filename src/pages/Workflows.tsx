@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 /* ── Types & Data ── */
 
-type AgentType = "holiday" | "competitor" | "manual";
+type AgentType = "holiday" | "competitor" | "manual" | "ad-account";
 
 interface Agent {
   id: string;
@@ -78,6 +78,11 @@ const manualAgents = [
   { id: "manual-image-input", name: "Manual Image Input", description: "Upload your own images at run time and generate ad variations from them. Cannot be scheduled.", icon: ImagePlus },
 ];
 
+const adAccountAgents = [
+  { id: "ad-visual-variations", name: "Visual Variations", description: "Takes top-performing ads from your ad account and rebuilds them with fresh creative variations.", icon: Eye },
+  { id: "ad-strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle from your own ads.", icon: Lightbulb },
+];
+
 /* ── Component ── */
 
 export default function Workflows() {
@@ -106,6 +111,9 @@ export default function Workflows() {
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
     toast.success(`Workflow "${name}" created!`);
+    if (type === "ad-account") {
+      navigate(`/workflows/${newAgent.id}`, { state: { type: "ad-account" } });
+    }
   };
 
   const confirmDelete = () => {
@@ -141,13 +149,13 @@ export default function Workflows() {
           <div className="grid gap-4 sm:grid-cols-2">
             {agents.map((agent) => (
               <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`, { state: { type: agent.type } })}>
-                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : agent.type === "manual" ? "bg-amber-400" : "bg-violet-400"}`} /> 
+                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : agent.type === "manual" ? "bg-amber-400" : agent.type === "ad-account" ? "bg-teal-400" : "bg-violet-400"}`} /> 
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : "COMPETITOR"}
+                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : agent.type === "ad-account" ? "border-teal-200 text-teal-700 bg-teal-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
+                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : agent.type === "ad-account" ? "AD ACCOUNT" : "COMPETITOR"}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1">
@@ -235,6 +243,7 @@ export default function Workflows() {
                 <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
                 <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md gap-2">Seasonal <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pink-100 text-pink-600 font-medium leading-none">Soon</span></TabsTrigger>
                 <TabsTrigger value="manual" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Manual</TabsTrigger>
+                <TabsTrigger value="ad-account" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">My Ad Account</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 min-w-0">
@@ -308,6 +317,31 @@ export default function Workflows() {
                           <CardContent className="p-4 space-y-3">
                             <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
                               <Icon className="h-5 w-5 text-amber-600" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-semibold text-sm">{agent.name}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="ad-account" className="mt-0">
+                  <div className="grid grid-cols-2 gap-3">
+                    {adAccountAgents.map((agent) => {
+                      const Icon = agent.icon;
+                      return (
+                        <Card
+                          key={agent.id}
+                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
+                          onClick={() => handleSelectAgent("ad-account", agent.name, agent.description)}
+                        >
+                          <CardContent className="p-4 space-y-3">
+                            <div className="h-10 w-10 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center">
+                              <Icon className="h-5 w-5 text-teal-600" />
                             </div>
                             <div className="space-y-1">
                               <p className="font-semibold text-sm">{agent.name}</p>
