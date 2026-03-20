@@ -34,9 +34,9 @@ export const agentRuns: AgentRun[] = [
     time: "Mar 20, 2026 · 14:59",
     seen: false,
     concepts: [
-      { id: "c20", title: "Deodorize, cleanse, and hydrate in one step.", source: "Manual Upload", status: "pending", campaign: "Morning Routine", imgSeed: "deodorize-cleanse" },
-      { id: "c21", title: "Minimalist 3-in-1 routine.", source: "Manual Upload", status: "accepted", campaign: "Morning Routine", imgSeed: "minimalist-routine" },
-      { id: "c22", title: "Stop masking odor. Eliminate bacteria.", source: "Manual Upload", status: "pending", campaign: "Morning Routine", imgSeed: "stop-masking" },
+      { id: "c20", title: "Deodorize, cleanse, and hydrate in one step.", source: "Manual Upload", status: "pending", campaign: "Morning Routine", imgSeed: "deodorize-cleanse", img: "/concepts/concept-4.avif" },
+      { id: "c21", title: "Minimalist 3-in-1 routine.", source: "Manual Upload", status: "accepted", campaign: "Morning Routine", imgSeed: "minimalist-routine", img: "/concepts/concept-5.avif" },
+      { id: "c22", title: "Stop masking odor. Eliminate bacteria.", source: "Manual Upload", status: "pending", campaign: "Morning Routine", imgSeed: "stop-masking", img: "/concepts/concept-6.avif" },
     ],
   },
   {
