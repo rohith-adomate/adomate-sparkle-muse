@@ -208,6 +208,7 @@ export default function WorkflowCanvas() {
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
   const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
+  const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
