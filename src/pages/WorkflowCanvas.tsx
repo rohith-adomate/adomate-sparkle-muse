@@ -984,6 +984,9 @@ export default function WorkflowCanvas() {
           toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
         }}
       />
+      <AdAccountDrawer
+        open={adAccountDrawerOpen}
+        onOpenChange={setAdAccountDrawerOpen}
       <RunOutputPanel
         open={runPanelOpen}
         onClose={() => setRunPanelOpen(false)}
