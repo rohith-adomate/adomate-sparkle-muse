@@ -20,6 +20,7 @@ import DatasetDrawer from "@/components/DatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
+import AdAccountDrawer from "@/components/AdAccountDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 import RunOutputPanel, {
   MOCK_RUNS, MOCK_MANUAL_RUNS,
