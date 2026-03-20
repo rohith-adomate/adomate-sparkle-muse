@@ -87,7 +87,7 @@ export default function ConceptsRunDetail() {
                   }`} />
                 )}
                 <div className="h-72 relative overflow-hidden bg-muted">
-                  <img src={`https://picsum.photos/seed/${selected.imgSeed}/500/400`} alt={selected.title} className="w-full h-full object-cover" />
+                  <img src={selected.img || `https://picsum.photos/seed/${selected.imgSeed}/500/400`} alt={selected.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <div className="absolute top-4 left-4">
                     <Badge variant="outline" className={`text-xs border ${statusBadge[selected.status]} bg-white/90 backdrop-blur-sm`}>{selected.status}</Badge>
