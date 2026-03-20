@@ -5,6 +5,7 @@ export type Concept = {
   status: "pending" | "accepted" | "rejected";
   campaign: string;
   imgSeed: string;
+  img?: string;
 };
 
 export type AgentRun = {
