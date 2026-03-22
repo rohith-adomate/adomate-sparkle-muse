@@ -83,6 +83,10 @@ const adAccountAgents = [
   { id: "ad-strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle from your own ads.", icon: Lightbulb },
 ];
 
+const redditAgents = [
+  { id: "reddit-ad-workflow", name: "Reddit Ad Workflow", description: "Scrape trending Reddit posts from relevant subreddits and generate ad creatives inspired by real conversations.", icon: MessageSquare },
+];
+
 /* ── Component ── */
 
 export default function Workflows() {
