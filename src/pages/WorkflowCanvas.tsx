@@ -450,7 +450,7 @@ export default function WorkflowCanvas() {
   const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
     if (hasManualImageInput) return false;
-    return nodes.some((n) => n.type === "dataset");
+    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit");
   }, [nodes, hasManualImageInput]);
 
   // Force agent off when manual image input node exists
