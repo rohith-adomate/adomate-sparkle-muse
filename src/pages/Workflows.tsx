@@ -117,6 +117,8 @@ export default function Workflows() {
     toast.success(`Workflow "${name}" created!`);
     if (type === "ad-account") {
       navigate(`/workflows/${newAgent.id}`, { state: { type: "ad-account" } });
+    } else if (type === "reddit") {
+      navigate(`/workflows/${newAgent.id}`, { state: { type: "reddit" } });
     }
   };
 
