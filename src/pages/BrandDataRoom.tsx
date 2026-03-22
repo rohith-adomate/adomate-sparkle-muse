@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const cards = [
   { title: "Brand Knowledge", icon: BookOpen, url: "/brand-data-room/knowledge", summary: "5/5 core knowledge fields configured." },
   { title: "Products", icon: Package, url: "/brand-data-room/products", summary: "5 products cataloged, linked to 0 personas." },
-  { title: "Customer Personas", icon: Users, url: "/brand-data-room/personas", summary: "5 personas defined, linked to 0 products." },
+  
   { title: "Meta Integration", icon: Link2, url: "/brand-data-room/meta", summary: "Connected - Oy Care (Demo Ad Account) ready." },
 ];
 

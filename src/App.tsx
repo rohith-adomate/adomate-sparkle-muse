@@ -60,7 +60,7 @@ const App = () => (
             <Route path="/brand-data-room/knowledge" element={<BrandKnowledge />} />
             
             <Route path="/brand-data-room/products" element={<Products />} />
-            <Route path="/brand-data-room/personas" element={<Personas />} />
+            
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
             <Route path="/brand-data-room/competitors" element={<Competitors />} />
             <Route path="/campaigns" element={<Workflows />} />
