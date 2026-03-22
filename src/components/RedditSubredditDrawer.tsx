@@ -278,44 +278,36 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
               </div>
             )}
 
-            {/* Excluded subreddits */}
-            <div className="space-y-2 pb-3">
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Excluded Subreddits
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  Subreddits that will never be scraped, regardless of source strategy.
-                </TooltipContent>
-              </Tooltip>
-              <div className="flex flex-wrap gap-1.5">
-                {excludedSubs.map((s) => (
-                  <Badge key={s} variant="secondary" className="gap-1 py-0.5 px-2 text-[11px]">
-                    {s}
-                    <button onClick={() => setExcludedSubs(prev => prev.filter(e => e !== s))} className="shrink-0 hover:text-destructive transition-colors">
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                  </Badge>
-                ))}
-                <div className="flex gap-1">
-                  <Input
-                    placeholder="r/..."
-                    value={excludeInput}
-                    onChange={(e) => setExcludeInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addExcluded()}
-                    className="h-6 text-[10px] w-24"
-                  />
-                </div>
-              </div>
-            </div>
 
             <Separator />
 
             {/* ── SECTION: Posts ── */}
             <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Posts</p>
+
+            {/* Language */}
+            <div className="space-y-2 pb-3">
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
+                    Language
+                    <Info className="h-2.5 w-2.5" />
+                  </Label>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
+                  Filter posts by language. Only posts in the selected language will be included.
+                </TooltipContent>
+              </Tooltip>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="es">Spanish</SelectItem>
+                  <SelectItem value="fr">French</SelectItem>
+                  <SelectItem value="de">German</SelectItem>
+                  <SelectItem value="all">All Languages</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Sort mode */}
             <div className="space-y-2 pb-3">
@@ -419,31 +411,6 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
                   <Input type="number" min="1" max="100" value={topNComments} onChange={(e) => setTopNComments(e.target.value)} className="h-8 text-xs" />
                 </div>
               )}
-            </div>
-
-            {/* Language */}
-            <div className="space-y-2 pb-3">
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Language
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  Filter posts by language. Only posts in the selected language will be included.
-                </TooltipContent>
-              </Tooltip>
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                  <SelectItem value="fr">French</SelectItem>
-                  <SelectItem value="de">German</SelectItem>
-                  <SelectItem value="all">All Languages</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             {/* Region */}
