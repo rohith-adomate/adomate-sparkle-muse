@@ -754,6 +754,8 @@ export default function RunOutputPanel({ open, onClose, node }: RunOutputPanelPr
       case "product-data": return <ProductDataOutput />;
       case "generate-concepts": return <GenerateVariationsOutput />;
       case "manual-image-input": return <ManualInputOutput />;
+      case "reddit-subreddit": return <RedditSubredditOutput />;
+      case "reddit-ad-generator": return <RedditAdGeneratorOutput />;
       default: return <p className="text-xs text-muted-foreground">No output data available.</p>;
     }
   };
