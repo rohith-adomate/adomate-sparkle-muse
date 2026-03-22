@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Package, Users, Link2 } from "lucide-react";
+import { BookOpen, Package, Link2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const cards = [
