@@ -228,6 +228,8 @@ export default function WorkflowCanvas() {
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
   const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
   const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
+  const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
+  const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
