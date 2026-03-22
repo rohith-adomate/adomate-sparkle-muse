@@ -86,6 +86,7 @@ const NODE_CATALOG = [
     items: [
       { type: "top-select", label: "Select", description: "Select top ads ranked by a metric.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
       { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+      { type: "reddit-ad-generator", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", icon: Sparkles, inputs: ["Reddit Data", "Products"], outputs: ["Variations"] },
     ],
   },
 ];
