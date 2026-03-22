@@ -133,7 +133,7 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 ) : (
                   <li>
-                    <Collapsible defaultOpen={inDataRoom}>
+                    <Collapsible defaultOpen={true}>
                       <CollapsibleTrigger
                         className={cn(linkCls, "w-full justify-between group/dr", inDataRoom && "text-sidebar-accent-foreground font-medium")}
                         onClick={() => nav("/brand-data-room")}
