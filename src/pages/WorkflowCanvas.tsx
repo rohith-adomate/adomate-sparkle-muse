@@ -405,6 +405,8 @@ export default function WorkflowCanvas() {
     setTopSelectDrawerOpen(false);
     setManualImageDrawerOpen(false);
     setAdAccountDrawerOpen(false);
+    setRedditSubredditDrawerOpen(false);
+    setRedditAdGeneratorDrawerOpen(false);
     setOutputDrawerOpen(false);
     setOutputDrawerNode(null);
     // Remove node and connected edges
