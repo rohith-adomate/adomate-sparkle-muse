@@ -189,7 +189,7 @@ export function AppSidebar() {
                     <span className="text-sm font-bold text-primary">0</span>
                     <span className="text-xs text-muted-foreground">credits</span>
                   </div>
-                  <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md opacity-0 group-hover/credits:opacity-100 transition-opacity">Buy</span>
+                  <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md">Buy</span>
                 </button>
               )}
             </div>
