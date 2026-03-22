@@ -190,6 +190,7 @@ export default function WorkflowCanvas() {
   const location = useLocation();
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
+  const isRedditWorkflow = (location.state as any)?.type === "reddit";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
