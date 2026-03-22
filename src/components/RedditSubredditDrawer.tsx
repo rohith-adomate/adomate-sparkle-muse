@@ -57,8 +57,6 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
   const [subreddits, setSubreddits] = useState(RECOMMENDED_SUBREDDITS);
   const [manualSubreddits, setManualSubreddits] = useState<{ name: string; subscribers: string }[]>([]);
   const [manualInput, setManualInput] = useState("");
-  const [excludedSubs, setExcludedSubs] = useState<string[]>([]);
-  const [excludeInput, setExcludeInput] = useState("");
   const [language, setLanguage] = useState("en");
   const [region, setRegion] = useState("all");
   const [sortMode, setSortMode] = useState("hot");
