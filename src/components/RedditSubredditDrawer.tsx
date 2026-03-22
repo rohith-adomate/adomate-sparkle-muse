@@ -84,16 +84,6 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
     setManualSubreddits(prev => prev.filter(s => s.name !== name));
   };
 
-  const addExcluded = () => {
-    const trimmed = excludeInput.trim();
-    if (!trimmed) return;
-    const name = trimmed.startsWith("r/") ? trimmed : `r/${trimmed}`;
-    if (!excludedSubs.includes(name)) {
-      setExcludedSubs(prev => [...prev, name]);
-    }
-    setExcludeInput("");
-  };
-
   const filteredSuggestions = useMemo(() => {
     if (!manualInput.trim()) return [];
     const q = manualInput.toLowerCase().replace("r/", "");
