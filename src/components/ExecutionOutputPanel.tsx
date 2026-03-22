@@ -760,6 +760,7 @@ export default function RunOutputPanel({ open, onClose, node }: RunOutputPanelPr
   const Icon = NODE_ICONS[node.type] || Database;
   const widthClass = DRAWER_WIDTHS[node.type] || DEFAULT_WIDTH;
   const statusCfg = STATUS_CONFIG[node.status] || STATUS_CONFIG.success;
+  const isBottomPanel = node.type === "reddit-subreddit";
 
   const renderOutput = () => {
     switch (node.type) {
@@ -774,6 +775,47 @@ export default function RunOutputPanel({ open, onClose, node }: RunOutputPanelPr
       default: return <p className="text-xs text-muted-foreground">No output data available.</p>;
     }
   };
+
+  if (isBottomPanel) {
+    return (
+      <>
+        <div className="fixed inset-0 z-40 bg-background/40 backdrop-blur-[2px]" onClick={onClose} />
+        <div
+          className={cn(
+            "fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-2xl",
+            "transition-transform duration-300 ease-out flex flex-col",
+            open ? "translate-y-0" : "translate-y-full"
+          )}
+          style={{ height: "65vh", minHeight: 400 }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-3 border-b border-border shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-md bg-muted/60 flex items-center justify-center">
+                <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <h3 className="text-sm font-semibold leading-tight">{node.label}</h3>
+              <div className={cn("flex items-center gap-1.5 rounded-full border px-2 py-0.5", statusCfg.bg)}>
+                <span className={cn("h-1.5 w-1.5 rounded-full", statusCfg.dot)} />
+                <span className={cn("text-[9px] font-medium", statusCfg.color)}>{statusCfg.label}</span>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <XCircle className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </button>
+          </div>
+          {/* Content — full width, RedditSubredditOutput handles its own left/right layout */}
+          <div className="flex-1 overflow-hidden">
+            {renderOutput()}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
