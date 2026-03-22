@@ -27,7 +27,7 @@ import WorkflowCanvas from "./pages/WorkflowCanvas";
 
 
 import Settings from "./pages/Settings";
-import NotificationsSpec from "./pages/NotificationsSpec";
+
 import NotFound from "./pages/NotFound";
 import Credits from "./pages/Credits";
 import OnboardingPage from "./pages/OnboardingPage";
@@ -76,7 +76,7 @@ const App = () => (
             
             
             <Route path="/settings" element={<Settings />} />
-            <Route path="/notifications-spec" element={<NotificationsSpec />} />
+            
             <Route path="/credits" element={<Credits />} />
             
             

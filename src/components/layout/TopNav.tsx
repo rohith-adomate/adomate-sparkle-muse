@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, ChevronDown, Rocket, Loader2, Save } from "lucide-react";
+import { ChevronDown, Rocket, Loader2, Save } from "lucide-react";
 import adomateLogoSrc from "@/assets/adomate-logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,13 +85,6 @@ export function TopNav() {
         <Button variant="ghost" size="sm" onClick={() => nav("/onboarding")} className="gap-1.5 text-muted-foreground hover:text-foreground">
           <Rocket className="h-4 w-4" />
           <span className="hidden sm:inline text-xs">Onboarding</span>
-        </Button>
-        <Button variant="ghost" size="icon" className="relative" onClick={() => nav("/notifications-spec")}>
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-card" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <HelpCircle className="h-4 w-4" />
         </Button>
       </div>
     </header>

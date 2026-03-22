@@ -70,7 +70,7 @@ export default function Competitors() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <Breadcrumbs items={[{ label: "Brand Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
       <div className="flex items-center justify-between">
