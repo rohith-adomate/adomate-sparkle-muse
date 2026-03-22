@@ -213,7 +213,7 @@ export default function WorkflowCanvas() {
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
   const [runPanelOpen, setRunPanelOpen] = useState(false);
 
-  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : MOCK_RUNS;
+  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : isRedditWorkflow ? MOCK_REDDIT_RUNS : MOCK_RUNS;
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
