@@ -46,7 +46,7 @@ export default function Concepts() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows with fixed-size cards and overflow indicators.">
         <div className="flex items-center justify-between">
           <div>
