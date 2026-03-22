@@ -70,7 +70,7 @@ const NODE_CATALOG = [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
-      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape Reddit posts from subreddits.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
+      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
     ],
   },
   {
@@ -138,8 +138,8 @@ function getRedditNodes(): CanvasNode[] {
   return [
     { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 270, inputs: [], outputs: ["Trigger"], status: "success" },
     { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Products"], status: "success" },
-    { id: "n2", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape Reddit posts from selected subreddits.", x: 100, y: 340, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
-    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ad images from Reddit insights.", x: 450, y: 270, inputs: ["Products", "Reddit Data"], outputs: ["Variations"] },
+    { id: "n2", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", x: 100, y: 340, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
+    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", x: 450, y: 270, inputs: ["Products", "Reddit Data"], outputs: ["Variations"] },
   ];
 }
 
