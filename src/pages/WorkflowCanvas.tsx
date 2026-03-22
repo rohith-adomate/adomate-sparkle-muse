@@ -10,7 +10,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone, MessageSquare,
 } from "lucide-react";
 import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
@@ -22,8 +22,10 @@ import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import AdAccountDrawer from "@/components/AdAccountDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
+import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
+import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
 import RunOutputPanel, {
-  MOCK_RUNS, MOCK_MANUAL_RUNS,
+  MOCK_RUNS, MOCK_MANUAL_RUNS, MOCK_REDDIT_RUNS,
   type WorkflowRun, type RunNodeOutput,
 } from "@/components/ExecutionOutputPanel";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
@@ -68,6 +70,7 @@ const NODE_CATALOG = [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
+      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape Reddit posts from subreddits.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
     ],
   },
   {
@@ -83,6 +86,7 @@ const NODE_CATALOG = [
     items: [
       { type: "top-select", label: "Select", description: "Select top ads ranked by a metric.", icon: ListFilter, inputs: ["Ads Data"], outputs: ["Top Ads"] },
       { type: "generate-concepts", label: "Generate Ad Variations", description: "Generate ad variations with AI.", icon: Sparkles, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+      { type: "reddit-ad-generator", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", icon: Sparkles, inputs: ["Reddit Data", "Products"], outputs: ["Variations"] },
     ],
   },
 ];
@@ -130,6 +134,15 @@ function getAdAccountNodes(): CanvasNode[] {
   ];
 }
 
+function getRedditNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 270, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Products"], status: "success" },
+    { id: "n2", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape Reddit posts from selected subreddits.", x: 100, y: 340, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
+    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ad images from Reddit insights.", x: 450, y: 270, inputs: ["Products", "Reddit Data"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
@@ -147,6 +160,13 @@ const AD_ACCOUNT_EDGES: Edge[] = [
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+];
+
+const REDDIT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
+  { id: "e1", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
+  { id: "e2", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e3", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -172,6 +192,7 @@ export default function WorkflowCanvas() {
   const location = useLocation();
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
+  const isRedditWorkflow = (location.state as any)?.type === "reddit";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -183,8 +204,8 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : getDefaultNodes(agentName));
-  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
@@ -192,7 +213,7 @@ export default function WorkflowCanvas() {
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
   const [runPanelOpen, setRunPanelOpen] = useState(false);
 
-  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : MOCK_RUNS;
+  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : isRedditWorkflow ? MOCK_REDDIT_RUNS : MOCK_RUNS;
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -209,6 +230,8 @@ export default function WorkflowCanvas() {
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
   const [manualImageDrawerOpen, setManualImageDrawerOpen] = useState(false);
   const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
+  const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
+  const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
@@ -384,6 +407,8 @@ export default function WorkflowCanvas() {
     setTopSelectDrawerOpen(false);
     setManualImageDrawerOpen(false);
     setAdAccountDrawerOpen(false);
+    setRedditSubredditDrawerOpen(false);
+    setRedditAdGeneratorDrawerOpen(false);
     setOutputDrawerOpen(false);
     setOutputDrawerNode(null);
     // Remove node and connected edges
@@ -427,7 +452,7 @@ export default function WorkflowCanvas() {
   const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
     if (hasManualImageInput) return false;
-    return nodes.some((n) => n.type === "dataset");
+    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit");
   }, [nodes, hasManualImageInput]);
 
   // Force agent off when manual image input node exists
@@ -804,6 +829,10 @@ export default function WorkflowCanvas() {
                         setManualImageDrawerOpen(true);
                       } else if (node.type === "ad-account") {
                         setAdAccountDrawerOpen(true);
+                      } else if (node.type === "reddit-subreddit") {
+                        setRedditSubredditDrawerOpen(true);
+                      } else if (node.type === "reddit-ad-generator") {
+                        setRedditAdGeneratorDrawerOpen(true);
                       }
                     }
                   }}
@@ -987,6 +1016,14 @@ export default function WorkflowCanvas() {
       <AdAccountDrawer
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
+      />
+      <RedditSubredditDrawer
+        open={redditSubredditDrawerOpen}
+        onOpenChange={setRedditSubredditDrawerOpen}
+      />
+      <RedditAdGeneratorDrawer
+        open={redditAdGeneratorDrawerOpen}
+        onOpenChange={setRedditAdGeneratorDrawerOpen}
       />
       <RunOutputPanel
         open={runPanelOpen}

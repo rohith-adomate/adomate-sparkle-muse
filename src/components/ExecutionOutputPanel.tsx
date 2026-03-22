@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
-  AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen,
+  AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen, MessageSquare,
 } from "lucide-react";
 
 /* ── Run mock data types ── */
@@ -78,6 +78,21 @@ export const MOCK_MANUAL_RUNS: WorkflowRun[] = [
   },
 ];
 
+export const MOCK_REDDIT_RUNS: WorkflowRun[] = [
+  {
+    id: "rexec-5", number: 5, status: "success", startedAt: "20 Mar 2026 · 09:00", duration: "3m 22s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "success" },
+  },
+  {
+    id: "rexec-4", number: 4, status: "failed", startedAt: "19 Mar 2026 · 09:00", duration: "2m 11s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "error" },
+  },
+  {
+    id: "rexec-3", number: 3, status: "success", startedAt: "18 Mar 2026 · 09:00", duration: "2m 54s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "success" },
+  },
+];
+
 /* ── Drawer width config per node type ── */
 
 const DRAWER_WIDTHS: Record<string, string> = {
@@ -87,6 +102,8 @@ const DRAWER_WIDTHS: Record<string, string> = {
   "top-select":         "w-[560px]",
   "generate-concepts":  "w-[520px]",
   "manual-image-input": "w-[420px]",
+  "reddit-subreddit":   "w-[480px]",
+  "reddit-ad-generator": "w-[480px]",
 };
 
 const DEFAULT_WIDTH = "w-[420px]";
@@ -552,6 +569,155 @@ function ManualInputOutput() {
   );
 }
 
+/* Reddit Subreddit Dataset output */
+function RedditSubredditOutput() {
+  const stats = [
+    { label: "Subreddits", value: "4" },
+    { label: "Posts scanned", value: "96" },
+    { label: "Comments scanned", value: "1,840" },
+    { label: "Usable snippets", value: "34" },
+  ];
+  const quality = [
+    { label: "Confidence", value: "87%", color: "text-emerald-600" },
+    { label: "Duplication", value: "12%", color: "text-amber-600" },
+    { label: "Noise", value: "8%", color: "text-emerald-600" },
+    { label: "Toxicity", value: "2%", color: "text-emerald-600" },
+  ];
+  const insights = [
+    "Pain point: most users frustrated by retinol irritation",
+    "Hook: 'the $8 product that replaced my $60 one' pattern",
+    "Meme: 'skincare fridge' trend gaining traction",
+    "Objection: 'why pay for branded when generic works?'",
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Summary */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <div className="flex items-center gap-1.5 mb-2.5">
+          <MessageSquare className="h-3 w-3 text-muted-foreground" />
+          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Scrape Summary</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {stats.map((s) => (
+            <div key={s.label} className="rounded-lg border border-border bg-muted/20 p-2">
+              <p className="text-[9px] text-muted-foreground">{s.label}</p>
+              <p className="text-sm font-semibold">{s.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quality */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <div className="flex items-center gap-1.5 mb-2.5">
+          <BarChart3 className="h-3 w-3 text-muted-foreground" />
+          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Quality Metrics</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {quality.map((q) => (
+            <div key={q.label} className="rounded-lg border border-border bg-muted/20 p-2">
+              <p className="text-[9px] text-muted-foreground">{q.label}</p>
+              <p className={cn("text-sm font-semibold", q.color)}>{q.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Top Insights */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Top Extracted Insights</p>
+        <div className="space-y-1.5">
+          {insights.map((ins, i) => (
+            <div key={i} className="flex items-start gap-2 text-[11px]">
+              <span className="text-primary font-bold shrink-0">•</span>
+              <span className="text-foreground">{ins}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Warnings */}
+      <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 flex items-start gap-2">
+        <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+        <p className="text-[10px] text-amber-700">Low volume in r/Retinoids — consider expanding time window or adding more subreddits.</p>
+      </div>
+    </div>
+  );
+}
+
+/* Reddit Ad Generator output */
+function RedditAdGeneratorOutput() {
+  const navigate = useNavigate();
+  const concepts = [
+    { id: 1, angle: "Pain-point reframe: retinol irritation solved", status: "accepted" as const, source: "r/SkincareAddiction" },
+    { id: 2, angle: "Budget comparison: $8 vs $60 moisturizer", status: "accepted" as const, source: "r/beauty" },
+    { id: 3, angle: "Meme format: skincare fridge flex", status: "accepted" as const, source: "r/SkincareAddiction" },
+    { id: 4, angle: "Social proof: 'dermatologist recommended'", status: "accepted" as const, source: "r/tretinoin" },
+    { id: 5, angle: "Fear appeal: SPF protection myths", status: "rejected" as const, source: "r/SkincareAddiction" },
+    { id: 6, angle: "Trend-jack: glass skin routine", status: "accepted" as const, source: "r/AsianBeauty" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Concept list */}
+      <div>
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Concepts</p>
+        <div className="space-y-1.5">
+          {concepts.map((c) => (
+            <div key={c.id} className="rounded-lg border border-border p-2.5 flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-medium truncate">{c.angle}</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Source: {c.source}</p>
+              </div>
+              <Badge variant="secondary" className={cn("text-[9px] py-0 h-5 shrink-0 ml-2", c.status === "accepted" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-red-500/10 text-red-600 border-red-500/20")}>
+                {c.status}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Generated assets grid */}
+      <div>
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generated Assets</p>
+        <div className="grid grid-cols-2 gap-2">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="rounded-lg border border-border overflow-hidden bg-card group">
+              <div className="aspect-square bg-muted">
+                <img src={`https://picsum.photos/seed/reddit-ad-${i}/400/400`} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
+              </div>
+            </div>
+          ))}
+          <div className="aspect-square rounded-lg border border-border bg-muted/40 flex flex-col items-center justify-center cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => navigate("/concepts/reddit-ad-run-1")}>
+            <span className="text-xl font-bold text-muted-foreground/60">+7</span>
+            <span className="text-[9px] font-medium text-muted-foreground/40 uppercase">View All</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Token/cost summary */}
+      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generation Stats</p>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="rounded-lg border border-border bg-muted/20 p-2">
+            <p className="text-[9px] text-muted-foreground">Tokens</p>
+            <p className="text-xs font-semibold">24.3K</p>
+          </div>
+          <div className="rounded-lg border border-border bg-muted/20 p-2">
+            <p className="text-[9px] text-muted-foreground">Cost</p>
+            <p className="text-xs font-semibold">$0.48</p>
+          </div>
+          <div className="rounded-lg border border-border bg-muted/20 p-2">
+            <p className="text-[9px] text-muted-foreground">Latency</p>
+            <p className="text-xs font-semibold">42s</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Node type icon map ── */
 const NODE_ICONS: Record<string, typeof Clock> = {
   schedule: Clock,
@@ -560,6 +726,8 @@ const NODE_ICONS: Record<string, typeof Clock> = {
   "top-select": ListFilter,
   "generate-concepts": Sparkles,
   "manual-image-input": ImagePlus,
+  "reddit-subreddit": MessageSquare,
+  "reddit-ad-generator": Sparkles,
 };
 
 /* ── Status colors ── */
@@ -586,6 +754,8 @@ export default function RunOutputPanel({ open, onClose, node }: RunOutputPanelPr
       case "product-data": return <ProductDataOutput />;
       case "generate-concepts": return <GenerateVariationsOutput />;
       case "manual-image-input": return <ManualInputOutput />;
+      case "reddit-subreddit": return <RedditSubredditOutput />;
+      case "reddit-ad-generator": return <RedditAdGeneratorOutput />;
       default: return <p className="text-xs text-muted-foreground">No output data available.</p>;
     }
   };
