@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Trash2, Calendar as CalendarIcon, MoreVertical, Eye, Lightbulb, TreePine, Ghost, ShoppingCart, PartyPopper, Heart, Sparkles, ChevronRight, Pencil, ImagePlus,
+  Trash2, Calendar as CalendarIcon, MoreVertical, Eye, Lightbulb, TreePine, Ghost, ShoppingCart, PartyPopper, Heart, Sparkles, ChevronRight, Pencil, ImagePlus, MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
