@@ -680,7 +680,7 @@ function RedditAdGeneratorOutput() {
       <div className="flex items-center gap-3">
         <div className="flex-1 rounded-lg border border-border bg-muted/20 p-2.5 text-center">
           <p className="text-[9px] text-muted-foreground">Assets Generated</p>
-          <p className="text-lg font-bold">6 / 8</p>
+          <p className="text-lg font-bold">6</p>
         </div>
         <div className="flex-1 rounded-lg border border-border bg-muted/20 p-2.5 text-center">
           <p className="text-[9px] text-muted-foreground">Latency</p>
