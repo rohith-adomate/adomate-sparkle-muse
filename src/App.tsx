@@ -11,7 +11,7 @@ import BrandDataRoom from "./pages/BrandDataRoom";
 import BrandKnowledge from "./pages/BrandKnowledge";
 
 import Products from "./pages/Products";
-import Personas from "./pages/Personas";
+
 import MetaIntegration from "./pages/MetaIntegration";
 import Competitors from "./pages/Competitors";
 import Campaigns from "./pages/Campaigns";
