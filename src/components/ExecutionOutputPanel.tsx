@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ChevronDown, CheckCircle2, Clock, ExternalLink, Info, Image,
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
-  AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen,
+  AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen, MessageSquare,
 } from "lucide-react";
 
 /* ── Run mock data types ── */
