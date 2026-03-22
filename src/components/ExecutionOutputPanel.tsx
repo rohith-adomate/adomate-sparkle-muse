@@ -102,6 +102,8 @@ const DRAWER_WIDTHS: Record<string, string> = {
   "top-select":         "w-[560px]",
   "generate-concepts":  "w-[520px]",
   "manual-image-input": "w-[420px]",
+  "reddit-subreddit":   "w-[480px]",
+  "reddit-ad-generator": "w-[480px]",
 };
 
 const DEFAULT_WIDTH = "w-[420px]";
