@@ -1,147 +1,155 @@
 
-# 5-Change Refinement Plan
 
-## Change 1: Replace "Adomate" Text in TopNav with the Logo Image
+# Reddit Workflow Implementation Plan
 
-The uploaded logo (`user-uploads://adomate_og_logo.png`) shows the Adomate brand mark — a red square with "Ad" in white plus "omate" in dark navy text. We need to:
+## Summary
 
-1. Copy the logo from `user-uploads://adomate_og_logo.png` to `src/assets/adomate-logo.png`
-2. In `src/components/layout/TopNav.tsx`, replace the current logo area (lines 27-32) — the gradient square + "Adomate" text span — with an `<img>` tag importing the logo asset
-3. Size it appropriately: `h-7 w-auto` so it fits the 56px nav height without distortion
-4. Remove the now-unused `Sparkles` import
+Add a complete "Reddit" workflow type to the application, including a new tab in the Create Workflow modal, a custom canvas layout with 4 nodes (2 existing + 2 new), and two new node drawer components with information tooltips on every configurable setting.
 
 ---
 
-## Change 2: Visual Polish — Animations, Graphics, Steve Jobs Quality
+## 1. Add Reddit to Create Workflow Modal
 
-This touches `src/index.css`, `src/components/layout/AppLayout.tsx`, `src/components/OnboardingOverlay.tsx`, and key pages. Specific improvements:
+**File: `src/pages/Workflows.tsx`**
 
-**Global CSS additions (`src/index.css`):**
-- Add `@keyframes float` — subtle vertical bob for hero icons (transform: translateY 0 → -8px → 0, 3s infinite)
-- Add `@keyframes shimmer` — scan animation for loading skeletons/scraping screens
-- Add `@keyframes glow-pulse` — soft halo pulse on primary-colored elements
-- Add `.animate-float`, `.animate-shimmer`, `.animate-glow` utility classes
-- Add smoother `transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]` base to cards
+- Add `"reddit"` to the `AgentType` union type
+- Add a "Reddit" tab in the Create Workflow modal's vertical `TabsList`
+- Add a Reddit template card (single card: "Reddit Ad Workflow") with a Reddit-themed icon and color (e.g., orange-red `bg-orange-50 border-orange-200 text-orange-600`)
+- Clicking creates a workflow of type `"reddit"` and navigates to the canvas
+- Add Reddit workflow cards styling (orange-red accent color bar and badge)
 
-**Onboarding Overlay (`src/components/OnboardingOverlay.tsx`):**
-- Backdrop: animate from `opacity-0` to `opacity-100` on mount using a `mounted` state + CSS transition
-- Card: animate from `scale-95 opacity-0` → `scale-100 opacity-100` on mount (300ms cubic-bezier)
-- Progress bar: already transitions, enhance with `ease-[cubic-bezier(0.4,0,0.2,1)]`
-- Step pills: add `transition-all duration-300` so active state slides smoothly
+## 2. Reddit Canvas Node Layout
 
-**Onboarding Steps (`src/pages/Onboarding.tsx`):**
-- Step 1 scrape screen: make the loader icon float with `animate-float`, add a subtle pulsing glow ring behind it, stagger each scrape step's fade-in with a 150ms CSS delay per item
-- Step 5 phone mockup: add a `shadow-2xl` and a subtle `ring-1 ring-white/20` to make it look premium, add a thin bezel effect
-- Step 6 topic cards: improve the stagger reveal — use `scale-95 → scale-100` in addition to the translate, making it "pop" in
+**File: `src/pages/WorkflowCanvas.tsx`**
 
-**Home page (`src/pages/Home.tsx`):**
-- Widget cards: add `hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200` for micro-lift on hover
-- Performance chart area: add animated gradient background that subtly shifts
+Add new node types and default graph:
 
-**Sidebar (`src/components/layout/AppSidebar.tsx`):**
-- Active nav item: add a left accent bar via `before:absolute before:left-0 before:h-full before:w-0.5 before:bg-primary before:rounded-r` with transition
-
----
-
-## Change 3: New Onboarding Step — "AI Chat History" (Between Step 1 and Step 2)
-
-The current flow is: Step 1 (Basic Info) → scrape → Step 2 (Brand Review) → Step 3 (Connect Meta) → ...
-
-We need to insert a new step **between the scrape completion and Brand Review**, making the total 7 steps instead of 6.
-
-**Changes needed:**
-
-### `src/components/OnboardingOverlay.tsx`
-- Change `stepLabels` array from 6 items to 7: `["Basic Info", "AI History", "Brand Review", "Connect Meta", "Upload Assets", "Visual Style", "Launch"]`
-- Change all `currentStep === 6` references to `currentStep === 7`
-- Change `Math.min(prev + 1, 6)` to `Math.min(prev + 1, 7)`
-- Update progress calculation to divide by 7
-
-### `src/pages/Onboarding.tsx`
-- Rename/shift all step numbers: Step 2 (AI Chat History — new), Step 3 (Brand Review — was 2), Step 4 (Connect Meta — was 3), Step 5 (Upload Assets — was 4), Step 6 (Visual Style — was 5), Step 7 (Wow Moment — was 6)
-- Add state: `const [aiChatLink, setAiChatLink] = useState("")`
-- After scraping completes (currently `setStep(2)`), change to `setStep(2)` which now hits the new AI chat step
-- The scrape auto-advance stays the same, just the step it lands on is now the new intermediate screen
-
-**New Step 2 — AI Chat History screen content:**
-```
-Title: "Have you already started thinking about your ads?"
-Subtitle: "If you've worked with an AI assistant (ChatGPT, Claude, etc.) to brainstorm ad ideas, paste the shareable link below and we'll incorporate those insights."
-
-Icon: Large chat bubble icon (MessageSquare from lucide) with a subtle gradient glow
-
-Input area:
-  - Label: "Paste your AI chat link (optional)"
-  - Input: full-width, placeholder="https://chatgpt.com/share/... or https://claude.ai/share/..."
-  - Helper text below: "Supports ChatGPT and Claude public share links. We'll analyze the conversation to extract brand preferences, ad angles, and creative direction."
-
-Two example cards below showing what this looks like:
-  - "ChatGPT" card with logo color + "Share via chatgpt.com/share/..."
-  - "Claude" card with Claude's orange/amber color + "Share via claude.ai/share/..."
-
-HoverExplainer: "Backend: POST /api/onboarding/parse-ai-chat { url }. The scraper fetches the public chat transcript and sends it to an LLM with a prompt to extract: preferred ad angles, rejected ideas, brand voice notes, competitor mentions. Output merged into brand_knowledge.ai_context JSON field."
+```text
+                    ┌──────────────┐
+               ┌───▶│ Product Data │───┐
+┌──────────┐   │    └──────────────┘   │    ┌──────────────────────┐
+│ Schedule  │───┤                       ├───▶│ Reddit Ad Generator  │
+└──────────┘   │    ┌──────────────┐   │    └──────────────────────┘
+               └───▶│ Subreddit    │───┘
+                    │ Dataset      │
+                    └──────────────┘
 ```
 
+- Add `"reddit-subreddit"` and `"reddit-ad-generator"` to `NODE_CATALOG`
+- `reddit-subreddit`: category `"static-data"`, icon `Database`, inputs: `["Trigger"]`, outputs: `["Reddit Data"]`
+- `reddit-ad-generator`: category `"ai"`, icon `Sparkles`, inputs: `["Reddit Data", "Products"]`, outputs: `["Variations"]`
+- Add `getRedditNodes()` returning 4 nodes with Schedule splitting to both Product Data and Subreddit Dataset
+- Add `REDDIT_EDGES` connecting Schedule→Product Data, Schedule→Subreddit Dataset, both→Reddit Ad Generator
+- Detect `type === "reddit"` from location state and use Reddit nodes/edges
+- Wire node clicks to open respective drawers (editor tab) or run output panel (runs tab)
+- Add state variables for `redditSubredditDrawerOpen` and `redditAdGeneratorDrawerOpen`
+
+## 3. Subreddit Dataset Node — Editor Drawer
+
+**New file: `src/components/RedditSubredditDrawer.tsx`**
+
+Bottom-anchored drawer (70vh, same pattern as `DatasetDrawer.tsx`) with left settings panel + right data table.
+
+**Left Panel — Settings (top to bottom):**
+
+**SUBREDDIT section:**
+- **Source Strategy** (Auto / Manual toggle) with info tooltip
+  - **Auto mode**: Shows recommended subreddits with toggle switches per subreddit, each showing subscriber count (e.g., "r/SkincareAddiction · 2.1M subscribers")
+  - **Manual mode**: Input field to add subreddits + suggested subreddits below based on entered text, each showing subscriber count
+- **Excluded subreddits** (multi-select tags) with info tooltip
+- **Language filter** with info tooltip
+- **Region filter** (optional) with info tooltip
+
+**POST section (separator):**
+- **Sort mode** (hot / top / new) with info tooltip
+- **Time window** (24h, 7d, 30d) with info tooltip
+- **Max posts per subreddit** (number input) with info tooltip
+- **Include comments** (toggle) with info tooltip
+- **Top N comments per post** (number input, shown when comments enabled) with info tooltip
+
+**FILTERS section:**
+- **Deduplicate similar posts** (toggle) with info tooltip
+- **Block NSFW content** (toggle) with info tooltip
+
+**Right Panel — Data Table:**
+Mock scraped Reddit posts table with columns: Preview snippet, Subreddit, Title, Upvotes, Comments, Posted date, Status
+
+**Defaults:** Auto mode, top 6 subreddits, 7d window, 25 posts/sub, comments on (top 20), NSFW block on.
+
+## 4. Reddit Ad Generator Node — Editor Drawer
+
+**New file: `src/components/RedditAdGeneratorDrawer.tsx`**
+
+Right-side Sheet drawer (same pattern as `GenerateConceptsDrawer.tsx`).
+
+**Settings (top to bottom):**
+
+- **Output type** (select: Commercial Image Static Ads / Meme-Based Ads / Trend-Based Ads) with info tooltip
+- **Number of concepts** (number input) with info tooltip
+- **Concept diversity slider** (close to brand ↔ exploratory) with info tooltip
+- **Meme intensity** (none / light / medium — auto-set based on output type, user can override) with info tooltip
+  - Commercial → none, Meme-Based → medium, Trend-Based → light
+- **Prompt style** (strict brand / balanced / reddit-native) with info tooltip
+- **Include direct Reddit phrasing** (toggle) with info tooltip
+
+**Defaults:** 6 concepts, meme intensity light, commercial output type.
+
+## 5. Run Output Views (Runs Tab)
+
+**File: `src/components/ExecutionOutputPanel.tsx`**
+
+Add output renderers for both new node types, shown when clicking nodes in Runs tab:
+
+**Subreddit Dataset Run Output:**
+- Summary card: subreddits fetched, posts scanned, comments scanned, usable snippets
+- Quality card: confidence %, duplication %, noise %, toxicity %
+- Top extracted insights list
+- Selected evidence snippets with subreddit/post traceability
+- Warnings section
+
+**Reddit Ad Generator Run Output:**
+- Concept list with status (accepted / rejected / generated)
+- Generated assets grid with concept-to-image mapping
+- Why-rejected reasons
+- Token/cost + latency summary
+- Regenerate controls
+
+## 6. Information Tooltips on Every Setting
+
+Both new drawer components will use the existing `Tooltip` + `Info` icon pattern (consistent with `DatasetDrawer`, `GenerateConceptsDrawer`, `ScheduleDrawer`) where every label has a small `Info` icon that shows an explanatory tooltip on hover describing what the setting does, expected behavior, and backend implications.
+
+Pattern per setting:
+```tsx
+<Tooltip delayDuration={200}>
+  <TooltipTrigger asChild>
+    <Label className="... inline-flex items-center gap-1 cursor-help">
+      Setting Name
+      <Info className="h-2.5 w-2.5" />
+    </Label>
+  </TooltipTrigger>
+  <TooltipContent side="right" className="max-w-[200px] text-[10px]">
+    Explanation of the setting...
+  </TooltipContent>
+</Tooltip>
+```
+
 ---
 
-## Change 4: Swap "Workflows" and "Brand Data Room" in Sidebar
+## Technical Details
 
-Currently in `src/components/layout/AppSidebar.tsx`:
-- **Top section**: Home + Brand Data Room (collapsible)
-- **Middle section** (`coreNav`): Campaigns, Concepts, Studio, Content, Calendar
-- **Bottom section** (`bottomNav`): Performance, Workflows, Settings
+### Files to create:
+- `src/components/RedditSubredditDrawer.tsx` — bottom drawer, mirrors `DatasetDrawer.tsx` structure
+- `src/components/RedditAdGeneratorDrawer.tsx` — right sheet, mirrors `GenerateConceptsDrawer.tsx` structure
 
-The request is to swap Workflows position with Brand Data Room position.
+### Files to modify:
+- `src/pages/Workflows.tsx` — add Reddit type, tab, template card
+- `src/pages/WorkflowCanvas.tsx` — add Reddit nodes/edges, drawer state, node click handlers, catalog entries
+- `src/components/ExecutionOutputPanel.tsx` — add run output views for both new node types
 
-**New layout:**
-- **Top section**: Home + Workflows (no sub-items, just a direct link)
-- **Middle section** (`coreNav`): Campaigns, Concepts, Studio, Content, Calendar — unchanged
-- **Bottom section** (`bottomNav`): Performance, **Brand Data Room** (collapsible, moved here), Settings
+### New icons needed:
+- Will use existing lucide icons (e.g., `MessageSquare` or a custom Reddit-like icon for the workflow type)
 
-Wait — re-reading: "swap the 'Workflow' menu item with the 'Brand Data Room' menu item". Brand Data Room is at the top (second item after Home). Workflows is at the bottom (second item in bottomNav). So we swap them:
+### Activation logic:
+- Reddit workflows can be scheduled (not manual-only), so activation toggle works with a Schedule node present
+- `canActivate` logic updated to also accept `reddit-subreddit` node type
 
-- **Top section**: Home + **Workflows** (was at bottom)
-- **Bottom section**: Performance + **Brand Data Room** (collapsible, was at top), Settings
-
-The Brand Data Room collapsible with its 5 sub-items moves to the bottom nav group, replacing Workflows. Workflows moves to the top group as a simple nav link.
-
----
-
-## Change 5: Placeholder Images Everywhere No Image Is Present
-
-Pages that have empty/placeholder image areas:
-1. **`src/pages/Products.tsx`** — product card thumbnails (currently a gradient rectangle with an Image icon)
-2. **`src/pages/Studio.tsx`** — creative asset preview areas
-3. **`src/pages/Concepts.tsx`** — concept card preview areas (likely gradient placeholders)
-4. **`src/pages/Content.tsx`** — content card thumbnails
-5. **`src/pages/BrandKnowledge.tsx`** — logo/visual asset upload areas
-6. **`src/pages/Onboarding.tsx`** — Step 4 asset upload dropzones could show sample images
-7. **`src/pages/Home.tsx`** — any image areas in widgets
-
-We'll use `picsum.photos` URLs for authentic-looking placeholder images since they're free, reliable, and don't require authentication. For advertising/product contexts we'll use specific seeds that return relevant imagery:
-- `https://picsum.photos/seed/product1/400/300` — product shots
-- `https://picsum.photos/seed/ad1/400/400` — square ad format
-- `https://picsum.photos/seed/brand1/800/400` — banner/hero format
-
-For each page, we'll identify where gradients or empty boxes exist and replace/augment them with `<img>` tags using picsum URLs with `object-cover` and appropriate `aspect-ratio` classes.
-
----
-
-## Technical Summary
-
-**Files to copy:**
-- `user-uploads://adomate_og_logo.png` → `src/assets/adomate-logo.png`
-
-**Files to modify:**
-1. `src/components/layout/TopNav.tsx` — Logo image (Change 1)
-2. `src/index.css` — Animation utilities (Change 2)
-3. `src/components/OnboardingOverlay.tsx` — 7-step labels, animation (Changes 2 & 3)
-4. `src/pages/Onboarding.tsx` — New step 2, shifted step numbers, placeholder images (Changes 3 & 5)
-5. `src/components/layout/AppSidebar.tsx` — Swap Workflows ↔ Brand Data Room (Change 4)
-6. `src/pages/Products.tsx` — Placeholder images (Change 5)
-7. `src/pages/Studio.tsx` — Placeholder images (Change 5)
-8. `src/pages/Concepts.tsx` — Placeholder images (Change 5)
-9. `src/pages/Content.tsx` — Placeholder images (Change 5)
-10. `src/pages/Home.tsx` — Visual polish + placeholder images (Changes 2 & 5)
-
-No new npm packages needed. All images use picsum.photos CDN URLs.
