@@ -76,7 +76,7 @@ const App = () => (
             
             
             <Route path="/settings" element={<Settings />} />
-            <Route path="/notifications-spec" element={<NotificationsSpec />} />
+            
             <Route path="/credits" element={<Credits />} />
             
             

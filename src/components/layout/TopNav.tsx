@@ -86,13 +86,6 @@ export function TopNav() {
           <Rocket className="h-4 w-4" />
           <span className="hidden sm:inline text-xs">Onboarding</span>
         </Button>
-        <Button variant="ghost" size="icon" className="relative" onClick={() => nav("/notifications-spec")}>
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-card" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <HelpCircle className="h-4 w-4" />
-        </Button>
       </div>
     </header>
   );
