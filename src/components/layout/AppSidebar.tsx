@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Home, Database, Lightbulb, Palette, FileText,
-  Workflow, BookOpen, Package, Users, Link2, Swords,
+  Workflow, BookOpen, Package, Link2, Swords,
   ChevronRight, CreditCard, Crown, Settings, LogOut,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
