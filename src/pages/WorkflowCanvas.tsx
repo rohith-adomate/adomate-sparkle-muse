@@ -1015,6 +1015,14 @@ export default function WorkflowCanvas() {
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
       />
+      <RedditSubredditDrawer
+        open={redditSubredditDrawerOpen}
+        onOpenChange={setRedditSubredditDrawerOpen}
+      />
+      <RedditAdGeneratorDrawer
+        open={redditAdGeneratorDrawerOpen}
+        onOpenChange={setRedditAdGeneratorDrawerOpen}
+      />
       <RunOutputPanel
         open={runPanelOpen}
         onClose={() => setRunPanelOpen(false)}
