@@ -827,6 +827,10 @@ export default function WorkflowCanvas() {
                         setManualImageDrawerOpen(true);
                       } else if (node.type === "ad-account") {
                         setAdAccountDrawerOpen(true);
+                      } else if (node.type === "reddit-subreddit") {
+                        setRedditSubredditDrawerOpen(true);
+                      } else if (node.type === "reddit-ad-generator") {
+                        setRedditAdGeneratorDrawerOpen(true);
                       }
                     }
                   }}
