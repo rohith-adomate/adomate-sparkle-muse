@@ -132,6 +132,15 @@ function getAdAccountNodes(): CanvasNode[] {
   ];
 }
 
+function getRedditNodes(): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 270, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Products"], status: "success" },
+    { id: "n2", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape Reddit posts from selected subreddits.", x: 100, y: 340, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
+    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ad images from Reddit insights.", x: 450, y: 270, inputs: ["Products", "Reddit Data"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
@@ -149,6 +158,13 @@ const AD_ACCOUNT_EDGES: Edge[] = [
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+];
+
+const REDDIT_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
+  { id: "e1", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
+  { id: "e2", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e3", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
 ];
 
 /* ── Helpers ── */
