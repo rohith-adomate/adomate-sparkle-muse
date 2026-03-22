@@ -78,6 +78,21 @@ export const MOCK_MANUAL_RUNS: WorkflowRun[] = [
   },
 ];
 
+export const MOCK_REDDIT_RUNS: WorkflowRun[] = [
+  {
+    id: "rexec-5", number: 5, status: "success", startedAt: "20 Mar 2026 · 09:00", duration: "3m 22s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "success" },
+  },
+  {
+    id: "rexec-4", number: 4, status: "failed", startedAt: "19 Mar 2026 · 09:00", duration: "2m 11s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "error" },
+  },
+  {
+    id: "rexec-3", number: 3, status: "success", startedAt: "18 Mar 2026 · 09:00", duration: "2m 54s",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "success" },
+  },
+];
+
 /* ── Drawer width config per node type ── */
 
 const DRAWER_WIDTHS: Record<string, string> = {
