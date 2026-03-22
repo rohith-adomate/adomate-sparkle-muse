@@ -569,10 +569,10 @@ function ManualInputOutput() {
   );
 }
 
-/* Reddit Subreddit Dataset output */
+/* Reddit Subreddit Dataset output — rendered as bottom popup with left/right layout */
 function RedditSubredditOutput() {
   const stats = [
-    { label: "Subreddits", value: "4" },
+    { label: "Subreddits fetched", value: "4" },
     { label: "Posts scanned", value: "96" },
     { label: "Comments scanned", value: "1,840" },
     { label: "Usable snippets", value: "34" },
@@ -584,63 +584,79 @@ function RedditSubredditOutput() {
     { label: "Toxicity", value: "2%", color: "text-emerald-600" },
   ];
   const insights = [
-    "Pain point: most users frustrated by retinol irritation",
-    "Hook: 'the $8 product that replaced my $60 one' pattern",
-    "Meme: 'skincare fridge' trend gaining traction",
-    "Objection: 'why pay for branded when generic works?'",
+    { topic: "High-frequency complaint with clear product solution", source: "r/SkincareAddiction", mentions: 14, snippet: "Most users frustrated by retinol irritation — looking for gentler alternatives that still deliver results." },
+    { topic: "Budget comparison driving purchase decisions", source: "r/beauty", mentions: 11, snippet: "'The $8 moisturizer that replaced my $60 one' pattern — price-conscious buyers seeking validation." },
+    { topic: "Skincare fridge meme trend gaining traction", source: "r/SkincareAddiction", mentions: 8, snippet: "Viral 'skincare fridge' posts blending humor with product display — high shareability potential." },
+    { topic: "Generic vs branded skepticism", source: "r/tretinoin", mentions: 7, snippet: "'Why pay for branded when generic works?' — objection-heavy thread with counter-arguments." },
+    { topic: "SPF protection myths and education", source: "r/SkincareAddiction", mentions: 6, snippet: "PSA-style posts about sunscreen efficacy driving high engagement and comment depth." },
+    { topic: "Before/after progress documentation", source: "r/tretinoin", mentions: 5, snippet: "Month 3 progress photos generating trust signals — community validates visible results." },
   ];
 
   return (
-    <div className="space-y-4">
-      {/* Summary */}
-      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <div className="flex items-center gap-1.5 mb-2.5">
-          <MessageSquare className="h-3 w-3 text-muted-foreground" />
-          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Scrape Summary</p>
+    <div className="flex h-full overflow-hidden">
+      {/* Left: Summary, Quality, Warnings */}
+      <div className="w-72 shrink-0 border-r border-border overflow-y-auto p-4 space-y-4">
+        {/* Summary */}
+        <div>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <MessageSquare className="h-3 w-3 text-muted-foreground" />
+            <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Scrape Summary</p>
+          </div>
+          <div className="space-y-1.5">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-lg border border-border bg-muted/20 p-2 flex items-center justify-between">
+                <p className="text-[9px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs font-semibold">{s.value}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {stats.map((s) => (
-            <div key={s.label} className="rounded-lg border border-border bg-muted/20 p-2">
-              <p className="text-[9px] text-muted-foreground">{s.label}</p>
-              <p className="text-sm font-semibold">{s.value}</p>
-            </div>
-          ))}
+
+        {/* Quality Metrics */}
+        <div>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <BarChart3 className="h-3 w-3 text-muted-foreground" />
+            <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Quality Metrics</p>
+          </div>
+          <div className="space-y-1.5">
+            {quality.map((q) => (
+              <div key={q.label} className="rounded-lg border border-border bg-muted/20 p-2 flex items-center justify-between">
+                <p className="text-[9px] text-muted-foreground">{q.label}</p>
+                <p className={cn("text-xs font-semibold", q.color)}>{q.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Warnings */}
+        <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 flex items-start gap-2">
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-[10px] text-amber-700">Low volume in r/Retinoids — consider expanding time window or adding more subreddits.</p>
         </div>
       </div>
 
-      {/* Quality */}
-      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <div className="flex items-center gap-1.5 mb-2.5">
-          <BarChart3 className="h-3 w-3 text-muted-foreground" />
-          <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Quality Metrics</p>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {quality.map((q) => (
-            <div key={q.label} className="rounded-lg border border-border bg-muted/20 p-2">
-              <p className="text-[9px] text-muted-foreground">{q.label}</p>
-              <p className={cn("text-sm font-semibold", q.color)}>{q.value}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Top Insights */}
-      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Top Extracted Insights</p>
-        <div className="space-y-1.5">
+      {/* Right: Extracted Insights */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-3">Extracted Insights</p>
+        <div className="space-y-2">
           {insights.map((ins, i) => (
-            <div key={i} className="flex items-start gap-2 text-[11px]">
-              <span className="text-primary font-bold shrink-0">•</span>
-              <span className="text-foreground">{ins}</span>
+            <div key={i} className="rounded-xl border border-border bg-card shadow-sm p-3.5">
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <p className="text-[11px] font-semibold text-foreground leading-snug">{ins.topic}</p>
+                <Badge variant="secondary" className="text-[9px] py-0 h-5 shrink-0 bg-primary/10 text-primary border-primary/20">
+                  {ins.mentions} mentions
+                </Badge>
+              </div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="h-4 w-4 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center shrink-0">
+                  <span className="text-[6px] font-bold text-orange-600">r/</span>
+                </div>
+                <span className="text-[9px] text-muted-foreground font-medium">{ins.source}</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">{ins.snippet}</p>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Warnings */}
-      <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 flex items-start gap-2">
-        <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-[10px] text-amber-700">Low volume in r/Retinoids — consider expanding time window or adding more subreddits.</p>
       </div>
     </div>
   );
@@ -650,17 +666,29 @@ function RedditSubredditOutput() {
 function RedditAdGeneratorOutput() {
   const navigate = useNavigate();
   const concepts = [
-    { id: 1, angle: "Pain-point reframe: retinol irritation solved", status: "accepted" as const, source: "r/SkincareAddiction" },
-    { id: 2, angle: "Budget comparison: $8 vs $60 moisturizer", status: "accepted" as const, source: "r/beauty" },
-    { id: 3, angle: "Meme format: skincare fridge flex", status: "accepted" as const, source: "r/SkincareAddiction" },
-    { id: 4, angle: "Social proof: 'dermatologist recommended'", status: "accepted" as const, source: "r/tretinoin" },
-    { id: 5, angle: "Fear appeal: SPF protection myths", status: "rejected" as const, source: "r/SkincareAddiction" },
-    { id: 6, angle: "Trend-jack: glass skin routine", status: "accepted" as const, source: "r/AsianBeauty" },
+    { id: 1, angle: "High-frequency complaint with clear product solution", status: "accepted" as const, source: "r/SkincareAddiction", mentions: 14 },
+    { id: 2, angle: "Budget comparison: $8 vs $60 moisturizer", status: "accepted" as const, source: "r/beauty", mentions: 11 },
+    { id: 3, angle: "Meme format: skincare fridge flex", status: "accepted" as const, source: "r/SkincareAddiction", mentions: 8 },
+    { id: 4, angle: "Social proof: 'dermatologist recommended'", status: "accepted" as const, source: "r/tretinoin", mentions: 7 },
+    { id: 5, angle: "Fear appeal: SPF protection myths", status: "rejected" as const, source: "r/SkincareAddiction", mentions: 6 },
+    { id: 6, angle: "Trend-jack: glass skin routine", status: "accepted" as const, source: "r/AsianBeauty", mentions: 5 },
   ];
 
   return (
     <div className="space-y-4">
-      {/* Concept list */}
+      {/* Generation Summary — top */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 rounded-lg border border-border bg-muted/20 p-2.5 text-center">
+          <p className="text-[9px] text-muted-foreground">Assets Generated</p>
+          <p className="text-lg font-bold">6 / 8</p>
+        </div>
+        <div className="flex-1 rounded-lg border border-border bg-muted/20 p-2.5 text-center">
+          <p className="text-[9px] text-muted-foreground">Latency</p>
+          <p className="text-lg font-bold">47s</p>
+        </div>
+      </div>
+
+      {/* Concepts */}
       <div>
         <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Concepts</p>
         <div className="space-y-1.5">
@@ -668,7 +696,13 @@ function RedditAdGeneratorOutput() {
             <div key={c.id} className="rounded-lg border border-border p-2.5 flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-medium truncate">{c.angle}</p>
-                <p className="text-[9px] text-muted-foreground mt-0.5">Source: {c.source}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div className="h-3.5 w-3.5 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center shrink-0">
+                    <span className="text-[5px] font-bold text-orange-600">r/</span>
+                  </div>
+                  <span className="text-[9px] text-muted-foreground">{c.source}</span>
+                  <span className="text-[9px] text-muted-foreground">· {c.mentions} mentions</span>
+                </div>
               </div>
               <Badge variant="secondary" className={cn("text-[9px] py-0 h-5 shrink-0 ml-2", c.status === "accepted" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-red-500/10 text-red-600 border-red-500/20")}>
                 {c.status}
@@ -692,25 +726,6 @@ function RedditAdGeneratorOutput() {
           <div className="aspect-square rounded-lg border border-border bg-muted/40 flex flex-col items-center justify-center cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => navigate("/concepts/reddit-ad-run-1")}>
             <span className="text-xl font-bold text-muted-foreground/60">+7</span>
             <span className="text-[9px] font-medium text-muted-foreground/40 uppercase">View All</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Token/cost summary */}
-      <div className="rounded-xl border border-border bg-card shadow-sm p-3.5">
-        <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generation Stats</p>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-2">
-            <p className="text-[9px] text-muted-foreground">Tokens</p>
-            <p className="text-xs font-semibold">24.3K</p>
-          </div>
-          <div className="rounded-lg border border-border bg-muted/20 p-2">
-            <p className="text-[9px] text-muted-foreground">Cost</p>
-            <p className="text-xs font-semibold">$0.48</p>
-          </div>
-          <div className="rounded-lg border border-border bg-muted/20 p-2">
-            <p className="text-[9px] text-muted-foreground">Latency</p>
-            <p className="text-xs font-semibold">42s</p>
           </div>
         </div>
       </div>
