@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, ChevronDown, Rocket, Loader2, Save } from "lucide-react";
+import { ChevronDown, Rocket, Loader2, Save } from "lucide-react";
 import adomateLogoSrc from "@/assets/adomate-logo.png";
 import { Button } from "@/components/ui/button";
 import {
