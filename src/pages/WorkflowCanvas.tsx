@@ -25,7 +25,7 @@ import ManualImageUploadModal from "@/components/ManualImageUploadModal";
 import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
 import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
 import RunOutputPanel, {
-  MOCK_RUNS, MOCK_MANUAL_RUNS,
+  MOCK_RUNS, MOCK_MANUAL_RUNS, MOCK_REDDIT_RUNS,
   type WorkflowRun, type RunNodeOutput,
 } from "@/components/ExecutionOutputPanel";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
