@@ -726,6 +726,8 @@ const NODE_ICONS: Record<string, typeof Clock> = {
   "top-select": ListFilter,
   "generate-concepts": Sparkles,
   "manual-image-input": ImagePlus,
+  "reddit-subreddit": MessageSquare,
+  "reddit-ad-generator": Sparkles,
 };
 
 /* ── Status colors ── */
