@@ -22,6 +22,8 @@ import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import AdAccountDrawer from "@/components/AdAccountDrawer";
 import ManualImageUploadModal from "@/components/ManualImageUploadModal";
+import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
+import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
 import RunOutputPanel, {
   MOCK_RUNS, MOCK_MANUAL_RUNS,
   type WorkflowRun, type RunNodeOutput,
