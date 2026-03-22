@@ -70,7 +70,7 @@ const NODE_CATALOG = [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
-      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape Reddit posts from subreddits.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
+      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
     ],
   },
   {
