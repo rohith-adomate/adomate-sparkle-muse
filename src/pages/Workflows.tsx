@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 /* ── Types & Data ── */
 
-type AgentType = "holiday" | "competitor" | "manual" | "ad-account";
+type AgentType = "holiday" | "competitor" | "manual" | "ad-account" | "reddit";
 
 interface Agent {
   id: string;
