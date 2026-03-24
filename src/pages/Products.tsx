@@ -67,7 +67,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: typeof initialPro
       onClick={() => navigate(`/brand-data-room/products/${product.id}`)}
     >
       <div className="w-32 flex-shrink-0 bg-muted relative">
-        <img src={getOyImage(product.imgIdx)} alt={product.name} className="w-full h-full object-cover" />
+        <img src={product.heroImg} alt={product.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
       </div>
       <div className="flex flex-col justify-between flex-1 min-w-0 p-4">
