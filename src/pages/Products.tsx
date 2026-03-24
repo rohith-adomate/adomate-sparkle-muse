@@ -1,32 +1,32 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ImageIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { HoverExplainer } from "@/components/HoverExplainer";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 const products = [
-  { name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
-  { name: "Gentle Foam Cleanser", images: 4, imgSeed: "cleanser" },
-  { name: "Vitamin C Brightening Cream", images: 8, imgSeed: "vitaminc" },
-  { name: "Retinol Night Repair", images: 3, imgSeed: "retinol" },
-  { name: "SPF 50 Daily Shield", images: 5, imgSeed: "sunscreen" },
-  { name: "Rose Petal Toner", images: 2, imgSeed: "toner" },
-  { name: "Collagen Boost Mask", images: 7, imgSeed: "mask" },
-  { name: "Tea Tree Oil Spot Treatment", images: 1, imgSeed: "teatree" },
+  { id: "1", name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
+  { id: "2", name: "Gentle Foam Cleanser", images: 4, imgSeed: "cleanser" },
+  { id: "3", name: "Vitamin C Brightening Cream", images: 8, imgSeed: "vitaminc" },
+  { id: "4", name: "Retinol Night Repair", images: 3, imgSeed: "retinol" },
+  { id: "5", name: "SPF 50 Daily Shield", images: 5, imgSeed: "sunscreen" },
+  { id: "6", name: "Rose Petal Toner", images: 2, imgSeed: "toner" },
+  { id: "7", name: "Collagen Boost Mask", images: 7, imgSeed: "mask" },
+  { id: "8", name: "Tea Tree Oil Spot Treatment", images: 1, imgSeed: "teatree" },
 ];
 
 function getImageUrl(seed: string, idx: number, w = 300, h = 300) {
   return `https://picsum.photos/seed/${seed}${idx}/${w}/${h}`;
 }
 
-const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  (props, ref) => (
-    <div ref={ref} {...props}>
+const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { onAction?: (action: string) => void }>(
+  ({ onAction, ...props }, ref) => (
+    <div ref={ref} {...props} onClick={(e) => e.stopPropagation()}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0">
@@ -34,8 +34,8 @@ const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-36">
-          <DropdownMenuItem className="gap-2 text-sm"><Pencil className="h-3.5 w-3.5" /> Edit</DropdownMenuItem>
-          <DropdownMenuItem className="gap-2 text-sm text-destructive focus:text-destructive"><Trash2 className="h-3.5 w-3.5" /> Delete</DropdownMenuItem>
+          <DropdownMenuItem className="gap-2 text-sm" onClick={() => onAction?.("edit")}><Pencil className="h-3.5 w-3.5" /> Edit</DropdownMenuItem>
+          <DropdownMenuItem className="gap-2 text-sm text-destructive focus:text-destructive" onClick={() => onAction?.("delete")}><Trash2 className="h-3.5 w-3.5" /> Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -44,10 +44,14 @@ const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 ActionMenu.displayName = "ActionMenu";
 
 function ProductCard({ product }: { product: typeof products[0] }) {
+  const navigate = useNavigate();
   const max = 3;
   const remaining = Math.max(0, product.images - 1 - max);
   return (
-    <Card className="flex overflow-hidden h-32 shadow-md hover:shadow-lg transition-shadow">
+    <Card
+      className="flex overflow-hidden h-32 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+      onClick={() => navigate(`/brand-data-room/products/${product.id}`)}
+    >
       <div className="w-32 flex-shrink-0 bg-muted relative">
         <img src={getImageUrl(product.imgSeed, 0, 300, 300)} alt={product.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
@@ -99,13 +103,11 @@ export default function Products() {
         <Button size="sm" className="gap-1.5"><Plus className="h-4 w-4" /> Add Product</Button>
       </div>
 
-      <HoverExplainer text="Product Cards: Each product represents a unit in the brand's catalog. Products are used as context in campaign concept generation. Backend: products table with columns: id, brand_id, name, created_at. Product images stored in Supabase Storage bucket 'product-images/{product_id}/'. Image metadata stored in product_images table. Max 10 images per product, max 10MB per file.">
-        <div className="grid grid-cols-2 gap-4">
-          {products.map((p) => (
-            <ProductCard key={p.name} product={p} />
-          ))}
-        </div>
-      </HoverExplainer>
+      <div className="grid grid-cols-2 gap-4">
+        {products.map((p) => (
+          <ProductCard key={p.name} product={p} />
+        ))}
+      </div>
     </div>
   );
 }

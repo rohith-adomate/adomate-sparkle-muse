@@ -11,6 +11,7 @@ import BrandDataRoom from "./pages/BrandDataRoom";
 import BrandKnowledge from "./pages/BrandKnowledge";
 
 import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 
 import MetaIntegration from "./pages/MetaIntegration";
 import Competitors from "./pages/Competitors";
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/brand-data-room/knowledge" element={<BrandKnowledge />} />
             
             <Route path="/brand-data-room/products" element={<Products />} />
+            <Route path="/brand-data-room/products/:id" element={<ProductDetail />} />
             
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
             <Route path="/brand-data-room/competitors" element={<Competitors />} />
