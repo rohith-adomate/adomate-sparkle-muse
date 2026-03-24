@@ -180,7 +180,7 @@ export default function BrandKnowledge() {
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
-      <Breadcrumbs items={[{ label: "Brand Data Room", href: "/brand-data-room" }, { label: "Brand Knowledge" }]} />
+      <Breadcrumbs items={[{ label: "Brand Brain", href: "/brand-data-room" }, { label: "Brand Knowledge" }]} />
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Brand Knowledge</h1>
         <p className="text-muted-foreground text-sm">Define your brand identity and visual style. Changes auto-save.</p>
