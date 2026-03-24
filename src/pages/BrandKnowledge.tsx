@@ -376,9 +376,11 @@ export default function BrandKnowledge() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="visual" className="mt-4 space-y-4">
+      {activeTab === "visual" && (
+        <div className="space-y-4">
           {/* Brand Logos */}
           <Card>
             <CardContent className="pt-6 space-y-4">
