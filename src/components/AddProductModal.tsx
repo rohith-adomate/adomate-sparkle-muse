@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MarkdownEditor } from "@/components/MarkdownEditor";
 import {
-  Globe, Sparkles, Package, Plus, Trash2, Pencil, Upload, Star,
+  Globe, Sparkles, Package, Trash2, Pencil, Upload, Star,
   Loader2, Check, Eye, ShoppingBag, Search, TrendingUp, Brain, Info,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 
 const productScrapeSteps = [
   { icon: Eye, text: "Analyzing your product page..." },
