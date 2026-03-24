@@ -152,7 +152,7 @@ function ImagesSection({
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => deleteImage(img.id)}
+                    onClick={() => onDeleteClick(img.id)}
                     className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                     aria-label="Delete image"
                   >
