@@ -3,7 +3,7 @@ import { BookOpen, Package, Link2, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const cards = [
-  { title: "Brand Knowledge", icon: BookOpen, url: "/brand-data-room/knowledge", summary: "5/5 core knowledge fields configured." },
+  { title: "Brand Brain", icon: BookOpen, url: "/brand-data-room/knowledge", summary: "5/5 core knowledge fields configured." },
   { title: "Products", icon: Package, url: "/brand-data-room/products", summary: "5 products cataloged." },
   { title: "Competitors", icon: Swords, url: "/brand-data-room/competitors", summary: "3 competitors tracked via Meta." },
   { title: "Meta Integration", icon: Link2, url: "/brand-data-room/meta", summary: "Connected - Oy Care (Demo Ad Account) ready." },
@@ -14,7 +14,7 @@ export default function BrandDataRoom() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Brand Brain</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Data Room</h1>
         <p className="text-muted-foreground text-sm mt-1">All your brand intelligence in one place.</p>
       </div>
 

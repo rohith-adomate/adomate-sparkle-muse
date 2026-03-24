@@ -36,7 +36,7 @@ export default function MetaIntegration() {
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
-      <Breadcrumbs items={[{ label: "Brand Brain", href: "/brand-data-room" }, { label: "Meta Integration" }]} />
+      <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Meta Integration" }]} />
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Meta Integration</h1>
         <p className="text-muted-foreground text-sm">Connect and manage your Meta ad accounts.</p>

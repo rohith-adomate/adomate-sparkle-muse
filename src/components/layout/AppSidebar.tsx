@@ -26,7 +26,7 @@ import { WorkspaceSettingsModal } from "@/components/WorkspaceSettingsModal";
 
 
 const dataRoomSubs = [
-  { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
+  { title: "Brand Brain", url: "/brand-data-room/knowledge", icon: BookOpen },
   { title: "Products", url: "/brand-data-room/products", icon: Package },
   
   { title: "Competitors", url: "/brand-data-room/competitors", icon: Swords },
@@ -128,7 +128,7 @@ export function AppSidebar() {
                           <Database className="h-4 w-4 shrink-0" />
                         </NavLink>
                       </TooltipTrigger>
-                      <TooltipContent side="right" align="center">Brand Brain</TooltipContent>
+                      <TooltipContent side="right" align="center">Data Room</TooltipContent>
                     </Tooltip>
                   </SidebarMenuItem>
                 ) : (
@@ -140,7 +140,7 @@ export function AppSidebar() {
                       >
                         <span className="flex items-center gap-2.5">
                           <Database className="h-4 w-4" />
-                          <span>Brand Brain</span>
+                          <span>Data Room</span>
                         </span>
                         <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dr:rotate-90" />
                       </CollapsibleTrigger>
