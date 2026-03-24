@@ -153,7 +153,7 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => deleteImage(img.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white/90 text-muted-foreground shadow-sm hover:bg-destructive/10 hover:text-destructive"
+                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                     aria-label="Delete image"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -239,7 +239,7 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="space-y-6 max-w-3xl mx-auto">
-        <Breadcrumbs items={[{ label: "Brand Data Room", href: "/brand-data-room" }, { label: "Products", href: "/brand-data-room/products" }, { label: "Not Found" }]} />
+        <Breadcrumbs items={[{ label: "Brand Brain", href: "/brand-data-room" }, { label: "Products", href: "/brand-data-room/products" }, { label: "Not Found" }]} />
         <p className="text-muted-foreground">Product not found.</p>
       </div>
     );
@@ -248,7 +248,7 @@ export default function ProductDetail() {
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <Breadcrumbs items={[
-        { label: "Brand Data Room", href: "/brand-data-room" },
+        { label: "Brand Brain", href: "/brand-data-room" },
         { label: "Products", href: "/brand-data-room/products" },
         { label: productName },
       ]} />
@@ -276,15 +276,8 @@ export default function ProductDetail() {
               </Button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 group">
+            <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight truncate">Product</h1>
-              <button
-                onClick={() => { setEditNameValue(productName); setIsEditingName(true); }}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-accent shrink-0"
-                aria-label="Edit product name"
-              >
-                <Pencil className="h-4 w-4 text-muted-foreground" />
-              </button>
             </div>
           )}
           <p className="text-muted-foreground text-sm">Edit product details. Changes auto-save.</p>

@@ -116,7 +116,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateC
                 <p className="mt-1.5 text-muted-foreground">
                   Manage in{" "}
                   <a href="/brand-data-room/knowledge" className="text-primary underline underline-offset-2 hover:text-primary/80">
-                    Data Room → Brand Knowledge
+                    Brand Brain → Brand Knowledge
                   </a>
                 </p>
               </TooltipContent>
