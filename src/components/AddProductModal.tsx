@@ -311,20 +311,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </Card>
 
-              {/* Skeleton preview */}
-              <div className="mt-6 space-y-3 animate-fade-in">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product Profile</p>
-                <Card className="p-5">
-                  <div className="flex gap-5">
-                    <Skeleton className="w-20 h-20 rounded-xl shrink-0" />
-                    <div className="flex-1 space-y-3">
-                      <Skeleton className="h-6 w-48" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-3/4" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
             </div>
           )}
 
