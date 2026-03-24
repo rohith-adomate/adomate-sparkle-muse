@@ -30,9 +30,11 @@ const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
         <DropdownMenuItem className="gap-2 text-sm"><Pencil className="h-3.5 w-3.5" /> Edit</DropdownMenuItem>
         <DropdownMenuItem className="gap-2 text-sm text-destructive focus:text-destructive"><Trash2 className="h-3.5 w-3.5" /> Delete</DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
+      </DropdownMenu>
+    </div>
+  )
+);
+ActionMenu.displayName = "ActionMenu";
 
 // ─── Variant 1: Clean Rounded ───
 function V1({ product }: { product: typeof products[0] }) {
