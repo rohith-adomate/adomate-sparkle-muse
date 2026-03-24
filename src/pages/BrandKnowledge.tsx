@@ -195,7 +195,7 @@ export default function BrandKnowledge() {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setActiveTab("visual")}
-                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                  className="h-24 w-24 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
                 >
                   {(() => {
                     const defaultLogo = logos.find(l => l.isDefault);
