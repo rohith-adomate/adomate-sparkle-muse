@@ -679,8 +679,8 @@ export default function BrandKnowledge() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
 
       {/* Edit Title Dialog */}
       <Dialog open={!!editingField} onOpenChange={(open) => !open && setEditingField(null)}>
