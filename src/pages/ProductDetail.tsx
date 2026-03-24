@@ -156,7 +156,7 @@ function ImagesSection({
                     className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-lg hover:bg-muted text-muted-foreground/60"
                     aria-label="Delete image"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">Delete this image</TooltipContent>

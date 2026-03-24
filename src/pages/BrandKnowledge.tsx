@@ -464,7 +464,7 @@ export default function BrandKnowledge() {
                               }`}
                               aria-label="Delete logo"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="text-xs">
