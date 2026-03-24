@@ -130,7 +130,9 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => setHeroImage(img.id)}
-                    className="absolute top-2 left-2 p-0.5"
+                    className={`absolute top-2 left-2 p-0.5 transition-opacity ${
+                      img.isHero ? "opacity-100" : "opacity-0 group-hover/img:opacity-100"
+                    }`}
                     aria-label={img.isHero ? "Hero product image" : "Set as hero image"}
                   >
                     <Star
