@@ -10,21 +10,20 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AddProductModal } from "@/components/AddProductModal";
+import { getOyImage } from "@/data/oyImages";
 
 const initialProducts = [
-  { id: "1", name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
-  { id: "2", name: "Gentle Foam Cleanser", images: 4, imgSeed: "cleanser" },
-  { id: "3", name: "Vitamin C Brightening Cream", images: 8, imgSeed: "vitaminc" },
-  { id: "4", name: "Retinol Night Repair", images: 3, imgSeed: "retinol" },
-  { id: "5", name: "SPF 50 Daily Shield", images: 5, imgSeed: "sunscreen" },
-  { id: "6", name: "Rose Petal Toner", images: 2, imgSeed: "toner" },
-  { id: "7", name: "Collagen Boost Mask", images: 7, imgSeed: "mask" },
-  { id: "8", name: "Tea Tree Oil Spot Treatment", images: 1, imgSeed: "teatree" },
+  { id: "1", name: "Scalp & Hair Wash", images: 6, imgIdx: 0 },
+  { id: "2", name: "Deo Wash", images: 4, imgIdx: 1 },
+  { id: "3", name: "Face Wash Sensitive", images: 8, imgIdx: 2 },
+  { id: "4", name: "Body Lotion", images: 3, imgIdx: 3 },
+  { id: "5", name: "Hand Cream", images: 5, imgIdx: 4 },
+  { id: "6", name: "Shower Oil", images: 2, imgIdx: 5 },
+  { id: "7", name: "Lip Balm", images: 7, imgIdx: 6 },
+  { id: "8", name: "Deodorant Stick", images: 1, imgIdx: 7 },
 ];
 
-function getImageUrl(seed: string, idx: number, w = 300, h = 300) {
-  return `https://picsum.photos/seed/${seed}${idx}/${w}/${h}`;
-}
+// Removed getImageUrl - using getOyImage instead
 
 const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { onAction?: (action: string) => void }>(
   ({ onAction, ...props }, ref) => (
@@ -61,7 +60,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: typeof initialPro
       onClick={() => navigate(`/brand-data-room/products/${product.id}`)}
     >
       <div className="w-32 flex-shrink-0 bg-muted relative">
-        <img src={getImageUrl(product.imgSeed, 0, 300, 300)} alt={product.name} className="w-full h-full object-cover" />
+        <img src={getOyImage(product.imgIdx)} alt={product.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
       </div>
       <div className="flex flex-col justify-between flex-1 min-w-0 p-4">
@@ -85,7 +84,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: typeof initialPro
         <div className="flex gap-2">
           {Array.from({ length: Math.min(max, product.images - 1) }).map((_, i) => (
             <div key={i} className="w-10 h-10 rounded-lg overflow-hidden bg-muted shadow-sm">
-              <img src={getImageUrl(product.imgSeed, i + 1)} alt="" className="w-full h-full object-cover" />
+              <img src={getOyImage(product.imgIdx + i + 1)} alt="" className="w-full h-full object-cover" />
             </div>
           ))}
           {remaining > 0 && (

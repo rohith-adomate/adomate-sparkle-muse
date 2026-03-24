@@ -332,7 +332,7 @@ function AdCard({ ad, onOpen, onEditSettings }: { ad: ContentAd; onOpen: () => v
       {/* Image */}
       <div className="aspect-[4/5] relative overflow-hidden bg-muted">
         <img
-          src={`https://picsum.photos/seed/${ad.imgSeed}/400/500`}
+          src={ad.imgUrl || `https://picsum.photos/seed/${ad.imgSeed}/400/500`}
           alt={ad.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           loading="lazy"
@@ -520,7 +520,7 @@ function AdHistoryDrawer({
                       onClick={() => setSelectedEntry(entry)}
                     >
                       <img
-                        src={`https://picsum.photos/seed/${entry.imgSeed}/120/120`}
+                        src={entry.imgUrl || `https://picsum.photos/seed/${entry.imgSeed}/120/120`}
                         alt={entry.label}
                         className="w-16 h-16 rounded-lg object-cover shrink-0"
                       />
@@ -560,7 +560,7 @@ function AdHistoryDrawer({
             <ScrollArea className="flex-1">
               <div className="p-6 space-y-4">
                 <img
-                  src={`https://picsum.photos/seed/${selectedEntry.imgSeed}/500/625`}
+                  src={selectedEntry.imgUrl || `https://picsum.photos/seed/${selectedEntry.imgSeed}/500/625`}
                   alt={selectedEntry.label}
                   className="w-full max-w-sm mx-auto rounded-xl shadow-sm border border-border"
                 />
@@ -614,7 +614,7 @@ function AdDetailModal({ ad, open, onClose }: { ad: ContentAd | null; open: bool
               {hasVersions ? (
                 <>
                   <img
-                    src={`https://picsum.photos/seed/${ad.versions[currentVersion]?.imgSeed || ad.imgSeed}/500/625`}
+                    src={ad.versions[currentVersion]?.imgUrl || `https://picsum.photos/seed/${ad.versions[currentVersion]?.imgSeed || ad.imgSeed}/500/625`}
                     alt={ad.title}
                     className="w-full aspect-[4/5] object-cover"
                   />
@@ -766,7 +766,7 @@ function AdDetailModal({ ad, open, onClose }: { ad: ContentAd | null; open: bool
                           <div key={entry.id} className="flex items-center gap-3 shrink-0">
                             <div className="flex flex-col items-center gap-1.5">
                               <img
-                                src={`https://picsum.photos/seed/${entry.imgSeed}/80/80`}
+                                src={entry.imgUrl || `https://picsum.photos/seed/${entry.imgSeed}/80/80`}
                                 alt={entry.label}
                                 className={cn(
                                   "w-14 h-14 rounded-lg object-cover border-2",

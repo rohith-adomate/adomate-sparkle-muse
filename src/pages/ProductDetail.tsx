@@ -11,21 +11,20 @@ import { Plus, Pencil, Trash2, Upload, Star, Info, ArrowLeft, BookOpen, ImageIco
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
+import { getOyImage } from "@/data/oyImages";
 
-const productData: Record<string, { name: string; url: string; imgSeed: string; imageCount: number }> = {
-  "1": { name: "Hydra Glow Serum", url: "https://acmeco.com/hydra-glow-serum", imgSeed: "serum", imageCount: 6 },
-  "2": { name: "Gentle Foam Cleanser", url: "https://acmeco.com/gentle-foam-cleanser", imgSeed: "cleanser", imageCount: 4 },
-  "3": { name: "Vitamin C Brightening Cream", url: "https://acmeco.com/vitamin-c-cream", imgSeed: "vitaminc", imageCount: 8 },
-  "4": { name: "Retinol Night Repair", url: "https://acmeco.com/retinol-night-repair", imgSeed: "retinol", imageCount: 3 },
-  "5": { name: "SPF 50 Daily Shield", url: "https://acmeco.com/spf-50", imgSeed: "sunscreen", imageCount: 5 },
-  "6": { name: "Rose Petal Toner", url: "https://acmeco.com/rose-petal-toner", imgSeed: "toner", imageCount: 2 },
-  "7": { name: "Collagen Boost Mask", url: "https://acmeco.com/collagen-mask", imgSeed: "mask", imageCount: 7 },
-  "8": { name: "Tea Tree Oil Spot Treatment", url: "https://acmeco.com/tea-tree-oil", imgSeed: "teatree", imageCount: 1 },
+const productData: Record<string, { name: string; url: string; imgIdx: number; imageCount: number }> = {
+  "1": { name: "Scalp & Hair Wash", url: "https://oycare.com/scalp-hair-wash", imgIdx: 0, imageCount: 6 },
+  "2": { name: "Deo Wash", url: "https://oycare.com/deo-wash", imgIdx: 1, imageCount: 4 },
+  "3": { name: "Face Wash Sensitive", url: "https://oycare.com/face-wash-sensitive", imgIdx: 2, imageCount: 8 },
+  "4": { name: "Body Lotion", url: "https://oycare.com/body-lotion", imgIdx: 3, imageCount: 3 },
+  "5": { name: "Hand Cream", url: "https://oycare.com/hand-cream", imgIdx: 4, imageCount: 5 },
+  "6": { name: "Shower Oil", url: "https://oycare.com/shower-oil", imgIdx: 5, imageCount: 2 },
+  "7": { name: "Lip Balm", url: "https://oycare.com/lip-balm", imgIdx: 6, imageCount: 7 },
+  "8": { name: "Deodorant Stick", url: "https://oycare.com/deodorant-stick", imgIdx: 7, imageCount: 1 },
 };
 
-function getImageUrl(seed: string, idx: number, w = 300, h = 300) {
-  return `https://picsum.photos/seed/${seed}${idx}/${w}/${h}`;
-}
+// Using getOyImage instead of picsum
 
 function InfoTooltip({ text }: { text: string }) {
   return (
@@ -154,7 +153,7 @@ export default function ProductDetail() {
     if (!product) return [];
     return Array.from({ length: product.imageCount }).map((_, i) => ({
       id: `img-${i}`,
-      url: getImageUrl(product.imgSeed, i),
+      url: getOyImage(product.imgIdx + i),
       name: `${product.name} image ${i + 1}`,
       isHero: i === 0,
     }));
