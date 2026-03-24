@@ -414,7 +414,7 @@ export default function BrandKnowledge() {
                       }}
                     />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">Upload logo</p>
+                    <p className="text-sm font-medium">Upload logo(s)</p>
                     <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP)</p>
                     <p className="text-xs text-muted-foreground">Max 25MB per logo · Up to 6 logos</p>
                   </label>
@@ -494,7 +494,7 @@ export default function BrandKnowledge() {
                           }}
                         />
                         <Upload className="h-6 w-6 text-muted-foreground" />
-                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
+                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo(s)</p>
                         <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
                         <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo</p>
                       </label>
@@ -641,8 +641,8 @@ export default function BrandKnowledge() {
                       }}
                     />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">Upload brand visuals</p>
-                    <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP) · Max 25MB per file</p>
+                    <p className="text-sm font-medium">Upload image(s)</p>
+                    <p className="text-xs text-muted-foreground">(PNG, JPEG, WEBP) · Max 25MB per file</p>
                   </label>
                 ) : (
                   <div className="grid grid-cols-4 gap-3">
@@ -673,8 +673,8 @@ export default function BrandKnowledge() {
                         }}
                       />
                       <Upload className="h-5 w-5 text-muted-foreground" />
-                      <p className="text-[10px] text-muted-foreground text-center px-2">Add image</p>
-                      <p className="text-[10px] text-muted-foreground text-center px-1">(PNG, JPEG, SVG, WEBP)</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-2">Upload image(s)</p>
+                      <p className="text-[10px] text-muted-foreground text-center px-1">(PNG, JPEG, WEBP)</p>
                       <p className="text-[10px] text-muted-foreground text-center px-1">Max 25MB</p>
                     </label>
                   </div>
