@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Plus, Pencil, Trash2, Upload, Star, Info, ArrowLeft, BookOpen, ImageIcon, Check, X } from "lucide-react";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
+import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 
 const productData: Record<string, { name: string; url: string; imgSeed: string; imageCount: number }> = {
   "1": { name: "Hydra Glow Serum", url: "https://acmeco.com/hydra-glow-serum", imgSeed: "serum", imageCount: 6 },
@@ -39,11 +40,7 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
-interface KnowledgeField {
-  id: string;
-  title: string;
-  value: string;
-}
+// KnowledgeField type imported from shared component
 
 const defaultFields: KnowledgeField[] = [
   { id: "description", title: "Description", value: "A lightweight, deeply hydrating serum formulated with hyaluronic acid and vitamin B5 to lock in moisture and leave skin plump and glowing." },
@@ -57,52 +54,7 @@ interface ProductImage {
   isHero: boolean;
 }
 
-// ─── Knowledge Section ───
-function KnowledgeSection({
-  fields, openEditTitle, setDeletingField, updateFieldValue, handleFieldChange, setShowAddModal,
-}: {
-  fields: KnowledgeField[];
-  openEditTitle: (id: string) => void;
-  setDeletingField: (id: string) => void;
-  updateFieldValue: (id: string, val: string) => void;
-  handleFieldChange: () => void;
-  setShowAddModal: (v: boolean) => void;
-}) {
-  return (
-    <div className="space-y-6">
-      {fields.map((field) => (
-        <div key={field.id} className="group/field relative flex gap-2">
-          <div className="flex-1 space-y-1.5 min-w-0">
-            <div className="flex items-center gap-1.5 group">
-              <Label>{field.title}</Label>
-              <button onClick={() => openEditTitle(field.id)} className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent">
-                <Pencil className="h-3 w-3 text-muted-foreground" />
-              </button>
-            </div>
-            <MarkdownEditor value={field.value} onChange={(val) => { updateFieldValue(field.id, val); handleFieldChange(); }} />
-          </div>
-          <div className="w-8 shrink-0 flex items-center justify-center">
-            <button onClick={() => setDeletingField(field.id)} className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-destructive/10">
-              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
-            </button>
-          </div>
-        </div>
-      ))}
-      <div className="flex justify-center pt-2">
-        <Tooltip delayDuration={1000}>
-          <TooltipTrigger asChild>
-            <button onClick={() => setShowAddModal(true)} className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground">
-              <Plus className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">
-            Add new knowledge field
-          </TooltipContent>
-        </Tooltip>
-      </div>
-    </div>
-  );
-}
+// KnowledgeSection now uses the shared KnowledgeFieldsSection component
 
 // ─── Images Section (Brand Logos style, 4 columns) ───
 function ImagesSection({
@@ -195,12 +147,6 @@ export default function ProductDetail() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState(product?.name ?? "");
   const [fields, setFields] = useState<KnowledgeField[]>(defaultFields);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newFieldTitle, setNewFieldTitle] = useState("");
-  const [newFieldValue, setNewFieldValue] = useState("");
-  const [deletingField, setDeletingField] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
@@ -217,13 +163,6 @@ export default function ProductDetail() {
   const heroImage = images.find(img => img.isHero);
 
   const triggerAutoSave = useCallback(() => { triggerSave(); }, [triggerSave]);
-  const handleFieldChange = useCallback(() => { const d = setTimeout(() => triggerAutoSave(), 300); return () => clearTimeout(d); }, [triggerAutoSave]);
-
-  const openEditTitle = (fieldId: string) => { const f = fields.find(x => x.id === fieldId); if (f) { setEditTitle(f.title); setEditingField(fieldId); } };
-  const saveEditTitle = () => { if (editingField && editTitle.trim()) { setFields(fields.map(f => f.id === editingField ? { ...f, title: editTitle.trim() } : f)); setEditingField(null); triggerAutoSave(); } };
-  const addNewField = () => { if (newFieldTitle.trim()) { setFields([...fields, { id: `custom-${Date.now()}`, title: newFieldTitle.trim(), value: newFieldValue }]); setNewFieldTitle(""); setNewFieldValue(""); setShowAddModal(false); triggerAutoSave(); } };
-  const deleteField = (fieldId: string) => { setFields(fields.filter(f => f.id !== fieldId)); setDeletingField(null); triggerAutoSave(); };
-  const updateFieldValue = (fieldId: string, value: string) => { setFields(fields.map(f => f.id === fieldId ? { ...f, value } : f)); };
   const setHeroImage = (imageId: string) => { setImages(images.map(img => ({ ...img, isHero: img.id === imageId }))); triggerAutoSave(); };
   const deleteImage = (imageId: string) => { const u = images.filter(img => img.id !== imageId); if (u.length > 0 && !u.some(img => img.isHero)) u[0].isHero = true; setImages(u); triggerAutoSave(); };
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => { const f = e.target.files; if (!f) return; Array.from(f).forEach(file => { if (file.size <= 25 * 1024 * 1024) { const url = URL.createObjectURL(file); setImages(prev => [...prev, { id: `img-${Date.now()}-${Math.random().toString(36).slice(2)}`, url, name: file.name, isHero: prev.length === 0 }]); } }); triggerAutoSave(); };
@@ -241,7 +180,6 @@ export default function ProductDetail() {
     setIsEditingName(false);
   };
 
-  const knowledgeProps = { fields, openEditTitle, setDeletingField: (id: string) => setDeletingField(id), updateFieldValue, handleFieldChange, setShowAddModal };
   const imageProps = { images, setHeroImage, onDeleteClick: (id: string) => setDeletingImageId(id), handleImageUpload };
 
   if (!product) {
@@ -321,7 +259,7 @@ export default function ProductDetail() {
                   <Label>Product Name</Label>
                   <InfoTooltip text="The display name of your product. Used in ad copy generation and campaign briefs." />
                 </div>
-                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={handleFieldChange} />
+                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={triggerAutoSave} />
               </div>
 
               <div className="space-y-1.5">
@@ -329,7 +267,7 @@ export default function ProductDetail() {
                   <Label>Product URL</Label>
                   <InfoTooltip text="The product's landing page URL. Helps the AI understand product positioning and features." />
                 </div>
-                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={handleFieldChange} />
+                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={triggerAutoSave} />
               </div>
             </div>
           </div>
@@ -349,44 +287,15 @@ export default function ProductDetail() {
           </div>
         </div>
         <Card><CardContent className="pt-6">
-          {activeSection === "knowledge" ? <KnowledgeSection {...knowledgeProps} /> : <ImagesSection {...imageProps} />}
+          {activeSection === "knowledge" ? (
+            <KnowledgeFieldsSection
+              fields={fields}
+              onFieldsChange={(newFields) => { setFields(newFields); triggerAutoSave(); }}
+              onFieldChange={triggerAutoSave}
+            />
+          ) : <ImagesSection {...imageProps} />}
         </CardContent></Card>
       </div>
-
-      {/* Dialogs */}
-      <Dialog open={!!editingField} onOpenChange={(open) => !open && setEditingField(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>Edit Field Title</DialogTitle><DialogDescription>Change the title of this knowledge field.</DialogDescription></DialogHeader>
-          <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && saveEditTitle()} autoFocus />
-          <DialogFooter><Button variant="outline" onClick={() => setEditingField(null)}>Cancel</Button><Button onClick={saveEditTitle} disabled={!editTitle.trim()}>Save</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>Add Knowledge Field</DialogTitle><DialogDescription>Create a new knowledge field for this product.</DialogDescription></DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>Field Title</Label>
-              <Input value={newFieldTitle} onChange={(e) => setNewFieldTitle(e.target.value)} placeholder="e.g. Target Audience, USP" autoFocus />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Content</Label>
-              <div className="min-h-[200px] [&_.milkdown]:min-h-[180px]">
-                <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
-              </div>
-            </div>
-          </div>
-          <DialogFooter><Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button><Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!deletingField} onOpenChange={(open) => !open && setDeletingField(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>Delete Field</DialogTitle><DialogDescription>Are you sure you want to delete "{fields.find(f => f.id === deletingField)?.title}"? This cannot be undone.</DialogDescription></DialogHeader>
-          <DialogFooter><Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button><Button variant="destructive" onClick={() => deletingField && deleteField(deletingField)}>Delete</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={!!deletingImageId} onOpenChange={(open) => !open && setDeletingImageId(null)}>
         <DialogContent className="sm:max-w-md">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MarkdownEditor } from "@/components/MarkdownEditor";
 import {
-  Globe, Sparkles, Package, Plus, Trash2, Pencil, Upload, Star,
+  Globe, Sparkles, Package, Trash2, Pencil, Upload, Star,
   Loader2, Check, Eye, ShoppingBag, Search, TrendingUp, Brain, Info,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 
 const productScrapeSteps = [
   { icon: Eye, text: "Analyzing your product page..." },
@@ -24,11 +24,7 @@ const productScrapeSteps = [
 const MAX_IMAGE_SIZE_MB = 25;
 const ACCEPTED_IMAGE_TYPES = ".png,.jpg,.jpeg,.webp";
 
-interface KnowledgeField {
-  id: string;
-  title: string;
-  value: string;
-}
+// KnowledgeField type imported from shared component
 
 interface ProductImage {
   id: string;
@@ -77,8 +73,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
     { id: "selling-points", title: "Unique Selling Points", value: "" },
   ]);
 
-  const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Reset on close
@@ -99,7 +93,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           { id: "target-market", title: "Target Market", value: "" },
           { id: "selling-points", title: "Unique Selling Points", value: "" },
         ]);
-        setEditingFieldId(null);
       }, 300);
     }
   }, [open]);
@@ -151,28 +144,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
   const tabLocked = scrapePhase === "scraping" || scrapePhase === "done";
 
-  // ─── Field helpers ───
-  const updateFieldValue = (id: string, value: string) => {
-    setKnowledgeFields(prev => prev.map(f => f.id === id ? { ...f, value } : f));
-  };
-  const updateFieldTitle = (id: string, title: string) => {
-    setKnowledgeFields(prev => prev.map(f => f.id === id ? { ...f, title } : f));
-    setEditingFieldId(null);
-  };
-  const deleteField = (id: string) => {
-    setKnowledgeFields(prev => prev.filter(f => f.id !== id));
-  };
-  const addField = () => {
-    setKnowledgeFields(prev => [...prev, { id: crypto.randomUUID(), title: "New Field", value: "" }]);
-  };
-  const startEditTitle = (id: string) => {
-    const field = knowledgeFields.find(f => f.id === id);
-    if (field) {
-      setEditingFieldId(id);
-      setEditingTitle(field.title);
-    }
-  };
-
   // ─── Image helpers ───
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -206,7 +177,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="flex items-center gap-3 text-xl">
             <div className="h-10 w-10 rounded-xl border-2 border-border bg-muted flex items-center justify-center">
@@ -468,66 +439,25 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
                 <div className="border-t border-border" />
 
-                {/* Knowledge Fields */}
-                <div className="space-y-4">
-                  {knowledgeFields.map((field) => (
-                    <div key={field.id} className="space-y-1.5">
-                      <div className="flex items-center justify-between group">
-                        {editingFieldId === field.id ? (
-                          <Input
-                            value={editingTitle}
-                            onChange={(e) => setEditingTitle(e.target.value)}
-                            onBlur={() => updateFieldTitle(field.id, editingTitle)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") updateFieldTitle(field.id, editingTitle);
-                              if (e.key === "Escape") setEditingFieldId(null);
-                            }}
-                            className="h-7 text-sm font-semibold w-48"
-                            autoFocus
-                          />
-                        ) : (
-                          <div className="flex items-center gap-1.5">
-                            <Label className="text-sm font-semibold">{field.title}</Label>
-                            <button
-                              type="button"
-                              onClick={() => startEditTitle(field.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Pencil className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                            </button>
-                          </div>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
-                          onClick={() => deleteField(field.id)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                      <MarkdownEditor
-                        value={field.value}
-                        onChange={(val) => updateFieldValue(field.id, val)}
-                      />
-                    </div>
-                  ))}
+                {/* Knowledge Fields - shared component */}
+                <KnowledgeFieldsSection
+                  fields={knowledgeFields}
+                  onFieldsChange={setKnowledgeFields}
+                />
 
-                  <Button variant="outline" size="sm" className="gap-1.5 w-full" onClick={addField}>
-                    <Plus className="h-3.5 w-3.5" /> Add Knowledge Field
-                  </Button>
-                </div>
-
-                {/* Save button */}
-                <div className="pt-4 border-t border-border">
-                  <Button className="w-full shadow-sm" onClick={() => onOpenChange(false)}>
-                    Save Product
-                  </Button>
-                </div>
               </div>
             </div>
           )}
         </ScrollArea>
+
+        {/* Sticky Save Footer */}
+        {showForm && (
+          <div className="px-6 py-4 border-t border-border bg-background flex justify-end shrink-0">
+            <Button className="shadow-sm px-8" onClick={() => onOpenChange(false)}>
+              Save Product
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
