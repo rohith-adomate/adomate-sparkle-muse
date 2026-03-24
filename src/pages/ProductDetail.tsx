@@ -249,7 +249,7 @@ export default function ProductDetail() {
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <Breadcrumbs items={[
-        { label: "Brand Brain", href: "/brand-data-room" },
+        { label: "Data Room", href: "/brand-data-room" },
         { label: "Products", href: "/brand-data-room/products" },
         { label: productName },
       ]} />
