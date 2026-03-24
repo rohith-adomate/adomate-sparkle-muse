@@ -246,7 +246,8 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                       })}
                     </div>
                   </div>
-                )}
+                  );
+                })()}
               </div>
             );
           })}
