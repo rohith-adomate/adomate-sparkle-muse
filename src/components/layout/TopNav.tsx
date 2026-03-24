@@ -11,8 +11,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 
+import oyLogoSrc from "@/assets/oy/oy-logo.png";
+
 const brands = [
-  { name: "Acme Co", color: "hsl(336 78% 50%)" },
+  { name: "Oy Care", logo: oyLogoSrc },
   { name: "Beta Brand", color: "hsl(152 60% 42%)" },
   { name: "Gamma Inc", color: "hsl(25 95% 55%)" },
 ];
@@ -53,12 +55,16 @@ export function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2 font-medium">
-              <span
-                className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                style={{ background: activeBrand.color }}
-              >
-                {activeBrand.name[0]}
-              </span>
+              {activeBrand.logo ? (
+                <img src={activeBrand.logo} alt={activeBrand.name} className="h-5 w-5 rounded-md object-contain" />
+              ) : (
+                <span
+                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                  style={{ background: activeBrand.color }}
+                >
+                  {activeBrand.name[0]}
+                </span>
+              )}
               {activeBrand.name}
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
@@ -66,12 +72,16 @@ export function TopNav() {
           <DropdownMenuContent align="start">
             {brands.map((b) => (
               <DropdownMenuItem key={b.name} onClick={() => setActiveBrand(b)} className="gap-2">
-                <span
-                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                  style={{ background: b.color }}
-                >
-                  {b.name[0]}
-                </span>
+                {b.logo ? (
+                  <img src={b.logo} alt={b.name} className="h-5 w-5 rounded-md object-contain" />
+                ) : (
+                  <span
+                    className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                    style={{ background: b.color }}
+                  >
+                    {b.name[0]}
+                  </span>
+                )}
                 {b.name}
               </DropdownMenuItem>
             ))}
