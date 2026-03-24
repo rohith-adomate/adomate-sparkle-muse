@@ -457,10 +457,10 @@ export default function BrandKnowledge() {
                                 }
                               }}
                               disabled={logos.length <= 1}
-                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-opacity p-1 rounded-md ${
+                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-all p-1.5 rounded-lg ${
                                 logos.length <= 1
                                   ? "cursor-not-allowed text-muted-foreground/40"
-                                  : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                                  : "hover:bg-muted text-muted-foreground/60"
                               }`}
                               aria-label="Delete logo"
                             >
