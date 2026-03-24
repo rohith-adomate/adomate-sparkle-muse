@@ -650,10 +650,10 @@ export default function BrandKnowledge() {
                             setBrandVisuals(brandVisuals.filter(v => v.id !== visual.id));
                             triggerAutoSave();
                           }}
-                          className="absolute top-1.5 right-1.5 opacity-0 group-hover/visual:opacity-100 transition-opacity p-1 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                          className="absolute top-2 right-2 opacity-0 group-hover/visual:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                           aria-label="Delete visual"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     ))}

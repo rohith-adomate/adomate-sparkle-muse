@@ -94,7 +94,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 export default function Products() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      <Breadcrumbs items={[{ label: "Brand Data Room", href: "/brand-data-room" }, { label: "Products" }]} />
+      <Breadcrumbs items={[{ label: "Brand Brain", href: "/brand-data-room" }, { label: "Products" }]} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Products</h1>
