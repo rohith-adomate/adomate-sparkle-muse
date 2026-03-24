@@ -8,10 +8,12 @@ import oyAd7 from "@/assets/oy/oy-ad-7.avif";
 import oyAd8 from "@/assets/oy/oy-ad-8.avif";
 import oyAd9 from "@/assets/oy/oy-ad-9.avif";
 import oyAd10 from "@/assets/oy/oy-ad-10.avif";
+import oyAd11 from "@/assets/oy/oy-ad-11.avif";
 
 export const oyAdImages = [
   oyAd1, oyAd2, oyAd3, oyAd4, oyAd5,
   oyAd6, oyAd7, oyAd8, oyAd9, oyAd10,
+  oyAd11,
 ];
 
 /** Get an Oy image by index, cycling through available images */
