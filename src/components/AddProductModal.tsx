@@ -24,11 +24,7 @@ const productScrapeSteps = [
 const MAX_IMAGE_SIZE_MB = 25;
 const ACCEPTED_IMAGE_TYPES = ".png,.jpg,.jpeg,.webp";
 
-interface KnowledgeField {
-  id: string;
-  title: string;
-  value: string;
-}
+// KnowledgeField type imported from shared component
 
 interface ProductImage {
   id: string;
