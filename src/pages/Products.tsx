@@ -12,15 +12,22 @@ import {
 import { AddProductModal } from "@/components/AddProductModal";
 import { getOyImage } from "@/data/oyImages";
 
+import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+import oyProductScalpHairWashDandruff from "@/assets/oy/oy-product-scalp-hair-wash-dandruff.png";
+import oyProductFacewashAcne from "@/assets/oy/oy-product-facewash-acne.png";
+import oyProductFacewashDailyBoost from "@/assets/oy/oy-product-facewash-daily-boost.png";
+import oyProductFacewashSensitive from "@/assets/oy/oy-product-facewash-sensitive.png";
+import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
+import oyProductDeoScrub from "@/assets/oy/oy-product-deo-scrub.png";
+
 const initialProducts = [
-  { id: "1", name: "Scalp & Hair Wash", images: 6, imgIdx: 0 },
-  { id: "2", name: "Deo Wash", images: 4, imgIdx: 1 },
-  { id: "3", name: "Face Wash Sensitive", images: 8, imgIdx: 2 },
-  { id: "4", name: "Body Lotion", images: 3, imgIdx: 3 },
-  { id: "5", name: "Hand Cream", images: 5, imgIdx: 4 },
-  { id: "6", name: "Shower Oil", images: 2, imgIdx: 5 },
-  { id: "7", name: "Lip Balm", images: 7, imgIdx: 6 },
-  { id: "8", name: "Deodorant Stick", images: 1, imgIdx: 7 },
+  { id: "1", name: "Scalp & Hair Wash", images: 6, imgIdx: 0, heroImg: oyProductScalpHairWash },
+  { id: "2", name: "Scalp & Hair Wash Anti-Dandruff", images: 4, imgIdx: 1, heroImg: oyProductScalpHairWashDandruff },
+  { id: "3", name: "Face Wash Acne Prone Skin", images: 8, imgIdx: 2, heroImg: oyProductFacewashAcne },
+  { id: "4", name: "Face Wash Daily Boost", images: 3, imgIdx: 3, heroImg: oyProductFacewashDailyBoost },
+  { id: "5", name: "Face Wash Sensitive", images: 5, imgIdx: 4, heroImg: oyProductFacewashSensitive },
+  { id: "6", name: "Deo Wash Havana", images: 2, imgIdx: 5, heroImg: oyProductDeoWashHavana },
+  { id: "7", name: "Deo Scrub Marrakech", images: 7, imgIdx: 6, heroImg: oyProductDeoScrub },
 ];
 
 // Removed getImageUrl - using getOyImage instead
@@ -60,7 +67,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: typeof initialPro
       onClick={() => navigate(`/brand-data-room/products/${product.id}`)}
     >
       <div className="w-32 flex-shrink-0 bg-muted relative">
-        <img src={getOyImage(product.imgIdx)} alt={product.name} className="w-full h-full object-cover" />
+        <img src={product.heroImg} alt={product.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
       </div>
       <div className="flex flex-col justify-between flex-1 min-w-0 p-4">
