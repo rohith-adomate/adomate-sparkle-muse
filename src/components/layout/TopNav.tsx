@@ -55,12 +55,16 @@ export function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2 font-medium">
-              <span
-                className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                style={{ background: activeBrand.color }}
-              >
-                {activeBrand.name[0]}
-              </span>
+              {activeBrand.logo ? (
+                <img src={activeBrand.logo} alt={activeBrand.name} className="h-5 w-5 rounded-md object-contain" />
+              ) : (
+                <span
+                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                  style={{ background: activeBrand.color }}
+                >
+                  {activeBrand.name[0]}
+                </span>
+              )}
               {activeBrand.name}
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
