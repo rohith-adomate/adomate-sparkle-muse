@@ -153,10 +153,10 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => deleteImage(img.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white/90 text-muted-foreground shadow-sm"
+                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white/90 text-muted-foreground shadow-sm hover:bg-destructive/10 hover:text-destructive"
                     aria-label="Delete image"
                   >
-                    <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">Delete this image</TooltipContent>
@@ -165,10 +165,10 @@ function ImagesSection({
           ))}
           {/* Upload card in grid - matches brand logos upload card */}
           <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 transition-colors cursor-pointer">
-            <input type="file" accept=".png,.jpg,.jpeg,.svg,.webp" multiple className="hidden" onChange={handleImageUpload} />
+            <input type="file" accept=".png,.jpg,.jpeg,.webp" multiple className="hidden" onChange={handleImageUpload} />
             <Upload className="h-6 w-6 text-muted-foreground" />
-            <p className="text-xs text-muted-foreground text-center px-2">Upload image</p>
-            <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
+            <p className="text-xs text-muted-foreground text-center px-2">Upload image(s)</p>
+            <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, WEBP)</p>
             <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per image</p>
           </label>
         </div>
@@ -277,7 +277,7 @@ export default function ProductDetail() {
             </div>
           ) : (
             <div className="flex items-center gap-2 group">
-              <h1 className="text-2xl font-bold tracking-tight truncate">{productName}</h1>
+              <h1 className="text-2xl font-bold tracking-tight truncate">Product</h1>
               <button
                 onClick={() => { setEditNameValue(productName); setIsEditingName(true); }}
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-accent shrink-0"
