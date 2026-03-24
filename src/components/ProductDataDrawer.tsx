@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -78,14 +78,19 @@ function getProductImages(product: typeof PRODUCTS[0]) {
 interface ProductDataDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSelectionChange?: (count: number) => void;
 }
 
-export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDrawerProps) {
+export default function ProductDataDrawer({ open, onOpenChange, onSelectionChange }: ProductDataDrawerProps) {
   const [selectedProducts, setSelectedProducts] = useState<string[]>(["prod-1"]);
   const [selectedImages, setSelectedImages] = useState<Record<string, string[]>>({
     "prod-1": ["img-1-1"],
   });
   const [expandedProducts, setExpandedProducts] = useState<string[]>(["prod-1"]);
+
+  useEffect(() => {
+    onSelectionChange?.(selectedProducts.length);
+  }, [selectedProducts, onSelectionChange]);
 
   const toggleProduct = (id: string) => {
     setSelectedProducts((prev) => {
