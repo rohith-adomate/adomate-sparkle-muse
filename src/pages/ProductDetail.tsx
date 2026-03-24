@@ -259,7 +259,7 @@ export default function ProductDetail() {
                   <Label>Product Name</Label>
                   <InfoTooltip text="The display name of your product. Used in ad copy generation and campaign briefs." />
                 </div>
-                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={handleFieldChange} />
+                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={triggerAutoSave} />
               </div>
 
               <div className="space-y-1.5">
