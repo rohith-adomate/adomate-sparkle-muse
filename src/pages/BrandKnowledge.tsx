@@ -457,12 +457,7 @@ export default function BrandKnowledge() {
                             <button
                               onClick={() => {
                                 if (logos.length > 1) {
-                                  const remaining = logos.filter(l => l.id !== logo.id);
-                                  if (logo.isDefault && remaining.length > 0) {
-                                    remaining[0].isDefault = true;
-                                  }
-                                  setLogos(remaining);
-                                  triggerAutoSave();
+                                  setDeletingLogoId(logo.id);
                                 }
                               }}
                               disabled={logos.length <= 1}
