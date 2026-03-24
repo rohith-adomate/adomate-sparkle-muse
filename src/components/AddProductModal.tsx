@@ -10,6 +10,7 @@ import {
   Globe, Sparkles, Package, Trash2, Pencil, Upload, Star,
   Loader2, Check, Eye, ShoppingBag, Search, TrendingUp, Brain, Info,
 } from "lucide-react";
+import { getOyImage } from "@/data/oyImages";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 
@@ -109,7 +110,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           setImages([{
             id: crypto.randomUUID(),
             name: "product-hero.jpg",
-            url: `https://picsum.photos/seed/${encodeURIComponent(url)}/400/400`,
+            url: getOyImage(Math.floor(Math.random() * 10)),
             isHero: true,
           }]);
           setKnowledgeFields([
