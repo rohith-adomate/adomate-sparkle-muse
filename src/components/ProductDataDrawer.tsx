@@ -4,47 +4,76 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Package, Image, ChevronDown, ChevronRight } from "lucide-react";
+import { getOyImage } from "@/data/oyImages";
+
+import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+import oyProductScalpHairWashDandruff from "@/assets/oy/oy-product-scalp-hair-wash-dandruff.png";
+import oyProductFacewashAcne from "@/assets/oy/oy-product-facewash-acne.png";
+import oyProductFacewashDailyBoost from "@/assets/oy/oy-product-facewash-daily-boost.png";
+import oyProductFacewashSensitive from "@/assets/oy/oy-product-facewash-sensitive.png";
+import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
+import oyProductDeoScrub from "@/assets/oy/oy-product-deo-scrub.png";
 
 const PRODUCTS = [
   {
     id: "prod-1",
-    name: "Hydra Glow Serum",
-    imgSeed: "smartwidget",
-    images: [
-      { id: "img-1-1", name: "Hero Shot", seed: "sw-hero" },
-      { id: "img-1-2", name: "Texture Close-up", seed: "sw-dash" },
-      { id: "img-1-3", name: "Before & After", seed: "sw-mobile" },
-    ],
+    name: "Scalp & Hair Wash",
+    heroImg: oyProductScalpHairWash,
+    imgIdx: 0,
+    imageCount: 6,
   },
   {
     id: "prod-2",
-    name: "Gentle Foam Cleanser",
-    imgSeed: "quicklaunch",
-    images: [
-      { id: "img-2-1", name: "Product Front", seed: "ql-landing" },
-    ],
+    name: "Scalp & Hair Wash Anti-Dandruff",
+    heroImg: oyProductScalpHairWashDandruff,
+    imgIdx: 1,
+    imageCount: 4,
   },
   {
     id: "prod-3",
-    name: "Vitamin C Brightening Cream",
-    imgSeed: "insight",
-    images: [
-      { id: "img-3-1", name: "Jar Flat Lay", seed: "ie-overview" },
-      { id: "img-3-2", name: "Lifestyle Application", seed: "ie-report" },
-    ],
+    name: "Face Wash Acne Prone Skin",
+    heroImg: oyProductFacewashAcne,
+    imgIdx: 2,
+    imageCount: 8,
   },
   {
     id: "prod-4",
-    name: "Retinol Night Recovery Mask",
-    imgSeed: "creativeos",
-    images: [
-      { id: "img-4-1", name: "Packaging Detail", seed: "cos-editor" },
-      { id: "img-4-2", name: "Ingredient Spread", seed: "cos-library" },
-      { id: "img-4-3", name: "Model Application", seed: "cos-grid" },
-      { id: "img-4-4", name: "Routine Bundle", seed: "cos-export" },
-    ],
+    name: "Face Wash Daily Boost",
+    heroImg: oyProductFacewashDailyBoost,
+    imgIdx: 3,
+    imageCount: 3,
+  },
+  {
+    id: "prod-5",
+    name: "Face Wash Sensitive",
+    heroImg: oyProductFacewashSensitive,
+    imgIdx: 4,
+    imageCount: 5,
+  },
+  {
+    id: "prod-6",
+    name: "Deo Wash Havana",
+    heroImg: oyProductDeoWashHavana,
+    imgIdx: 5,
+    imageCount: 2,
+  },
+  {
+    id: "prod-7",
+    name: "Deo Scrub Marrakech",
+    heroImg: oyProductDeoScrub,
+    imgIdx: 6,
+    imageCount: 7,
   },
 ];
+
+function getProductImages(product: typeof PRODUCTS[0]) {
+  const max = Math.min(product.imageCount, 6);
+  return Array.from({ length: max }).map((_, i) => ({
+    id: `img-${product.id}-${i}`,
+    name: i === 0 ? "Hero Shot" : `Image ${i + 1}`,
+    src: i === 0 ? product.heroImg : getOyImage(product.imgIdx + i),
+  }));
+}
 
 interface ProductDataDrawerProps {
   open: boolean;
