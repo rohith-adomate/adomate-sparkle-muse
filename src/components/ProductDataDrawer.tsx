@@ -166,7 +166,7 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                   />
                   <div className="h-9 w-9 rounded-md overflow-hidden bg-muted shrink-0">
                     <img
-                      src={`https://picsum.photos/seed/${product.imgSeed}/80/80`}
+                      src={product.heroImg}
                       alt={product.name}
                       className="h-full w-full object-cover"
                     />
