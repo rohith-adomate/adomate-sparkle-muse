@@ -372,7 +372,9 @@ export default function ProductDetail() {
             </div>
             <div className="space-y-1.5">
               <Label>Content</Label>
-              <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
+              <div className="min-h-[200px] [&_.milkdown]:min-h-[180px]">
+                <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
+              </div>
             </div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button><Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button></DialogFooter>
