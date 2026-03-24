@@ -11,15 +11,15 @@ import { Plus, Pencil, Trash2, Upload, Star, Info, ArrowLeft, BookOpen, ImageIco
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 
-const productData: Record<string, { name: string; imgSeed: string; imageCount: number }> = {
-  "1": { name: "Hydra Glow Serum", imgSeed: "serum", imageCount: 6 },
-  "2": { name: "Gentle Foam Cleanser", imgSeed: "cleanser", imageCount: 4 },
-  "3": { name: "Vitamin C Brightening Cream", imgSeed: "vitaminc", imageCount: 8 },
-  "4": { name: "Retinol Night Repair", imgSeed: "retinol", imageCount: 3 },
-  "5": { name: "SPF 50 Daily Shield", imgSeed: "sunscreen", imageCount: 5 },
-  "6": { name: "Rose Petal Toner", imgSeed: "toner", imageCount: 2 },
-  "7": { name: "Collagen Boost Mask", imgSeed: "mask", imageCount: 7 },
-  "8": { name: "Tea Tree Oil Spot Treatment", imgSeed: "teatree", imageCount: 1 },
+const productData: Record<string, { name: string; url: string; imgSeed: string; imageCount: number }> = {
+  "1": { name: "Hydra Glow Serum", url: "https://acmeco.com/hydra-glow-serum", imgSeed: "serum", imageCount: 6 },
+  "2": { name: "Gentle Foam Cleanser", url: "https://acmeco.com/gentle-foam-cleanser", imgSeed: "cleanser", imageCount: 4 },
+  "3": { name: "Vitamin C Brightening Cream", url: "https://acmeco.com/vitamin-c-cream", imgSeed: "vitaminc", imageCount: 8 },
+  "4": { name: "Retinol Night Repair", url: "https://acmeco.com/retinol-night-repair", imgSeed: "retinol", imageCount: 3 },
+  "5": { name: "SPF 50 Daily Shield", url: "https://acmeco.com/spf-50", imgSeed: "sunscreen", imageCount: 5 },
+  "6": { name: "Rose Petal Toner", url: "https://acmeco.com/rose-petal-toner", imgSeed: "toner", imageCount: 2 },
+  "7": { name: "Collagen Boost Mask", url: "https://acmeco.com/collagen-mask", imgSeed: "mask", imageCount: 7 },
+  "8": { name: "Tea Tree Oil Spot Treatment", url: "https://acmeco.com/tea-tree-oil", imgSeed: "teatree", imageCount: 1 },
 };
 
 function getImageUrl(seed: string, idx: number, w = 300, h = 300) {
@@ -182,6 +182,7 @@ export default function ProductDetail() {
   const product = id ? productData[id] : null;
 
   const [productName, setProductName] = useState(product?.name ?? "");
+  const [productUrl, setProductUrl] = useState(product?.url ?? "");
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState(product?.name ?? "");
   const [fields, setFields] = useState<KnowledgeField[]>(defaultFields);
@@ -288,31 +289,45 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Hero Image Preview Card */}
+      {/* Product Info Card with Hero Image */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
+        <CardContent className="pt-6 space-y-5">
+          <div className="flex gap-5">
+            {/* Hero Image Preview - clickable to switch to images tab */}
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
-                <div className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-help">
+                <button
+                  onClick={() => setActiveSection("images")}
+                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                >
                   {heroImage ? (
                     <img src={heroImage.url} alt="Hero" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
-                    </div>
+                    <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
                   )}
-                </div>
+                </button>
               </TooltipTrigger>
               <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
                 <p>The hero image can be changed by uploading new product images and setting one as the hero using the star icon.</p>
               </TooltipContent>
             </Tooltip>
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{heroImage ? "Hero Image" : "No Hero Image"}</p>
-              <p className="text-xs text-muted-foreground">
-                {heroImage ? "This image represents the product on cards and listings." : "Upload images and set one as the hero."}
-              </p>
+
+            <div className="flex-1 space-y-5 min-w-0">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Product Name</Label>
+                  <InfoTooltip text="The display name of your product. Used in ad copy generation and campaign briefs." />
+                </div>
+                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={handleFieldChange} />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Product URL</Label>
+                  <InfoTooltip text="The product's landing page URL. Helps the AI understand product positioning and features." />
+                </div>
+                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={handleFieldChange} />
+              </div>
             </div>
           </div>
         </CardContent>

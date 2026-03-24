@@ -186,6 +186,136 @@ export default function BrandKnowledge() {
         <p className="text-muted-foreground text-sm">Define your brand identity and visual style. Changes auto-save.</p>
       </div>
 
+      {/* Brand Info Card with Logo Preview */}
+      <Card>
+        <CardContent className="pt-6 space-y-5">
+          <div className="flex gap-5">
+            {/* Logo Preview */}
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setActiveTab("visual")}
+                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                >
+                  {(() => {
+                    const defaultLogo = logos.find(l => l.isDefault);
+                    return defaultLogo ? (
+                      <img src={defaultLogo.url} alt={defaultLogo.name} className="max-w-[70%] max-h-[70%] object-contain" />
+                    ) : (
+                      <Star className="h-6 w-6 text-muted-foreground/40" />
+                    );
+                  })()}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
+                <p>The brand logo can be changed by starring a different logo in the Visual Style tab.</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <div className="flex-1 space-y-5 min-w-0">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Brand Name</Label>
+                  <InfoTooltip text="The primary name of your brand. This will be used across all generated ad copy and creative materials." />
+                </div>
+                <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Website URL</Label>
+                  <InfoTooltip text="Your brand's main website. This helps the AI understand your brand context, products, and messaging." />
+                </div>
+                <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5">
+              <Label>Ad Languages</Label>
+              <InfoTooltip text="Choose the languages your brand uses for ad creation. The starred language is the default used unless another language is selected." />
+            </div>
+
+            {/* Selected languages */}
+            <div className="flex flex-wrap gap-2">
+              {selectedLanguages.map((lang) => (
+                <Badge
+                  key={lang}
+                  variant="secondary"
+                  className="gap-1.5 py-1 px-2.5 text-xs font-medium"
+                >
+                  <Tooltip delayDuration={600}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => setAsDefault(lang)}
+                        className="shrink-0"
+                        aria-label={`Set ${lang} as default`}
+                      >
+                        <Star
+                          className={`h-3 w-3 transition-colors ${
+                            defaultLanguage === lang
+                              ? "fill-primary text-primary"
+                              : "text-muted-foreground/40 hover:text-muted-foreground"
+                          }`}
+                        />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      {defaultLanguage === lang ? "Default language" : "Set as default language"}
+                    </TooltipContent>
+                  </Tooltip>
+                  {lang}
+                  <button
+                    onClick={() => removeLanguage(lang)}
+                    className="shrink-0 hover:text-destructive transition-colors"
+                    aria-label={`Remove ${lang}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+
+              {/* Add language popover */}
+              <Popover open={langPopoverOpen} onOpenChange={setLangPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <button className="h-7 px-2.5 rounded-md border border-dashed border-muted-foreground/30 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-1">
+                    <Plus className="h-3 w-3" /> Add language
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-2" align="start">
+                  <div className="flex items-center gap-2 border-b pb-2 mb-1">
+                    <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <input
+                      value={langSearch}
+                      onChange={(e) => setLangSearch(e.target.value)}
+                      placeholder="Search languages..."
+                      className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="max-h-48 overflow-y-auto space-y-0.5">
+                    {filteredLanguages.length === 0 ? (
+                      <p className="text-xs text-muted-foreground p-2 text-center">No languages found</p>
+                    ) : (
+                      filteredLanguages.map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => addLanguage(lang)}
+                          className="w-full text-left text-sm px-2 py-1.5 rounded hover:bg-accent transition-colors"
+                        >
+                          {lang}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Pill Toggle */}
       <div className="flex justify-center">
         <div className="inline-flex rounded-full bg-muted p-1 gap-1">
@@ -200,136 +330,6 @@ export default function BrandKnowledge() {
 
       {activeTab === "knowledge" && (
         <div className="space-y-4">
-          {/* Merged Brand Info Card with Logo Preview */}
-          <Card>
-            <CardContent className="pt-6 space-y-5">
-              <div className="flex gap-5">
-                {/* Logo Preview */}
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setActiveTab("visual")}
-                      className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
-                    >
-                      {(() => {
-                        const defaultLogo = logos.find(l => l.isDefault);
-                        return defaultLogo ? (
-                          <img src={defaultLogo.url} alt={defaultLogo.name} className="max-w-[70%] max-h-[70%] object-contain" />
-                        ) : (
-                          <Star className="h-6 w-6 text-muted-foreground/40" />
-                        );
-                      })()}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
-                    <p>The brand logo can be changed by starring a different logo in the Visual Style tab.</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <div className="flex-1 space-y-5 min-w-0">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <Label>Brand Name</Label>
-                      <InfoTooltip text="The primary name of your brand. This will be used across all generated ad copy and creative materials." />
-                    </div>
-                    <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <Label>Website URL</Label>
-                      <InfoTooltip text="Your brand's main website. This helps the AI understand your brand context, products, and messaging." />
-                    </div>
-                    <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Label>Ad Languages</Label>
-                  <InfoTooltip text="Choose the languages your brand uses for ad creation. The starred language is the default used unless another language is selected." />
-                </div>
-
-                {/* Selected languages */}
-                <div className="flex flex-wrap gap-2">
-                  {selectedLanguages.map((lang) => (
-                    <Badge
-                      key={lang}
-                      variant="secondary"
-                      className="gap-1.5 py-1 px-2.5 text-xs font-medium"
-                    >
-                      <Tooltip delayDuration={600}>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={() => setAsDefault(lang)}
-                            className="shrink-0"
-                            aria-label={`Set ${lang} as default`}
-                          >
-                            <Star
-                              className={`h-3 w-3 transition-colors ${
-                                defaultLanguage === lang
-                                  ? "fill-primary text-primary"
-                                  : "text-muted-foreground/40 hover:text-muted-foreground"
-                              }`}
-                            />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="text-xs">
-                          {defaultLanguage === lang ? "Default language" : "Set as default language"}
-                        </TooltipContent>
-                      </Tooltip>
-                      {lang}
-                      <button
-                        onClick={() => removeLanguage(lang)}
-                        className="shrink-0 hover:text-destructive transition-colors"
-                        aria-label={`Remove ${lang}`}
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-
-                  {/* Add language popover */}
-                  <Popover open={langPopoverOpen} onOpenChange={setLangPopoverOpen}>
-                    <PopoverTrigger asChild>
-                      <button className="h-7 px-2.5 rounded-md border border-dashed border-muted-foreground/30 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center gap-1">
-                        <Plus className="h-3 w-3" /> Add language
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-2" align="start">
-                      <div className="flex items-center gap-2 border-b pb-2 mb-1">
-                        <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                        <input
-                          value={langSearch}
-                          onChange={(e) => setLangSearch(e.target.value)}
-                          placeholder="Search languages..."
-                          className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="max-h-48 overflow-y-auto space-y-0.5">
-                        {filteredLanguages.length === 0 ? (
-                          <p className="text-xs text-muted-foreground p-2 text-center">No languages found</p>
-                        ) : (
-                          filteredLanguages.map((lang) => (
-                            <button
-                              key={lang}
-                              onClick={() => addLanguage(lang)}
-                              className="w-full text-left text-sm px-2 py-1.5 rounded hover:bg-accent transition-colors"
-                            >
-                              {lang}
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Knowledge Fields */}
           <Card>
             <CardContent className="pt-6 space-y-6">
