@@ -130,7 +130,9 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => setHeroImage(img.id)}
-                    className="absolute top-2 left-2 p-0.5"
+                    className={`absolute top-2 left-2 p-0.5 transition-opacity ${
+                      img.isHero ? "opacity-100" : "opacity-0 group-hover/img:opacity-100"
+                    }`}
                     aria-label={img.isHero ? "Hero product image" : "Set as hero image"}
                   >
                     <Star
@@ -151,10 +153,10 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => deleteImage(img.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-opacity p-1 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-lg hover:bg-muted text-muted-foreground/60"
                     aria-label="Delete image"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">Delete this image</TooltipContent>
@@ -298,7 +300,7 @@ export default function ProductDetail() {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setActiveSection("images")}
-                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                  className="h-24 w-24 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
                 >
                   {heroImage ? (
                     <img src={heroImage.url} alt="Hero" className="w-full h-full object-cover" />

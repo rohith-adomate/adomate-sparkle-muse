@@ -195,7 +195,7 @@ export default function BrandKnowledge() {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setActiveTab("visual")}
-                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                  className="h-24 w-24 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
                 >
                   {(() => {
                     const defaultLogo = logos.find(l => l.isDefault);
@@ -424,7 +424,9 @@ export default function BrandKnowledge() {
                                   triggerAutoSave();
                                 }
                               }}
-                              className="absolute top-2 left-2 p-0.5"
+                              className={`absolute top-2 left-2 p-0.5 transition-opacity ${
+                                logo.isDefault ? "opacity-100" : "opacity-0 group-hover/logo:opacity-100"
+                              }`}
                               aria-label={logo.isDefault ? "Default logo" : "Set as default logo"}
                             >
                               <Star
@@ -455,14 +457,14 @@ export default function BrandKnowledge() {
                                 }
                               }}
                               disabled={logos.length <= 1}
-                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-opacity p-1 rounded-md ${
+                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-all p-1.5 rounded-lg ${
                                 logos.length <= 1
                                   ? "cursor-not-allowed text-muted-foreground/40"
-                                  : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                                  : "hover:bg-muted text-muted-foreground/60"
                               }`}
                               aria-label="Delete logo"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="text-xs">
