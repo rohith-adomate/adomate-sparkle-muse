@@ -853,7 +853,7 @@ export default function WorkflowCanvas() {
                         <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
                       </div>
                       <span className="text-xs font-bold truncate">{node.label}</span>
-                      {node.type === "product-data" && selectedProductCount > 0 && !node.status && (
+                      {node.type === "product-data" && selectedProductCount > 0 && (
                         <Badge variant="outline" className="text-[9px] gap-0.5 ml-auto shrink-0 px-1.5 py-0">
                           <Package className="h-2.5 w-2.5" />
                           {selectedProductCount}
