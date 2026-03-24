@@ -96,7 +96,7 @@ function KnowledgeSection({
             </button>
           </TooltipTrigger>
           <TooltipContent side="bottom" className="text-xs">
-            Add a new knowledge field to this product
+            Add new knowledge field
           </TooltipContent>
         </Tooltip>
       </div>
