@@ -78,9 +78,10 @@ function getProductImages(product: typeof PRODUCTS[0]) {
 interface ProductDataDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSelectionChange?: (count: number) => void;
 }
 
-export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDrawerProps) {
+export default function ProductDataDrawer({ open, onOpenChange, onSelectionChange }: ProductDataDrawerProps) {
   const [selectedProducts, setSelectedProducts] = useState<string[]>(["prod-1"]);
   const [selectedImages, setSelectedImages] = useState<Record<string, string[]>>({
     "prod-1": ["img-1-1"],
