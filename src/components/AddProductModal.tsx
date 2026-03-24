@@ -391,41 +391,41 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
               </div>
 
               <ScrollArea className="flex-1 min-h-0">
-              <div className="flex-1 p-6 space-y-5">
-                {/* Product Name */}
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-semibold flex items-center gap-1.5">
-                    <Package className="h-3.5 w-3.5" /> Product Name
-                  </Label>
-                  <Input
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    placeholder="e.g. Hydra Glow Serum"
+                <div className="p-6 space-y-5">
+                  {/* Product Name */}
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-semibold flex items-center gap-1.5">
+                      <Package className="h-3.5 w-3.5" /> Product Name
+                    </Label>
+                    <Input
+                      value={productName}
+                      onChange={(e) => setProductName(e.target.value)}
+                      placeholder="e.g. Hydra Glow Serum"
+                    />
+                  </div>
+
+                  {/* Product URL */}
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-semibold flex items-center gap-1.5">
+                      <Globe className="h-3.5 w-3.5" /> Product URL
+                      <InfoTooltip text="The direct link to this product or service page." />
+                    </Label>
+                    <Input
+                      value={productUrl}
+                      onChange={(e) => setProductUrl(e.target.value)}
+                      placeholder="https://example.com/product"
+                    />
+                  </div>
+
+                  <div className="border-t border-border" />
+
+                  {/* Knowledge Fields - shared component */}
+                  <KnowledgeFieldsSection
+                    fields={knowledgeFields}
+                    onFieldsChange={setKnowledgeFields}
                   />
                 </div>
-
-                {/* Product URL */}
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-semibold flex items-center gap-1.5">
-                    <Globe className="h-3.5 w-3.5" /> Product URL
-                    <InfoTooltip text="The direct link to this product or service page." />
-                  </Label>
-                  <Input
-                    value={productUrl}
-                    onChange={(e) => setProductUrl(e.target.value)}
-                    placeholder="https://example.com/product"
-                  />
-                </div>
-
-                <div className="border-t border-border" />
-
-                {/* Knowledge Fields - shared component */}
-                <KnowledgeFieldsSection
-                  fields={knowledgeFields}
-                  onFieldsChange={setKnowledgeFields}
-                />
-
-              </div>
+              </ScrollArea>
             </div>
           )}
         </ScrollArea>
