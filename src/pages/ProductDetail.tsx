@@ -54,52 +54,7 @@ interface ProductImage {
   isHero: boolean;
 }
 
-// ─── Knowledge Section ───
-function KnowledgeSection({
-  fields, openEditTitle, setDeletingField, updateFieldValue, handleFieldChange, setShowAddModal,
-}: {
-  fields: KnowledgeField[];
-  openEditTitle: (id: string) => void;
-  setDeletingField: (id: string) => void;
-  updateFieldValue: (id: string, val: string) => void;
-  handleFieldChange: () => void;
-  setShowAddModal: (v: boolean) => void;
-}) {
-  return (
-    <div className="space-y-6">
-      {fields.map((field) => (
-        <div key={field.id} className="group/field relative flex gap-2">
-          <div className="flex-1 space-y-1.5 min-w-0">
-            <div className="flex items-center gap-1.5 group">
-              <Label>{field.title}</Label>
-              <button onClick={() => openEditTitle(field.id)} className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-accent">
-                <Pencil className="h-3 w-3 text-muted-foreground" />
-              </button>
-            </div>
-            <MarkdownEditor value={field.value} onChange={(val) => { updateFieldValue(field.id, val); handleFieldChange(); }} />
-          </div>
-          <div className="w-8 shrink-0 flex items-center justify-center">
-            <button onClick={() => setDeletingField(field.id)} className="opacity-0 group-hover/field:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-destructive/10">
-              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
-            </button>
-          </div>
-        </div>
-      ))}
-      <div className="flex justify-center pt-2">
-        <Tooltip delayDuration={1000}>
-          <TooltipTrigger asChild>
-            <button onClick={() => setShowAddModal(true)} className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground">
-              <Plus className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">
-            Add new knowledge field
-          </TooltipContent>
-        </Tooltip>
-      </div>
-    </div>
-  );
-}
+// KnowledgeSection now uses the shared KnowledgeFieldsSection component
 
 // ─── Images Section (Brand Logos style, 4 columns) ───
 function ImagesSection({
