@@ -134,8 +134,8 @@ export default function Studio() {
           <CardContent className="p-4 space-y-3">
             <Label className="text-sm font-semibold">Product</Label>
             <div className="flex items-center gap-4">
-              <div className="h-24 w-28 rounded-lg bg-muted flex items-center justify-center border border-border/60 overflow-hidden">
-                <img src={oyProductDeoWash} alt="Deo Wash" className="h-full w-full object-cover" />
+              <div className="h-24 w-24 rounded-lg bg-muted flex items-center justify-center border border-border/60 overflow-hidden">
+                <img src={oyProductDeoWash} alt="Deo Wash" className="h-full w-full object-contain" />
               </div>
               <Button variant="outline" size="sm">Choose images</Button>
             </div>
@@ -280,7 +280,7 @@ export default function Studio() {
                       className="border-2 border-foreground/80 rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"
                       onClick={() => setSelectedImage(gen)}
                     >
-                      <div className="aspect-[3/4] bg-muted">
+                      <div className="aspect-square bg-muted">
                         <img src={gen.src} alt={`Generation ${gen.id}`} className="w-full h-full object-cover" />
                       </div>
                     </div>
