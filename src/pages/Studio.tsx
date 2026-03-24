@@ -34,7 +34,7 @@ interface Generation {
 }
 
 const demoGenerations: Generation[] = [
-  { id: 1, src: getOyImage(0), status: "DONE", generated: "05/03/2026, 13:08:15", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 1, src: getOyImage(10), status: "DONE", generated: "05/03/2026, 13:08:15", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
   { id: 2, src: getOyImage(1), status: "DONE", generated: "05/03/2026, 13:08:22", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
   { id: 3, src: getOyImage(2), status: "DONE", generated: "05/03/2026, 13:08:30", product: "DEO WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
   { id: 4, src: getOyImage(3), status: "DONE", generated: "05/03/2026, 13:09:01", product: "DEO WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
