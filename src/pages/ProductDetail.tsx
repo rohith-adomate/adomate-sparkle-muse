@@ -298,7 +298,7 @@ export default function ProductDetail() {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setActiveSection("images")}
-                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                  className="h-24 w-24 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
                 >
                   {heroImage ? (
                     <img src={heroImage.url} alt="Hero" className="w-full h-full object-cover" />
