@@ -40,11 +40,7 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
-interface KnowledgeField {
-  id: string;
-  title: string;
-  value: string;
-}
+// KnowledgeField type imported from shared component
 
 const defaultFields: KnowledgeField[] = [
   { id: "description", title: "Description", value: "A lightweight, deeply hydrating serum formulated with hyaluronic acid and vitamin B5 to lock in moisture and leave skin plump and glowing." },
