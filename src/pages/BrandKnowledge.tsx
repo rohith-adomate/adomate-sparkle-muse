@@ -3,16 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2 } from "lucide-react";
+import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2, BookOpen, Palette } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
+import adomateLogoSquare from "@/assets/adomate_logo_1024_white_bg.png";
+import adomateLogoWide from "@/assets/adomate_logo.png";
 
 const ALL_LANGUAGES = [
   "Afrikaans","Albanian","Amharic","Arabic","Armenian","Azerbaijani","Basque","Belarusian","Bengali","Bosnian",
@@ -84,7 +85,11 @@ export default function BrandKnowledge() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
-  const [logos, setLogos] = useState<LogoItem[]>([]);
+  const [logos, setLogos] = useState<LogoItem[]>([
+    { id: "logo-default-1", url: adomateLogoSquare, name: "Adomate Icon", isDefault: true },
+    { id: "logo-default-2", url: adomateLogoWide, name: "Adomate Logo", isDefault: false },
+  ]);
+  const [activeTab, setActiveTab] = useState<"knowledge" | "visual">("knowledge");
   const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([]);
 
   // Languages state
@@ -181,30 +186,63 @@ export default function BrandKnowledge() {
         <p className="text-muted-foreground text-sm">Define your brand identity and visual style. Changes auto-save.</p>
       </div>
 
-      <Tabs defaultValue="knowledge">
-        <TabsList>
-          <TabsTrigger value="knowledge">Knowledge</TabsTrigger>
-          <TabsTrigger value="visual">Visual Style</TabsTrigger>
-        </TabsList>
+      {/* Pill Toggle */}
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-full bg-muted p-1 gap-1">
+          <button onClick={() => setActiveTab("knowledge")} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "knowledge" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+            <span className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5" /> Knowledge</span>
+          </button>
+          <button onClick={() => setActiveTab("visual")} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "visual" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+            <span className="flex items-center gap-1.5"><Palette className="h-3.5 w-3.5" /> Visual Style</span>
+          </button>
+        </div>
+      </div>
 
-        <TabsContent value="knowledge" className="mt-4 space-y-4">
-          {/* Merged Brand Info Card */}
+      {activeTab === "knowledge" && (
+        <div className="space-y-4">
+          {/* Merged Brand Info Card with Logo Preview */}
           <Card>
             <CardContent className="pt-6 space-y-5">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Label>Brand Name</Label>
-                  <InfoTooltip text="The primary name of your brand. This will be used across all generated ad copy and creative materials." />
-                </div>
-                <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
-              </div>
+              <div className="flex gap-5">
+                {/* Logo Preview */}
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setActiveTab("visual")}
+                      className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                    >
+                      {(() => {
+                        const defaultLogo = logos.find(l => l.isDefault);
+                        return defaultLogo ? (
+                          <img src={defaultLogo.url} alt={defaultLogo.name} className="max-w-[70%] max-h-[70%] object-contain" />
+                        ) : (
+                          <Star className="h-6 w-6 text-muted-foreground/40" />
+                        );
+                      })()}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
+                    <p>The brand logo can be changed by starring a different logo in the Visual Style tab.</p>
+                  </TooltipContent>
+                </Tooltip>
 
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Label>Website URL</Label>
-                  <InfoTooltip text="Your brand's main website. This helps the AI understand your brand context, products, and messaging." />
+                <div className="flex-1 space-y-5 min-w-0">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Label>Brand Name</Label>
+                      <InfoTooltip text="The primary name of your brand. This will be used across all generated ad copy and creative materials." />
+                    </div>
+                    <Input defaultValue="Acme Co" onBlur={handleFieldChange} />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Label>Website URL</Label>
+                      <InfoTooltip text="Your brand's main website. This helps the AI understand your brand context, products, and messaging." />
+                    </div>
+                    <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} />
+                  </div>
                 </div>
-                <Input defaultValue="https://acmeco.com" onBlur={handleFieldChange} />
               </div>
 
               <div className="space-y-1.5">
@@ -338,9 +376,11 @@ export default function BrandKnowledge() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="visual" className="mt-4 space-y-4">
+      {activeTab === "visual" && (
+        <div className="space-y-4">
           {/* Brand Logos */}
           <Card>
             <CardContent className="pt-6 space-y-4">
@@ -639,8 +679,8 @@ export default function BrandKnowledge() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
 
       {/* Edit Title Dialog */}
       <Dialog open={!!editingField} onOpenChange={(open) => !open && setEditingField(null)}>
