@@ -128,7 +128,7 @@ export function AppSidebar() {
                           <Database className="h-4 w-4 shrink-0" />
                         </NavLink>
                       </TooltipTrigger>
-                      <TooltipContent side="right" align="center">Data Room</TooltipContent>
+                      <TooltipContent side="right" align="center">Brand Brain</TooltipContent>
                     </Tooltip>
                   </SidebarMenuItem>
                 ) : (
