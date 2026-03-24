@@ -320,7 +320,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
           {/* ─── FORM (Manual or Auto-done) ─── */}
           {showForm && (
-            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in h-full min-h-0">
+            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in h-full min-h-0 overflow-hidden">
               {/* ═══ LEFT: Product Images ═══ */}
               <div className="lg:w-[380px] shrink-0 p-6 space-y-6 overflow-y-auto min-h-0">
                 <div className="space-y-3">
@@ -394,7 +394,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </div>
 
-              <div className="flex-1 min-h-0 overflow-y-auto">
+              <div className="flex-1 min-h-0 h-full overflow-y-auto">
                 <div className="p-6 space-y-5">
                   {/* Product Name */}
                   <div className="space-y-1.5">
