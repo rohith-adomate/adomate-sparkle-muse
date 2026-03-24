@@ -457,14 +457,14 @@ export default function BrandKnowledge() {
                                 }
                               }}
                               disabled={logos.length <= 1}
-                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-all p-1.5 rounded-lg ${
+                              className={`absolute top-2 right-2 opacity-0 group-hover/logo:opacity-100 transition-all p-1.5 rounded-md ${
                                 logos.length <= 1
                                   ? "cursor-not-allowed text-muted-foreground/40"
-                                  : "hover:bg-muted text-muted-foreground/60"
+                                  : "bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                               }`}
                               aria-label="Delete logo"
                             >
-                              <Trash2 className="h-4 w-4 transition-colors hover:text-destructive" />
+                              <Trash2 className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="text-xs">
