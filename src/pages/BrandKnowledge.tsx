@@ -13,6 +13,9 @@ import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
 import adomateLogoSquare from "@/assets/adomate_logo_1024_white_bg.png";
+import imagePvd1 from "@/assets/Image_PVD_1.png";
+import imagePvd2 from "@/assets/Image_PVD_2.png";
+import imagePvd3 from "@/assets/Image_PVD_3.png";
 import adomateLogoWide from "@/assets/adomate_logo.png";
 
 const ALL_LANGUAGES = [
