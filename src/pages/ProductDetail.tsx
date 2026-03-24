@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Plus, Pencil, Trash2, Upload, Star, Info, ArrowLeft, BookOpen, ImageIcon, Check, X } from "lucide-react";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
+import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 
 const productData: Record<string, { name: string; url: string; imgSeed: string; imageCount: number }> = {
   "1": { name: "Hydra Glow Serum", url: "https://acmeco.com/hydra-glow-serum", imgSeed: "serum", imageCount: 6 },
