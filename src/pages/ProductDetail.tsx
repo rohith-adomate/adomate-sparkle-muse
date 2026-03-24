@@ -240,7 +240,7 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="space-y-6 max-w-3xl mx-auto">
-        <Breadcrumbs items={[{ label: "Brand Brain", href: "/brand-data-room" }, { label: "Products", href: "/brand-data-room/products" }, { label: "Not Found" }]} />
+        <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Products", href: "/brand-data-room/products" }, { label: "Not Found" }]} />
         <p className="text-muted-foreground">Product not found.</p>
       </div>
     );
