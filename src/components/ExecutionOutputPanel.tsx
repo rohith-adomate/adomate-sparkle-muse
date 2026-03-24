@@ -12,6 +12,7 @@ import {
   Package, Sparkles, Database, ListFilter, ImagePlus, XCircle,
   AlertTriangle, Filter, Hash, BarChart3, Eye, BookOpen, MessageSquare,
 } from "lucide-react";
+import { getOyImage } from "@/data/oyImages";
 
 /* ── Run mock data types ── */
 
@@ -293,7 +294,7 @@ function SelectOutput() {
       <div className="grid grid-cols-3 gap-2.5">
         {SELECTED_ADS.map((ad) => {
           const logo = `https://logo.clearbit.com/${ad.brand === "CeraVe" ? "cerave.com" : "theordinary.com"}`;
-          const imgSrc = `https://picsum.photos/seed/ad-select-${ad.id}/400/500`;
+          const imgSrc = getOyImage(ad.id - 1);
           return (
             <div key={ad.id} className="rounded-lg border border-border overflow-hidden bg-card group">
               <div className="aspect-[4/5] bg-muted relative">
@@ -326,8 +327,8 @@ function SelectOutput() {
 /* Product Data output — V5 style with knowledge modal */
 const PRODUCTS = [
   {
-    name: "Retinol Night Recovery Mask",
-    imageSeeds: ["prod-1a", "prod-1b", "prod-1c"],
+    name: "Scalp & Hair Wash",
+    images: [getOyImage(0), getOyImage(4), getOyImage(7)],
     knowledge: {
       "Product Description": "A luxurious overnight recovery mask formulated with 0.3% encapsulated retinol and ceramide complex. Designed to accelerate cell turnover while maintaining the skin's moisture barrier during sleep.",
       "Target Demographic": "Women aged 35–55 with visible signs of aging including fine lines, uneven skin tone, and loss of firmness. Primary markets: US, UK, and Western Europe.",
@@ -338,8 +339,8 @@ const PRODUCTS = [
     },
   },
   {
-    name: "Hydra Glow Serum",
-    imageSeeds: ["prod-2a"],
+    name: "Deo Wash",
+    images: [getOyImage(1)],
     knowledge: {
       "Product Description": "A lightweight, fast-absorbing hydration serum with triple-weight hyaluronic acid and vitamin C. Delivers instant plumping and a dewy, glass-skin finish.",
       "Target Demographic": "Women and men aged 25–45 seeking daily hydration and glow. Suitable for all skin types including sensitive skin.",
@@ -362,7 +363,7 @@ function ProductDataOutput() {
 
 interface ProductInfo {
   name: string;
-  imageSeeds: string[];
+  images: string[];
   knowledge: Record<string, string>;
 }
 
@@ -378,13 +379,13 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
             <p className="text-xs font-semibold">{product.name}</p>
           </div>
           <Badge variant="secondary" className="text-[9px] gap-0.5 py-0 h-5">
-            <Image className="h-2.5 w-2.5" /> {product.imageSeeds.length}
+            <Image className="h-2.5 w-2.5" /> {product.images.length}
           </Badge>
         </div>
         <div className="flex gap-1.5 mt-2">
-          {product.imageSeeds.map((s, i) => (
+          {product.images.map((imgUrl, i) => (
             <div key={i} className="h-10 w-10 rounded-md overflow-hidden bg-muted border border-border">
-              <img src={`https://picsum.photos/seed/${s}/80/80`} alt="" className="h-full w-full object-cover" />
+              <img src={imgUrl} alt="" className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -440,7 +441,7 @@ function ProductCardWithKnowledgeModal({ product }: { product: ProductInfo }) {
 }
 
 /* Generate Ad Variations output */
-const PREVIEW_SEEDS = ["gen-c1", "gen-c2", "gen-c3", "gen-c4", "gen-c5"];
+const PREVIEW_SEEDS = [getOyImage(0), getOyImage(1), getOyImage(2), getOyImage(3), getOyImage(4)];
 
 /* Knob component for similarity — 3 positions: Low, Medium, High */
 function SimilarityKnob({ label, value, tooltip }: { label: string; value: "Low" | "Medium" | "High"; tooltip: string }) {
@@ -520,9 +521,9 @@ function GenerateVariationsOutput() {
       <div>
         <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Generated Concepts</p>
         <div className="grid grid-cols-2 gap-1 cursor-pointer rounded-xl overflow-hidden border border-border" onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => navigate("/concepts/competitor-ad-variation-1")}>
-          {PREVIEW_SEEDS.slice(0, 3).map((seed, i) => (
+          {PREVIEW_SEEDS.slice(0, 3).map((imgUrl, i) => (
             <div key={i} className="aspect-square relative overflow-hidden">
-              <img src={`https://picsum.photos/seed/${seed}/400/400`} alt="" className={cn("h-full w-full object-cover transition-transform duration-500", h && "scale-110")} />
+              <img src={imgUrl} alt="" className={cn("h-full w-full object-cover transition-transform duration-500", h && "scale-110")} />
               {h && <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />}
             </div>
           ))}
@@ -539,9 +540,9 @@ function GenerateVariationsOutput() {
 /* Manual Image Input output */
 function ManualInputOutput() {
   const images = [
-    { src: "https://picsum.photos/seed/manual-1/200/200", name: "hero-shot.jpg" },
-    { src: "https://picsum.photos/seed/manual-2/200/200", name: "lifestyle-02.png" },
-    { src: "https://picsum.photos/seed/manual-3/200/200", name: "summer-campaign-2026-product-flatlay-final-v3.jpg" },
+    { src: getOyImage(0), name: "hero-shot.jpg" },
+    { src: getOyImage(3), name: "lifestyle-02.png" },
+    { src: getOyImage(6), name: "summer-campaign-2026-product-flatlay-final-v3.jpg" },
   ];
 
   return (
@@ -719,7 +720,7 @@ function RedditAdGeneratorOutput() {
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="rounded-lg border border-border overflow-hidden bg-card group">
               <div className="aspect-square bg-muted">
-                <img src={`https://picsum.photos/seed/reddit-ad-${i}/400/400`} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
+                <img src={getOyImage(i)} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
               </div>
             </div>
           ))}

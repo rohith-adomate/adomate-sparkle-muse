@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
+import { getOyImage } from "@/data/oyImages";
 
 /* ── Demo data ── */
 
@@ -33,12 +34,12 @@ interface Generation {
 }
 
 const demoGenerations: Generation[] = [
-  { id: 1, src: "https://picsum.photos/seed/gen1/600/750", status: "DONE", generated: "05/03/2026, 13:08:15", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
-  { id: 2, src: "https://picsum.photos/seed/gen2/600/750", status: "DONE", generated: "05/03/2026, 13:08:22", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
-  { id: 3, src: "https://picsum.photos/seed/gen3/600/750", status: "DONE", generated: "05/03/2026, 13:08:30", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
-  { id: 4, src: "https://picsum.photos/seed/gen4/600/750", status: "DONE", generated: "05/03/2026, 13:09:01", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
-  { id: 5, src: "https://picsum.photos/seed/gen5/600/750", status: "DONE", generated: "05/03/2026, 13:09:10", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
-  { id: 6, src: "https://picsum.photos/seed/gen6/600/750", status: "DONE", generated: "05/03/2026, 13:09:18", product: "FACE WASH SENSITIVE", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 1, src: getOyImage(0), status: "DONE", generated: "05/03/2026, 13:08:15", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 2, src: getOyImage(1), status: "DONE", generated: "05/03/2026, 13:08:22", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 3, src: getOyImage(2), status: "DONE", generated: "05/03/2026, 13:08:30", product: "DEO WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 4, src: getOyImage(3), status: "DONE", generated: "05/03/2026, 13:09:01", product: "DEO WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 5, src: getOyImage(4), status: "DONE", generated: "05/03/2026, 13:09:10", product: "SCALP & HAIR WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
+  { id: 6, src: getOyImage(5), status: "DONE", generated: "05/03/2026, 13:09:18", product: "DEO WASH", model: "NANO BANANA PRO", ratio: "1:1", language: "EN", imageGpt: "PROBLEMSOLUTIONGPT", sendProductImage: "YES", includeProductContext: "YES", prompt: "Seeded demo concept" },
 ];
 
 const aspectRatios = ["1:1", "4:5", "9:16", "16:9"];
@@ -252,7 +253,7 @@ export default function Studio() {
               <div className="w-[200px] shrink-0 space-y-2">
                 <p className="text-sm font-semibold">Settings</p>
                 {[
-                  ["Product", "Face Wash Sensitive"],
+                  ["Product", "Scalp & Hair Wash"],
                   ["ImageGPT", "ProblemSolutionGPT"],
                   ["Model", "NANO_BANANA_PRO"],
                   ["Ratio", "1:1"],
