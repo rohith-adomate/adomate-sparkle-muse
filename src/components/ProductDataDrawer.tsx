@@ -158,11 +158,16 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                   isSelected ? "border-primary bg-primary/[0.03]" : "border-border bg-card"
                 }`}
               >
-                {/* Product header */}
-                <div className="flex items-center gap-3 px-3 py-3">
+                {/* Product header - fully clickable */}
+                <button
+                  type="button"
+                  onClick={() => toggleProduct(product.id)}
+                  className="flex items-center gap-3 px-3 py-3 w-full text-left hover:bg-muted/40 transition-colors rounded-t-lg"
+                >
                   <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => toggleProduct(product.id)}
+                    onClick={(e) => e.stopPropagation()}
                   />
                   <div className="h-9 w-9 rounded-md overflow-hidden bg-muted shrink-0">
                     <img
@@ -174,27 +179,22 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold truncate">{product.name}</p>
                   </div>
-                  {isSelected && (
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {!isExpanded && productImages.length > 0 && (
-                        <Badge variant="outline" className="text-[9px] px-1.5 py-0 gap-0.5">
-                          <Image className="h-2.5 w-2.5" />
-                          {productImages.length}
-                        </Badge>
-                      )}
-                      <button
-                        onClick={() => toggleExpanded(product.id)}
-                        className="p-1 rounded hover:bg-muted/60 transition-colors"
-                      >
-                        {isExpanded ? (
-                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                        ) : (
-                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {isSelected && !isExpanded && productImages.length > 0 && (
+                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 gap-0.5">
+                        <Image className="h-2.5 w-2.5" />
+                        {productImages.length}
+                      </Badge>
+                    )}
+                    {isSelected ? (
+                      isExpanded ? (
+                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : (
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                      )
+                    ) : null}
+                  </div>
+                </button>
 
                 {/* Image selection - collapsible */}
                 {isSelected && isExpanded && (() => {
