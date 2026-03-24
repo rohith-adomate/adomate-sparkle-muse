@@ -197,18 +197,20 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                 </div>
 
                 {/* Image selection - collapsible */}
-                {isSelected && isExpanded && (
+                {isSelected && isExpanded && (() => {
+                  const images = getProductImages(product);
+                  return (
                   <div className="px-3 pb-3 pt-0 border-t border-border/50">
                     <div className="flex items-center justify-between mt-2.5 mb-2">
                       <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                         Images
                       </span>
                       <span className="text-[10px] text-muted-foreground">
-                        {productImages.length} / {product.images.length} selected
+                        {productImages.length} / {images.length} selected
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-1.5">
-                      {product.images.map((img) => {
+                      {images.map((img) => {
                         const imgSelected = productImages.includes(img.id);
                         return (
                           <button
@@ -221,7 +223,7 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                             }`}
                           >
                             <img
-                              src={`https://picsum.photos/seed/${img.seed}/120/120`}
+                              src={img.src}
                               alt={img.name}
                               className="h-full w-full object-cover"
                             />
