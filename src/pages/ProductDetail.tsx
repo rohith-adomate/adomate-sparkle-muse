@@ -99,11 +99,11 @@ function KnowledgeSection({
 
 // ─── Images Section (Brand Logos style, 4 columns) ───
 function ImagesSection({
-  images, setHeroImage, deleteImage, handleImageUpload,
+  images, setHeroImage, onDeleteClick, handleImageUpload,
 }: {
   images: ProductImage[];
   setHeroImage: (id: string) => void;
-  deleteImage: (id: string) => void;
+  onDeleteClick: (id: string) => void;
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
