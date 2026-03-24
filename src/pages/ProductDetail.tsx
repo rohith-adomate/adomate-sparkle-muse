@@ -235,7 +235,7 @@ export default function ProductDetail() {
   };
 
   const knowledgeProps = { fields, openEditTitle, setDeletingField: (id: string) => setDeletingField(id), updateFieldValue, handleFieldChange, setShowAddModal };
-  const imageProps = { images, setHeroImage, deleteImage, handleImageUpload };
+  const imageProps = { images, setHeroImage, onDeleteClick: (id: string) => setDeletingImageId(id), handleImageUpload };
 
   if (!product) {
     return (
