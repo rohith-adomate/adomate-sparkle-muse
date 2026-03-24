@@ -89,9 +89,16 @@ function KnowledgeSection({
         </div>
       ))}
       <div className="flex justify-center pt-2">
-        <button onClick={() => setShowAddModal(true)} className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground">
-          <Plus className="h-4 w-4" />
-        </button>
+        <Tooltip delayDuration={1000}>
+          <TooltipTrigger asChild>
+            <button onClick={() => setShowAddModal(true)} className="h-8 w-8 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary hover:text-primary transition-colors text-muted-foreground">
+              <Plus className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs">
+            Add a new knowledge field to this product
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );
