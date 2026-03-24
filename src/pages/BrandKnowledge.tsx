@@ -13,6 +13,9 @@ import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
 import adomateLogoSquare from "@/assets/adomate_logo_1024_white_bg.png";
+import imagePvd1 from "@/assets/Image_PVD_1.png";
+import imagePvd2 from "@/assets/Image_PVD_2.png";
+import imagePvd3 from "@/assets/Image_PVD_3.png";
 import adomateLogoWide from "@/assets/adomate_logo.png";
 
 const ALL_LANGUAGES = [
@@ -90,7 +93,11 @@ export default function BrandKnowledge() {
     { id: "logo-default-2", url: adomateLogoWide, name: "Adomate Logo", isDefault: false },
   ]);
   const [activeTab, setActiveTab] = useState<"knowledge" | "visual">("knowledge");
-  const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([]);
+  const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([
+    { id: "pvd1", name: "Image_PVD_1.png", url: imagePvd1 },
+    { id: "pvd2", name: "Image_PVD_2.png", url: imagePvd2 },
+    { id: "pvd3", name: "Image_PVD_3.png", url: imagePvd3 },
+  ]);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
