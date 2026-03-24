@@ -67,10 +67,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
   const [images, setImages] = useState<ProductImage[]>([]);
   const [knowledgeFields, setKnowledgeFields] = useState<KnowledgeField[]>([
     { id: "description", title: "Description", value: "" },
-    { id: "key-features", title: "Key Features", value: "" },
-    { id: "pricing", title: "Pricing", value: "" },
-    { id: "target-market", title: "Target Market", value: "" },
-    { id: "selling-points", title: "Unique Selling Points", value: "" },
   ]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -88,10 +84,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
         setImages([]);
         setKnowledgeFields([
           { id: "description", title: "Description", value: "" },
-          { id: "key-features", title: "Key Features", value: "" },
-          { id: "pricing", title: "Pricing", value: "" },
-          { id: "target-market", title: "Target Market", value: "" },
-          { id: "selling-points", title: "Unique Selling Points", value: "" },
         ]);
       }, 300);
     }
