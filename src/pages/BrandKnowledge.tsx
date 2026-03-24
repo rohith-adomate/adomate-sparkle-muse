@@ -424,7 +424,9 @@ export default function BrandKnowledge() {
                                   triggerAutoSave();
                                 }
                               }}
-                              className="absolute top-2 left-2 p-0.5"
+                              className={`absolute top-2 left-2 p-0.5 transition-opacity ${
+                                logo.isDefault ? "opacity-100" : "opacity-0 group-hover/logo:opacity-100"
+                              }`}
                               aria-label={logo.isDefault ? "Default logo" : "Set as default logo"}
                             >
                               <Star
