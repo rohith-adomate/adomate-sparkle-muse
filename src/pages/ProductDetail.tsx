@@ -147,12 +147,6 @@ export default function ProductDetail() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState(product?.name ?? "");
   const [fields, setFields] = useState<KnowledgeField[]>(defaultFields);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newFieldTitle, setNewFieldTitle] = useState("");
-  const [newFieldValue, setNewFieldValue] = useState("");
-  const [deletingField, setDeletingField] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
@@ -170,11 +164,6 @@ export default function ProductDetail() {
 
   const triggerAutoSave = useCallback(() => { triggerSave(); }, [triggerSave]);
   const handleFieldChange = useCallback(() => { const d = setTimeout(() => triggerAutoSave(), 300); return () => clearTimeout(d); }, [triggerAutoSave]);
-
-  const openEditTitle = (fieldId: string) => { const f = fields.find(x => x.id === fieldId); if (f) { setEditTitle(f.title); setEditingField(fieldId); } };
-  const saveEditTitle = () => { if (editingField && editTitle.trim()) { setFields(fields.map(f => f.id === editingField ? { ...f, title: editTitle.trim() } : f)); setEditingField(null); triggerAutoSave(); } };
-  const addNewField = () => { if (newFieldTitle.trim()) { setFields([...fields, { id: `custom-${Date.now()}`, title: newFieldTitle.trim(), value: newFieldValue }]); setNewFieldTitle(""); setNewFieldValue(""); setShowAddModal(false); triggerAutoSave(); } };
-  const deleteField = (fieldId: string) => { setFields(fields.filter(f => f.id !== fieldId)); setDeletingField(null); triggerAutoSave(); };
   const updateFieldValue = (fieldId: string, value: string) => { setFields(fields.map(f => f.id === fieldId ? { ...f, value } : f)); };
   const setHeroImage = (imageId: string) => { setImages(images.map(img => ({ ...img, isHero: img.id === imageId }))); triggerAutoSave(); };
   const deleteImage = (imageId: string) => { const u = images.filter(img => img.id !== imageId); if (u.length > 0 && !u.some(img => img.isHero)) u[0].isHero = true; setImages(u); triggerAutoSave(); };
