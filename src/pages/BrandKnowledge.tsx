@@ -641,8 +641,8 @@ export default function BrandKnowledge() {
                       }}
                     />
                     <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                    <p className="text-sm font-medium">Upload brand visuals</p>
-                    <p className="text-xs text-muted-foreground">(PNG, JPEG, SVG, WEBP) · Max 25MB per file</p>
+                    <p className="text-sm font-medium">Upload image(s)</p>
+                    <p className="text-xs text-muted-foreground">(PNG, JPEG, WEBP) · Max 25MB per file</p>
                   </label>
                 ) : (
                   <div className="grid grid-cols-4 gap-3">
