@@ -277,7 +277,7 @@ export default function ProductDetail() {
             </div>
           ) : (
             <div className="flex items-center gap-2 group">
-              <h1 className="text-2xl font-bold tracking-tight truncate">{productName}</h1>
+              <h1 className="text-2xl font-bold tracking-tight truncate">Product</h1>
               <button
                 onClick={() => { setEditNameValue(productName); setIsEditingName(true); }}
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-accent shrink-0"
