@@ -151,7 +151,7 @@ function ImagesSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => deleteImage(img.id)}
-                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-opacity p-1 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                    className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-lg hover:bg-muted text-muted-foreground/60"
                     aria-label="Delete image"
                   >
                     <Trash2 className="h-4 w-4" />
