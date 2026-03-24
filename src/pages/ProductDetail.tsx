@@ -369,6 +369,13 @@ export default function ProductDetail() {
           <DialogFooter><Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button><Button variant="destructive" onClick={() => deletingField && deleteField(deletingField)}>Delete</Button></DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!deletingImageId} onOpenChange={(open) => !open && setDeletingImageId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Image</DialogTitle><DialogDescription>Are you sure you want to delete this image? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter><Button variant="outline" onClick={() => setDeletingImageId(null)}>Cancel</Button><Button variant="destructive" onClick={() => { if (deletingImageId) { deleteImage(deletingImageId); setDeletingImageId(null); } }}>Delete</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
