@@ -85,7 +85,11 @@ export default function BrandKnowledge() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
-  const [logos, setLogos] = useState<LogoItem[]>([]);
+  const [logos, setLogos] = useState<LogoItem[]>([
+    { id: "logo-default-1", url: adomateLogoSquare, name: "Adomate Icon", isDefault: true },
+    { id: "logo-default-2", url: adomateLogoWide, name: "Adomate Logo", isDefault: false },
+  ]);
+  const [activeTab, setActiveTab] = useState<"knowledge" | "visual">("knowledge");
   const [brandVisuals, setBrandVisuals] = useState<VisualItem[]>([]);
 
   // Languages state
