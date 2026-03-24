@@ -221,7 +221,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           </div>
         </div>
 
-        <ScrollArea className="max-h-[calc(90vh-140px)]">
+        <ScrollArea className="flex-1 min-h-0">
           {/* ─── AUTO: URL Input ─── */}
           {activeTab === "auto" && scrapePhase === "idle" && (
             <div className="px-6 py-8 space-y-6 max-w-lg mx-auto animate-scale-in">
