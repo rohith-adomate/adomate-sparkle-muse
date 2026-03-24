@@ -14,7 +14,7 @@ export default function BrandDataRoom() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Brand Brain</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Data Room</h1>
         <p className="text-muted-foreground text-sm mt-1">All your brand intelligence in one place.</p>
       </div>
 

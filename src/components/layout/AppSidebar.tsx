@@ -26,7 +26,7 @@ import { WorkspaceSettingsModal } from "@/components/WorkspaceSettingsModal";
 
 
 const dataRoomSubs = [
-  { title: "Brand Knowledge", url: "/brand-data-room/knowledge", icon: BookOpen },
+  { title: "Brand Brain", url: "/brand-data-room/knowledge", icon: BookOpen },
   { title: "Products", url: "/brand-data-room/products", icon: Package },
   
   { title: "Competitors", url: "/brand-data-room/competitors", icon: Swords },
