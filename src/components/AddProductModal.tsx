@@ -445,16 +445,19 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                   onFieldsChange={setKnowledgeFields}
                 />
 
-                {/* Save button */}
-                <div className="pt-4 border-t border-border">
-                  <Button className="w-full shadow-sm" onClick={() => onOpenChange(false)}>
-                    Save Product
-                  </Button>
-                </div>
               </div>
             </div>
           )}
         </ScrollArea>
+
+        {/* Sticky Save Footer */}
+        {showForm && (
+          <div className="px-6 py-4 border-t border-border bg-background flex justify-end shrink-0">
+            <Button className="shadow-sm px-8" onClick={() => onOpenChange(false)}>
+              Save Product
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
