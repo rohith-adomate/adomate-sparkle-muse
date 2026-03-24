@@ -862,7 +862,7 @@ export default function WorkflowCanvas() {
                         <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
                       </div>
                       <span className="text-xs font-bold truncate">{node.label}</span>
-                      {node.status && (
+                      {activeTab === "runs" && node.status && (
                         <div className="ml-auto shrink-0">
                           <div
                             className={`h-2.5 w-2.5 rounded-full ${
