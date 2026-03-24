@@ -167,10 +167,10 @@ export default function ProductDetail() {
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
   const [images, setImages] = useState<ProductImage[]>(() => {
-    if (!product) return [];
+    if (!product || !id) return [];
     return Array.from({ length: product.imageCount }).map((_, i) => ({
       id: `img-${i}`,
-      url: getOyImage(product.imgIdx + i),
+      url: i === 0 && productHeroImages[id] ? productHeroImages[id] : getOyImage(product.imgIdx + i),
       name: `${product.name} image ${i + 1}`,
       isHero: i === 0,
     }));
