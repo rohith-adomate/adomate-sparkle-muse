@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Plus, ImageIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AddProductModal } from "@/components/AddProductModal";
 
-const products = [
+const initialProducts = [
   { id: "1", name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
   { id: "2", name: "Gentle Foam Cleanser", images: 4, imgSeed: "cleanser" },
   { id: "3", name: "Vitamin C Brightening Cream", images: 8, imgSeed: "vitaminc" },
@@ -44,10 +45,16 @@ const ActionMenu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 ActionMenu.displayName = "ActionMenu";
 
-function ProductCard({ product }: { product: typeof products[0] }) {
+function ProductCard({ product, onEdit, onDelete }: { product: typeof initialProducts[0]; onEdit: () => void; onDelete: () => void }) {
   const navigate = useNavigate();
   const max = 3;
   const remaining = Math.max(0, product.images - 1 - max);
+
+  const handleAction = (action: string) => {
+    if (action === "edit") onEdit();
+    if (action === "delete") onDelete();
+  };
+
   return (
     <Card
       className="flex overflow-hidden h-32 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
@@ -73,7 +80,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
               </TooltipContent>
             </Tooltip>
           </div>
-          <ActionMenu />
+          <ActionMenu onAction={handleAction} />
         </div>
         <div className="flex gap-2">
           {Array.from({ length: Math.min(max, product.images - 1) }).map((_, i) => (
@@ -94,6 +101,16 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 
 export default function Products() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [products, setProducts] = useState(initialProducts);
+  const [deletingProduct, setDeletingProduct] = useState<typeof initialProducts[0] | null>(null);
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    if (deletingProduct) {
+      setProducts(prev => prev.filter(p => p.id !== deletingProduct.id));
+      setDeletingProduct(null);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -108,11 +125,31 @@ export default function Products() {
 
       <div className="grid grid-cols-2 gap-4">
         {products.map((p) => (
-          <ProductCard key={p.name} product={p} />
+          <ProductCard
+            key={p.id}
+            product={p}
+            onEdit={() => navigate(`/brand-data-room/products/${p.id}`)}
+            onDelete={() => setDeletingProduct(p)}
+          />
         ))}
       </div>
 
       <AddProductModal open={showAddModal} onOpenChange={setShowAddModal} />
+
+      <Dialog open={!!deletingProduct} onOpenChange={(open) => !open && setDeletingProduct(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Product</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{deletingProduct?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingProduct(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
