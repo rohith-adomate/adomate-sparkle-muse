@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ImageIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AddProductModal } from "@/components/AddProductModal";
 
 const products = [
   { id: "1", name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
@@ -92,6 +93,8 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 }
 
 export default function Products() {
+  const [showAddModal, setShowAddModal] = useState(false);
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Products" }]} />
@@ -100,7 +103,7 @@ export default function Products() {
           <h1 className="text-2xl font-bold tracking-tight">Products</h1>
           <p className="text-muted-foreground text-sm">Manage your product catalog and images.</p>
         </div>
-        <Button size="sm" className="gap-1.5"><Plus className="h-4 w-4" /> Add Product</Button>
+        <Button size="sm" className="gap-1.5" onClick={() => setShowAddModal(true)}><Plus className="h-4 w-4" /> Add Product</Button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -108,6 +111,8 @@ export default function Products() {
           <ProductCard key={p.name} product={p} />
         ))}
       </div>
+
+      <AddProductModal open={showAddModal} onOpenChange={setShowAddModal} />
     </div>
   );
 }
