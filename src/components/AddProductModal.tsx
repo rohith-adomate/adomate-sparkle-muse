@@ -179,39 +179,41 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* ─── Pill Toggle ─── */}
-        <div className="flex justify-center px-6 pt-4 pb-2">
-          <div className="inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5">
-            <button
-              onClick={() => !tabLocked && setActiveTab("auto")}
-              disabled={tabLocked}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === "auto"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : tabLocked
-                    ? "text-muted-foreground/40 cursor-not-allowed"
-                    : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              Auto
-            </button>
-            <button
-              onClick={() => !tabLocked && setActiveTab("manual")}
-              disabled={tabLocked}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === "manual"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : tabLocked
-                    ? "text-muted-foreground/40 cursor-not-allowed"
-                    : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Manual
-            </button>
+        {/* ─── Pill Toggle (hidden after scrape completes) ─── */}
+        {scrapePhase !== "done" && (
+          <div className="flex justify-center px-6 pt-4 pb-2">
+            <div className="inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+              <button
+                onClick={() => !tabLocked && setActiveTab("auto")}
+                disabled={tabLocked}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  activeTab === "auto"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : tabLocked
+                      ? "text-muted-foreground/40 cursor-not-allowed"
+                      : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Auto
+              </button>
+              <button
+                onClick={() => !tabLocked && setActiveTab("manual")}
+                disabled={tabLocked}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  activeTab === "manual"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : tabLocked
+                      ? "text-muted-foreground/40 cursor-not-allowed"
+                      : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Manual
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         <ScrollArea className="flex-1 min-h-0">
           {/* ─── AUTO: URL Input ─── */}
@@ -309,28 +311,14 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </Card>
 
-              {/* Skeleton preview */}
-              <div className="mt-6 space-y-3 animate-fade-in">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product Profile</p>
-                <Card className="p-5">
-                  <div className="flex gap-5">
-                    <Skeleton className="w-20 h-20 rounded-xl shrink-0" />
-                    <div className="flex-1 space-y-3">
-                      <Skeleton className="h-6 w-48" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-3/4" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
             </div>
           )}
 
           {/* ─── FORM (Manual or Auto-done) ─── */}
           {showForm && (
-            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in">
+            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in h-full">
               {/* ═══ LEFT: Product Images ═══ */}
-              <div className="lg:w-[380px] shrink-0 p-6 space-y-6">
+              <div className="lg:w-[380px] shrink-0 p-6 space-y-6 overflow-y-auto">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
@@ -402,42 +390,42 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </div>
 
-              {/* ═══ RIGHT: Knowledge ═══ */}
-              <div className="flex-1 p-6 space-y-5">
-                {/* Product Name */}
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-semibold flex items-center gap-1.5">
-                    <Package className="h-3.5 w-3.5" /> Product Name
-                  </Label>
-                  <Input
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    placeholder="e.g. Hydra Glow Serum"
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="p-6 space-y-5">
+                  {/* Product Name */}
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-semibold flex items-center gap-1.5">
+                      <Package className="h-3.5 w-3.5" /> Product Name
+                    </Label>
+                    <Input
+                      value={productName}
+                      onChange={(e) => setProductName(e.target.value)}
+                      placeholder="e.g. Hydra Glow Serum"
+                    />
+                  </div>
+
+                  {/* Product URL */}
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-semibold flex items-center gap-1.5">
+                      <Globe className="h-3.5 w-3.5" /> Product URL
+                      <InfoTooltip text="The direct link to this product or service page." />
+                    </Label>
+                    <Input
+                      value={productUrl}
+                      onChange={(e) => setProductUrl(e.target.value)}
+                      placeholder="https://example.com/product"
+                    />
+                  </div>
+
+                  <div className="border-t border-border" />
+
+                  {/* Knowledge Fields - shared component */}
+                  <KnowledgeFieldsSection
+                    fields={knowledgeFields}
+                    onFieldsChange={setKnowledgeFields}
                   />
                 </div>
-
-                {/* Product URL */}
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-semibold flex items-center gap-1.5">
-                    <Globe className="h-3.5 w-3.5" /> Product URL
-                    <InfoTooltip text="The direct link to this product or service page." />
-                  </Label>
-                  <Input
-                    value={productUrl}
-                    onChange={(e) => setProductUrl(e.target.value)}
-                    placeholder="https://example.com/product"
-                  />
-                </div>
-
-                <div className="border-t border-border" />
-
-                {/* Knowledge Fields - shared component */}
-                <KnowledgeFieldsSection
-                  fields={knowledgeFields}
-                  onFieldsChange={setKnowledgeFields}
-                />
-
-              </div>
+              </ScrollArea>
             </div>
           )}
         </ScrollArea>
