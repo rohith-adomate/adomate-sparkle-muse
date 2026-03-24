@@ -182,6 +182,7 @@ export default function ProductDetail() {
   const product = id ? productData[id] : null;
 
   const [productName, setProductName] = useState(product?.name ?? "");
+  const [productUrl, setProductUrl] = useState(product?.url ?? "");
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState(product?.name ?? "");
   const [fields, setFields] = useState<KnowledgeField[]>(defaultFields);
