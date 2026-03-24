@@ -433,8 +433,8 @@ export default function BrandKnowledge() {
                                   triggerAutoSave();
                                 }
                               }}
-                              className={`absolute top-2 left-2 p-0.5 transition-opacity ${
-                                logo.isDefault ? "opacity-100" : "opacity-0 group-hover/logo:opacity-100"
+                              className={`absolute top-2 left-2 p-1.5 rounded-md transition-all ${
+                                logo.isDefault ? "opacity-100" : "opacity-0 group-hover/logo:opacity-100 bg-white shadow-sm"
                               }`}
                               aria-label={logo.isDefault ? "Default logo" : "Set as default logo"}
                             >
