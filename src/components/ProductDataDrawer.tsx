@@ -104,9 +104,14 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
   };
 
   const toggleExpanded = (id: string) => {
+    const willExpand = !expandedProducts.includes(id);
     setExpandedProducts((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+      willExpand ? [...prev, id] : prev.filter((p) => p !== id)
     );
+    // Auto-select when expanding
+    if (willExpand && !selectedProducts.includes(id)) {
+      setSelectedProducts((prev) => [...prev, id]);
+    }
   };
 
   const toggleImage = (productId: string, imageId: string) => {
