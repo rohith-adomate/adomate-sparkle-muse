@@ -165,10 +165,10 @@ function ImagesSection({
           ))}
           {/* Upload card in grid - matches brand logos upload card */}
           <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 transition-colors cursor-pointer">
-            <input type="file" accept=".png,.jpg,.jpeg,.svg,.webp" multiple className="hidden" onChange={handleImageUpload} />
+            <input type="file" accept=".png,.jpg,.jpeg,.webp" multiple className="hidden" onChange={handleImageUpload} />
             <Upload className="h-6 w-6 text-muted-foreground" />
-            <p className="text-xs text-muted-foreground text-center px-2">Upload image</p>
-            <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
+            <p className="text-xs text-muted-foreground text-center px-2">Upload image(s)</p>
+            <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, WEBP)</p>
             <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per image</p>
           </label>
         </div>
