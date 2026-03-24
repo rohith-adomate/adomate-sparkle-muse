@@ -390,7 +390,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </div>
 
-              {/* ═══ RIGHT: Knowledge ═══ */}
+              <ScrollArea className="flex-1 min-h-0">
               <div className="flex-1 p-6 space-y-5">
                 {/* Product Name */}
                 <div className="space-y-1.5">
