@@ -267,7 +267,7 @@ export default function ProductDetail() {
                   <Label>Product URL</Label>
                   <InfoTooltip text="The product's landing page URL. Helps the AI understand product positioning and features." />
                 </div>
-                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={handleFieldChange} />
+                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={triggerAutoSave} />
               </div>
             </div>
           </div>
