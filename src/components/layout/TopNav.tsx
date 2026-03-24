@@ -72,12 +72,16 @@ export function TopNav() {
           <DropdownMenuContent align="start">
             {brands.map((b) => (
               <DropdownMenuItem key={b.name} onClick={() => setActiveBrand(b)} className="gap-2">
-                <span
-                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                  style={{ background: b.color }}
-                >
-                  {b.name[0]}
-                </span>
+                {b.logo ? (
+                  <img src={b.logo} alt={b.name} className="h-5 w-5 rounded-md object-contain" />
+                ) : (
+                  <span
+                    className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                    style={{ background: b.color }}
+                  >
+                    {b.name[0]}
+                  </span>
+                )}
                 {b.name}
               </DropdownMenuItem>
             ))}
