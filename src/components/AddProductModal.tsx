@@ -73,8 +73,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
     { id: "selling-points", title: "Unique Selling Points", value: "" },
   ]);
 
-  const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Reset on close
