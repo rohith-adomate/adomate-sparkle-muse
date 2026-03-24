@@ -10,6 +10,7 @@ export interface AdVersion {
   id: string;
   aspectRatio: AspectRatio;
   imgSeed: string;
+  imgUrl?: string;
   createdAt: string;
 }
 
@@ -19,6 +20,7 @@ export interface AdHistoryEntry {
   date: string;
   actor: string;
   imgSeed: string;
+  imgUrl?: string;
   status: "approved" | "current" | "rejected";
   note?: string;
 }
@@ -37,6 +39,7 @@ export interface ContentAd {
   completionMethod: CompletionMethod;
   versions: AdVersion[];
   imgSeed: string;
+  imgUrl?: string;
   sourceWorkflow: string;
   likedAt: string;
   history: AdHistoryEntry[];
