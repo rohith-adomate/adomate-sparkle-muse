@@ -11,15 +11,15 @@ import { Plus, Pencil, Trash2, Upload, Star, Info, ArrowLeft, BookOpen, ImageIco
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 
-const productData: Record<string, { name: string; imgSeed: string; imageCount: number }> = {
-  "1": { name: "Hydra Glow Serum", imgSeed: "serum", imageCount: 6 },
-  "2": { name: "Gentle Foam Cleanser", imgSeed: "cleanser", imageCount: 4 },
-  "3": { name: "Vitamin C Brightening Cream", imgSeed: "vitaminc", imageCount: 8 },
-  "4": { name: "Retinol Night Repair", imgSeed: "retinol", imageCount: 3 },
-  "5": { name: "SPF 50 Daily Shield", imgSeed: "sunscreen", imageCount: 5 },
-  "6": { name: "Rose Petal Toner", imgSeed: "toner", imageCount: 2 },
-  "7": { name: "Collagen Boost Mask", imgSeed: "mask", imageCount: 7 },
-  "8": { name: "Tea Tree Oil Spot Treatment", imgSeed: "teatree", imageCount: 1 },
+const productData: Record<string, { name: string; url: string; imgSeed: string; imageCount: number }> = {
+  "1": { name: "Hydra Glow Serum", url: "https://acmeco.com/hydra-glow-serum", imgSeed: "serum", imageCount: 6 },
+  "2": { name: "Gentle Foam Cleanser", url: "https://acmeco.com/gentle-foam-cleanser", imgSeed: "cleanser", imageCount: 4 },
+  "3": { name: "Vitamin C Brightening Cream", url: "https://acmeco.com/vitamin-c-cream", imgSeed: "vitaminc", imageCount: 8 },
+  "4": { name: "Retinol Night Repair", url: "https://acmeco.com/retinol-night-repair", imgSeed: "retinol", imageCount: 3 },
+  "5": { name: "SPF 50 Daily Shield", url: "https://acmeco.com/spf-50", imgSeed: "sunscreen", imageCount: 5 },
+  "6": { name: "Rose Petal Toner", url: "https://acmeco.com/rose-petal-toner", imgSeed: "toner", imageCount: 2 },
+  "7": { name: "Collagen Boost Mask", url: "https://acmeco.com/collagen-mask", imgSeed: "mask", imageCount: 7 },
+  "8": { name: "Tea Tree Oil Spot Treatment", url: "https://acmeco.com/tea-tree-oil", imgSeed: "teatree", imageCount: 1 },
 };
 
 function getImageUrl(seed: string, idx: number, w = 300, h = 300) {
