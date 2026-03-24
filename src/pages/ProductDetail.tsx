@@ -99,11 +99,11 @@ function KnowledgeSection({
 
 // ─── Images Section (Brand Logos style, 4 columns) ───
 function ImagesSection({
-  images, setHeroImage, deleteImage, handleImageUpload,
+  images, setHeroImage, onDeleteClick, handleImageUpload,
 }: {
   images: ProductImage[];
   setHeroImage: (id: string) => void;
-  deleteImage: (id: string) => void;
+  onDeleteClick: (id: string) => void;
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
@@ -152,7 +152,7 @@ function ImagesSection({
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => deleteImage(img.id)}
+                    onClick={() => onDeleteClick(img.id)}
                     className="absolute top-2 right-2 opacity-0 group-hover/img:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                     aria-label="Delete image"
                   >
@@ -194,6 +194,7 @@ export default function ProductDetail() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
   const [images, setImages] = useState<ProductImage[]>(() => {
@@ -234,7 +235,7 @@ export default function ProductDetail() {
   };
 
   const knowledgeProps = { fields, openEditTitle, setDeletingField: (id: string) => setDeletingField(id), updateFieldValue, handleFieldChange, setShowAddModal };
-  const imageProps = { images, setHeroImage, deleteImage, handleImageUpload };
+  const imageProps = { images, setHeroImage, onDeleteClick: (id: string) => setDeletingImageId(id), handleImageUpload };
 
   if (!product) {
     return (
@@ -366,6 +367,13 @@ export default function ProductDetail() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader><DialogTitle>Delete Field</DialogTitle><DialogDescription>Are you sure you want to delete "{fields.find(f => f.id === deletingField)?.title}"? This cannot be undone.</DialogDescription></DialogHeader>
           <DialogFooter><Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button><Button variant="destructive" onClick={() => deletingField && deleteField(deletingField)}>Delete</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deletingImageId} onOpenChange={(open) => !open && setDeletingImageId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Image</DialogTitle><DialogDescription>Are you sure you want to delete this image? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter><Button variant="outline" onClick={() => setDeletingImageId(null)}>Cancel</Button><Button variant="destructive" onClick={() => { if (deletingImageId) { deleteImage(deletingImageId); setDeletingImageId(null); } }}>Delete</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

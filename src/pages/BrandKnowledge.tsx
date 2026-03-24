@@ -98,6 +98,8 @@ export default function BrandKnowledge() {
     { id: "pvd2", name: "Image_PVD_2.png", url: imagePvd2 },
     { id: "pvd3", name: "Image_PVD_3.png", url: imagePvd3 },
   ]);
+  const [deletingLogoId, setDeletingLogoId] = useState<string | null>(null);
+  const [deletingVisualId, setDeletingVisualId] = useState<string | null>(null);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
@@ -455,12 +457,7 @@ export default function BrandKnowledge() {
                             <button
                               onClick={() => {
                                 if (logos.length > 1) {
-                                  const remaining = logos.filter(l => l.id !== logo.id);
-                                  if (logo.isDefault && remaining.length > 0) {
-                                    remaining[0].isDefault = true;
-                                  }
-                                  setLogos(remaining);
-                                  triggerAutoSave();
+                                  setDeletingLogoId(logo.id);
                                 }
                               }}
                               disabled={logos.length <= 1}
@@ -653,10 +650,7 @@ export default function BrandKnowledge() {
                       <div key={visual.id} className="relative group/visual aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
                         <img src={visual.url} alt={visual.name} className="max-w-full max-h-full object-contain p-1" />
                         <button
-                          onClick={() => {
-                            setBrandVisuals(brandVisuals.filter(v => v.id !== visual.id));
-                            triggerAutoSave();
-                          }}
+                          onClick={() => setDeletingVisualId(visual.id)}
                           className="absolute top-2 right-2 opacity-0 group-hover/visual:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                           aria-label="Delete visual"
                         >
@@ -754,6 +748,43 @@ export default function BrandKnowledge() {
             >
               Delete
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deletingLogoId} onOpenChange={(open) => !open && setDeletingLogoId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Logo</DialogTitle><DialogDescription>Are you sure you want to delete this logo? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingLogoId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => {
+              if (deletingLogoId) {
+                const logo = logos.find(l => l.id === deletingLogoId);
+                const remaining = logos.filter(l => l.id !== deletingLogoId);
+                if (logo?.isDefault && remaining.length > 0) {
+                  remaining[0].isDefault = true;
+                }
+                setLogos(remaining);
+                setDeletingLogoId(null);
+                triggerAutoSave();
+              }
+            }}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deletingVisualId} onOpenChange={(open) => !open && setDeletingVisualId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Visual</DialogTitle><DialogDescription>Are you sure you want to delete this visual? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingVisualId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => {
+              if (deletingVisualId) {
+                setBrandVisuals(brandVisuals.filter(v => v.id !== deletingVisualId));
+                setDeletingVisualId(null);
+                triggerAutoSave();
+              }
+            }}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
