@@ -287,44 +287,15 @@ export default function ProductDetail() {
           </div>
         </div>
         <Card><CardContent className="pt-6">
-          {activeSection === "knowledge" ? <KnowledgeSection {...knowledgeProps} /> : <ImagesSection {...imageProps} />}
+          {activeSection === "knowledge" ? (
+            <KnowledgeFieldsSection
+              fields={fields}
+              onFieldsChange={(newFields) => { setFields(newFields); triggerAutoSave(); }}
+              onFieldChange={triggerAutoSave}
+            />
+          ) : <ImagesSection {...imageProps} />}
         </CardContent></Card>
       </div>
-
-      {/* Dialogs */}
-      <Dialog open={!!editingField} onOpenChange={(open) => !open && setEditingField(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>Edit Field Title</DialogTitle><DialogDescription>Change the title of this knowledge field.</DialogDescription></DialogHeader>
-          <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && saveEditTitle()} autoFocus />
-          <DialogFooter><Button variant="outline" onClick={() => setEditingField(null)}>Cancel</Button><Button onClick={saveEditTitle} disabled={!editTitle.trim()}>Save</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>Add Knowledge Field</DialogTitle><DialogDescription>Create a new knowledge field for this product.</DialogDescription></DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>Field Title</Label>
-              <Input value={newFieldTitle} onChange={(e) => setNewFieldTitle(e.target.value)} placeholder="e.g. Target Audience, USP" autoFocus />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Content</Label>
-              <div className="min-h-[200px] [&_.milkdown]:min-h-[180px]">
-                <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
-              </div>
-            </div>
-          </div>
-          <DialogFooter><Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button><Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!deletingField} onOpenChange={(open) => !open && setDeletingField(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>Delete Field</DialogTitle><DialogDescription>Are you sure you want to delete "{fields.find(f => f.id === deletingField)?.title}"? This cannot be undone.</DialogDescription></DialogHeader>
-          <DialogFooter><Button variant="outline" onClick={() => setDeletingField(null)}>Cancel</Button><Button variant="destructive" onClick={() => deletingField && deleteField(deletingField)}>Delete</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={!!deletingImageId} onOpenChange={(open) => !open && setDeletingImageId(null)}>
         <DialogContent className="sm:max-w-md">
