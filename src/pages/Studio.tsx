@@ -15,6 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { getOyImage } from "@/data/oyImages";
+import oyProductDeoWash from "@/assets/oy/oy-product-deo-wash.png";
 
 /* ── Demo data ── */
 
