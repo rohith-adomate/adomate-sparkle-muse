@@ -215,110 +215,114 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           </div>
         )}
 
-        <ScrollArea className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 overflow-hidden">
           {/* ─── AUTO: URL Input ─── */}
           {activeTab === "auto" && scrapePhase === "idle" && (
-            <div className="px-6 py-8 space-y-6 max-w-lg mx-auto animate-scale-in">
-              <div className="text-center mb-2">
-                <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
-                  <Sparkles className="h-7 w-7 text-white" />
+            <ScrollArea className="h-full">
+              <div className="px-6 py-8 space-y-6 max-w-lg mx-auto animate-scale-in">
+                <div className="text-center mb-2">
+                  <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 shadow-lg">
+                    <Sparkles className="h-7 w-7 text-white" />
+                  </div>
+                  <h2 className="text-xl font-bold tracking-tight">What are you selling?</h2>
+                  <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                    Paste the URL of the product or service you want to add.
+                    <br />
+                    We'll automatically extract all the relevant information.
+                  </p>
                 </div>
-                <h2 className="text-xl font-bold tracking-tight">What are you selling?</h2>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Paste the URL of the product or service you want to add.
-                  <br />
-                  We'll automatically extract all the relevant information.
-                </p>
-              </div>
 
-              <div className="space-y-4">
-                <Input
-                  placeholder="https://acme.com/products/pro-plan"
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
-                  className="h-12 text-base"
-                  onKeyDown={e => { if (e.key === "Enter") startScrape(); }}
-                />
-                <Button className="w-full h-11 shadow-sm" onClick={startScrape} disabled={!url.trim()}>
-                  Continue
-                </Button>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="https://acme.com/products/pro-plan"
+                    value={url}
+                    onChange={e => setUrl(e.target.value)}
+                    className="h-12 text-base"
+                    onKeyDown={e => { if (e.key === "Enter") startScrape(); }}
+                  />
+                  <Button className="w-full h-11 shadow-sm" onClick={startScrape} disabled={!url.trim()}>
+                    Continue
+                  </Button>
+                </div>
               </div>
-            </div>
+            </ScrollArea>
           )}
 
           {/* ─── AUTO: Scraping Animation ─── */}
           {activeTab === "auto" && scrapePhase === "scraping" && (
-            <div className="px-6 py-8 max-w-3xl mx-auto animate-scale-in">
-              <Card className="overflow-hidden border-border/60">
-                <div className="flex flex-col md:flex-row">
-                  {/* Left: Page preview placeholder */}
-                  <div className="relative w-full md:w-[320px] shrink-0 bg-muted">
-                    <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
-                      <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-                      <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">
-                        {url.startsWith("http") ? url : `https://${url}`}
-                      </span>
+            <ScrollArea className="h-full">
+              <div className="px-6 py-8 max-w-3xl mx-auto animate-scale-in">
+                <Card className="overflow-hidden border-border/60">
+                  <div className="flex flex-col md:flex-row">
+                    {/* Left: Page preview placeholder */}
+                    <div className="relative w-full md:w-[320px] shrink-0 bg-muted">
+                      <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/80 border-b border-border/40">
+                        <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                        <span className="ml-2 text-[10px] text-muted-foreground truncate flex-1">
+                          {url.startsWith("http") ? url : `https://${url}`}
+                        </span>
+                      </div>
+                      <div className="relative w-full aspect-[3/2] flex flex-col items-center justify-center gap-3 bg-muted/50 border-t border-border/20">
+                        <Globe className="h-8 w-8 text-muted-foreground/40" />
+                        <p className="text-xs text-muted-foreground/60 font-medium px-4 text-center">
+                          Product page preview
+                        </p>
+                        <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
+                      </div>
                     </div>
-                    <div className="relative w-full aspect-[3/2] flex flex-col items-center justify-center gap-3 bg-muted/50 border-t border-border/20">
-                      <Globe className="h-8 w-8 text-muted-foreground/40" />
-                      <p className="text-xs text-muted-foreground/60 font-medium px-4 text-center">
-                        Product page preview
-                      </p>
-                      <div className="absolute top-0 left-0 right-0 h-1 gradient-primary animate-[scan_2s_ease-in-out_infinite]" />
-                    </div>
-                  </div>
 
-                  {/* Right: Animated steps */}
-                  <div className="flex-1 p-6 flex flex-col justify-center">
-                    <div className="mb-6">
-                      <h3 className="text-lg font-bold tracking-tight">Learning about your product...</h3>
-                    </div>
-                    <div className="space-y-3">
-                      {productScrapeSteps.map((s, i) => {
-                        const StepIcon = s.icon;
-                        return (
-                          <div
-                            key={i}
-                            className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                            style={{
-                              opacity: i <= stepIndex ? 1 : 0.2,
-                              transitionDelay: `${i * 100}ms`,
-                              transform: i <= stepIndex ? "translateX(0)" : "translateX(-8px)",
-                            }}
-                          >
-                            <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                              i < stepIndex ? "bg-emerald-100 dark:bg-emerald-900/30" : i === stepIndex ? "bg-primary/10" : "bg-muted"
-                            }`}>
-                              {i < stepIndex
-                                ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                                : i === stepIndex
-                                  ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                                  : <StepIcon className="h-3.5 w-3.5 text-muted-foreground/40" />
-                              }
+                    {/* Right: Animated steps */}
+                    <div className="flex-1 p-6 flex flex-col justify-center">
+                      <div className="mb-6">
+                        <h3 className="text-lg font-bold tracking-tight">Learning about your product...</h3>
+                      </div>
+                      <div className="space-y-3">
+                        {productScrapeSteps.map((s, i) => {
+                          const StepIcon = s.icon;
+                          return (
+                            <div
+                              key={i}
+                              className="flex items-center gap-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                              style={{
+                                opacity: i <= stepIndex ? 1 : 0.2,
+                                transitionDelay: `${i * 100}ms`,
+                                transform: i <= stepIndex ? "translateX(0)" : "translateX(-8px)",
+                              }}
+                            >
+                              <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                                i < stepIndex ? "bg-emerald-100 dark:bg-emerald-900/30" : i === stepIndex ? "bg-primary/10" : "bg-muted"
+                              }`}>
+                                {i < stepIndex
+                                  ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                                  : i === stepIndex
+                                    ? <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                                    : <StepIcon className="h-3.5 w-3.5 text-muted-foreground/40" />
+                                }
+                              </div>
+                              <span className={
+                                i < stepIndex ? "text-foreground font-medium" :
+                                i === stepIndex ? "text-foreground" :
+                                "text-muted-foreground"
+                              }>{s.text}</span>
                             </div>
-                            <span className={
-                              i < stepIndex ? "text-foreground font-medium" :
-                              i === stepIndex ? "text-foreground" :
-                              "text-muted-foreground"
-                            }>{s.text}</span>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
 
-            </div>
+              </div>
+            </ScrollArea>
           )}
 
           {/* ─── FORM (Manual or Auto-done) ─── */}
           {showForm && (
-            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in h-full">
+            <div className="flex flex-col lg:flex-row gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border animate-scale-in h-full min-h-0">
               {/* ═══ LEFT: Product Images ═══ */}
-              <div className="lg:w-[380px] shrink-0 p-6 space-y-6 overflow-y-auto">
+              <div className="lg:w-[380px] shrink-0 p-6 space-y-6 overflow-y-auto min-h-0">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
@@ -390,7 +394,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 </div>
               </div>
 
-              <ScrollArea className="flex-1 min-h-0">
+              <div className="flex-1 min-h-0 overflow-y-auto">
                 <div className="p-6 space-y-5">
                   {/* Product Name */}
                   <div className="space-y-1.5">
@@ -425,10 +429,10 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                     onFieldsChange={setKnowledgeFields}
                   />
                 </div>
-              </ScrollArea>
+              </div>
             </div>
           )}
-        </ScrollArea>
+        </div>
 
         {/* Sticky Save Footer */}
         {showForm && (
