@@ -650,10 +650,7 @@ export default function BrandKnowledge() {
                       <div key={visual.id} className="relative group/visual aspect-square rounded-xl border bg-muted/30 flex items-center justify-center overflow-hidden">
                         <img src={visual.url} alt={visual.name} className="max-w-full max-h-full object-contain p-1" />
                         <button
-                          onClick={() => {
-                            setBrandVisuals(brandVisuals.filter(v => v.id !== visual.id));
-                            triggerAutoSave();
-                          }}
+                          onClick={() => setDeletingVisualId(visual.id)}
                           className="absolute top-2 right-2 opacity-0 group-hover/visual:opacity-100 transition-all p-1.5 rounded-md bg-white text-muted-foreground shadow-sm hover:bg-red-100 hover:text-destructive"
                           aria-label="Delete visual"
                         >
