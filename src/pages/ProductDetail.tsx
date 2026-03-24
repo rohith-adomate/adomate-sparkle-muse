@@ -163,7 +163,7 @@ export default function ProductDetail() {
   const heroImage = images.find(img => img.isHero);
 
   const triggerAutoSave = useCallback(() => { triggerSave(); }, [triggerSave]);
-  const handleFieldChange = useCallback(() => { const d = setTimeout(() => triggerAutoSave(), 300); return () => clearTimeout(d); }, [triggerAutoSave]);
+  const setHeroImage = (imageId: string) => { setImages(images.map(img => ({ ...img, isHero: img.id === imageId }))); triggerAutoSave(); };
   const deleteImage = (imageId: string) => { const u = images.filter(img => img.id !== imageId); if (u.length > 0 && !u.some(img => img.isHero)) u[0].isHero = true; setImages(u); triggerAutoSave(); };
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => { const f = e.target.files; if (!f) return; Array.from(f).forEach(file => { if (file.size <= 25 * 1024 * 1024) { const url = URL.createObjectURL(file); setImages(prev => [...prev, { id: `img-${Date.now()}-${Math.random().toString(36).slice(2)}`, url, name: file.name, isHero: prev.length === 0 }]); } }); triggerAutoSave(); };
 
