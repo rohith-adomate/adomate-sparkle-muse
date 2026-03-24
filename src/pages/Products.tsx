@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ImageIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AddProductModal } from "@/components/AddProductModal";
 
 const products = [
   { id: "1", name: "Hydra Glow Serum", images: 6, imgSeed: "serum" },
