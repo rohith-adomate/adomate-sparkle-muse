@@ -439,55 +439,11 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
                 <div className="border-t border-border" />
 
-                {/* Knowledge Fields */}
-                <div className="space-y-4">
-                  {knowledgeFields.map((field) => (
-                    <div key={field.id} className="space-y-1.5">
-                      <div className="flex items-center justify-between group">
-                        {editingFieldId === field.id ? (
-                          <Input
-                            value={editingTitle}
-                            onChange={(e) => setEditingTitle(e.target.value)}
-                            onBlur={() => updateFieldTitle(field.id, editingTitle)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") updateFieldTitle(field.id, editingTitle);
-                              if (e.key === "Escape") setEditingFieldId(null);
-                            }}
-                            className="h-7 text-sm font-semibold w-48"
-                            autoFocus
-                          />
-                        ) : (
-                          <div className="flex items-center gap-1.5">
-                            <Label className="text-sm font-semibold">{field.title}</Label>
-                            <button
-                              type="button"
-                              onClick={() => startEditTitle(field.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Pencil className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                            </button>
-                          </div>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
-                          onClick={() => deleteField(field.id)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                      <MarkdownEditor
-                        value={field.value}
-                        onChange={(val) => updateFieldValue(field.id, val)}
-                      />
-                    </div>
-                  ))}
-
-                  <Button variant="outline" size="sm" className="gap-1.5 w-full" onClick={addField}>
-                    <Plus className="h-3.5 w-3.5" /> Add Knowledge Field
-                  </Button>
-                </div>
+                {/* Knowledge Fields - shared component */}
+                <KnowledgeFieldsSection
+                  fields={knowledgeFields}
+                  onFieldsChange={setKnowledgeFields}
+                />
 
                 {/* Save button */}
                 <div className="pt-4 border-t border-border">
