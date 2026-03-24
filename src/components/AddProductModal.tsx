@@ -144,28 +144,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
   const tabLocked = scrapePhase === "scraping" || scrapePhase === "done";
 
-  // ─── Field helpers ───
-  const updateFieldValue = (id: string, value: string) => {
-    setKnowledgeFields(prev => prev.map(f => f.id === id ? { ...f, value } : f));
-  };
-  const updateFieldTitle = (id: string, title: string) => {
-    setKnowledgeFields(prev => prev.map(f => f.id === id ? { ...f, title } : f));
-    setEditingFieldId(null);
-  };
-  const deleteField = (id: string) => {
-    setKnowledgeFields(prev => prev.filter(f => f.id !== id));
-  };
-  const addField = () => {
-    setKnowledgeFields(prev => [...prev, { id: crypto.randomUUID(), title: "New Field", value: "" }]);
-  };
-  const startEditTitle = (id: string) => {
-    const field = knowledgeFields.find(f => f.id === id);
-    if (field) {
-      setEditingFieldId(id);
-      setEditingTitle(field.title);
-    }
-  };
-
   // ─── Image helpers ───
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
