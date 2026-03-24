@@ -844,7 +844,16 @@ export default function WorkflowCanvas() {
                     style={{ background: `hsl(${color})` }}
                   />
 
-                  <div className="pl-3.5 pr-3 py-2.5">
+                  {node.type === "product-data" && selectedProductCount > 0 && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+                      <Badge variant="outline" className="text-[9px] gap-0.5 px-1.5 py-0">
+                        <Package className="h-2.5 w-2.5" />
+                        {selectedProductCount}
+                      </Badge>
+                    </div>
+                  )}
+
+                  <div className="pl-3.5 pr-3 py-2.5" style={{ paddingRight: node.type === "product-data" && selectedProductCount > 0 ? '3.5rem' : undefined }}>
                     <div className="flex items-center gap-2">
                       <div
                         className="shrink-0 rounded-md p-1"
@@ -853,12 +862,6 @@ export default function WorkflowCanvas() {
                         <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
                       </div>
                       <span className="text-xs font-bold truncate">{node.label}</span>
-                      {node.type === "product-data" && selectedProductCount > 0 && (
-                        <Badge variant="outline" className="text-[9px] gap-0.5 ml-auto shrink-0 px-1.5 py-0">
-                          <Package className="h-2.5 w-2.5" />
-                          {selectedProductCount}
-                        </Badge>
-                      )}
                       {node.status && (
                         <div className="ml-auto shrink-0">
                           <div
