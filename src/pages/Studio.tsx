@@ -133,8 +133,8 @@ export default function Studio() {
           <CardContent className="p-4 space-y-3">
             <Label className="text-sm font-semibold">Product</Label>
             <div className="flex items-center gap-4">
-              <div className="h-24 w-28 rounded-lg bg-muted flex items-center justify-center border border-border/60">
-                <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
+              <div className="h-24 w-28 rounded-lg bg-muted flex items-center justify-center border border-border/60 overflow-hidden">
+                <img src={oyProductDeoWash} alt="Deo Wash" className="h-full w-full object-cover" />
               </div>
               <Button variant="outline" size="sm">Choose images</Button>
             </div>
