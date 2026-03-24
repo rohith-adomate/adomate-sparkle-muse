@@ -93,7 +93,6 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           { id: "target-market", title: "Target Market", value: "" },
           { id: "selling-points", title: "Unique Selling Points", value: "" },
         ]);
-        setKnowledgeFields(defaultKnowledgeFields());
       }, 300);
     }
   }, [open]);
