@@ -179,39 +179,41 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* ─── Pill Toggle ─── */}
-        <div className="flex justify-center px-6 pt-4 pb-2">
-          <div className="inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5">
-            <button
-              onClick={() => !tabLocked && setActiveTab("auto")}
-              disabled={tabLocked}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === "auto"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : tabLocked
-                    ? "text-muted-foreground/40 cursor-not-allowed"
-                    : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              Auto
-            </button>
-            <button
-              onClick={() => !tabLocked && setActiveTab("manual")}
-              disabled={tabLocked}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === "manual"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : tabLocked
-                    ? "text-muted-foreground/40 cursor-not-allowed"
-                    : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Manual
-            </button>
+        {/* ─── Pill Toggle (hidden after scrape completes) ─── */}
+        {scrapePhase !== "done" && (
+          <div className="flex justify-center px-6 pt-4 pb-2">
+            <div className="inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+              <button
+                onClick={() => !tabLocked && setActiveTab("auto")}
+                disabled={tabLocked}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  activeTab === "auto"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : tabLocked
+                      ? "text-muted-foreground/40 cursor-not-allowed"
+                      : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Auto
+              </button>
+              <button
+                onClick={() => !tabLocked && setActiveTab("manual")}
+                disabled={tabLocked}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  activeTab === "manual"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : tabLocked
+                      ? "text-muted-foreground/40 cursor-not-allowed"
+                      : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Manual
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         <ScrollArea className="flex-1 min-h-0">
           {/* ─── AUTO: URL Input ─── */}
