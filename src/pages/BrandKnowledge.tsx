@@ -3,16 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2 } from "lucide-react";
+import { Loader2, Check, Upload, Plus, X, Pencil, Info, Star, Search, Trash2, BookOpen, Palette } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { Badge } from "@/components/ui/badge";
+import adomateLogoSquare from "@/assets/adomate_logo_1024_white_bg.png";
+import adomateLogoWide from "@/assets/adomate_logo.png";
 
 const ALL_LANGUAGES = [
   "Afrikaans","Albanian","Amharic","Arabic","Armenian","Azerbaijani","Basque","Belarusian","Bengali","Bosnian",
