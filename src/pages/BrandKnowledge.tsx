@@ -98,6 +98,8 @@ export default function BrandKnowledge() {
     { id: "pvd2", name: "Image_PVD_2.png", url: imagePvd2 },
     { id: "pvd3", name: "Image_PVD_3.png", url: imagePvd3 },
   ]);
+  const [deletingLogoId, setDeletingLogoId] = useState<string | null>(null);
+  const [deletingVisualId, setDeletingVisualId] = useState<string | null>(null);
 
   // Languages state
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English", "Spanish"]);
