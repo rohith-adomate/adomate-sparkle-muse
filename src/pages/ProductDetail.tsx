@@ -289,31 +289,45 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Hero Image Preview Card */}
+      {/* Product Info Card with Hero Image */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
+        <CardContent className="pt-6 space-y-5">
+          <div className="flex gap-5">
+            {/* Hero Image Preview - clickable to switch to images tab */}
             <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
-                <div className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-help">
+                <button
+                  onClick={() => setActiveSection("images")}
+                  className="h-20 w-20 rounded-xl border bg-muted/30 overflow-hidden shrink-0 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center"
+                >
                   {heroImage ? (
                     <img src={heroImage.url} alt="Hero" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
-                    </div>
+                    <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
                   )}
-                </div>
+                </button>
               </TooltipTrigger>
               <TooltipContent side="right" className="max-w-xs text-xs leading-relaxed">
                 <p>The hero image can be changed by uploading new product images and setting one as the hero using the star icon.</p>
               </TooltipContent>
             </Tooltip>
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{heroImage ? "Hero Image" : "No Hero Image"}</p>
-              <p className="text-xs text-muted-foreground">
-                {heroImage ? "This image represents the product on cards and listings." : "Upload images and set one as the hero."}
-              </p>
+
+            <div className="flex-1 space-y-5 min-w-0">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Product Name</Label>
+                  <InfoTooltip text="The display name of your product. Used in ad copy generation and campaign briefs." />
+                </div>
+                <Input value={productName} onChange={(e) => setProductName(e.target.value)} onBlur={handleFieldChange} />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Label>Product URL</Label>
+                  <InfoTooltip text="The product's landing page URL. Helps the AI understand product positioning and features." />
+                </div>
+                <Input value={productUrl} onChange={(e) => setProductUrl(e.target.value)} onBlur={handleFieldChange} />
+              </div>
             </div>
           </div>
         </CardContent>
