@@ -194,6 +194,7 @@ export default function ProductDetail() {
   const [newFieldTitle, setNewFieldTitle] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
   const [deletingField, setDeletingField] = useState<string | null>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
   const [images, setImages] = useState<ProductImage[]>(() => {
