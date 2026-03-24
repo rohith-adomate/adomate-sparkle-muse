@@ -494,7 +494,7 @@ export default function BrandKnowledge() {
                           }}
                         />
                         <Upload className="h-6 w-6 text-muted-foreground" />
-                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo</p>
+                        <p className="text-xs text-muted-foreground text-center px-2">Upload logo(s)</p>
                         <p className="text-[10px] text-muted-foreground text-center px-2">(PNG, JPEG, SVG, WEBP)</p>
                         <p className="text-[10px] text-muted-foreground text-center px-2">Max 25MB per logo</p>
                       </label>
