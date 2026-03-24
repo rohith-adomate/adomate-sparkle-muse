@@ -96,6 +96,7 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
           delete copy[id];
           return copy;
         });
+        setExpandedProducts((exp) => exp.filter((p) => p !== id));
         return next;
       }
       setExpandedProducts((exp) => exp.includes(id) ? exp : [...exp, id]);
