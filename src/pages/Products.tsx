@@ -321,7 +321,7 @@ export default function Products() {
       {variants.map(({ label, Component }) => (
         <section key={label} className="space-y-3">
           <h2 className="text-lg font-semibold text-foreground border-b pb-2">{label}</h2>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {products.map((p) => (
               <Component key={p.name} product={p} />
             ))}
