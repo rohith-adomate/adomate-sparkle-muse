@@ -11,8 +11,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 
+import oyLogoSrc from "@/assets/oy/oy-logo.png";
+
 const brands = [
-  { name: "Acme Co", color: "hsl(336 78% 50%)" },
+  { name: "Oy Care", logo: oyLogoSrc },
   { name: "Beta Brand", color: "hsl(152 60% 42%)" },
   { name: "Gamma Inc", color: "hsl(25 95% 55%)" },
 ];
