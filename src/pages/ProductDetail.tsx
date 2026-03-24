@@ -363,9 +363,18 @@ export default function ProductDetail() {
       </Dialog>
 
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>Add Knowledge Field</DialogTitle><DialogDescription>Create a new knowledge field for this product.</DialogDescription></DialogHeader>
-          <div className="space-y-3"><div className="space-y-1.5"><Label>Field Title</Label><Input value={newFieldTitle} onChange={(e) => setNewFieldTitle(e.target.value)} placeholder="e.g. Target Audience, USP" autoFocus /></div></div>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Field Title</Label>
+              <Input value={newFieldTitle} onChange={(e) => setNewFieldTitle(e.target.value)} placeholder="e.g. Target Audience, USP" autoFocus />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Content</Label>
+              <MarkdownEditor value={newFieldValue} onChange={(val) => setNewFieldValue(val)} />
+            </div>
+          </div>
           <DialogFooter><Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button><Button onClick={addNewField} disabled={!newFieldTitle.trim()}>Add Field</Button></DialogFooter>
         </DialogContent>
       </Dialog>
