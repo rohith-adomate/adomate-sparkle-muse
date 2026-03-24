@@ -158,11 +158,10 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                   isSelected ? "border-primary bg-primary/[0.03]" : "border-border bg-card"
                 }`}
               >
-                {/* Product header - fully clickable */}
-                <button
-                  type="button"
-                  onClick={() => toggleProduct(product.id)}
-                  className="flex items-center gap-3 px-3 py-3 w-full text-left hover:bg-muted/40 transition-colors rounded-t-lg"
+                {/* Product header */}
+                <div
+                  className="flex items-center gap-3 px-3 py-3 w-full cursor-pointer hover:bg-muted/40 transition-colors rounded-t-lg"
+                  onClick={() => toggleExpanded(product.id)}
                 >
                   <Checkbox
                     checked={isSelected}
@@ -180,21 +179,19 @@ export default function ProductDataDrawer({ open, onOpenChange }: ProductDataDra
                     <p className="text-xs font-semibold truncate">{product.name}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {isSelected && !isExpanded && productImages.length > 0 && (
+                    {!isExpanded && productImages.length > 0 && (
                       <Badge variant="outline" className="text-[9px] px-1.5 py-0 gap-0.5">
                         <Image className="h-2.5 w-2.5" />
                         {productImages.length}
                       </Badge>
                     )}
-                    {isSelected ? (
-                      isExpanded ? (
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                      ) : (
-                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                      )
-                    ) : null}
+                    {isExpanded ? (
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
                   </div>
-                </button>
+                </div>
 
                 {/* Image selection - collapsible */}
                 {isSelected && isExpanded && (() => {
