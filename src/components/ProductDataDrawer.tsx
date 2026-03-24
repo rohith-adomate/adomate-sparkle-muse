@@ -88,6 +88,10 @@ export default function ProductDataDrawer({ open, onOpenChange, onSelectionChang
   });
   const [expandedProducts, setExpandedProducts] = useState<string[]>(["prod-1"]);
 
+  useEffect(() => {
+    onSelectionChange?.(selectedProducts.length);
+  }, [selectedProducts, onSelectionChange]);
+
   const toggleProduct = (id: string) => {
     setSelectedProducts((prev) => {
       if (prev.includes(id)) {
