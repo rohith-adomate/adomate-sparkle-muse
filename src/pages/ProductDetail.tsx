@@ -13,15 +13,32 @@ import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { KnowledgeFieldsSection, type KnowledgeField } from "@/components/KnowledgeFieldsSection";
 import { getOyImage } from "@/data/oyImages";
 
+import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+import oyProductScalpHairWashDandruff from "@/assets/oy/oy-product-scalp-hair-wash-dandruff.png";
+import oyProductFacewashAcne from "@/assets/oy/oy-product-facewash-acne.png";
+import oyProductFacewashDailyBoost from "@/assets/oy/oy-product-facewash-daily-boost.png";
+import oyProductFacewashSensitive from "@/assets/oy/oy-product-facewash-sensitive.png";
+import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
+import oyProductDeoScrub from "@/assets/oy/oy-product-deo-scrub.png";
+
+const productHeroImages: Record<string, string> = {
+  "1": oyProductScalpHairWash,
+  "2": oyProductScalpHairWashDandruff,
+  "3": oyProductFacewashAcne,
+  "4": oyProductFacewashDailyBoost,
+  "5": oyProductFacewashSensitive,
+  "6": oyProductDeoWashHavana,
+  "7": oyProductDeoScrub,
+};
+
 const productData: Record<string, { name: string; url: string; imgIdx: number; imageCount: number }> = {
   "1": { name: "Scalp & Hair Wash", url: "https://oycare.com/scalp-hair-wash", imgIdx: 0, imageCount: 6 },
-  "2": { name: "Deo Wash", url: "https://oycare.com/deo-wash", imgIdx: 1, imageCount: 4 },
-  "3": { name: "Face Wash Sensitive", url: "https://oycare.com/face-wash-sensitive", imgIdx: 2, imageCount: 8 },
-  "4": { name: "Body Lotion", url: "https://oycare.com/body-lotion", imgIdx: 3, imageCount: 3 },
-  "5": { name: "Hand Cream", url: "https://oycare.com/hand-cream", imgIdx: 4, imageCount: 5 },
-  "6": { name: "Shower Oil", url: "https://oycare.com/shower-oil", imgIdx: 5, imageCount: 2 },
-  "7": { name: "Lip Balm", url: "https://oycare.com/lip-balm", imgIdx: 6, imageCount: 7 },
-  "8": { name: "Deodorant Stick", url: "https://oycare.com/deodorant-stick", imgIdx: 7, imageCount: 1 },
+  "2": { name: "Scalp & Hair Wash Anti-Dandruff", url: "https://oycare.com/scalp-hair-wash-anti-dandruff", imgIdx: 1, imageCount: 4 },
+  "3": { name: "Face Wash Acne Prone Skin", url: "https://oycare.com/face-wash-acne", imgIdx: 2, imageCount: 8 },
+  "4": { name: "Face Wash Daily Boost", url: "https://oycare.com/face-wash-daily-boost", imgIdx: 3, imageCount: 3 },
+  "5": { name: "Face Wash Sensitive", url: "https://oycare.com/face-wash-sensitive", imgIdx: 4, imageCount: 5 },
+  "6": { name: "Deo Wash Havana", url: "https://oycare.com/deo-wash-havana", imgIdx: 5, imageCount: 2 },
+  "7": { name: "Deo Scrub Marrakech", url: "https://oycare.com/deo-scrub-marrakech", imgIdx: 6, imageCount: 7 },
 };
 
 // Using getOyImage instead of picsum
@@ -150,10 +167,10 @@ export default function ProductDetail() {
   const [activeSection, setActiveSection] = useState<"knowledge" | "images">("knowledge");
 
   const [images, setImages] = useState<ProductImage[]>(() => {
-    if (!product) return [];
+    if (!product || !id) return [];
     return Array.from({ length: product.imageCount }).map((_, i) => ({
       id: `img-${i}`,
-      url: getOyImage(product.imgIdx + i),
+      url: i === 0 && productHeroImages[id] ? productHeroImages[id] : getOyImage(product.imgIdx + i),
       name: `${product.name} image ${i + 1}`,
       isHero: i === 0,
     }));
