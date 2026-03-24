@@ -751,6 +751,43 @@ export default function BrandKnowledge() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!deletingLogoId} onOpenChange={(open) => !open && setDeletingLogoId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Logo</DialogTitle><DialogDescription>Are you sure you want to delete this logo? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingLogoId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => {
+              if (deletingLogoId) {
+                const logo = logos.find(l => l.id === deletingLogoId);
+                const remaining = logos.filter(l => l.id !== deletingLogoId);
+                if (logo?.isDefault && remaining.length > 0) {
+                  remaining[0].isDefault = true;
+                }
+                setLogos(remaining);
+                setDeletingLogoId(null);
+                triggerAutoSave();
+              }
+            }}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deletingVisualId} onOpenChange={(open) => !open && setDeletingVisualId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Delete Visual</DialogTitle><DialogDescription>Are you sure you want to delete this visual? This cannot be undone.</DialogDescription></DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletingVisualId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => {
+              if (deletingVisualId) {
+                setBrandVisuals(brandVisuals.filter(v => v.id !== deletingVisualId));
+                setDeletingVisualId(null);
+                triggerAutoSave();
+              }
+            }}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
