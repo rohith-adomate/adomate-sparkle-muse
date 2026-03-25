@@ -2,19 +2,19 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Info, ListFilter, CalendarClock, ChevronDown, Check } from "lucide-react";
+import { Info, ListFilter, CalendarClock } from "lucide-react";
 
 export type SelectionMode = "all-new" | "top-n";
-export type RankMetric = "brand-alignment" | "ad-quality" | "combined";
 
 export interface SelectConfig {
   mode: SelectionMode;
   count: number;
-  metric: RankMetric;
+  maxAgeEnabled: boolean;
+  maxAgeMonths: number;
 }
 
 interface TopAdsSelectionDrawerProps {
@@ -24,72 +24,15 @@ interface TopAdsSelectionDrawerProps {
   onConfigChange?: (config: SelectConfig) => void;
 }
 
-const METRIC_LABELS: Record<RankMetric, string> = {
-  "brand-alignment": "Brand alignment",
-  "ad-quality": "Ad quality",
-  "combined": "Combined score",
-};
-
-const METRIC_DESCRIPTIONS: Record<RankMetric, string> = {
-  "brand-alignment": "How closely an ad matches your brand's style, tone, and visual identity.",
-  "ad-quality": "How well an ad is crafted — clear copy, strong visuals, and effective layout.",
-  "combined": "The average of brand alignment and ad quality, giving a balanced overall ranking.",
-};
-
-const METRICS: RankMetric[] = ["brand-alignment", "ad-quality", "combined"];
-
-function MetricDropdown({ value, onChange }: { value: RankMetric; onChange: (v: RankMetric) => void }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <Tooltip delayDuration={200}>
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <button className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-              <span className="inline-flex items-center gap-1.5">
-                {METRIC_LABELS[value]}
-                <Info className="h-3 w-3 text-muted-foreground" />
-              </span>
-              <ChevronDown className="h-4 w-4 opacity-50" />
-            </button>
-          </PopoverTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="left" className="max-w-[220px] text-xs">
-          {METRIC_DESCRIPTIONS[value]}
-        </TooltipContent>
-      </Tooltip>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-1" align="start">
-        {METRICS.map((m) => (
-          <Tooltip key={m} delayDuration={200}>
-            <TooltipTrigger asChild>
-              <button
-                className={cn(
-                  "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer transition-colors",
-                  value === m ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"
-                )}
-                onClick={() => { onChange(m); setOpen(false); }}
-              >
-                <Check className={cn("h-3.5 w-3.5 shrink-0", value === m ? "opacity-100" : "opacity-0")} />
-                {METRIC_LABELS[m]}
-                <Info className="h-3 w-3 text-muted-foreground shrink-0" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="left" className="max-w-[220px] text-xs">
-              {METRIC_DESCRIPTIONS[m]}
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 function buildSummary(config: SelectConfig): string {
   if (config.mode === "all-new") {
     return "All new ads since last scheduled run";
   }
-  return `Top ${config.count} ads by ${METRIC_LABELS[config.metric].toLowerCase()}`;
+  let s = `Top ${config.count} ads by days online`;
+  if (config.maxAgeEnabled) {
+    s += ` (last ${config.maxAgeMonths}mo)`;
+  }
+  return s;
 }
 
 export default function TopAdsSelectionDrawer({
@@ -101,33 +44,41 @@ export default function TopAdsSelectionDrawer({
   const defaultConfig: SelectConfig = {
     mode: "top-n",
     count: 10,
-    metric: "combined",
+    maxAgeEnabled: false,
+    maxAgeMonths: 3,
   };
   const init = initialConfig ?? defaultConfig;
 
   const [mode, setMode] = useState<SelectionMode>(init.mode);
   const [topCount, setTopCount] = useState(String(init.count));
-  const [metric, setMetric] = useState<RankMetric>(init.metric);
+  const [maxAgeEnabled, setMaxAgeEnabled] = useState(init.maxAgeEnabled);
+  const [maxAgeMonths, setMaxAgeMonths] = useState(String(init.maxAgeMonths));
 
   const count = parseInt(topCount) || 10;
+  const months = parseInt(maxAgeMonths) || 3;
 
-  const emitChange = (m: SelectionMode, c: number, met: RankMetric) => {
-    onConfigChange?.({ mode: m, count: c, metric: met });
+  const emitChange = (m: SelectionMode, c: number, ageEnabled: boolean, ageMo: number) => {
+    onConfigChange?.({ mode: m, count: c, maxAgeEnabled: ageEnabled, maxAgeMonths: ageMo });
   };
 
   const handleModeChange = (m: SelectionMode) => {
     setMode(m);
-    emitChange(m, count, metric);
+    emitChange(m, count, maxAgeEnabled, months);
   };
 
   const handleCountChange = (val: string) => {
     setTopCount(val);
-    emitChange(mode, parseInt(val) || 10, metric);
+    emitChange(mode, parseInt(val) || 10, maxAgeEnabled, months);
   };
 
-  const handleMetricChange = (val: RankMetric) => {
-    setMetric(val);
-    emitChange(mode, count, val);
+  const handleMaxAgeToggle = (checked: boolean) => {
+    setMaxAgeEnabled(checked);
+    emitChange(mode, count, checked, months);
+  };
+
+  const handleMaxAgeMonthsChange = (val: string) => {
+    setMaxAgeMonths(val);
+    emitChange(mode, count, maxAgeEnabled, parseInt(val) || 3);
   };
 
   return (
@@ -155,7 +106,7 @@ export default function TopAdsSelectionDrawer({
                 <p className="text-[11px] text-muted-foreground">
                   {mode === "all-new"
                     ? "since last scheduled run"
-                    : `by ${METRIC_LABELS[metric].toLowerCase()}`}
+                    : "by days online"}
                 </p>
               </div>
             </div>
@@ -170,9 +121,14 @@ export default function TopAdsSelectionDrawer({
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 mx-0.5 font-semibold">
                     {count}
                   </Badge>{" "}
-                  performing ads from your dataset will be selected based on{" "}
-                  <span className="font-medium text-foreground">{METRIC_LABELS[metric].toLowerCase()}</span> and
-                  passed to the next node for ad generation.
+                  ads with the most days online will be selected and passed to the next node for ad generation.
+                  {maxAgeEnabled && (
+                    <>
+                      {" "}Ads older than{" "}
+                      <span className="font-medium text-foreground">{months} month{months !== 1 ? "s" : ""}</span>{" "}
+                      will be excluded.
+                    </>
+                  )}
                 </>
               )}
             </p>
@@ -189,7 +145,7 @@ export default function TopAdsSelectionDrawer({
                 {(
                   [
                     { value: "all-new" as SelectionMode, label: "All new since last run" },
-                    { value: "top-n" as SelectionMode, label: "Top N by metric" },
+                    { value: "top-n" as SelectionMode, label: "Top N by days online" },
                   ] as const
                 ).map((opt) => (
                   <div
@@ -234,20 +190,40 @@ export default function TopAdsSelectionDrawer({
                   />
                 </div>
 
-                {/* Rank metric */}
+                {/* Max age exclusion */}
                 <div className="space-y-2">
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger asChild>
-                      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 cursor-help">
-                        Ranked by
-                        <Info className="h-3 w-3" />
-                      </Label>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-[260px] text-xs">
-                      Choose how ads are ranked before selecting the top results.
-                    </TooltipContent>
-                  </Tooltip>
-                  <MetricDropdown value={metric} onChange={handleMetricChange} />
+                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Age exclusion
+                  </Label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <Checkbox
+                      checked={maxAgeEnabled}
+                      onCheckedChange={(v) => handleMaxAgeToggle(!!v)}
+                      className="h-3.5 w-3.5"
+                    />
+                    <span className="text-[11px] text-muted-foreground">Exclude ads older than</span>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <Info className="h-2.5 w-2.5 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs text-[10px]">
+                        Only include ads first launched within this timeframe.
+                      </TooltipContent>
+                    </Tooltip>
+                  </label>
+                  {maxAgeEnabled && (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        min="1"
+                        max="24"
+                        value={maxAgeMonths}
+                        onChange={(e) => handleMaxAgeMonthsChange(e.target.value)}
+                        className="h-8 text-xs w-20"
+                      />
+                      <span className="text-xs text-muted-foreground">months</span>
+                    </div>
+                  )}
                 </div>
               </>
             )}
