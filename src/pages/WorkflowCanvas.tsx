@@ -234,14 +234,14 @@ export default function WorkflowCanvas() {
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, metric: "combined" });
+  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
 
   // Update top-select node description when config changes
   const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
     setTopSelectConfig(config);
     const desc = config.mode === "all-new"
       ? "All new ads since last run"
-      : `Top ${config.count} by ${config.metric === "brand-alignment" ? "brand alignment" : config.metric === "ad-quality" ? "ad quality" : "combined score"}`;
+      : `Top ${config.count} by days online${config.maxAgeEnabled ? ` (last ${config.maxAgeMonths}mo)` : ""}`;
     setNodes((prev) =>
       prev.map((n) =>
         n.type === "top-select" ? { ...n, description: desc } : n
