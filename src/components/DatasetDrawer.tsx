@@ -69,9 +69,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const [competitorPopoverOpen, setCompetitorPopoverOpen] = useState(false);
   const [competitorSearch, setCompetitorSearch] = useState("");
 
-  // Filter state
-  const [minDaysOnline, setMinDaysOnline] = useState("30");
-  const [daysOnlineEnabled, setDaysOnlineEnabled] = useState(false);
 
 
   const toggleCompetitor = (id: string) => {
@@ -97,13 +94,9 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const filteredAds = useMemo(() => {
     const selectedNames = new Set(selectedCompetitors.map((c) => c.name));
     let ads = MOCK_ADS.filter((ad) => selectedNames.has(ad.brand));
-    if (daysOnlineEnabled) {
-      const min = parseInt(minDaysOnline) || 0;
-      ads = ads.filter((ad) => daysOnline(ad.firstLaunched) >= min);
-    }
     ads.sort((a, b) => daysOnline(b.firstLaunched) - daysOnline(a.firstLaunched));
     return ads;
-  }, [selectedCompetitors, daysOnlineEnabled, minDaysOnline]);
+  }, [selectedCompetitors]);
 
   if (!open) return null;
 
@@ -202,32 +195,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
               </div>
             </div>
 
-            <Separator />
-
-            {/* ── SECTION: Filtering ── */}
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Filtering</p>
-
-            {/* Threshold */}
-            <div className="space-y-2 pb-2">
-              <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Thresholds
-              </Label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox checked={daysOnlineEnabled} onCheckedChange={(v) => setDaysOnlineEnabled(!!v)} className="h-3.5 w-3.5" />
-                <span className="text-[10px] text-muted-foreground">Min. days online</span>
-                <Tooltip delayDuration={300}>
-                  <TooltipTrigger asChild>
-                    <Info className="h-2.5 w-2.5 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs text-[10px]">
-                    Only include ads that have been online for at least this many days.
-                  </TooltipContent>
-                </Tooltip>
-              </label>
-              {daysOnlineEnabled && (
-                <Input type="number" min="0" value={minDaysOnline} onChange={(e) => setMinDaysOnline(e.target.value)} className="h-8 text-xs" />
-              )}
-            </div>
 
 
           </div>
