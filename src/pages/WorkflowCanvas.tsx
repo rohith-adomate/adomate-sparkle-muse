@@ -235,15 +235,18 @@ export default function WorkflowCanvas() {
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [topSelectConfig, setTopSelectConfig] = useState({ count: 10, sortBy: "new-reach" as "new-reach" | "total-reach" });
+  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, metric: "combined" });
 
   // Update top-select node description when config changes
-  const handleTopSelectChange = useCallback((count: number, sortBy: "new-reach" | "total-reach") => {
-    setTopSelectConfig({ count, sortBy });
-    const label = sortBy === "new-reach" ? "new reach" : "total reach";
+  const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
+    setTopSelectConfig(config);
+    const { buildSummary } = require("@/components/TopAdsSelectionDrawer");
+    const desc = config.mode === "all-new"
+      ? "All new ads since last run"
+      : `Top ${config.count} by ${config.metric === "brand-alignment" ? "brand alignment" : config.metric === "ad-quality" ? "ad quality" : "combined score"}`;
     setNodes((prev) =>
       prev.map((n) =>
-        n.type === "top-select" ? { ...n, description: `Top ${count} ads by ${label}` } : n
+        n.type === "top-select" ? { ...n, description: desc } : n
       )
     );
   }, []);
@@ -1005,8 +1008,7 @@ export default function WorkflowCanvas() {
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
-        count={topSelectConfig.count}
-        sortBy={topSelectConfig.sortBy}
+        config={topSelectConfig}
         onConfigChange={handleTopSelectChange}
       />
       <ManualImageInputDrawer
