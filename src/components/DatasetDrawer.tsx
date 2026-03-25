@@ -31,18 +31,18 @@ const MOCK_COMPETITORS = [
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
-  { id: "1", brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Meta", firstLaunched: "2025-08-12", status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false, brandAlignment: 92, qualityScore: 88 },
-  { id: "2", brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Meta", firstLaunched: "2025-11-03", status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true, brandAlignment: 78, qualityScore: 71 },
-  { id: "3", brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Image", platform: "Meta", firstLaunched: "2025-06-20", status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false, brandAlignment: 85, qualityScore: 94 },
-  { id: "4", brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Meta", firstLaunched: "2025-12-01", status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true, brandAlignment: 67, qualityScore: 82 },
-  { id: "5", brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Meta", firstLaunched: "2025-09-28", status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true, brandAlignment: 91, qualityScore: 65 },
-  { id: "6", brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Meta", firstLaunched: "2026-01-15", status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false, brandAlignment: 73, qualityScore: 79 },
-  { id: "7", brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Meta", firstLaunched: "2025-10-10", status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false, brandAlignment: 88, qualityScore: 91 },
-  { id: "8", brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Meta", firstLaunched: "2026-02-05", status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true, brandAlignment: 54, qualityScore: 68 },
-  { id: "9", brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Meta", firstLaunched: "2026-02-28", status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false, brandAlignment: 81, qualityScore: 76 },
-  { id: "10", brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", format: "Image", platform: "Meta", firstLaunched: "2026-02-18", status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false, brandAlignment: 69, qualityScore: 85 },
-  { id: "11", brand: "CeraVe", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Meta", firstLaunched: "2026-03-04", status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true, brandAlignment: 95, qualityScore: 42 },
-  { id: "12", brand: "The Ordinary", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Meta", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: 62, qualityScore: 73 },
+  { id: "1", brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Meta", firstLaunched: "2025-08-12", status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false, brandAlignment: "High" as const },
+  { id: "2", brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Meta", firstLaunched: "2025-11-03", status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true, brandAlignment: "Med" as const },
+  { id: "3", brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Image", platform: "Meta", firstLaunched: "2025-06-20", status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false, brandAlignment: "High" as const },
+  { id: "4", brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Meta", firstLaunched: "2025-12-01", status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true, brandAlignment: "Med" as const },
+  { id: "5", brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Meta", firstLaunched: "2025-09-28", status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true, brandAlignment: "High" as const },
+  { id: "6", brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Meta", firstLaunched: "2026-01-15", status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false, brandAlignment: "Med" as const },
+  { id: "7", brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Meta", firstLaunched: "2025-10-10", status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false, brandAlignment: "High" as const },
+  { id: "8", brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Meta", firstLaunched: "2026-02-05", status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true, brandAlignment: "Low" as const },
+  { id: "9", brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Meta", firstLaunched: "2026-02-28", status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false, brandAlignment: "High" as const },
+  { id: "10", brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", format: "Image", platform: "Meta", firstLaunched: "2026-02-18", status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false, brandAlignment: "Med" as const },
+  { id: "11", brand: "CeraVe", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Meta", firstLaunched: "2026-03-04", status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true, brandAlignment: "High" as const },
+  { id: "12", brand: "The Ordinary", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Meta", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: "Low" as const },
 ];
 
 function formatDate(d: string | null): string {
@@ -249,14 +249,13 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Funnel</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Hook</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-center">Offer</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">Brand align.</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">Quality</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-center">Brand align.</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredAds.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={14} className="text-center text-xs text-muted-foreground py-12">
+                    <TableCell colSpan={13} className="text-center text-xs text-muted-foreground py-12">
                       No ads match the current filters. Try adjusting competitors or thresholds.
                     </TableCell>
                   </TableRow>
@@ -298,8 +297,16 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       <TableCell className="py-2 text-center">
                         <div className={cn("h-2 w-2 rounded-full mx-auto", ad.offerPresent ? "bg-primary" : "bg-muted-foreground/20")} />
                       </TableCell>
-                      <TableCell className="py-2 text-right text-[11px] tabular-nums">{ad.brandAlignment}%</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] tabular-nums">{ad.qualityScore}%</TableCell>
+                      <TableCell className="py-2 text-center">
+                        <Badge variant="outline" className={cn(
+                          "text-[9px] py-0 px-1.5 font-medium",
+                          ad.brandAlignment === "High" && "border-green-500/30 text-green-600 bg-green-500/10",
+                          ad.brandAlignment === "Med" && "border-yellow-500/30 text-yellow-600 bg-yellow-500/10",
+                          ad.brandAlignment === "Low" && "border-red-500/30 text-red-600 bg-red-500/10",
+                        )}>
+                          {ad.brandAlignment}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
