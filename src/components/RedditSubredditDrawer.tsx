@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -18,20 +19,17 @@ interface RedditSubredditDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const RECOMMENDED_SUBREDDITS = [
-  { name: "r/SkincareAddiction", subscribers: "2.1M", enabled: true },
-  { name: "r/AsianBeauty", subscribers: "1.8M", enabled: true },
-  { name: "r/30PlusSkinCare", subscribers: "542K", enabled: false },
-  { name: "r/tretinoin", subscribers: "389K", enabled: true },
-  { name: "r/Retinoids", subscribers: "124K", enabled: false },
-  { name: "r/beauty", subscribers: "1.2M", enabled: true },
-];
-
-const SUGGESTED_SUBREDDITS = [
-  { name: "r/MakeupAddiction", subscribers: "3.4M" },
-  { name: "r/acne", subscribers: "287K" },
-  { name: "r/Rosacea", subscribers: "98K" },
-  { name: "r/EuroSkincare", subscribers: "76K" },
+const ALL_SUBREDDITS = [
+  { name: "r/SkincareAddiction", subscribers: "2.1M", selected: true },
+  { name: "r/AsianBeauty", subscribers: "1.8M", selected: true },
+  { name: "r/30PlusSkinCare", subscribers: "542K", selected: false },
+  { name: "r/tretinoin", subscribers: "389K", selected: true },
+  { name: "r/Retinoids", subscribers: "124K", selected: false },
+  { name: "r/beauty", subscribers: "1.2M", selected: true },
+  { name: "r/MakeupAddiction", subscribers: "3.4M", selected: false },
+  { name: "r/acne", subscribers: "287K", selected: false },
+  { name: "r/Rosacea", subscribers: "98K", selected: false },
+  { name: "r/EuroSkincare", subscribers: "76K", selected: false },
 ];
 
 const MOCK_POSTS = [
@@ -53,12 +51,10 @@ function formatNumber(n: number): string {
 }
 
 export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubredditDrawerProps) {
-  const [sourceStrategy, setSourceStrategy] = useState<"auto" | "manual">("auto");
-  const [subreddits, setSubreddits] = useState(RECOMMENDED_SUBREDDITS);
-  const [manualSubreddits, setManualSubreddits] = useState<{ name: string; subscribers: string }[]>([]);
-  const [manualInput, setManualInput] = useState("");
+  const [subreddits, setSubreddits] = useState(ALL_SUBREDDITS);
+  const [subredditPopoverOpen, setSubredditPopoverOpen] = useState(false);
+  const [subredditSearch, setSubredditSearch] = useState("");
   const [language, setLanguage] = useState("en");
-  const [region, setRegion] = useState("all");
   const [sortMode, setSortMode] = useState("hot");
   const [timeWindow, setTimeWindow] = useState("7d");
   const [maxPosts, setMaxPosts] = useState("25");
@@ -68,29 +64,19 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
   const [blockNSFW, setBlockNSFW] = useState(true);
 
   const toggleSubreddit = (name: string) => {
-    setSubreddits(prev => prev.map(s => s.name === name ? { ...s, enabled: !s.enabled } : s));
+    setSubreddits(prev => prev.map(s => s.name === name ? { ...s, selected: !s.selected } : s));
   };
 
-  const addManualSubreddit = () => {
-    const trimmed = manualInput.trim();
-    if (!trimmed) return;
-    const name = trimmed.startsWith("r/") ? trimmed : `r/${trimmed}`;
-    if (manualSubreddits.some(s => s.name === name)) return;
-    setManualSubreddits(prev => [...prev, { name, subscribers: "—" }]);
-    setManualInput("");
+  const removeSubreddit = (name: string) => {
+    setSubreddits(prev => prev.map(s => s.name === name ? { ...s, selected: false } : s));
   };
 
-  const removeManualSubreddit = (name: string) => {
-    setManualSubreddits(prev => prev.filter(s => s.name !== name));
-  };
-
-  const filteredSuggestions = useMemo(() => {
-    if (!manualInput.trim()) return [];
-    const q = manualInput.toLowerCase().replace("r/", "");
-    return SUGGESTED_SUBREDDITS.filter(s =>
-      s.name.toLowerCase().includes(q) && !manualSubreddits.some(ms => ms.name === s.name)
+  const selectedSubreddits = subreddits.filter(s => s.selected);
+  const unselectedSubreddits = useMemo(() => {
+    return subreddits.filter(
+      s => !s.selected && s.name.toLowerCase().includes(subredditSearch.toLowerCase())
     );
-  }, [manualInput, manualSubreddits]);
+  }, [subreddits, subredditSearch]);
 
   if (!open) return null;
 
