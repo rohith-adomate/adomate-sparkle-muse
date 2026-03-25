@@ -7,14 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import {
   Info, Plus, X, Search, ChevronDown, ChevronUp,
-  ExternalLink, Eye, TrendingUp,
+  ExternalLink, Eye,
 } from "lucide-react";
 
 interface DatasetDrawerProps {
@@ -29,8 +28,6 @@ const MOCK_COMPETITORS = [
   { id: "4", name: "Paula's Choice", avatar: "https://logo.clearbit.com/paulaschoice.com", selected: false },
 ];
 
-type PeriodType = "all-time" | "last-week" | "last-x";
-type PeriodUnit = "days" | "weeks" | "months";
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
