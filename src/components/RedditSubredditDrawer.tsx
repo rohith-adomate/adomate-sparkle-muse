@@ -399,30 +399,6 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
               )}
             </div>
 
-            {/* Region */}
-            <div className="space-y-2 pb-3">
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Region
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  Optional geographic filter. Posts are filtered by subreddit region relevance when available.
-                </TooltipContent>
-              </Tooltip>
-              <Select value={region} onValueChange={setRegion}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Regions</SelectItem>
-                  <SelectItem value="us">United States</SelectItem>
-                  <SelectItem value="eu">Europe</SelectItem>
-                  <SelectItem value="uk">United Kingdom</SelectItem>
-                  <SelectItem value="apac">Asia Pacific</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
             <Separator />
 
