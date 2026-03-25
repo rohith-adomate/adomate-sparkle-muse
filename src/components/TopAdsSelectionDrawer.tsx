@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Info, ListFilter, CalendarClock } from "lucide-react";
+import { Info, ListFilter, CalendarClock, ChevronDown, Check } from "lucide-react";
 
 export type SelectionMode = "all-new" | "top-n";
 export type RankMetric = "brand-alignment" | "ad-quality" | "combined";
@@ -25,9 +25,9 @@ interface TopAdsSelectionDrawerProps {
 }
 
 const METRIC_LABELS: Record<RankMetric, string> = {
-  "brand-alignment": "brand alignment",
-  "ad-quality": "ad quality",
-  "combined": "combined score",
+  "brand-alignment": "Brand alignment",
+  "ad-quality": "Ad quality",
+  "combined": "Combined score",
 };
 
 const METRIC_DESCRIPTIONS: Record<RankMetric, string> = {
@@ -36,11 +36,60 @@ const METRIC_DESCRIPTIONS: Record<RankMetric, string> = {
   "combined": "The average of brand alignment and ad quality, giving a balanced overall ranking.",
 };
 
+const METRICS: RankMetric[] = ["brand-alignment", "ad-quality", "combined"];
+
+function MetricDropdown({ value, onChange }: { value: RankMetric; onChange: (v: RankMetric) => void }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <Tooltip delayDuration={200}>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+              <span className="inline-flex items-center gap-1.5">
+                {METRIC_LABELS[value]}
+                <Info className="h-3 w-3 text-muted-foreground" />
+              </span>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="left" className="max-w-[220px] text-xs">
+          {METRIC_DESCRIPTIONS[value]}
+        </TooltipContent>
+      </Tooltip>
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-1" align="start">
+        {METRICS.map((m) => (
+          <Tooltip key={m} delayDuration={200}>
+            <TooltipTrigger asChild>
+              <button
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer transition-colors",
+                  value === m ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"
+                )}
+                onClick={() => { onChange(m); setOpen(false); }}
+              >
+                <Check className={cn("h-3.5 w-3.5 shrink-0", value === m ? "opacity-100" : "opacity-0")} />
+                <span className="flex-1 text-left">{METRIC_LABELS[m]}</span>
+                <Info className="h-3 w-3 text-muted-foreground shrink-0" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="max-w-[220px] text-xs">
+              {METRIC_DESCRIPTIONS[m]}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function buildSummary(config: SelectConfig): string {
   if (config.mode === "all-new") {
     return "All new ads since last scheduled run";
   }
-  return `Top ${config.count} ads by ${METRIC_LABELS[config.metric]}`;
+  return `Top ${config.count} ads by ${METRIC_LABELS[config.metric].toLowerCase()}`;
 }
 
 export default function TopAdsSelectionDrawer({
@@ -81,8 +130,6 @@ export default function TopAdsSelectionDrawer({
     emitChange(mode, count, val);
   };
 
-  const summary = buildSummary({ mode, count, metric });
-
   return (
     <TooltipProvider>
       <Sheet open={open} onOpenChange={onOpenChange}>
@@ -108,7 +155,7 @@ export default function TopAdsSelectionDrawer({
                 <p className="text-[11px] text-muted-foreground">
                   {mode === "all-new"
                     ? "since last scheduled run"
-                    : `by ${METRIC_LABELS[metric]}`}
+                    : `by ${METRIC_LABELS[metric].toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -124,7 +171,7 @@ export default function TopAdsSelectionDrawer({
                     {count}
                   </Badge>{" "}
                   performing ads from your dataset will be selected based on{" "}
-                  <span className="font-medium text-foreground">{METRIC_LABELS[metric]}</span> and
+                  <span className="font-medium text-foreground">{METRIC_LABELS[metric].toLowerCase()}</span> and
                   passed to the next node for ad generation.
                 </>
               )}
