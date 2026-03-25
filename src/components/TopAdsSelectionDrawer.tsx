@@ -200,28 +200,7 @@ export default function TopAdsSelectionDrawer({
                       Choose how ads are ranked before selecting the top results.
                     </TooltipContent>
                   </Tooltip>
-                  <Select value={metric} onValueChange={(v) => handleMetricChange(v as RankMetric)}>
-                    <SelectTrigger className="h-9 text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(["brand-alignment", "ad-quality", "combined"] as RankMetric[]).map((m) => (
-                        <SelectItem key={m} value={m}>
-                          <Tooltip delayDuration={100}>
-                            <TooltipTrigger asChild>
-                              <span className="inline-flex items-center gap-1.5 w-full">
-                                {m === "brand-alignment" ? "Brand alignment" : m === "ad-quality" ? "Ad quality" : "Combined score"}
-                                <Info className="h-3 w-3 text-muted-foreground shrink-0" />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent side="left" className="max-w-[220px] text-xs">
-                              {METRIC_DESCRIPTIONS[m]}
-                            </TooltipContent>
-                          </Tooltip>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <MetricDropdown value={metric} onChange={handleMetricChange} />
                 </div>
               </>
             )}
