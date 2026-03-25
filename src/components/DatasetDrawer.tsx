@@ -45,13 +45,6 @@ const MOCK_ADS = [
   { id: "12", brand: "The Ordinary", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Instagram", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: 62, qualityScore: 73 },
 ];
 
-function formatReach(n: number | null): string {
-  if (n == null) return "—";
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
-  return String(n);
-}
-
 function formatDate(d: string | null): string {
   if (!d) return "—";
   const date = new Date(d);
@@ -67,22 +60,6 @@ function daysOnline(d: string): number {
   return Math.max(0, Math.floor((now.getTime() - launched.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-function MiniSparkline({ data }: { data: number[] }) {
-  if (data.length === 0) return <span className="text-[10px] text-muted-foreground">—</span>;
-  const max = Math.max(...data);
-  const h = 20;
-  const w = 48;
-  const points = data.map((v, i) => {
-    const x = data.length === 1 ? w / 2 : (i / (data.length - 1)) * w;
-    const y = max === 0 ? h / 2 : h - (v / max) * (h - 2);
-    return `${x},${y}`;
-  }).join(" ");
-  return (
-    <svg width={w} height={h} className="shrink-0">
-      <polyline points={points} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps) {
   const navigate = useNavigate();
