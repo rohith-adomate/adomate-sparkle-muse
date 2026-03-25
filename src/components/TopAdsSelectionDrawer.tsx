@@ -31,9 +31,9 @@ const METRIC_LABELS: Record<RankMetric, string> = {
 };
 
 const METRIC_DESCRIPTIONS: Record<RankMetric, string> = {
-  "brand-alignment": "Ranks ads by how closely they align with your brand's voice, visuals, and positioning.",
-  "ad-quality": "Ranks ads by creative quality — composition, copy clarity, and visual appeal.",
-  "combined": "Ranks ads by the average of brand alignment and ad quality scores.",
+  "brand-alignment": "How closely an ad matches your brand's style, tone, and visual identity.",
+  "ad-quality": "How well an ad is crafted — clear copy, strong visuals, and effective layout.",
+  "combined": "The average of brand alignment and ad quality, giving a balanced overall ranking.",
 };
 
 function buildSummary(config: SelectConfig): string {
@@ -205,14 +205,23 @@ export default function TopAdsSelectionDrawer({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="brand-alignment">Brand alignment</SelectItem>
-                      <SelectItem value="ad-quality">Ad quality</SelectItem>
-                      <SelectItem value="combined">Combined score</SelectItem>
+                      {(["brand-alignment", "ad-quality", "combined"] as RankMetric[]).map((m) => (
+                        <SelectItem key={m} value={m}>
+                          <Tooltip delayDuration={100}>
+                            <TooltipTrigger asChild>
+                              <span className="inline-flex items-center gap-1.5 w-full">
+                                {m === "brand-alignment" ? "Brand alignment" : m === "ad-quality" ? "Ad quality" : "Combined score"}
+                                <Info className="h-3 w-3 text-muted-foreground shrink-0" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="left" className="max-w-[220px] text-xs">
+                              {METRIC_DESCRIPTIONS[m]}
+                            </TooltipContent>
+                          </Tooltip>
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">
-                    {METRIC_DESCRIPTIONS[metric]}
-                  </p>
                 </div>
               </>
             )}
