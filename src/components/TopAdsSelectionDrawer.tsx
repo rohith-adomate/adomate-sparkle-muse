@@ -71,7 +71,7 @@ function MetricDropdown({ value, onChange }: { value: RankMetric; onChange: (v: 
                 onClick={() => { onChange(m); setOpen(false); }}
               >
                 <Check className={cn("h-3.5 w-3.5 shrink-0", value === m ? "opacity-100" : "opacity-0")} />
-                <span className="flex-1 text-left">{METRIC_LABELS[m]}</span>
+                {METRIC_LABELS[m]}
                 <Info className="h-3 w-3 text-muted-foreground shrink-0" />
               </button>
             </TooltipTrigger>
