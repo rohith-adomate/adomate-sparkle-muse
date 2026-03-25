@@ -7,14 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import {
   Info, Plus, X, Search, ChevronDown, ChevronUp,
-  ExternalLink, Eye, TrendingUp,
+  ExternalLink, Eye,
 } from "lucide-react";
 
 interface DatasetDrawerProps {
@@ -29,31 +28,22 @@ const MOCK_COMPETITORS = [
   { id: "4", name: "Paula's Choice", avatar: "https://logo.clearbit.com/paulaschoice.com", selected: false },
 ];
 
-type PeriodType = "all-time" | "last-week" | "last-x";
-type PeriodUnit = "days" | "weeks" | "months";
 
 // Mock scraped ad data for the table
 const MOCK_ADS = [
-  { id: "1", brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Facebook", reach: 245000, firstLaunched: "2025-08-12", reachTrend: [18000, 67000, 145000, 245000], status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false },
-  { id: "2", brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Instagram", reach: 189000, firstLaunched: "2025-11-03", reachTrend: [12000, 54000, 189000], status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true },
-  { id: "3", brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Image", platform: "Facebook", reach: 312000, firstLaunched: "2025-06-20", reachTrend: [9500, 48000, 178000, 312000], status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false },
-  { id: "4", brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Instagram", reach: 198000, firstLaunched: "2025-12-01", reachTrend: [8200, 42000, 198000], status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true },
-  { id: "5", brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Facebook", reach: 47000, firstLaunched: "2025-09-28", reachTrend: [6200, 21000, 47000], status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true },
-  { id: "6", brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Instagram", reach: 23000, firstLaunched: "2026-01-15", reachTrend: [4800, 23000], status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false },
-  { id: "7", brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Facebook", reach: 68000, firstLaunched: "2025-10-10", reachTrend: [8100, 34000, 68000], status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false },
-  { id: "8", brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Instagram", reach: 15000, firstLaunched: "2026-02-05", reachTrend: [3400, 15000], status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true },
-  { id: "9", brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Instagram", reach: 4200, firstLaunched: "2026-02-28", reachTrend: [1800], status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false },
-  { id: "10", brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", format: "Image", platform: "Facebook", reach: 7300, firstLaunched: "2026-02-18", reachTrend: [2900], status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false },
-  { id: "11", brand: "CeraVe", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Facebook", reach: 1850, firstLaunched: "2026-03-04", reachTrend: [620], status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true },
-  { id: "12", brand: "The Ordinary", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Instagram", reach: 3100, firstLaunched: "2026-03-01", reachTrend: [980], status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false },
+  { id: "1", brand: "CeraVe", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Facebook", firstLaunched: "2025-08-12", status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false, brandAlignment: 92, qualityScore: 88 },
+  { id: "2", brand: "CeraVe", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Instagram", firstLaunched: "2025-11-03", status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true, brandAlignment: 78, qualityScore: 71 },
+  { id: "3", brand: "The Ordinary", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Image", platform: "Facebook", firstLaunched: "2025-06-20", status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false, brandAlignment: 85, qualityScore: 94 },
+  { id: "4", brand: "The Ordinary", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Image", platform: "Instagram", firstLaunched: "2025-12-01", status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true, brandAlignment: 67, qualityScore: 82 },
+  { id: "5", brand: "CeraVe", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Facebook", firstLaunched: "2025-09-28", status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true, brandAlignment: 91, qualityScore: 65 },
+  { id: "6", brand: "The Ordinary", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Image", platform: "Instagram", firstLaunched: "2026-01-15", status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false, brandAlignment: 73, qualityScore: 79 },
+  { id: "7", brand: "CeraVe", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Facebook", firstLaunched: "2025-10-10", status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false, brandAlignment: 88, qualityScore: 91 },
+  { id: "8", brand: "The Ordinary", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Image", platform: "Instagram", firstLaunched: "2026-02-05", status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true, brandAlignment: 54, qualityScore: 68 },
+  { id: "9", brand: "CeraVe", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Instagram", firstLaunched: "2026-02-28", status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false, brandAlignment: 81, qualityScore: 76 },
+  { id: "10", brand: "The Ordinary", headline: "Glycolic Acid 7% Toning Solution", format: "Image", platform: "Facebook", firstLaunched: "2026-02-18", status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false, brandAlignment: 69, qualityScore: 85 },
+  { id: "11", brand: "CeraVe", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Facebook", firstLaunched: "2026-03-04", status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true, brandAlignment: 95, qualityScore: 42 },
+  { id: "12", brand: "The Ordinary", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Instagram", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: 62, qualityScore: 73 },
 ];
-
-function formatReach(n: number | null): string {
-  if (n == null) return "—";
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
-  return String(n);
-}
 
 function formatDate(d: string | null): string {
   if (!d) return "—";
@@ -70,22 +60,6 @@ function daysOnline(d: string): number {
   return Math.max(0, Math.floor((now.getTime() - launched.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-function MiniSparkline({ data }: { data: number[] }) {
-  if (data.length === 0) return <span className="text-[10px] text-muted-foreground">—</span>;
-  const max = Math.max(...data);
-  const h = 20;
-  const w = 48;
-  const points = data.map((v, i) => {
-    const x = data.length === 1 ? w / 2 : (i / (data.length - 1)) * w;
-    const y = max === 0 ? h / 2 : h - (v / max) * (h - 2);
-    return `${x},${y}`;
-  }).join(" ");
-  return (
-    <svg width={w} height={h} className="shrink-0">
-      <polyline points={points} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps) {
   const navigate = useNavigate();
@@ -96,11 +70,8 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const [competitorSearch, setCompetitorSearch] = useState("");
 
   // Filter state
-  const [minReach, setMinReach] = useState("1000");
-  const [reachEnabled, setReachEnabled] = useState(false);
-  const [periodType, setPeriodType] = useState<PeriodType>("all-time");
-  const [lastXValue, setLastXValue] = useState("30");
-  const [lastXUnit, setLastXUnit] = useState<PeriodUnit>("days");
+  const [minDaysOnline, setMinDaysOnline] = useState("30");
+  const [daysOnlineEnabled, setDaysOnlineEnabled] = useState(false);
 
 
   const toggleCompetitor = (id: string) => {
@@ -126,13 +97,13 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
   const filteredAds = useMemo(() => {
     const selectedNames = new Set(selectedCompetitors.map((c) => c.name));
     let ads = MOCK_ADS.filter((ad) => selectedNames.has(ad.brand));
-    if (reachEnabled) {
-      const min = parseInt(minReach) || 0;
-      ads = ads.filter((ad) => ad.reach >= min);
+    if (daysOnlineEnabled) {
+      const min = parseInt(minDaysOnline) || 0;
+      ads = ads.filter((ad) => daysOnline(ad.firstLaunched) >= min);
     }
-    ads.sort((a, b) => b.reach - a.reach);
+    ads.sort((a, b) => daysOnline(b.firstLaunched) - daysOnline(a.firstLaunched));
     return ads;
-  }, [selectedCompetitors, reachEnabled, minReach]);
+  }, [selectedCompetitors, daysOnlineEnabled, minDaysOnline]);
 
   if (!open) return null;
 
@@ -236,70 +207,25 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
             {/* ── SECTION: Filtering ── */}
             <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 pt-3 mb-1">Filtering</p>
 
-            {/* Time Period */}
-            <div className="space-y-2 pb-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1 cursor-help">
-                    Time period
-                    <Info className="h-2.5 w-2.5" />
-                  </Label>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
-                  The time period in which the ad has been launched.
-                </TooltipContent>
-              </Tooltip>
-              <div className="flex items-center gap-1">
-                {(["all-time", "last-week", "last-x"] as PeriodType[]).map((type) => (
-                  <div
-                    key={type}
-                    className={cn(
-                      "flex-1 rounded-md border px-2 py-1.5 text-center cursor-pointer transition-colors text-[10px] font-medium",
-                      periodType === type
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:bg-muted/40"
-                    )}
-                    onClick={() => setPeriodType(type)}
-                  >
-                    {type === "all-time" ? "All time" : type === "last-week" ? "Last week" : "Last X"}
-                  </div>
-                ))}
-              </div>
-              {periodType === "last-x" && (
-                <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/20 p-2">
-                  <span className="text-[10px] text-muted-foreground shrink-0">Last</span>
-                  <Input type="number" min="1" value={lastXValue} onChange={(e) => setLastXValue(e.target.value)} className="h-7 text-xs w-14" />
-                  <Select value={lastXUnit} onValueChange={(v) => setLastXUnit(v as PeriodUnit)}>
-                    <SelectTrigger className="h-7 text-[10px] w-[80px]"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="days">days</SelectItem>
-                      <SelectItem value="weeks">weeks</SelectItem>
-                      <SelectItem value="months">months</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-
             {/* Threshold */}
             <div className="space-y-2 pb-2">
               <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Thresholds
               </Label>
               <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox checked={reachEnabled} onCheckedChange={(v) => setReachEnabled(!!v)} className="h-3.5 w-3.5" />
-                <span className="text-[10px] text-muted-foreground">Min. estimated reach</span>
+                <Checkbox checked={daysOnlineEnabled} onCheckedChange={(v) => setDaysOnlineEnabled(!!v)} className="h-3.5 w-3.5" />
+                <span className="text-[10px] text-muted-foreground">Min. days online</span>
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
                     <Info className="h-2.5 w-2.5 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs text-[10px]">
-                    Only include ads with at least this estimated reach.
+                    Only include ads that have been online for at least this many days.
                   </TooltipContent>
                 </Tooltip>
               </label>
-              {reachEnabled && (
-                <Input type="number" min="0" value={minReach} onChange={(e) => setMinReach(e.target.value)} className="h-8 text-xs" />
+              {daysOnlineEnabled && (
+                <Input type="number" min="0" value={minDaysOnline} onChange={(e) => setMinDaysOnline(e.target.value)} className="h-8 text-xs" />
               )}
             </div>
 
@@ -318,15 +244,13 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Format</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">Platform</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-24">First launched</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-right">Days</TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">
-                    <span className="inline-flex items-center gap-1"><TrendingUp className="h-2.5 w-2.5" /> Reach</span>
-                  </TableHead>
-                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14">Trend</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-right">Days online</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Status</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-16">Funnel</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider">Hook</TableHead>
                   <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-14 text-center">Offer</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">Brand align.</TableHead>
+                  <TableHead className="h-9 text-[10px] font-bold uppercase tracking-wider w-20 text-right">Quality</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -359,8 +283,6 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       <TableCell className="py-2 text-[11px] text-muted-foreground">{ad.platform}</TableCell>
                       <TableCell className="py-2 text-[11px] text-muted-foreground">{formatDate(ad.firstLaunched)}</TableCell>
                       <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{daysOnline(ad.firstLaunched)}</TableCell>
-                      <TableCell className="py-2 text-right text-[11px] font-medium tabular-nums">{formatReach(ad.reach)}</TableCell>
-                      <TableCell className="py-2"><MiniSparkline data={ad.reachTrend} /></TableCell>
                       <TableCell className="py-2">
                         <div className="flex items-center gap-1">
                           <div className={cn("h-1.5 w-1.5 rounded-full", ad.status === "Active" ? "bg-success" : "bg-muted-foreground/40")} />
@@ -376,6 +298,8 @@ export default function DatasetDrawer({ open, onOpenChange }: DatasetDrawerProps
                       <TableCell className="py-2 text-center">
                         <div className={cn("h-2 w-2 rounded-full mx-auto", ad.offerPresent ? "bg-primary" : "bg-muted-foreground/20")} />
                       </TableCell>
+                      <TableCell className="py-2 text-right text-[11px] tabular-nums">{ad.brandAlignment}%</TableCell>
+                      <TableCell className="py-2 text-right text-[11px] tabular-nums">{ad.qualityScore}%</TableCell>
                     </TableRow>
                   ))
                 )}
