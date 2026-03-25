@@ -10,7 +10,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone, MessageSquare,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
@@ -70,7 +70,7 @@ const NODE_CATALOG = [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
-      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: MessageSquare, inputs: ["Trigger"], outputs: ["Reddit Data"] },
+      { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: Database, inputs: ["Trigger"], outputs: ["Reddit Data"] },
     ],
   },
   {
@@ -136,10 +136,10 @@ function getAdAccountNodes(): CanvasNode[] {
 
 function getRedditNodes(): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 270, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Products"], status: "success" },
-    { id: "n2", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", x: 100, y: 340, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
-    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", x: 450, y: 270, inputs: ["Products", "Reddit Data"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
+    { id: "n1", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
+    { id: "n2", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", x: 450, y: 270, inputs: ["Reddit Data", "Products"], outputs: ["Variations"] },
   ];
 }
 
@@ -164,9 +164,8 @@ const AD_ACCOUNT_EDGES: Edge[] = [
 
 const REDDIT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
-  { id: "e1", from: "n0", fromPort: 0, to: "n2", toPort: 0 },
-  { id: "e2", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
-  { id: "e3", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
 ];
 
 /* ── Helpers ── */
