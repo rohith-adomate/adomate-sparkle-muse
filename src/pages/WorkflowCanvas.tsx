@@ -240,7 +240,6 @@ export default function WorkflowCanvas() {
   // Update top-select node description when config changes
   const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
     setTopSelectConfig(config);
-    const { buildSummary } = require("@/components/TopAdsSelectionDrawer");
     const desc = config.mode === "all-new"
       ? "All new ads since last run"
       : `Top ${config.count} by ${config.metric === "brand-alignment" ? "brand alignment" : config.metric === "ad-quality" ? "ad quality" : "combined score"}`;
