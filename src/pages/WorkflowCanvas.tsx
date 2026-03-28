@@ -207,7 +207,7 @@ export default function WorkflowCanvas() {
   const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
+  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow && !isNewCompetitor);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
   const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(null);
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
