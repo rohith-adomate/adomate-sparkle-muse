@@ -796,7 +796,15 @@ export default function WorkflowCanvas() {
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
               const Icon = catalogItem?.icon || Database;
 
-              return (
+              // Orange warning border for unconfigured nodes
+              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
+              const warningTooltip = node.type === "dataset" && datasetEmpty
+                ? "The dataset table is currently empty. Click to add competitor sources."
+                : node.type === "product-data" && selectedProductCount === 0
+                ? "No products are selected yet. Click to choose products for this workflow."
+                : null;
+
+              const nodeEl = (
                 <div
                   key={node.id}
                   className={cn(
@@ -805,6 +813,7 @@ export default function WorkflowCanvas() {
                     activeTab === "runs" && node.status === "success" && "ring-2 ring-success",
                     activeTab === "runs" && node.status === "error" && "ring-2 ring-destructive",
                     activeTab === "runs" && node.status === "running" && "ring-2 ring-primary animate-pulse",
+                    activeTab === "editor" && needsConfig && !isSelected && "border-orange-400 ring-1 ring-orange-400/50",
                   )}
                   style={{
                     left: node.x,
@@ -844,7 +853,7 @@ export default function WorkflowCanvas() {
                   {/* Left accent border */}
                   <div
                     className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
-                    style={{ background: `hsl(${color})` }}
+                    style={{ background: needsConfig && activeTab === "editor" ? "hsl(30 90% 55%)" : `hsl(${color})` }}
                   />
 
                   {node.type === "product-data" && selectedProductCount > 0 && (
