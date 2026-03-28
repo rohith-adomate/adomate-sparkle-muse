@@ -106,12 +106,12 @@ const PORT_R = 6;
 
 /* ── Default nodes for demo ── */
 
-function getDefaultNodes(agentName: string): CanvasNode[] {
+function getDefaultNodes(agentName: string, isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: "Collect, enrich & filter competitor ads.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
-    { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: isNew ? "No sources selected." : "Collect, enrich & filter competitor ads.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: isNew ? undefined : "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
 }
@@ -192,6 +192,7 @@ export default function WorkflowCanvas() {
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
   const isRedditWorkflow = (location.state as any)?.type === "reddit";
+  const isNewCompetitor = (location.state as any)?.isNew === true && (location.state as any)?.type === "competitor";
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -203,7 +204,7 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName));
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
@@ -224,7 +225,8 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-  const [selectedProductCount, setSelectedProductCount] = useState(1);
+  const [selectedProductCount, setSelectedProductCount] = useState(isNewCompetitor ? 0 : 1);
+  const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
@@ -794,7 +796,15 @@ export default function WorkflowCanvas() {
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
               const Icon = catalogItem?.icon || Database;
 
-              return (
+              // Orange warning border for unconfigured nodes
+              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
+              const warningTooltip = node.type === "dataset" && datasetEmpty
+                ? "The dataset table is currently empty. Click to add competitor sources."
+                : node.type === "product-data" && selectedProductCount === 0
+                ? "No products are selected yet. Click to choose products for this workflow."
+                : null;
+
+              const nodeEl = (
                 <div
                   key={node.id}
                   className={cn(
@@ -803,6 +813,7 @@ export default function WorkflowCanvas() {
                     activeTab === "runs" && node.status === "success" && "ring-2 ring-success",
                     activeTab === "runs" && node.status === "error" && "ring-2 ring-destructive",
                     activeTab === "runs" && node.status === "running" && "ring-2 ring-primary animate-pulse",
+                    activeTab === "editor" && needsConfig && !isSelected && "border-orange-400 ring-1 ring-orange-400/50",
                   )}
                   style={{
                     left: node.x,
@@ -842,7 +853,7 @@ export default function WorkflowCanvas() {
                   {/* Left accent border */}
                   <div
                     className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
-                    style={{ background: `hsl(${color})` }}
+                    style={{ background: needsConfig && activeTab === "editor" ? "hsl(30 90% 55%)" : `hsl(${color})` }}
                   />
 
                   {node.type === "product-data" && selectedProductCount > 0 && (
@@ -918,6 +929,21 @@ export default function WorkflowCanvas() {
                   })}
                 </div>
               );
+
+              if (activeTab === "editor" && needsConfig && warningTooltip) {
+                return (
+                  <Tooltip key={node.id} delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      {nodeEl}
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[220px] text-xs">
+                      {warningTooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              return nodeEl;
             })}
           </div>
         </div>

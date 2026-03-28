@@ -115,7 +115,9 @@ export default function Workflows() {
     setAgents((prev) => [newAgent, ...prev]);
     setShowCreateModal(false);
     toast.success(`Workflow "${name}" created!`);
-    if (type === "ad-account") {
+    if (type === "competitor") {
+      navigate(`/workflows/${newAgent.id}`, { state: { type: "competitor", isNew: true } });
+    } else if (type === "ad-account") {
       navigate(`/workflows/${newAgent.id}`, { state: { type: "ad-account" } });
     } else if (type === "reddit") {
       navigate(`/workflows/${newAgent.id}`, { state: { type: "reddit" } });
