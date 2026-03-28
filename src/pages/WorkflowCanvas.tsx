@@ -225,7 +225,8 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-  const [selectedProductCount, setSelectedProductCount] = useState(1);
+  const [selectedProductCount, setSelectedProductCount] = useState(isNewCompetitor ? 0 : 1);
+  const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
   const [topSelectDrawerOpen, setTopSelectDrawerOpen] = useState(false);
