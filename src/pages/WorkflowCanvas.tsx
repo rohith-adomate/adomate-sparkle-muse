@@ -207,7 +207,7 @@ export default function WorkflowCanvas() {
   const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
+  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow && !isNewCompetitor);
   const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
   const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(null);
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
@@ -991,14 +991,6 @@ export default function WorkflowCanvas() {
           </span>
         </div>
 
-        {/* Delete hint - editor mode only */}
-        {selectedNode && activeTab === "editor" && (
-          <div className="absolute top-14 right-3 z-20">
-            <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10" onClick={deleteSelected}>
-              <Trash2 className="h-3 w-3" /> Delete
-            </Button>
-          </div>
-        )}
       </div>
       <DatasetDrawer
         open={datasetDrawerOpen}
