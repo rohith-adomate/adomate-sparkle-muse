@@ -929,6 +929,21 @@ export default function WorkflowCanvas() {
                   })}
                 </div>
               );
+
+              if (activeTab === "editor" && needsConfig && warningTooltip) {
+                return (
+                  <Tooltip key={node.id} delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      {nodeEl}
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[220px] text-xs">
+                      {warningTooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              return nodeEl;
             })}
           </div>
         </div>
