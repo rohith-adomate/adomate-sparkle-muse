@@ -225,6 +225,7 @@ export default function WorkflowCanvas() {
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
+  const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [selectedProductCount, setSelectedProductCount] = useState(isNewCompetitor ? 0 : 1);
   const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
