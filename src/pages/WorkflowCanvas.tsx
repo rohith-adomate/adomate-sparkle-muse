@@ -407,6 +407,7 @@ export default function WorkflowCanvas() {
     if (!selectedNode) return;
     // Close all drawers/modals
     setDatasetDrawerOpen(false);
+    setDatasetRunResultsOpen(false);
     setProductDataDrawerOpen(false);
     setGenerateConceptsDrawerOpen(false);
     setScheduleDrawerOpen(false);
