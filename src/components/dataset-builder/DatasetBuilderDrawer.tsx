@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, Plus, Save, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, X, Plus, Save, Play } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, INITIAL_ROWS, MOCK_AI_VALUES } from "./mockData";
@@ -10,6 +10,7 @@ import DatasetBuilderLeftPanel from "./DatasetBuilderLeftPanel";
 import DatasetBuilderTable from "./DatasetBuilderTable";
 import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
+import RowDetailDrawer from "./RowDetailDrawer";
 
 interface Props {
   open: boolean;
@@ -24,6 +25,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
+  const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
 
   const handleAddSource = useCallback((src: DatasetSource) => {
     setSources(prev => [...prev, src]);
@@ -75,10 +77,8 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
   }, [rows]);
 
   const handleRunRows = useCallback((rowIds: string[]) => {
-    // Set running state
     setRows(prev => prev.map(r => rowIds.includes(r.id) ? { ...r, isRunning: true } : r));
 
-    // Simulate AI processing
     setTimeout(() => {
       setRows(prev => prev.map(r => {
         if (!rowIds.includes(r.id)) return r;
@@ -89,7 +89,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
           if (MOCK_AI_VALUES[tplId]?.[r.id]) {
             newAiValues[tplId] = MOCK_AI_VALUES[tplId][r.id];
           } else {
-            // Generate a placeholder for custom columns
             newAiValues[tplId] = col.columnKind === "scoring" ? `${Math.floor(Math.random() * 5 + 5)}/10` : "Positive";
           }
         });
@@ -115,7 +114,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
 
   return (
     <TooltipProvider>
-      {/* Backdrop — 5% gap on left */}
+      {/* Backdrop */}
       <div className="fixed inset-0 z-50 flex">
         <div className="w-[5%] bg-black/20" onClick={onClose} />
         <div className="w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
@@ -130,10 +129,10 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                 </TooltipTrigger>
                 <TooltipContent className="text-xs">Back to canvas</TooltipContent>
               </Tooltip>
-              <h1 className="text-sm font-bold">Competitor Dataset</h1>
+              <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5" onClick={() => setAddColumnOpen(true)}>
+            <div className="flex items-center gap-2 mr-10">
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => setAddColumnOpen(true)}>
                 <Plus className="h-3.5 w-3.5" /> Add Column
               </Button>
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
@@ -143,11 +142,11 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                 <TooltipTrigger asChild>
                   <Button
                     size="sm"
-                    className={cn("h-8 text-xs gap-1.5", "bg-green-600 hover:bg-green-700 text-white")}
+                    className={cn("h-8 text-xs gap-1.5", "bg-red-500 hover:bg-red-600 text-white")}
                     onClick={handleRunAll}
                   >
                     <Play className="h-3.5 w-3.5" />
-                    {hasSelectedRows ? `Run (${selectedRows.size})` : "Run All"}
+                    {hasSelectedRows ? `Run (${selectedRows.size})` : "Run All Rows"}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="text-xs max-w-[220px]">
@@ -159,15 +158,14 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                   }
                 </TooltipContent>
               </Tooltip>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
-                <X className="h-4 w-4" />
-              </Button>
             </div>
+            <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-3 top-2.5" onClick={onClose}>
+              <X className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Main content */}
           <div className="flex flex-1 overflow-hidden">
-            {/* Left panel */}
             <DatasetBuilderLeftPanel
               sources={sources}
               onAddSource={handleAddSource}
@@ -177,7 +175,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               onRemoveFilter={handleRemoveFilter}
             />
 
-            {/* Center table */}
             <DatasetBuilderTable
               columns={columns}
               rows={rows}
@@ -186,10 +183,10 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               onToggleAll={handleToggleAll}
               onColumnClick={setInspectorColumn}
               onRunRows={handleRunRows}
+              onRowClick={setDetailRow}
               activeColumnId={inspectorColumn?.id}
             />
 
-            {/* Right inspector */}
             {inspectorColumn && (
               <ColumnInspectorPanel
                 column={inspectorColumn}
@@ -203,11 +200,17 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
         </div>
       </div>
 
-      {/* Add Column Modal */}
       <AddColumnModal
         open={addColumnOpen}
         onOpenChange={setAddColumnOpen}
         onAddColumn={handleAddColumn}
+      />
+
+      <RowDetailDrawer
+        row={detailRow}
+        columns={columns}
+        onClose={() => setDetailRow(null)}
+        onRunRow={(id) => handleRunRows([id])}
       />
     </TooltipProvider>
   );
