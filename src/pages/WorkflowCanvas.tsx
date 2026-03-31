@@ -827,8 +827,12 @@ export default function WorkflowCanvas() {
                     e.stopPropagation();
                     setSelectedNode(node.id);
                     if (activeTab === "runs") {
-                      setRunOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
-                      setRunPanelOpen(true);
+                      if (node.type === "dataset") {
+                        setDatasetRunResultsOpen(true);
+                      } else {
+                        setRunOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
+                        setRunPanelOpen(true);
+                      }
                     } else {
                       if (node.type === "dataset") {
                         setDatasetDrawerOpen(true);
