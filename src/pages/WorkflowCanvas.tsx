@@ -16,7 +16,8 @@ import { toast } from "sonner";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
-import DatasetDrawer from "@/components/DatasetDrawer";
+import DatasetBuilderDrawer from "@/components/dataset-builder/DatasetBuilderDrawer";
+import DatasetRunResultsDrawer from "@/components/dataset-builder/DatasetRunResultsDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
@@ -224,6 +225,7 @@ export default function WorkflowCanvas() {
   const [showPicker, setShowPicker] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
+  const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   const [selectedProductCount, setSelectedProductCount] = useState(isNewCompetitor ? 0 : 1);
   const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
@@ -405,6 +407,7 @@ export default function WorkflowCanvas() {
     if (!selectedNode) return;
     // Close all drawers/modals
     setDatasetDrawerOpen(false);
+    setDatasetRunResultsOpen(false);
     setProductDataDrawerOpen(false);
     setGenerateConceptsDrawerOpen(false);
     setScheduleDrawerOpen(false);
@@ -825,8 +828,12 @@ export default function WorkflowCanvas() {
                     e.stopPropagation();
                     setSelectedNode(node.id);
                     if (activeTab === "runs") {
-                      setRunOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
-                      setRunPanelOpen(true);
+                      if (node.type === "dataset") {
+                        setDatasetRunResultsOpen(true);
+                      } else {
+                        setRunOutputNode({ label: node.label, type: node.type, status: node.status || "success" });
+                        setRunPanelOpen(true);
+                      }
                     } else {
                       if (node.type === "dataset") {
                         setDatasetDrawerOpen(true);
@@ -992,9 +999,13 @@ export default function WorkflowCanvas() {
         </div>
 
       </div>
-      <DatasetDrawer
+      <DatasetBuilderDrawer
         open={datasetDrawerOpen}
-        onOpenChange={setDatasetDrawerOpen}
+        onClose={() => setDatasetDrawerOpen(false)}
+      />
+      <DatasetRunResultsDrawer
+        open={datasetRunResultsOpen}
+        onClose={() => setDatasetRunResultsOpen(false)}
       />
       <ProductDataDrawer
         open={productDataDrawerOpen}
