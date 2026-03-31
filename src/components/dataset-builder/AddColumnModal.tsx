@@ -114,8 +114,8 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
               className="flex flex-col items-center gap-3 p-5 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-accent/30 transition-all text-center group"
               onClick={() => setPath("templates")}
             >
-              <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
-                <LayoutTemplate className="h-5 w-5 text-purple-600" />
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <LayoutTemplate className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Pick from Templates</p>
