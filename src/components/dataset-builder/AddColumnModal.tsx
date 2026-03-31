@@ -146,8 +146,8 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
                 className="w-full flex items-start gap-3 p-3.5 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/30 transition-all text-left"
                 onClick={() => handleTemplateAdd(tpl)}
               >
-                <div className="h-8 w-8 rounded-md bg-purple-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="h-4 w-4 text-purple-500" />
+                 <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                   <Sparkles className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">{tpl.name}</p>
