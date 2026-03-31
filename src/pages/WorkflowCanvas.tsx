@@ -998,9 +998,13 @@ export default function WorkflowCanvas() {
         </div>
 
       </div>
-      <DatasetDrawer
+      <DatasetBuilderDrawer
         open={datasetDrawerOpen}
-        onOpenChange={setDatasetDrawerOpen}
+        onClose={() => setDatasetDrawerOpen(false)}
+      />
+      <DatasetRunResultsDrawer
+        open={datasetRunResultsOpen}
+        onClose={() => setDatasetRunResultsOpen(false)}
       />
       <ProductDataDrawer
         open={productDataDrawerOpen}
