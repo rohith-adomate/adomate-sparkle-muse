@@ -93,11 +93,11 @@ export function TopNav() {
       <SaveIndicator state={saveState} />
 
       <div className="flex items-center gap-2">
-        <FeedbackPopover />
         <Button variant="ghost" size="sm" onClick={() => nav("/onboarding")} className="gap-1.5 text-muted-foreground hover:text-foreground">
           <Rocket className="h-4 w-4" />
           <span className="hidden sm:inline text-xs">Onboarding</span>
         </Button>
+        <FeedbackPopover />
       </div>
     </header>
   );
