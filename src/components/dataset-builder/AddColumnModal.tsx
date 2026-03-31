@@ -114,8 +114,8 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
               className="flex flex-col items-center gap-3 p-5 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-accent/30 transition-all text-center group"
               onClick={() => setPath("templates")}
             >
-              <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
-                <LayoutTemplate className="h-5 w-5 text-purple-600" />
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <LayoutTemplate className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Pick from Templates</p>
@@ -126,8 +126,8 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
               className="flex flex-col items-center gap-3 p-5 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-accent/30 transition-all text-center group"
               onClick={() => setPath("custom-step1")}
             >
-              <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                <Pencil className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Pencil className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-semibold">Define Custom Column</p>
@@ -146,8 +146,8 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
                 className="w-full flex items-start gap-3 p-3.5 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/30 transition-all text-left"
                 onClick={() => handleTemplateAdd(tpl)}
               >
-                <div className="h-8 w-8 rounded-md bg-purple-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="h-4 w-4 text-purple-500" />
+                 <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                   <Sparkles className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">{tpl.name}</p>
@@ -214,13 +214,13 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
               <p className="text-xs font-semibold mb-2">Logic</p>
               <div className="flex gap-2 mb-3">
                 <button
-                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "ai" ? "border-purple-300 bg-purple-50 text-purple-700" : "border-border hover:border-primary/30")}
+                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "ai" ? "border-primary/30 bg-primary/10 text-primary" : "border-border hover:border-primary/30")}
                   onClick={() => setLogicType("ai")}
                 >
                   <Sparkles className="h-3.5 w-3.5 inline mr-1" /> AI Prompt
                 </button>
                 <button
-                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "rule" ? "border-blue-300 bg-blue-50 text-blue-700" : "border-border hover:border-primary/30")}
+                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "rule" ? "border-primary/30 bg-primary/10 text-primary" : "border-border hover:border-primary/30")}
                   onClick={() => setLogicType("rule")}
                 >
                   Rule-based

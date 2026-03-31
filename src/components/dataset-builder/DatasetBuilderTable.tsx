@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Play, Download, Trash2, Sparkles } from "lucide-react";
+import { Play, Download, Trash2, Sparkles, GripVertical } from "lucide-react";
 import type { DatasetColumn, DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 
@@ -18,12 +18,15 @@ interface Props {
   onRunRows: (rowIds: string[]) => void;
   onRowClick: (row: DatasetRow) => void;
   activeColumnId?: string;
+  onReorderColumns?: (columns: DatasetColumn[]) => void;
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [dragColId, setDragColId] = useState<string | null>(null);
+  const [dragOverColId, setDragOverColId] = useState<string | null>(null);
 
   const factsColumns = columns.filter(c => c.type === "facts");
   const aiColumns = columns.filter(c => c.type === "ai");
@@ -49,6 +52,45 @@ export default function DatasetBuilderTable({
     return row.aiValues[templateId] || "—";
   };
 
+  const handleDragStart = useCallback((colId: string) => {
+    setDragColId(colId);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent, colId: string) => {
+    e.preventDefault();
+    setDragOverColId(colId);
+  }, []);
+
+  const handleDrop = useCallback((targetColId: string) => {
+    if (!dragColId || dragColId === targetColId || !onReorderColumns) {
+      setDragColId(null);
+      setDragOverColId(null);
+      return;
+    }
+
+    const dragCol = allColumns.find(c => c.id === dragColId);
+    const targetCol = allColumns.find(c => c.id === targetColId);
+    if (!dragCol || !targetCol) return;
+
+    // Only allow reorder within same type group
+    if (dragCol.type !== targetCol.type) {
+      setDragColId(null);
+      setDragOverColId(null);
+      return;
+    }
+
+    const group = dragCol.type === "facts" ? [...factsColumns] : [...aiColumns];
+    const otherGroup = dragCol.type === "facts" ? aiColumns : factsColumns;
+    const fromIdx = group.findIndex(c => c.id === dragColId);
+    const toIdx = group.findIndex(c => c.id === targetColId);
+    const [moved] = group.splice(fromIdx, 1);
+    group.splice(toIdx, 0, moved);
+
+    onReorderColumns(dragCol.type === "facts" ? [...group, ...otherGroup] : [...otherGroup, ...group]);
+    setDragColId(null);
+    setDragOverColId(null);
+  }, [dragColId, allColumns, factsColumns, aiColumns, onReorderColumns]);
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Bulk action bar */}
@@ -61,7 +103,7 @@ export default function DatasetBuilderTable({
           <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1 text-destructive hover:text-destructive" onClick={() => {}}>
             <Trash2 className="h-3 w-3" /> Remove
           </Button>
-          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-green-600 hover:bg-green-700" onClick={() => onRunRows([...selectedRows])}>
+          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-primary hover:bg-primary/90" onClick={() => onRunRows([...selectedRows])}>
             <Play className="h-3 w-3" /> Run selected
           </Button>
         </div>
@@ -79,28 +121,37 @@ export default function DatasetBuilderTable({
               {allColumns.map(col => (
                 <th
                   key={col.id}
+                  draggable
+                  onDragStart={() => handleDragStart(col.id)}
+                  onDragOver={(e) => handleDragOver(e, col.id)}
+                  onDrop={() => handleDrop(col.id)}
+                  onDragEnd={() => { setDragColId(null); setDragOverColId(null); }}
                   className={cn(
                     "px-2.5 py-2.5 text-left cursor-pointer transition-colors group",
                     col.type === "ai" && "bg-purple-50/60",
                     activeColumnId === col.id && "bg-primary/10",
+                    dragOverColId === col.id && dragColId !== col.id && "bg-primary/20",
                     "hover:bg-primary/5"
                   )}
                   onClick={() => onColumnClick(col)}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className={cn(
-                      "text-[10px] font-bold uppercase tracking-wider truncate",
-                      col.type === "ai" ? "text-purple-700" : "text-muted-foreground"
-                    )}>
-                      {col.name}
-                    </span>
+                    <GripVertical className="h-3 w-3 text-muted-foreground/0 group-hover:text-muted-foreground/50 transition-colors shrink-0 cursor-grab" />
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <span className={cn(
+                          "text-[10px] font-bold uppercase tracking-wider truncate",
+                          col.type === "ai" ? "text-purple-700" : "text-muted-foreground"
+                        )}>
+                          {col.name}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs">
+                        {col.type === "ai" ? "AI-generated column" : "Facts column"}
+                      </TooltipContent>
+                    </Tooltip>
                     {col.type === "ai" && (
-                      <Tooltip delayDuration={200}>
-                        <TooltipTrigger asChild>
-                          <Sparkles className="h-3 w-3 text-purple-400 shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">AI-generated column</TooltipContent>
-                      </Tooltip>
+                      <Sparkles className="h-3 w-3 text-purple-400 shrink-0" />
                     )}
                   </div>
                 </th>
@@ -131,10 +182,10 @@ export default function DatasetBuilderTable({
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <button
-                              className="h-5 w-5 rounded flex items-center justify-center hover:bg-green-100 transition-colors"
+                              className="h-5 w-5 rounded flex items-center justify-center hover:bg-primary/10 transition-colors"
                               onClick={(e) => { e.stopPropagation(); onRunRows([row.id]); }}
                             >
-                              <Play className="h-3 w-3 text-green-600" />
+                              <Play className="h-3 w-3 text-primary" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent className="text-xs">Run this row</TooltipContent>

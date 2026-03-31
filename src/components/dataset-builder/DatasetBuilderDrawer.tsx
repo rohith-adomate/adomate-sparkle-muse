@@ -142,7 +142,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                 <TooltipTrigger asChild>
                   <Button
                     size="sm"
-                    className={cn("h-8 text-xs gap-1.5", "bg-red-500 hover:bg-red-600 text-white")}
+                    className={cn("h-8 text-xs gap-1.5", "bg-primary hover:bg-primary/90 text-primary-foreground")}
                     onClick={handleRunAll}
                   >
                     <Play className="h-3.5 w-3.5" />
@@ -185,6 +185,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               onRunRows={handleRunRows}
               onRowClick={setDetailRow}
               activeColumnId={inspectorColumn?.id}
+              onReorderColumns={setColumns}
             />
 
             {inspectorColumn && (
