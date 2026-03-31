@@ -185,6 +185,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               onRunRows={handleRunRows}
               onRowClick={setDetailRow}
               activeColumnId={inspectorColumn?.id}
+              onReorderColumns={setColumns}
             />
 
             {inspectorColumn && (
