@@ -130,11 +130,11 @@ export default function DatasetBuilderTable({
                       {isHovered && !row.isRunning && (
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            <button
-                              className="h-5 w-5 rounded flex items-center justify-center hover:bg-green-100 transition-colors"
+                        <button
+                              className="h-5 w-5 rounded flex items-center justify-center hover:bg-primary/10 transition-colors"
                               onClick={(e) => { e.stopPropagation(); onRunRows([row.id]); }}
                             >
-                              <Play className="h-3 w-3 text-green-600" />
+                              <Play className="h-3 w-3 text-primary" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent className="text-xs">Run this row</TooltipContent>

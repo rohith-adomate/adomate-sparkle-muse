@@ -220,7 +220,7 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
                   <Sparkles className="h-3.5 w-3.5 inline mr-1" /> AI Prompt
                 </button>
                 <button
-                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "rule" ? "border-blue-300 bg-blue-50 text-blue-700" : "border-border hover:border-primary/30")}
+                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "rule" ? "border-primary/30 bg-primary/10 text-primary" : "border-border hover:border-primary/30")}
                   onClick={() => setLogicType("rule")}
                 >
                   Rule-based
