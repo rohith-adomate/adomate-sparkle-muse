@@ -61,7 +61,7 @@ export default function DatasetBuilderTable({
           <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1 text-destructive hover:text-destructive" onClick={() => {}}>
             <Trash2 className="h-3 w-3" /> Remove
           </Button>
-          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-green-600 hover:bg-green-700" onClick={() => onRunRows([...selectedRows])}>
+          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-primary hover:bg-primary/90" onClick={() => onRunRows([...selectedRows])}>
             <Play className="h-3 w-3" /> Run selected
           </Button>
         </div>
