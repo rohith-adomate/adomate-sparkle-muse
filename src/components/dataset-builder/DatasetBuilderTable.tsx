@@ -16,11 +16,12 @@ interface Props {
   onToggleAll: () => void;
   onColumnClick: (col: DatasetColumn) => void;
   onRunRows: (rowIds: string[]) => void;
+  onRowClick: (row: DatasetRow) => void;
   activeColumnId?: string;
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, activeColumnId,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
@@ -31,7 +32,6 @@ export default function DatasetBuilderTable({
   const allSelected = rows.length > 0 && selectedRows.size === rows.length;
 
   const getCellValue = (row: DatasetRow, col: DatasetColumn): string => {
-    // Facts columns
     switch (col.id) {
       case "col-brand": return row.brand;
       case "col-headline": return row.headline;
@@ -45,7 +45,6 @@ export default function DatasetBuilderTable({
       case "col-offer": return row.offerPresent ? "Yes" : "No";
       case "col-alignment": return row.brandAlignment;
     }
-    // AI columns
     const templateId = col.templateId || col.id;
     return row.aiValues[templateId] || "—";
   };
@@ -73,13 +72,10 @@ export default function DatasetBuilderTable({
         <table className="w-full text-xs border-collapse">
           <thead className="sticky top-0 z-10">
             <tr className="bg-muted/50 border-b border-border">
-              {/* Checkbox + row run */}
               <th className="w-14 px-2 py-2.5 text-left">
                 <Checkbox checked={allSelected} onCheckedChange={onToggleAll} className="h-3.5 w-3.5" />
               </th>
               <th className="w-8 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
-              {/* Preview */}
-              <th className="w-12 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Preview</th>
               {allColumns.map(col => (
                 <th
                   key={col.id}
@@ -119,15 +115,16 @@ export default function DatasetBuilderTable({
                 <tr
                   key={row.id}
                   className={cn(
-                    "border-b border-border/50 transition-colors",
+                    "border-b border-border/50 transition-colors cursor-pointer",
                     isSelected ? "bg-primary/5" : "hover:bg-muted/30",
                     row.isRunning && "animate-pulse bg-purple-50/30"
                   )}
                   onMouseEnter={() => setHoveredRow(row.id)}
                   onMouseLeave={() => setHoveredRow(null)}
+                  onClick={() => onRowClick(row)}
                 >
                   {/* Checkbox + run button */}
-                  <td className="px-2 py-1.5">
+                  <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-1">
                       <Checkbox checked={isSelected} onCheckedChange={() => onToggleRow(row.id)} className="h-3.5 w-3.5" />
                       {isHovered && !row.isRunning && (
@@ -146,12 +143,6 @@ export default function DatasetBuilderTable({
                     </div>
                   </td>
                   <td className="px-1 py-1.5 text-[10px] text-muted-foreground font-mono">{idx + 1}</td>
-                  {/* Preview thumbnail */}
-                  <td className="px-1 py-1.5">
-                    <div className="w-8 rounded overflow-hidden bg-muted" style={{ aspectRatio: "4/5" }}>
-                      <img src="/placeholder.svg" alt="Ad" className="w-full h-full object-cover" />
-                    </div>
-                  </td>
                   {/* Facts + AI columns */}
                   {allColumns.map(col => {
                     const val = getCellValue(row, col);
@@ -212,6 +203,11 @@ export default function DatasetBuilderTable({
             })}
           </tbody>
         </table>
+
+        {/* Footer stats */}
+        <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
+          {rows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
+        </div>
       </div>
     </div>
   );

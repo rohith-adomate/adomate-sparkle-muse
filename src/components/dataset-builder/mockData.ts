@@ -1,9 +1,9 @@
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow } from "./types";
 
 export const INITIAL_SOURCES: DatasetSource[] = [
-  { id: "s1", type: "competitor", label: "CeraVe", avatar: "https://logo.clearbit.com/cerave.com", url: "https://cerave.com", status: "connected" },
-  { id: "s2", type: "competitor", label: "The Ordinary", avatar: "https://logo.clearbit.com/theordinary.com", url: "https://theordinary.com", status: "connected" },
-  { id: "s3", type: "landing-page", label: "La Roche-Posay", avatar: "https://logo.clearbit.com/laroche-posay.com", url: "https://laroche-posay.com", status: "needs-auth" },
+  { id: "s1", type: "competitor", label: "CeraVe Meta Ad ...", avatar: "https://logo.clearbit.com/cerave.com", url: "https://www.facebook.com/ads/library/?q=cerave", status: "connected" },
+  { id: "s2", type: "competitor", label: "The Ordinary Me...", avatar: "https://logo.clearbit.com/theordinary.com", url: "https://www.facebook.com/ads/library/?q=theordinary", status: "connected" },
+  { id: "s3", type: "landing-page", label: "CeraVe Landing...", avatar: "https://logo.clearbit.com/cerave.com", url: "https://cerave.com/...", status: "needs-auth" },
 ];
 
 export const FACTS_COLUMNS: DatasetColumn[] = [
