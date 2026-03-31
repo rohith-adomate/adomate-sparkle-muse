@@ -214,7 +214,7 @@ export default function AddColumnModal({ open, onOpenChange, onAddColumn }: Prop
               <p className="text-xs font-semibold mb-2">Logic</p>
               <div className="flex gap-2 mb-3">
                 <button
-                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "ai" ? "border-purple-300 bg-purple-50 text-purple-700" : "border-border hover:border-primary/30")}
+                  className={cn("flex-1 py-2 rounded-lg border text-xs font-medium transition-all", logicType === "ai" ? "border-primary/30 bg-primary/10 text-primary" : "border-border hover:border-primary/30")}
                   onClick={() => setLogicType("ai")}
                 >
                   <Sparkles className="h-3.5 w-3.5 inline mr-1" /> AI Prompt
