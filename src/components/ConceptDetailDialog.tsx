@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -70,34 +71,44 @@ export function ConceptDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowInfoPanel(false); } }}>
+      {open && createPortal(
+        <>
+          {!isFirst && (
+            <div className="fixed left-4 top-1/2 -translate-y-1/2 z-[60]">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleNavigate("prev"); }}
+                    className="h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
+                  >
+                    <ChevronLeft className="h-5 w-5 text-foreground" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Previous concept (←)</TooltipContent>
+              </Tooltip>
+            </div>
+          )}
+          {!isLast && (
+            <div className="fixed right-4 top-1/2 -translate-y-1/2 z-[60]">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleNavigate("next"); }}
+                    className="h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
+                  >
+                    <ChevronRight className="h-5 w-5 text-foreground" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">Next concept (→)</TooltipContent>
+              </Tooltip>
+            </div>
+          )}
+        </>,
+        document.body
+      )}
       <DialogContent className="max-w-5xl w-[calc(100vw-8rem)] h-[90vh] max-h-[90vh] p-0 overflow-hidden rounded-xl border-0 gap-0 [&>button]:hidden" aria-label={concept.title} aria-describedby={undefined}>
-        {/* Nav arrows — outside modal visually */}
-        {!isFirst && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleNavigate("prev"); }}
-                className="fixed left-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
-              >
-                <ChevronLeft className="h-5 w-5 text-foreground" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Previous concept (←)</TooltipContent>
-          </Tooltip>
-        )}
-        {!isLast && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleNavigate("next"); }}
-                className="fixed right-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
-              >
-                <ChevronRight className="h-5 w-5 text-foreground" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="left">Next concept (→)</TooltipContent>
-          </Tooltip>
-        )}
         <div className="flex h-full relative">
           {/* FULL-WIDTH Image */}
           <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
