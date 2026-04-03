@@ -14,6 +14,8 @@ export type AgentRun = {
   time: string;
   seen: boolean;
   concepts: Concept[];
+  workflowId?: string;
+  workflowName?: string;
 };
 
 export const agentRuns: AgentRun[] = [
