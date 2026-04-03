@@ -250,7 +250,6 @@ export default function ConceptsRunDetail() {
           });
         })()}
       </div>
-      </div>
 
       {/* Tinder-style concept detail */}
       <Dialog open={!!selected} onOpenChange={(o) => { if (!o) { setSelected(null); setSwipeAnim(null); setShowIterate(false); } }}>
