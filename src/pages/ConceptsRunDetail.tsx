@@ -17,6 +17,7 @@ import niveaFreshKickMorning from "@/assets/competitors/nivea-fresh-kick-morning
 import niveaFreshKickConcert from "@/assets/competitors/nivea-fresh-kick-concert.png";
 import niveaShowerMoisturizer from "@/assets/competitors/nivea-shower-moisturizer.png";
 import niveaAntiHairloss from "@/assets/competitors/nivea-anti-hairloss.png";
+import niveaMenLogo from "@/assets/competitors/nivea-men-logo.webp";
 
 const rowProducts = [
   {
