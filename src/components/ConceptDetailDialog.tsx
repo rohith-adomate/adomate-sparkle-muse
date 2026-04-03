@@ -81,7 +81,7 @@ export function ConceptDetailDialog({
                     ? "bg-destructive text-destructive-foreground"
                     : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
                 }`}
-                onClick={() => onStatusChange(concept.id, "rejected")}
+                onClick={() => onStatusChange(concept.id, status === "rejected" ? "pending" : "rejected")}
               >
                 <ThumbsDown className="h-4 w-4" />
               </button>
