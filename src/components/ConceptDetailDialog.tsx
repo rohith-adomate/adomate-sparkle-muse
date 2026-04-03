@@ -213,30 +213,44 @@ export function ConceptDetailDialog({
               {/* Details */}
               <div className="px-5 py-4 space-y-3">
                 {run.workflowName && (
-                  <div
-                    className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-                    onClick={() => {
-                      if (run.workflowId) {
-                        window.location.href = `/workflows/${run.workflowId}`;
-                      }
-                    }}
-                  >
-                    <Workflow className="h-3.5 w-3.5 shrink-0" />
-                    <span className="font-medium text-foreground">{run.workflowName}</span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                        onClick={() => {
+                          if (run.workflowId) {
+                            window.location.href = `/workflows/${run.workflowId}`;
+                          }
+                        }}
+                      >
+                        <Workflow className="h-3.5 w-3.5 shrink-0" />
+                        <span className="font-medium text-foreground">{run.workflowName}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="max-w-[200px]">
+                      <p>View the workflow that generated this concept</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
-                <div
-                  className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-                  onClick={() => {
-                    if (run.workflowId) {
-                      window.location.href = `/workflows/${run.workflowId}?tab=runs&run=${run.id}`;
-                    }
-                  }}
-                >
-                  <Play className="h-3.5 w-3.5 shrink-0" />
-                  <span className="font-medium text-foreground">{runLabel}</span>
-                  <span className="text-muted-foreground/60 ml-auto">{run.time}</span>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (run.workflowId) {
+                          window.location.href = `/workflows/${run.workflowId}?tab=runs&run=${run.id}`;
+                        }
+                      }}
+                    >
+                      <Play className="h-3.5 w-3.5 shrink-0" />
+                      <span className="font-medium text-foreground">{runLabel}</span>
+                      <span className="text-muted-foreground/60 ml-auto">{run.time}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="max-w-[200px]">
+                    <p>View the specific run and its full output details</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className="h-px bg-border/50" />
