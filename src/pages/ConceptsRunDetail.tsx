@@ -34,7 +34,7 @@ const rowProducts = [
   },
   {
     name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
-    competitor: { name: "Nivea", avatar: niveaMenLogo, ad: niveaShowerMoisturizer },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaFreshKickMorning },
   },
 ];
 
