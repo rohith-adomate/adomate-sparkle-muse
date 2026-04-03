@@ -119,19 +119,8 @@ export function ConceptDetailDialog({
               </button>
             </div>
 
-            {/* Nav arrows */}
-            <button
-              onClick={(e) => { e.stopPropagation(); handleNavigate("prev"); }}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 flex items-center justify-center transition-colors"
-            >
-              <ChevronLeft className="h-5 w-5 text-white/80" />
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleNavigate("next"); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 flex items-center justify-center transition-colors"
-            >
-              <ChevronRight className="h-5 w-5 text-white/80" />
-            </button>
+
+
 
             <img
               src={concept.img || `https://picsum.photos/seed/${concept.imgSeed}/800/800`}
