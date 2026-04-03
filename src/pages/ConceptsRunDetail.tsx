@@ -260,6 +260,7 @@ export default function ConceptsRunDetail() {
         onOpenChange={(o) => { if (!o) setSelected(null); }}
         onStatusChange={handleStatusChange}
         onNavigate={handleNavigate}
+        getStatus={getStatus}
       />
     </div>
   );
