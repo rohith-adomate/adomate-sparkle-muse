@@ -79,45 +79,76 @@ export function ConceptDetailDialog({
           <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
             {/* Top overlay CTAs */}
             <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-              <button
-                className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
-                  status === "accepted"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                }`}
-                onClick={() => onStatusChange(concept.id, status === "accepted" ? "pending" : "accepted")}
-              >
-                <ThumbsUp className="h-4 w-4" />
-              </button>
-              <button
-                className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
-                  status === "rejected"
-                    ? "bg-destructive text-destructive-foreground"
-                    : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                }`}
-                onClick={() => onStatusChange(concept.id, status === "rejected" ? "pending" : "rejected")}
-              >
-                <ThumbsDown className="h-4 w-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+                      status === "accepted"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                    }`}
+                    onClick={() => onStatusChange(concept.id, status === "accepted" ? "pending" : "accepted")}
+                  >
+                    <ThumbsUp className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Accept concept</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+                      status === "rejected"
+                        ? "bg-destructive text-destructive-foreground"
+                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                    }`}
+                    onClick={() => onStatusChange(concept.id, status === "rejected" ? "pending" : "rejected")}
+                  >
+                    <ThumbsDown className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Reject concept</TooltipContent>
+              </Tooltip>
               <div className="w-px h-5 bg-white/20" />
-              <a
-                href={concept.img || `https://picsum.photos/seed/${concept.imgSeed}/800/800`}
-                download={`${concept.title}.jpg`}
-                onClick={(e) => e.stopPropagation()}
-                className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-              >
-                <Download className="h-4 w-4" />
-              </a>
-              <button
-                className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
-                  showInfoPanel
-                    ? "bg-white text-neutral-900"
-                    : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                }`}
-                onClick={() => setShowInfoPanel(!showInfoPanel)}
-              >
-                <Info className="h-4 w-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const toastId = toast("Downloading full quality image…", {
+                        icon: <Loader2 className="h-4 w-4 animate-spin" />,
+                        duration: Infinity,
+                      });
+                      setTimeout(() => {
+                        toast.success("Download successful", {
+                          id: toastId,
+                          icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+                          duration: 3000,
+                        });
+                      }, 3000);
+                    }}
+                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                  >
+                    <Download className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Download in full quality</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+                      showInfoPanel
+                        ? "bg-white text-neutral-900"
+                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                    }`}
+                    onClick={() => setShowInfoPanel(!showInfoPanel)}
+                  >
+                    <Info className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Concept details</TooltipContent>
+              </Tooltip>
             </div>
 
 
