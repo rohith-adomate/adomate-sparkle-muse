@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HoverExplainer } from "@/components/HoverExplainer";
 import { agentRuns, statusDot } from "@/data/conceptsData";
