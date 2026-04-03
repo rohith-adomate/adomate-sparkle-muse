@@ -106,6 +106,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 19, 2026 · 10:15",
     seen: true,
+    workflowId: "wf-competitor-3",
+    workflowName: "Competitor Workflow — International",
     concepts: [
       { id: "c50", title: "Fresh all day, naturally.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "fresh-all-day", img: "/concepts/concept-7.avif" },
       { id: "c51", title: "Your skin deserves better.", source: "AI Studio", status: "accepted", campaign: "International", imgSeed: "skin-deserves", img: "/concepts/concept-8.avif" },
