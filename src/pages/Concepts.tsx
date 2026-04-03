@@ -37,6 +37,16 @@ function UnseenIndicator() {
 
 export default function Concepts() {
   const navigate = useNavigate();
+  const [editingRunId, setEditingRunId] = useState<string | null>(null);
+  const [editedTitles, setEditedTitles] = useState<Record<string, string>>({});
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingRunId && titleInputRef.current) {
+      titleInputRef.current.focus();
+      titleInputRef.current.select();
+    }
+  }, [editingRunId]);
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
