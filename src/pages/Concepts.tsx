@@ -91,7 +91,7 @@ export default function Concepts() {
               {visibleConcepts.map((c) => (
                 <Card
                   key={c.id}
-                  className={`overflow-hidden transition-all duration-200 ${style.cardHover} ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
+                  className={`overflow-hidden transition-all duration-200 ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : style.cardHover}`}
                 >
                   <CardContent className="p-0">
                     <div className="aspect-square relative overflow-hidden bg-muted rounded-lg">
