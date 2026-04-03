@@ -47,11 +47,14 @@ export function ConceptDetailDialog({
     onNavigate(dir);
   }, [onNavigate]);
 
+  const isFirst = conceptIndex <= 0;
+  const isLast = conceptIndex >= totalConcepts - 1;
+
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") handleNavigate("prev");
-      if (e.key === "ArrowRight") handleNavigate("next");
+      if (e.key === "ArrowLeft" && !isFirst) handleNavigate("prev");
+      if (e.key === "ArrowRight" && !isLast) handleNavigate("next");
       if (e.key === "Escape" && showInfoPanel) {
         e.stopPropagation();
         setShowInfoPanel(false);
@@ -59,7 +62,7 @@ export function ConceptDetailDialog({
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [open, handleNavigate, showInfoPanel]);
+  }, [open, handleNavigate, showInfoPanel, isFirst, isLast]);
 
   if (!concept || !run) return null;
 
