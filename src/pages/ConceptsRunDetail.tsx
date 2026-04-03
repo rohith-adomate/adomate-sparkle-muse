@@ -13,12 +13,28 @@ import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
 import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
 import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+import niveaFreshKickMorning from "@/assets/competitors/nivea-fresh-kick-morning.png";
+import niveaFreshKickConcert from "@/assets/competitors/nivea-fresh-kick-concert.png";
+import niveaShowerMoisturizer from "@/assets/competitors/nivea-shower-moisturizer.png";
+import niveaAntiHairloss from "@/assets/competitors/nivea-anti-hairloss.png";
 
 const rowProducts = [
-  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
-  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
-  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
-  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
+  {
+    name: "Deo Wash Havana", img: oyProductDeoWashHavana,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickMorning },
+  },
+  {
+    name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaAntiHairloss },
+  },
+  {
+    name: "Deo Wash Havana", img: oyProductDeoWashHavana,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickConcert },
+  },
+  {
+    name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
+    competitor: { name: "Nivea", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaShowerMoisturizer },
+  },
 ];
 
 export default function ConceptsRunDetail() {
@@ -160,7 +176,7 @@ export default function ConceptsRunDetail() {
               <div key={rowIdx} className="flex gap-4">
                 {/* Product card per row */}
                 {product && (
-                  <div className="w-[180px] shrink-0">
+                  <div className="w-[200px] shrink-0">
                     <div className="rounded-xl border bg-card p-3 space-y-3 sticky top-4">
                       <div className="flex items-center gap-1.5">
                         <Package className="h-3.5 w-3.5 text-muted-foreground" />
@@ -173,6 +189,18 @@ export default function ConceptsRunDetail() {
                         <div className="text-center space-y-0.5">
                           <p className="text-xs font-semibold text-foreground">{product.name}</p>
                           <p className="text-[10px] text-muted-foreground">Oy Care</p>
+                        </div>
+                      </div>
+
+                      {/* Competitor ad section */}
+                      <div className="border-t border-border pt-3 space-y-2">
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Based on competitor ad</span>
+                        <div className="rounded-lg border border-border overflow-hidden">
+                          <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full object-cover border border-border" />
+                          <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
                         </div>
                       </div>
                     </div>
