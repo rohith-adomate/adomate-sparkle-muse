@@ -78,7 +78,8 @@ export function ConceptDetailDialog({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleNavigate("prev"); }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleNavigate("prev"); }}
                     className="h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
                   >
                     <ChevronLeft className="h-5 w-5 text-foreground" />
