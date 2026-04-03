@@ -28,7 +28,6 @@ export function ConceptDetailDialog({
   getStatus,
 }: ConceptDetailDialogProps) {
   const [showInfoPanel, setShowInfoPanel] = useState(false);
-  const [showInfoPanel, setShowInfoPanel] = useState(false);
 
   const handleNavigate = useCallback((dir: "prev" | "next") => {
     onNavigate(dir);
