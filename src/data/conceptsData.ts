@@ -14,6 +14,8 @@ export type AgentRun = {
   time: string;
   seen: boolean;
   concepts: Concept[];
+  workflowId?: string;
+  workflowName?: string;
 };
 
 export const agentRuns: AgentRun[] = [
@@ -22,6 +24,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
+    workflowId: "wf-competitor-1",
+    workflowName: "Competitor Workflow — Festival",
     concepts: [
       { id: "c30", title: "Hoe blijf je fris fris tijdens een concert?", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "concert-fresh", img: "/concepts/concept-7.avif" },
       { id: "c32", title: "Meer schuim is niet meer zorg.", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "meer-schuim", img: "/concepts/concept-9.avif" },
@@ -38,6 +42,8 @@ export const agentRuns: AgentRun[] = [
     label: "Manual Image Pipeline",
     time: "Mar 20, 2026 · 15:11",
     seen: false,
+    workflowId: "wf-manual-1",
+    workflowName: "Manual Image Pipeline",
     concepts: [
       { id: "c3", title: "Stop odor at the source, gently.", source: "Manual Upload", status: "accepted", campaign: "Spring Fresh", imgSeed: "stop-odor", img: "/concepts/manual-1.avif" },
       { id: "c2", title: "The art of 3-in-1 freshness.", source: "Manual Upload", status: "pending", campaign: "Spring Fresh", imgSeed: "art-freshness", img: "/concepts/manual-2.avif" },
@@ -49,6 +55,8 @@ export const agentRuns: AgentRun[] = [
     label: "Manual Image Pipeline",
     time: "Mar 20, 2026 · 14:59",
     seen: false,
+    workflowId: "wf-manual-2",
+    workflowName: "Manual Image Pipeline",
     concepts: [
       { id: "c20", title: "Deodorize, cleanse, and hydrate in one step.", source: "Manual Upload", status: "pending", campaign: "Morning Routine", imgSeed: "deodorize-cleanse", img: "/concepts/concept-4.avif" },
       { id: "c21", title: "Minimalist 3-in-1 routine.", source: "Manual Upload", status: "accepted", campaign: "Morning Routine", imgSeed: "minimalist-routine", img: "/concepts/concept-5.avif" },
@@ -60,6 +68,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
+    workflowId: "wf-competitor-2",
+    workflowName: "Competitor Workflow — Success Stories",
     concepts: [
       { id: "c40", title: "Het succesverhaal: Zweet, geen geur", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "succesverhaal", img: "/concepts/concept-7.avif" },
       { id: "c41", title: "Stop met vechten tegen je huid.", source: "AI Studio", status: "accepted", campaign: "Success Stories", imgSeed: "stop-vechten", img: "/concepts/concept-8.avif" },
@@ -73,10 +83,12 @@ export const agentRuns: AgentRun[] = [
     ],
   },
   {
-    id: "ai-image-studio-2",
+    id: "ai-image-studio-2b",
     label: "AI Image Studio",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
+    workflowId: "wf-competitor-2",
+    workflowName: "Competitor Workflow — Success Stories",
     concepts: [
       { id: "c40", title: "Het succesverhaal: Zweet, geen geur", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "succesverhaal", img: "/concepts/concept-7.avif" },
       { id: "c41", title: "Stop met vechten tegen je huid.", source: "AI Studio", status: "accepted", campaign: "Success Stories", imgSeed: "stop-vechten", img: "/concepts/concept-8.avif" },
@@ -94,6 +106,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 19, 2026 · 10:15",
     seen: true,
+    workflowId: "wf-competitor-3",
+    workflowName: "Competitor Workflow — International",
     concepts: [
       { id: "c50", title: "Fresh all day, naturally.", source: "AI Studio", status: "pending", campaign: "International", imgSeed: "fresh-all-day", img: "/concepts/concept-7.avif" },
       { id: "c51", title: "Your skin deserves better.", source: "AI Studio", status: "accepted", campaign: "International", imgSeed: "skin-deserves", img: "/concepts/concept-8.avif" },

@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, X, MessageSquare, Heart } from "lucide-react";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowLeft, X, MessageSquare, Heart, Pencil, ExternalLink, Workflow } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
@@ -18,6 +20,25 @@ export default function ConceptsRunDetail() {
   const [selected, setSelected] = useState<Concept | null>(null);
   const [swipeAnim, setSwipeAnim] = useState<"left" | "right" | null>(null);
   const [showIterate, setShowIterate] = useState(false);
+
+  // Editable title state
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(run?.label ?? "");
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditingTitle && titleInputRef.current) {
+      titleInputRef.current.focus();
+      titleInputRef.current.select();
+    }
+  }, [isEditingTitle]);
+
+  const saveTitle = () => {
+    if (editedTitle.trim()) {
+      toast.success("Title updated");
+    }
+    setIsEditingTitle(false);
+  };
 
   const updateStatus = (id: string, status: "accepted" | "rejected") => {
     setSwipeAnim(status === "accepted" ? "right" : "left");
@@ -46,9 +67,54 @@ export default function ConceptsRunDetail() {
         <Button variant="ghost" size="icon" onClick={() => navigate("/concepts")} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{run.label}</h1>
-          <p className="text-sm text-muted-foreground">{run.time} · {run.concepts.length} concepts generated</p>
+        <div className="space-y-1">
+          {/* Editable title row */}
+          <div className="flex items-center gap-2 group/title">
+            {isEditingTitle ? (
+              <Input
+                ref={titleInputRef}
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                onBlur={saveTitle}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveTitle();
+                  if (e.key === "Escape") { setEditedTitle(run.label); setIsEditingTitle(false); }
+                }}
+                className="text-2xl font-bold tracking-tight h-auto py-0.5 px-1.5 -ml-1.5 w-auto max-w-md"
+              />
+            ) : (
+              <>
+                <h1 className="text-2xl font-bold tracking-tight">{editedTitle || run.label}</h1>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => { setEditedTitle(editedTitle || run.label); setIsEditingTitle(true); }}
+                      className="opacity-0 group-hover/title:opacity-100 transition-opacity p-1 rounded-md hover:bg-accent"
+                    >
+                      <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Edit title</TooltipContent>
+                </Tooltip>
+              </>
+            )}
+          </div>
+
+          {/* Workflow badge + time */}
+          <div className="flex items-center gap-2">
+            {run.workflowName && (
+              <Badge
+                variant="outline"
+                className="text-xs bg-primary/10 text-primary border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors gap-1"
+                onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${run.workflowId}`); }}
+              >
+                <Workflow className="h-3 w-3" />
+                {run.workflowName}
+                <ExternalLink className="h-2.5 w-2.5 ml-0.5" />
+              </Badge>
+            )}
+            <span className="text-sm text-muted-foreground">{run.time} · {run.concepts.length} concepts generated</span>
+          </div>
         </div>
       </div>
 
