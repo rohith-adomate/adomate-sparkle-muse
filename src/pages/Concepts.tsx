@@ -19,21 +19,6 @@ const rowStyle = {
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
 
-function UnseenIndicator() {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span className="relative flex h-2.5 w-2.5 cursor-default">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-        </span>
-      </TooltipTrigger>
-      <TooltipContent side="top" className="text-xs">
-        New — not yet reviewed
-      </TooltipContent>
-    </Tooltip>
-  );
-}
 
 export default function Concepts() {
   const navigate = useNavigate();
@@ -117,7 +102,7 @@ export default function Concepts() {
                     {run.workflowName}
                   </Badge>
                 )}
-                {!run.seen && <UnseenIndicator />}
+                
               </div>
               <span className="text-xs text-muted-foreground ml-auto">{run.time}</span>
             </div>
