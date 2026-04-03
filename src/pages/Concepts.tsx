@@ -35,33 +35,13 @@ function UnseenIndicator() {
 
 export default function Concepts() {
   const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState("all");
-
-  const filteredRuns = agentRuns.filter((run) => {
-    if (statusFilter === "unseen") return !run.seen;
-    if (statusFilter === "seen") return run.seen;
-    return true;
-  });
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows with fixed-size cards and overflow indicators.">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
-            <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
-          </div>
-          <div className="flex gap-2">
-            <Select defaultValue="all"><SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Campaigns</SelectItem><SelectItem value="competitor">Competitor Ad</SelectItem></SelectContent></Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-28 h-8"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="unseen">Unseen</SelectItem>
-                <SelectItem value="seen">Seen</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
+          <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
         </div>
       </HoverExplainer>
 
