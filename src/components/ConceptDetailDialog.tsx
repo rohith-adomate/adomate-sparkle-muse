@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ThumbsUp, ThumbsDown, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Sparkles, Info, X, Download, Loader2, CheckCircle2 } from "lucide-react";
+import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, Download, Loader2, CheckCircle2 } from "lucide-react";
 import type { AgentRun, Concept } from "@/data/conceptsData";
 import { toast } from "sonner";
 
@@ -30,10 +27,6 @@ export function ConceptDetailDialog({
   onNavigate,
   getStatus,
 }: ConceptDetailDialogProps) {
-  const [feedback, setFeedback] = useState("");
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [iteratePrompt, setIteratePrompt] = useState("");
-  const [showIterate, setShowIterate] = useState(false);
   const [showInfoPanel, setShowInfoPanel] = useState(false);
 
   const handleNavigate = useCallback((dir: "prev" | "next") => {
@@ -59,7 +52,7 @@ export function ConceptDetailDialog({
   const status = concept ? getStatus(concept.id) : "pending";
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowFeedback(false); setShowIterate(false); setFeedback(""); setIteratePrompt(""); setShowInfoPanel(false); } }}>
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowInfoPanel(false); } }}>
       <DialogContent className="max-w-5xl w-[calc(100vw-8rem)] h-[90vh] max-h-[90vh] p-0 overflow-hidden rounded-xl border-0 gap-0 [&>button]:hidden" aria-label={concept.title} aria-describedby={undefined}>
         {/* Nav arrows — outside modal visually */}
         <Tooltip>
@@ -220,86 +213,8 @@ export function ConceptDetailDialog({
                 </Collapsible>
               </div>
 
-              <div className="h-px bg-border/50" />
 
-              {/* Actions */}
-              <div className="px-5 py-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => { setShowFeedback(!showFeedback); setShowIterate(false); }}
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" />
-                    Feedback
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => { setShowIterate(!showIterate); setShowFeedback(false); }}
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Generate Similar
-                  </Button>
-                </div>
 
-                {showFeedback && (
-                  <div className="space-y-2">
-                    <Textarea
-                      placeholder="What would you change about this concept?"
-                      value={feedback}
-                      onChange={(e) => setFeedback(e.target.value)}
-                      rows={2}
-                      className="text-sm"
-                    />
-                    <div className="flex justify-end">
-                      <Button size="sm" disabled={!feedback.trim()} onClick={() => {
-                        toast.success("Feedback saved");
-                        setFeedback("");
-                        setShowFeedback(false);
-                      }}>
-                        Send Feedback
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {showIterate && (
-                  <div className="space-y-2">
-                    <Textarea
-                      placeholder="Describe what to keep or change…"
-                      value={iteratePrompt}
-                      onChange={(e) => setIteratePrompt(e.target.value)}
-                      rows={2}
-                      className="text-sm"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Select defaultValue="3">
-                        <SelectTrigger className="w-24 h-8">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 variant</SelectItem>
-                          <SelectItem value="3">3 variants</SelectItem>
-                          <SelectItem value="5">5 variants</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <div className="flex-1" />
-                      <Button size="sm" disabled={!iteratePrompt.trim()} onClick={() => {
-                        toast.success("Generating similar concepts…");
-                        setIteratePrompt("");
-                        setShowIterate(false);
-                        onOpenChange(false);
-                      }}>
-                        <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                        Generate
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
