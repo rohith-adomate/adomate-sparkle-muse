@@ -81,9 +81,8 @@ export default function ConceptsRunDetail() {
     }
     setIsEditingTitle(false);
   };
-
-
-
+  if (!run) {
+    return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <p className="text-muted-foreground">Agent run not found.</p>
         <Button variant="outline" onClick={() => navigate("/concepts")}>
