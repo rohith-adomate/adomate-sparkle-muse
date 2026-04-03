@@ -52,10 +52,10 @@ export default function ConceptsRunDetail() {
   const handleNavigate = useCallback((dir: "prev" | "next") => {
     if (!selected || allConcepts.length === 0) return;
     const idx = allConcepts.findIndex(c => c.id === selected.id);
-    if (dir === "prev") {
-      setSelected(allConcepts[(idx - 1 + allConcepts.length) % allConcepts.length]);
-    } else {
-      setSelected(allConcepts[(idx + 1) % allConcepts.length]);
+    if (dir === "prev" && idx > 0) {
+      setSelected(allConcepts[idx - 1]);
+    } else if (dir === "next" && idx < allConcepts.length - 1) {
+      setSelected(allConcepts[idx + 1]);
     }
   }, [selected, allConcepts]);
 
