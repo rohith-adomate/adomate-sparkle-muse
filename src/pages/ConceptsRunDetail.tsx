@@ -8,7 +8,7 @@ import { ArrowLeft, X, Pencil, Workflow, Check, Package } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ConceptDetailDialog } from "@/components/ConceptDetailDialog";
 import { toast } from "sonner";
-import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
+import { agentRunsById } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
 import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
 import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
