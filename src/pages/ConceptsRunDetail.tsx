@@ -165,21 +165,22 @@ export default function ConceptsRunDetail() {
         </div>
       </div>
 
-      {/* Rows with per-row product cards */}
-      <div className="space-y-4">
-        {(() => {
-          const minRows = 4;
-          const totalRows = Math.max(minRows, conceptPairs.length);
-          return Array.from({ length: totalRows }, (_, rowIdx) => {
-            const pair = conceptPairs[rowIdx];
-            const product = isFirstProject ? rowProducts[rowIdx % rowProducts.length] : null;
-            return (
-              <div key={rowIdx} className="flex gap-4">
-                {/* Sidebar card: competitor ad first, then product */}
-                {product && (
-                  <div className="w-[200px] shrink-0">
+      {/* Showcase: 10 sidebar card variations */}
+      <div className="space-y-6">
+        {Array.from({ length: 10 }, (_, varIdx) => {
+          const product = rowProducts[0];
+          const pair = conceptPairs[0];
+          const variationLabel = `Variation ${varIdx + 1}`;
+
+          return (
+            <div key={varIdx}>
+              <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wider">{variationLabel}</p>
+              <div className="flex gap-4">
+                {/* Variation cards */}
+                <div className="w-[200px] shrink-0">
+                  {varIdx === 0 && (
+                    /* V1: Current — stacked sections with divider */
                     <div className="rounded-xl border bg-card p-3 space-y-3 sticky top-4">
-                      {/* Competitor ad section */}
                       <div className="space-y-2">
                         <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Based on competitor ad</span>
                         <div className="rounded-lg border border-border overflow-hidden">
@@ -190,8 +191,6 @@ export default function ConceptsRunDetail() {
                           <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
                         </div>
                       </div>
-
-                      {/* Product section */}
                       <div className="border-t border-border pt-3 space-y-2">
                         <div className="flex items-center gap-1.5">
                           <Package className="h-3.5 w-3.5 text-muted-foreground" />
@@ -208,10 +207,245 @@ export default function ConceptsRunDetail() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Concept images - 3 columns, 2 filled + 1 empty */}
+                  {varIdx === 1 && (
+                    /* V2: Overlapping card — product thumbnail overlaps competitor ad bottom-right */
+                    <div className="rounded-xl border bg-card p-3 space-y-2 sticky top-4">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Inspiration</span>
+                      <div className="relative">
+                        <div className="rounded-lg border border-border overflow-hidden">
+                          <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-[4/5] object-cover" />
+                        </div>
+                        <div className="absolute -bottom-3 -right-2 h-14 w-14 rounded-lg border-2 border-card bg-card shadow-md flex items-center justify-center overflow-hidden p-1">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                      </div>
+                      <div className="pt-2 space-y-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
+                          <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">→ <span className="font-medium text-foreground">{product.name}</span></p>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 2 && (
+                    /* V3: Side-by-side thumbnails — compact horizontal layout */
+                    <div className="rounded-xl border bg-card p-3 space-y-2.5 sticky top-4">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Source → Product</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 rounded-lg border border-border overflow-hidden">
+                          <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                        </div>
+                        <div className="flex flex-col items-center gap-0.5 text-muted-foreground">
+                          <ArrowLeft className="h-3 w-3 rotate-180" />
+                        </div>
+                        <div className="w-14 h-14 rounded-lg border border-border bg-muted/30 flex items-center justify-center overflow-hidden p-1 shrink-0">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px]">
+                        <div className="flex items-center gap-1">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
+                          <span className="text-muted-foreground">{product.competitor.name}</span>
+                        </div>
+                        <span className="font-medium text-foreground">{product.name}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 3 && (
+                    /* V4: Tab-style toggle — two sections shown as pseudo-tabs */
+                    <div className="rounded-xl border bg-card sticky top-4 overflow-hidden">
+                      <div className="flex border-b border-border">
+                        <div className="flex-1 px-2 py-1.5 text-[10px] font-medium text-center bg-muted/50 text-foreground border-b-2 border-primary">Ad</div>
+                        <div className="flex-1 px-2 py-1.5 text-[10px] font-medium text-center text-muted-foreground">Product</div>
+                      </div>
+                      <div className="p-3 space-y-2">
+                        <div className="rounded-lg border border-border overflow-hidden">
+                          <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
+                          <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-muted/40 rounded-lg p-2">
+                          <div className="h-10 w-10 rounded border border-border/60 bg-card flex items-center justify-center overflow-hidden p-0.5 shrink-0">
+                            <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-semibold text-foreground">{product.name}</p>
+                            <p className="text-[9px] text-muted-foreground">Oy Care</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 4 && (
+                    /* V5: Pill-badge style — ultra compact with inline badges */
+                    <div className="rounded-xl border bg-card p-3 space-y-3 sticky top-4">
+                      <div className="rounded-lg border border-border overflow-hidden">
+                        <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-[4/5] object-cover" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="inline-flex items-center gap-1.5 bg-muted/60 rounded-full px-2.5 py-1">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
+                          <span className="text-[10px] font-medium text-foreground">{product.competitor.name}</span>
+                        </div>
+                        <div className="inline-flex items-center gap-1.5 bg-muted/60 rounded-full px-2.5 py-1">
+                          <div className="h-3.5 w-3.5 rounded border border-border/60 bg-card overflow-hidden flex items-center justify-center">
+                            <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                          </div>
+                          <span className="text-[10px] font-medium text-foreground">{product.name}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 5 && (
+                    /* V6: Timeline/flow — vertical connector line between competitor and product */
+                    <div className="rounded-xl border bg-card p-3 sticky top-4">
+                      <div className="flex gap-3">
+                        <div className="flex flex-col items-center">
+                          <div className="h-5 w-5 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          </div>
+                          <div className="w-px flex-1 bg-border my-1" />
+                          <div className="h-5 w-5 rounded-full bg-muted border-2 border-border flex items-center justify-center">
+                            <Package className="h-2.5 w-2.5 text-muted-foreground" />
+                          </div>
+                        </div>
+                        <div className="flex-1 space-y-3">
+                          <div className="space-y-1.5">
+                            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Competitor Ad</span>
+                            <div className="rounded-lg border border-border overflow-hidden">
+                              <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
+                              <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Your Product</span>
+                            <div className="flex items-center gap-2 bg-muted/30 rounded-lg p-2">
+                              <div className="h-12 w-12 rounded border border-border/60 bg-card flex items-center justify-center overflow-hidden p-1 shrink-0">
+                                <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-semibold text-foreground">{product.name}</p>
+                                <p className="text-[9px] text-muted-foreground">Oy Care</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 6 && (
+                    /* V7: Stacked cards with depth — two layered cards */
+                    <div className="sticky top-4 space-y-0">
+                      <div className="rounded-xl border bg-card p-2.5 shadow-sm relative z-10">
+                        <div className="rounded-lg overflow-hidden border border-border">
+                          <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
+                          <div>
+                            <p className="text-[11px] font-medium text-foreground">{product.competitor.name}</p>
+                            <p className="text-[9px] text-muted-foreground">Competitor Ad</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rounded-xl border bg-muted/50 p-2.5 -mt-2 pt-5 relative z-0">
+                        <div className="flex items-center gap-2">
+                          <div className="h-12 w-12 rounded-lg border border-border/60 bg-card flex items-center justify-center overflow-hidden p-1 shrink-0">
+                            <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-semibold text-foreground">{product.name}</p>
+                            <p className="text-[9px] text-muted-foreground">Oy Care</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 7 && (
+                    /* V8: Full-bleed image with overlay text */
+                    <div className="rounded-xl border overflow-hidden sticky top-4">
+                      <div className="relative">
+                        <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-[3/4] object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-3 space-y-2">
+                          <div className="flex items-center gap-1.5">
+                            <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-white/30" />
+                            <span className="text-[11px] font-medium text-white">{product.competitor.name}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-card p-2.5 flex items-center gap-2">
+                        <div className="h-10 w-10 rounded border border-border/60 bg-muted/30 flex items-center justify-center overflow-hidden p-0.5 shrink-0">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-semibold text-foreground">{product.name}</p>
+                          <p className="text-[9px] text-muted-foreground">Oy Care</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 8 && (
+                    /* V9: Minimal line — just essential info, very compact */
+                    <div className="rounded-xl border bg-card p-2 sticky top-4 space-y-2">
+                      <div className="rounded-md overflow-hidden">
+                        <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                      </div>
+                      <div className="h-px bg-border" />
+                      <div className="flex items-center gap-1.5 px-1">
+                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
+                        <span className="text-[10px] text-muted-foreground flex-1">{product.competitor.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-1">
+                        <div className="h-3.5 w-3.5 rounded border border-border/60 bg-muted/30 flex items-center justify-center overflow-hidden">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                        <span className="text-[10px] font-medium text-foreground flex-1">{product.name}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {varIdx === 9 && (
+                    /* V10: Split diagonal — competitor ad top with angled product strip */
+                    <div className="rounded-xl border bg-card overflow-hidden sticky top-4">
+                      <div className="relative">
+                        <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
+                        <div className="absolute top-2 left-2">
+                          <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5">
+                            <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3 w-3 rounded-full" />
+                            <span className="text-[9px] text-white font-medium">{product.competitor.name}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-2.5 bg-gradient-to-r from-muted/50 to-card flex items-center gap-2 border-t border-border">
+                        <div className="h-12 w-12 rounded-lg border border-border/60 bg-card flex items-center justify-center overflow-hidden p-1 shrink-0 shadow-sm">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Product</p>
+                          <p className="text-[11px] font-semibold text-foreground">{product.name}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Concept images */}
                 <div className="flex-1 min-w-0 grid grid-cols-3 gap-4">
                   {pair ? (
                     <>
@@ -232,7 +466,6 @@ export default function ConceptsRunDetail() {
                           </CardContent>
                         </Card>
                       ))}
-                      {/* Fill remaining columns */}
                       {Array.from({ length: 3 - pair.length }, (_, i) => (
                         <div key={`empty-${i}`} className="aspect-square" />
                       ))}
@@ -246,9 +479,9 @@ export default function ConceptsRunDetail() {
                   )}
                 </div>
               </div>
-            );
-          });
-        })()}
+            </div>
+          );
+        })}
       </div>
 
       {/* Tinder-style concept detail */}
