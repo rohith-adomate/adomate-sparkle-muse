@@ -220,86 +220,8 @@ export function ConceptDetailDialog({
                 </Collapsible>
               </div>
 
-              <div className="h-px bg-border/50" />
 
-              {/* Actions */}
-              <div className="px-5 py-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => { setShowFeedback(!showFeedback); setShowIterate(false); }}
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" />
-                    Feedback
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => { setShowIterate(!showIterate); setShowFeedback(false); }}
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Generate Similar
-                  </Button>
-                </div>
 
-                {showFeedback && (
-                  <div className="space-y-2">
-                    <Textarea
-                      placeholder="What would you change about this concept?"
-                      value={feedback}
-                      onChange={(e) => setFeedback(e.target.value)}
-                      rows={2}
-                      className="text-sm"
-                    />
-                    <div className="flex justify-end">
-                      <Button size="sm" disabled={!feedback.trim()} onClick={() => {
-                        toast.success("Feedback saved");
-                        setFeedback("");
-                        setShowFeedback(false);
-                      }}>
-                        Send Feedback
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {showIterate && (
-                  <div className="space-y-2">
-                    <Textarea
-                      placeholder="Describe what to keep or change…"
-                      value={iteratePrompt}
-                      onChange={(e) => setIteratePrompt(e.target.value)}
-                      rows={2}
-                      className="text-sm"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Select defaultValue="3">
-                        <SelectTrigger className="w-24 h-8">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 variant</SelectItem>
-                          <SelectItem value="3">3 variants</SelectItem>
-                          <SelectItem value="5">5 variants</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <div className="flex-1" />
-                      <Button size="sm" disabled={!iteratePrompt.trim()} onClick={() => {
-                        toast.success("Generating similar concepts…");
-                        setIteratePrompt("");
-                        setShowIterate(false);
-                        onOpenChange(false);
-                      }}>
-                        <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                        Generate
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
