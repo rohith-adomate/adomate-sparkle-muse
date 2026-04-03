@@ -204,14 +204,18 @@ export default function ConceptsRunDetail() {
               <div className="w-[200px] shrink-0">
                 <div className="sticky top-4">
                   <div className="rounded-xl border bg-card p-3 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">Based on</span>
+                      <div className="flex items-center gap-1.5">
+                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
+                        <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
+                      </div>
+                    </div>
                     <div className="rounded-lg overflow-hidden border border-border">
                       <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
                     </div>
-                    <div className="flex items-center justify-end gap-1.5">
-                      <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
-                      <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
-                    </div>
                     <div className="h-px bg-border" />
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60 block">Product</span>
                     <div className="flex items-center gap-2">
                       <div className="h-10 w-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
                         <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
