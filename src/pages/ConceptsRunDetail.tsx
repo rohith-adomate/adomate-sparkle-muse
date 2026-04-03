@@ -253,7 +253,8 @@ export default function ConceptsRunDetail() {
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
+                      );
+                    })}
                     {Array.from({ length: 3 - pair.length }, (_, i) => (
                       <div key={`empty-${i}`} className="aspect-square" />
                     ))}
