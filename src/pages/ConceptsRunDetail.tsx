@@ -107,6 +107,23 @@ export default function ConceptsRunDetail() {
   // Show product card only for the first project
   const isFirstProject = runId === "ai-image-studio-1";
 
+  // Derive context images and prompt for the selected concept
+  const selectedRowIdx = selected
+    ? conceptPairs.findIndex(pair => pair.some(c => c.id === selected.id))
+    : -1;
+  const selectedProduct = selectedRowIdx >= 0
+    ? rowProducts[selectedRowIdx % rowProducts.length]
+    : null;
+  const selectedContextImages = selectedProduct
+    ? [
+        { src: selectedProduct.competitor.ad, label: `${selectedProduct.competitor.name} Ad` },
+        { src: selectedProduct.img, label: selectedProduct.name },
+      ]
+    : [];
+  const selectedPrompt = selected
+    ? `Generate ad concepts for ${selectedProduct?.name ?? "product"} inspired by ${selectedProduct?.competitor.name ?? "competitor"} ad creative. Campaign: ${selected.campaign}. Source: ${selected.source}. Focus on competitive positioning and visual differentiation.`
+    : undefined;
+
   return (
     <div className="space-y-6 px-6">
       <div className="flex items-center gap-3">
