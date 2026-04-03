@@ -18,6 +18,22 @@ export type AgentRun = {
 
 export const agentRuns: AgentRun[] = [
   {
+    id: "ai-image-studio-1",
+    label: "AI Image Studio",
+    time: "Mar 20, 2026 · 13:30",
+    seen: false,
+    concepts: [
+      { id: "c30", title: "Hoe blijf je fris fris tijdens een concert?", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "concert-fresh", img: "/concepts/concept-7.avif" },
+      { id: "c32", title: "Meer schuim is niet meer zorg.", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "meer-schuim", img: "/concepts/concept-9.avif" },
+      { id: "c33", title: "Wie zegt dat je schuim nodig hebt?", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "wie-zegt", img: "/concepts/concept-1.avif" },
+      { id: "c34", title: "Breek de mythe. Voed je hoofdhuid.", source: "AI Studio", status: "rejected", campaign: "Festival Campaign", imgSeed: "breek-mythe", img: "/concepts/concept-2.avif" },
+      { id: "c35", title: "Frisse oksels, bewezen resultaten", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "frisse-oksels", img: "/concepts/concept-3.avif" },
+      { id: "c36", title: "Reinigt diep zonder uit te drogen", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "reinigt-diep", img: "/concepts/concept-4.avif" },
+      { id: "c37", title: "100% actieve, voedende formule", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "actieve-formule", img: "/concepts/concept-5.avif" },
+      { id: "c38", title: "Pakt haarverlies aan bij de wortel", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "haarverlies", img: "/concepts/concept-6.avif" },
+    ],
+  },
+  {
     id: "manual-image-pipeline-1",
     label: "Manual Image Pipeline",
     time: "Mar 20, 2026 · 15:11",
@@ -54,22 +70,6 @@ export const agentRuns: AgentRun[] = [
       { id: "c46", title: "Start jouw succesverhaal", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "start-verhaal", img: "/concepts/concept-4.avif" },
       { id: "c47", title: "Was je zorgen weg", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "zorgen-weg", img: "/concepts/concept-5.avif" },
       { id: "c48", title: "96% natuurlijk", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "natuurlijk", img: "/concepts/concept-6.avif" },
-    ],
-  },
-  {
-    id: "ai-image-studio-1",
-    label: "AI Image Studio",
-    time: "Mar 20, 2026 · 13:30",
-    seen: false,
-    concepts: [
-      { id: "c30", title: "Hoe blijf je fris fris tijdens een concert?", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "concert-fresh", img: "/concepts/concept-7.avif" },
-      { id: "c32", title: "Meer schuim is niet meer zorg.", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "meer-schuim", img: "/concepts/concept-9.avif" },
-      { id: "c33", title: "Wie zegt dat je schuim nodig hebt?", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "wie-zegt", img: "/concepts/concept-1.avif" },
-      { id: "c34", title: "Breek de mythe. Voed je hoofdhuid.", source: "AI Studio", status: "rejected", campaign: "Festival Campaign", imgSeed: "breek-mythe", img: "/concepts/concept-2.avif" },
-      { id: "c35", title: "Frisse oksels, bewezen resultaten", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "frisse-oksels", img: "/concepts/concept-3.avif" },
-      { id: "c36", title: "Reinigt diep zonder uit te drogen", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "reinigt-diep", img: "/concepts/concept-4.avif" },
-      { id: "c37", title: "100% actieve, voedende formule", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "actieve-formule", img: "/concepts/concept-5.avif" },
-      { id: "c38", title: "Pakt haarverlies aan bij de wortel", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "haarverlies", img: "/concepts/concept-6.avif" },
     ],
   },
   {
