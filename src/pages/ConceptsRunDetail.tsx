@@ -26,7 +26,7 @@ const rowProducts = [
   },
   {
     name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
-    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaAntiHairloss },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaAntiHairloss },
   },
   {
     name: "Deo Wash Havana", img: oyProductDeoWashHavana,
