@@ -144,7 +144,7 @@ export default function Concepts() {
               ))}
 
               {hasOverflow && (
-                <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 transition-all">
+                <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 transition-shadow duration-200 hover:shadow-lg hover:shadow-primary/10 cursor-pointer">
                   <div className="relative w-11 h-11">
                     <div className="absolute inset-0 rounded-lg bg-muted/60 border border-border/50 translate-x-1.5 translate-y-1.5" />
                     <div className="absolute inset-0 rounded-lg bg-muted/40 border border-border/50 translate-x-0.5 translate-y-0.5" />
