@@ -34,7 +34,7 @@ export default function Concepts() {
   }, [editingRunId]);
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-4 max-w-6xl mx-auto">
       <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows with fixed-size cards and overflow indicators.">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
