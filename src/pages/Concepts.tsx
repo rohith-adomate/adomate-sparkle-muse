@@ -44,50 +44,10 @@ export default function Concepts() {
 
       {/* ===== TEMPORARY: Explore More card variations ===== */}
       <div className="space-y-3 rounded-xl border border-dashed border-primary/30 p-4 bg-primary/5">
-        <h2 className="text-sm font-semibold text-primary">Pick your favorite &ldquo;Explore More&rdquo; card variation</h2>
+        <h2 className="text-sm font-semibold text-primary">Pick your favorite &ldquo;Explore More&rdquo; variation (all based on V5 stacked layers)</h2>
         <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
 
-          {/* V1: Clean centered with icon + descriptive text */}
-          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square px-3">
-            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
-              <Plus className="h-4.5 w-4.5 text-primary" />
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-semibold text-foreground">+4 concepts</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">View the full collection</p>
-            </div>
-          </div>
-
-          {/* V2: Soft card with subtle gradient and CTA */}
-          <div className="rounded-lg border border-border bg-gradient-to-b from-background to-muted/40 flex flex-col items-center justify-center gap-3 aspect-square px-4">
-            <div className="h-10 w-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center">
-              <Plus className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-center">
-              <p className="text-[13px] font-semibold text-foreground">4 more concepts</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Tap to explore all</p>
-            </div>
-          </div>
-
-          {/* V3: Bold count with supporting label and line accent */}
-          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2 aspect-square relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary/30" />
-            <span className="text-2xl font-bold text-primary/80">+4</span>
-            <div className="text-center">
-              <p className="text-xs font-medium text-foreground">more concepts</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
-            </div>
-          </div>
-
-          {/* V4: Outlined pill badge style */}
-          <div className="rounded-lg border border-border bg-muted/10 flex flex-col items-center justify-center gap-3 aspect-square">
-            <div className="px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5">
-              <span className="text-xs font-semibold text-primary">+4 concepts</span>
-            </div>
-            <p className="text-[11px] text-muted-foreground text-center px-4">See the complete set</p>
-          </div>
-
-          {/* V5: Stacked layers with count */}
+          {/* V1: Original stacked + full text */}
           <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square">
             <div className="relative w-11 h-11">
               <div className="absolute inset-0 rounded-lg bg-muted/60 border border-border/50 translate-x-1.5 translate-y-1.5" />
@@ -96,59 +56,148 @@ export default function Concepts() {
                 <span className="text-sm font-bold text-primary">+4</span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">More concepts available</p>
-          </div>
-
-          {/* V6: Grid preview dots with explore text */}
-          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-3 aspect-square">
-            <div className="grid grid-cols-2 gap-1.5">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-5 w-5 rounded bg-muted border border-border/60" />
-              ))}
-            </div>
             <div className="text-center">
-              <p className="text-xs font-semibold text-foreground">+4 more</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Explore full collection</p>
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
             </div>
           </div>
 
-          {/* V7: Soft card with arrow indicator */}
-          <div className="rounded-lg border border-border bg-muted/15 flex flex-col items-center justify-center gap-2 aspect-square group/card hover:bg-muted/25 transition-colors">
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl font-bold text-foreground">+4</span>
-              <span className="text-xs text-muted-foreground font-medium">concepts</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <span className="text-[11px]">View all</span>
-              <span className="text-xs transition-transform group-hover/card:translate-x-0.5">&rarr;</span>
-            </div>
-          </div>
-
-          {/* V8: Circular ring with centered count */}
+          {/* V2: Stacked with primary tinted layers */}
           <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square">
-            <div className="h-14 w-14 rounded-full border-2 border-primary/20 bg-primary/5 flex items-center justify-center">
-              <span className="text-lg font-bold text-primary">+4</span>
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-primary/10 border border-primary/15 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-primary/5 border border-primary/10 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-primary/20 h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
             </div>
-            <p className="text-[11px] text-muted-foreground">View all concepts</p>
-          </div>
-
-          {/* V9: Two-line clean with divider */}
-          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2 aspect-square px-5">
-            <Plus className="h-5 w-5 text-primary/60" />
-            <div className="w-8 h-px bg-border" />
             <div className="text-center">
-              <p className="text-sm font-semibold text-foreground">4 more</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">concepts to review</p>
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
             </div>
           </div>
 
-          {/* V10: Frosted glass with icon and clear CTA */}
-          <div className="rounded-lg border border-border bg-gradient-to-br from-muted/20 via-background to-muted/30 flex flex-col items-center justify-center gap-2.5 aspect-square backdrop-blur-sm">
-            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Plus className="h-4 w-4 text-primary" />
+          {/* V3: Stacked with gradient background */}
+          <div className="rounded-lg border border-border bg-gradient-to-b from-background to-muted/30 flex flex-col items-center justify-center gap-2.5 aspect-square">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 rounded-lg bg-muted/50 border border-border/40 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-muted/30 border border-border/40 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-foreground">+4</span>
+              </div>
             </div>
-            <p className="text-[13px] font-semibold text-foreground">+4 concepts</p>
-            <p className="text-[10px] text-muted-foreground">Click to explore</p>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V4: Stacked with rounded cards */}
+          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square">
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-xl bg-muted/60 border border-border/50 translate-x-2 translate-y-2" />
+              <div className="absolute inset-0 rounded-xl bg-muted/35 border border-border/50 translate-x-1 translate-y-1" />
+              <div className="relative rounded-xl bg-background border border-border h-full w-full flex items-center justify-center shadow">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V5: Stacked with dashed border card */}
+          <div className="rounded-lg border border-dashed border-border bg-muted/10 flex flex-col items-center justify-center gap-2.5 aspect-square">
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-muted/50 border border-dashed border-border/60 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-muted/25 border border-dashed border-border/50 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-dashed border-border h-full w-full flex items-center justify-center">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V6: Stacked with larger offset + muted text */}
+          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-3 aspect-square">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 rounded-lg bg-muted/70 border border-border/40 translate-x-2 translate-y-2" />
+              <div className="absolute inset-0 rounded-lg bg-muted/40 border border-border/40 translate-x-1 translate-y-1" />
+              <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-medium text-muted-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground/70 mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V7: Stacked with top accent line */}
+          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary/25" />
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-muted/55 border border-border/50 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-muted/30 border border-border/50 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V8: Stacked with subtle primary bg tint */}
+          <div className="rounded-lg border border-primary/10 bg-primary/[0.02] flex flex-col items-center justify-center gap-2.5 aspect-square">
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-primary/8 border border-primary/10 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-primary/4 border border-primary/8 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-primary/15 h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-primary/80">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V9: Stacked three layers with icon instead of number */}
+          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 aspect-square">
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-muted/60 border border-border/50 translate-x-2 translate-y-2" />
+              <div className="absolute inset-0 rounded-lg bg-muted/40 border border-border/50 translate-x-1 translate-y-1" />
+              <div className="absolute inset-0 rounded-lg bg-muted/20 border border-border/40 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
+          </div>
+
+          {/* V10: Stacked with bottom divider before text */}
+          <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2 aspect-square">
+            <div className="relative w-11 h-11">
+              <div className="absolute inset-0 rounded-lg bg-muted/60 border border-border/50 translate-x-1.5 translate-y-1.5" />
+              <div className="absolute inset-0 rounded-lg bg-muted/35 border border-border/50 translate-x-0.5 translate-y-0.5" />
+              <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                <span className="text-sm font-bold text-primary">+4</span>
+              </div>
+            </div>
+            <div className="w-10 h-px bg-border" />
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground">4 concepts available</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+            </div>
           </div>
 
         </div>
