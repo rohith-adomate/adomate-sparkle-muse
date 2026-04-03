@@ -6,7 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, MessageSquare, Heart, Pencil, Workflow } from "lucide-react";
+import { ArrowLeft, X, MessageSquare, Heart, Pencil, Workflow, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
@@ -71,17 +71,30 @@ export default function ConceptsRunDetail() {
           {/* Editable title row */}
           <div className="flex items-center gap-2 group/title">
             {isEditingTitle ? (
-              <Input
-                ref={titleInputRef}
-                value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
-                onBlur={saveTitle}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") saveTitle();
-                  if (e.key === "Escape") { setEditedTitle(run.label); setIsEditingTitle(false); }
-                }}
-                className="text-2xl font-bold tracking-tight h-auto py-0.5 px-1.5 -ml-1.5 w-auto max-w-md"
-              />
+              <div className="flex items-center gap-2">
+                <Input
+                  ref={titleInputRef}
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveTitle();
+                    if (e.key === "Escape") { setEditedTitle(run.label); setIsEditingTitle(false); }
+                  }}
+                  className="text-2xl font-bold tracking-tight h-auto py-1 px-2.5 w-auto max-w-md rounded-full border"
+                />
+                <button
+                  onClick={() => saveTitle()}
+                  className="p-0.5 rounded hover:bg-accent text-primary"
+                >
+                  <Check className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => { setEditedTitle(run.label); setIsEditingTitle(false); }}
+                  className="p-0.5 rounded hover:bg-accent text-muted-foreground"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
             ) : (
               <>
                 <h1 className="text-2xl font-bold tracking-tight">{editedTitle || run.label}</h1>

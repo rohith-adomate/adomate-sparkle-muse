@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, Pencil, Workflow } from "lucide-react";
+import { Plus, Pencil, Workflow, Check, X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HoverExplainer } from "@/components/HoverExplainer";
@@ -57,21 +57,38 @@ export default function Concepts() {
             <div className="flex items-center gap-2 flex-1">
               <div className="flex items-center gap-2 group/title">
                 {editingRunId === run.id ? (
-                  <Input
-                    ref={titleInputRef}
-                    value={editedTitles[run.id] ?? run.label}
-                    onChange={(e) => setEditedTitles(prev => ({ ...prev, [run.id]: e.target.value }))}
-                    onBlur={() => setEditingRunId(null)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") setEditingRunId(null);
-                      if (e.key === "Escape") {
+                  <div className="flex items-center gap-1.5">
+                    <Input
+                      ref={titleInputRef}
+                      value={editedTitles[run.id] ?? run.label}
+                      onChange={(e) => setEditedTitles(prev => ({ ...prev, [run.id]: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") setEditingRunId(null);
+                        if (e.key === "Escape") {
+                          setEditedTitles(prev => { const n = { ...prev }; delete n[run.id]; return n; });
+                          setEditingRunId(null);
+                        }
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-sm font-semibold h-auto py-1 px-2.5 w-auto max-w-[200px] rounded-full border"
+                    />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setEditingRunId(null); }}
+                      className="p-0.5 rounded hover:bg-accent text-primary"
+                    >
+                      <Check className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setEditedTitles(prev => { const n = { ...prev }; delete n[run.id]; return n; });
                         setEditingRunId(null);
-                      }
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-sm font-semibold h-auto py-0.5 px-1.5 -ml-1.5 w-auto max-w-[200px]"
-                  />
+                      }}
+                      className="p-0.5 rounded hover:bg-accent text-muted-foreground"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 ) : (
                   <>
                     <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{editedTitles[run.id] || run.label}</h2>
