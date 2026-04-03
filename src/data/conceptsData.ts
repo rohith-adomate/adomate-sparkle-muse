@@ -68,6 +68,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
+    workflowId: "wf-competitor-2",
+    workflowName: "Competitor Workflow — Success Stories",
     concepts: [
       { id: "c40", title: "Het succesverhaal: Zweet, geen geur", source: "AI Studio", status: "pending", campaign: "Success Stories", imgSeed: "succesverhaal", img: "/concepts/concept-7.avif" },
       { id: "c41", title: "Stop met vechten tegen je huid.", source: "AI Studio", status: "accepted", campaign: "Success Stories", imgSeed: "stop-vechten", img: "/concepts/concept-8.avif" },
