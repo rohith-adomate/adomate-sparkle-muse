@@ -17,23 +17,24 @@ import niveaFreshKickMorning from "@/assets/competitors/nivea-fresh-kick-morning
 import niveaFreshKickConcert from "@/assets/competitors/nivea-fresh-kick-concert.png";
 import niveaShowerMoisturizer from "@/assets/competitors/nivea-shower-moisturizer.png";
 import niveaAntiHairloss from "@/assets/competitors/nivea-anti-hairloss.png";
+import niveaMenLogo from "@/assets/competitors/nivea-men-logo.webp";
 
 const rowProducts = [
   {
     name: "Deo Wash Havana", img: oyProductDeoWashHavana,
-    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickMorning },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaFreshKickMorning },
   },
   {
     name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
-    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaAntiHairloss },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaAntiHairloss },
   },
   {
     name: "Deo Wash Havana", img: oyProductDeoWashHavana,
-    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickConcert },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaFreshKickConcert },
   },
   {
     name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
-    competitor: { name: "Nivea", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaShowerMoisturizer },
+    competitor: { name: "Nivea", avatar: niveaMenLogo, ad: niveaShowerMoisturizer },
   },
 ];
 
@@ -86,10 +87,10 @@ export default function ConceptsRunDetail() {
     );
   }
 
-  // Group concepts into pairs of 2
-  const conceptPairs: Concept[][] = [];
-  for (let i = 0; i < run.concepts.length; i += 2) {
-    conceptPairs.push(run.concepts.slice(i, i + 2));
+  // Group concepts into triplets of 3
+  const conceptTriplets: Concept[][] = [];
+  for (let i = 0; i < run.concepts.length; i += 3) {
+    conceptTriplets.push(run.concepts.slice(i, i + 3));
   }
 
   // Show product card only for the first project
@@ -168,32 +169,18 @@ export default function ConceptsRunDetail() {
       <div className="space-y-4">
         {(() => {
           const minRows = 3;
-          const totalRows = Math.max(minRows, conceptPairs.length);
+          const totalRows = Math.max(minRows, conceptTriplets.length);
           return Array.from({ length: totalRows }, (_, rowIdx) => {
-            const pair = conceptPairs[rowIdx];
+            const triplet = conceptTriplets[rowIdx];
             const product = isFirstProject ? rowProducts[rowIdx % rowProducts.length] : null;
             return (
               <div key={rowIdx} className="flex gap-4">
-                {/* Product card per row */}
+                {/* Sidebar card: competitor ad first, then product */}
                 {product && (
                   <div className="w-[200px] shrink-0">
                     <div className="rounded-xl border bg-card p-3 space-y-3 sticky top-4">
-                      <div className="flex items-center gap-1.5">
-                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Product</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="h-24 w-24 rounded-lg bg-muted/30 border border-border/60 flex items-center justify-center overflow-hidden p-1.5">
-                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                        </div>
-                        <div className="text-center space-y-0.5">
-                          <p className="text-xs font-semibold text-foreground">{product.name}</p>
-                          <p className="text-[10px] text-muted-foreground">Oy Care</p>
-                        </div>
-                      </div>
-
                       {/* Competitor ad section */}
-                      <div className="border-t border-border pt-3 space-y-2">
+                      <div className="space-y-2">
                         <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Based on competitor ad</span>
                         <div className="rounded-lg border border-border overflow-hidden">
                           <img src={product.competitor.ad} alt="Competitor ad" className="w-full aspect-square object-cover" />
@@ -203,30 +190,56 @@ export default function ConceptsRunDetail() {
                           <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
                         </div>
                       </div>
+
+                      {/* Product section */}
+                      <div className="border-t border-border pt-3 space-y-2">
+                        <div className="flex items-center gap-1.5">
+                          <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Product</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="h-20 w-20 rounded-lg bg-muted/30 border border-border/60 flex items-center justify-center overflow-hidden p-1.5">
+                            <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                          </div>
+                          <div className="text-center space-y-0.5">
+                            <p className="text-xs font-semibold text-foreground">{product.name}</p>
+                            <p className="text-[10px] text-muted-foreground">Oy Care</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
 
-                {/* Concept images or empty space */}
-                <div className="flex-1 min-w-0 grid grid-cols-2 gap-4">
-                  {pair ? pair.map((c) => (
-                    <Card
-                      key={c.id}
-                      className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
-                      onClick={() => setSelected(c)}
-                    >
-                      <CardContent className="p-0">
-                        <div className="aspect-square relative overflow-hidden bg-muted">
-                          <img
-                            src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
-                            alt={c.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )) : (
+                {/* Concept images - 3 columns */}
+                <div className="flex-1 min-w-0 grid grid-cols-3 gap-4">
+                  {triplet ? (
                     <>
+                      {triplet.map((c) => (
+                        <Card
+                          key={c.id}
+                          className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
+                          onClick={() => setSelected(c)}
+                        >
+                          <CardContent className="p-0">
+                            <div className="aspect-square relative overflow-hidden bg-muted">
+                              <img
+                                src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
+                                alt={c.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                      {/* Fill remaining columns */}
+                      {Array.from({ length: 3 - triplet.length }, (_, i) => (
+                        <div key={`empty-${i}`} className="aspect-square" />
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <div className="aspect-square" />
                       <div className="aspect-square" />
                       <div className="aspect-square" />
                     </>
