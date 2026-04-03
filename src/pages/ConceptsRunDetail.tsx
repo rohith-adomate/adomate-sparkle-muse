@@ -97,7 +97,7 @@ export default function ConceptsRunDetail() {
   const isFirstProject = runId === "ai-image-studio-1";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate("/concepts")} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
