@@ -107,20 +107,19 @@ export default function Concepts() {
                     </Tooltip>
                   </>
                 )}
-                <span className="text-xs text-muted-foreground font-normal">{run.time}</span>
+                {run.workflowName && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-muted/50 text-muted-foreground border-border cursor-pointer hover:bg-muted transition-colors gap-1"
+                    onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${run.workflowId}`); }}
+                  >
+                    <Workflow className="h-3 w-3" />
+                    {run.workflowName}
+                  </Badge>
+                )}
                 {!run.seen && <UnseenIndicator />}
               </div>
-              {run.workflowName && (
-                <Badge
-                  variant="outline"
-                  className="text-xs bg-muted/50 text-muted-foreground border-border cursor-pointer hover:bg-muted transition-colors gap-1 ml-auto"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${run.workflowId}`); }}
-                >
-                  <Workflow className="h-3 w-3" />
-                  {run.workflowName}
-                </Badge>
-              )}
-              <span className={`text-xs text-muted-foreground opacity-0 group-hover/run:opacity-100 transition-opacity ${run.workflowName ? '' : 'ml-auto'}`}>View all →</span>
+              <span className="text-xs text-muted-foreground ml-auto">{run.time}</span>
             </div>
             <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${CARDS_PER_ROW}, 1fr)` }}>
               {visibleConcepts.map((c) => (
