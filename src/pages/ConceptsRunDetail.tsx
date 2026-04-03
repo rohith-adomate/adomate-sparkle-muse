@@ -13,12 +13,28 @@ import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
 import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
 import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+import niveaFreshKickMorning from "@/assets/competitors/nivea-fresh-kick-morning.png";
+import niveaFreshKickConcert from "@/assets/competitors/nivea-fresh-kick-concert.png";
+import niveaShowerMoisturizer from "@/assets/competitors/nivea-shower-moisturizer.png";
+import niveaAntiHairloss from "@/assets/competitors/nivea-anti-hairloss.png";
 
 const rowProducts = [
-  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
-  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
-  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
-  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
+  {
+    name: "Deo Wash Havana", img: oyProductDeoWashHavana,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickMorning },
+  },
+  {
+    name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaAntiHairloss },
+  },
+  {
+    name: "Deo Wash Havana", img: oyProductDeoWashHavana,
+    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickConcert },
+  },
+  {
+    name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
+    competitor: { name: "Nivea", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaShowerMoisturizer },
+  },
 ];
 
 export default function ConceptsRunDetail() {
