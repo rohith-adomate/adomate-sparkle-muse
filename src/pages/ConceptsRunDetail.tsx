@@ -148,82 +148,66 @@ export default function ConceptsRunDetail() {
         </div>
       </div>
 
-      <div className="flex gap-6">
-        {/* Left: Product context card */}
-        {isFirstProject && (
-          <div className="w-[260px] shrink-0">
-            <div className="rounded-xl border bg-card p-4 space-y-4 sticky top-4">
-              <div className="flex items-center gap-2">
-                <Package className="h-4 w-4 text-muted-foreground" />
-                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Product</span>
-              </div>
-
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-32 w-32 rounded-xl bg-muted/30 border border-border/60 flex items-center justify-center overflow-hidden p-2">
-                  <img
-                    src={oyProductDeoWashHavana}
-                    alt="Deo Wash Havana"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <div className="text-center space-y-0.5">
-                  <p className="text-sm font-semibold text-foreground">Deo Wash Havana</p>
-                  <p className="text-[11px] text-muted-foreground">Oy Care</p>
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Concepts</span>
-                  <span className="font-medium">{run.concepts.length}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Accepted</span>
-                  <span className="font-medium text-emerald-600">{run.concepts.filter(c => c.status === "accepted").length}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Pending</span>
-                  <span className="font-medium text-amber-600">{run.concepts.filter(c => c.status === "pending").length}</span>
-                </div>
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full text-xs gap-1.5"
-                onClick={() => navigate("/brand-data-room/products/prod-6")}
-              >
-                <ExternalLink className="h-3 w-3" />
-                View in Data Room
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Right: Concepts in rows of 2 */}
-        <div className="flex-1 min-w-0 space-y-4">
-          {conceptPairs.map((pair, rowIdx) => (
-            <div key={rowIdx} className="grid grid-cols-2 gap-4">
-              {pair.map((c) => (
-                <Card
-                  key={c.id}
-                  className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
-                  onClick={() => setSelected(c)}
-                >
-                  <CardContent className="p-0">
-                    <div className="aspect-square relative overflow-hidden bg-muted">
-                      <img
-                        src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
-                        alt={c.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+      {/* Rows with per-row product cards */}
+      <div className="space-y-4">
+        {(() => {
+          const minRows = 3;
+          const totalRows = Math.max(minRows, conceptPairs.length);
+          return Array.from({ length: totalRows }, (_, rowIdx) => {
+            const pair = conceptPairs[rowIdx];
+            const product = isFirstProject ? rowProducts[rowIdx % rowProducts.length] : null;
+            return (
+              <div key={rowIdx} className="flex gap-4">
+                {/* Product card per row */}
+                {product && (
+                  <div className="w-[180px] shrink-0">
+                    <div className="rounded-xl border bg-card p-3 space-y-3 sticky top-4">
+                      <div className="flex items-center gap-1.5">
+                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Product</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="h-24 w-24 rounded-lg bg-muted/30 border border-border/60 flex items-center justify-center overflow-hidden p-1.5">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                        <div className="text-center space-y-0.5">
+                          <p className="text-xs font-semibold text-foreground">{product.name}</p>
+                          <p className="text-[10px] text-muted-foreground">Oy Care</p>
+                        </div>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ))}
-        </div>
+                  </div>
+                )}
+
+                {/* Concept images or empty space */}
+                <div className="flex-1 min-w-0 grid grid-cols-2 gap-4">
+                  {pair ? pair.map((c) => (
+                    <Card
+                      key={c.id}
+                      className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
+                      onClick={() => setSelected(c)}
+                    >
+                      <CardContent className="p-0">
+                        <div className="aspect-square relative overflow-hidden bg-muted">
+                          <img
+                            src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
+                            alt={c.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )) : (
+                    <>
+                      <div className="aspect-square" />
+                      <div className="aspect-square" />
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          });
+        })()}
       </div>
 
       {/* Tinder-style concept detail */}
