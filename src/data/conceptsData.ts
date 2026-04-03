@@ -42,6 +42,8 @@ export const agentRuns: AgentRun[] = [
     label: "Manual Image Pipeline",
     time: "Mar 20, 2026 · 15:11",
     seen: false,
+    workflowId: "wf-manual-1",
+    workflowName: "Manual Image Pipeline",
     concepts: [
       { id: "c3", title: "Stop odor at the source, gently.", source: "Manual Upload", status: "accepted", campaign: "Spring Fresh", imgSeed: "stop-odor", img: "/concepts/manual-1.avif" },
       { id: "c2", title: "The art of 3-in-1 freshness.", source: "Manual Upload", status: "pending", campaign: "Spring Fresh", imgSeed: "art-freshness", img: "/concepts/manual-2.avif" },
