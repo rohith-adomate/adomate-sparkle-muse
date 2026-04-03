@@ -235,15 +235,15 @@ export default function ConceptsRunDetail() {
                       return (
                       <Card
                         key={c.id}
-                        className={`cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-200 ${cStatus === "accepted" ? "ring-[3px] ring-emerald-400/70" : cStatus === "rejected" ? "ring-[3px] ring-red-400/70" : ""}`}
+                        className={`cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-200 self-start ${cStatus === "accepted" ? "ring-[3px] ring-emerald-400/70" : cStatus === "rejected" ? "ring-[3px] ring-red-400/70" : ""}`}
                         onClick={() => setSelected(c)}
                       >
                         <CardContent className="p-0">
-                          <div className="aspect-square relative overflow-hidden bg-muted">
+                          <div className="relative overflow-hidden bg-muted">
                             <img
                               src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
                               alt={c.title}
-                              className="w-full h-full object-cover"
+                              className="w-full h-auto block"
                             />
                           </div>
                         </CardContent>
