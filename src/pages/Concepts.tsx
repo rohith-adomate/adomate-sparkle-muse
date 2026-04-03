@@ -145,13 +145,18 @@ export default function Concepts() {
               ))}
 
               {hasOverflow && (
-                <div className={`rounded-lg border flex flex-col items-center justify-center gap-2 transition-all ${style.overflowIdle} ${style.overflowHover}`}>
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Plus className="h-5 w-5 text-primary" />
+                <div className="rounded-lg border border-border bg-background flex flex-col items-center justify-center gap-2.5 transition-all">
+                  <div className="relative w-11 h-11">
+                    <div className="absolute inset-0 rounded-lg bg-muted/60 border border-border/50 translate-x-1.5 translate-y-1.5" />
+                    <div className="absolute inset-0 rounded-lg bg-muted/40 border border-border/50 translate-x-0.5 translate-y-0.5" />
+                    <div className="relative rounded-lg bg-background border border-border h-full w-full flex items-center justify-center shadow-sm">
+                      <span className="text-sm font-bold text-primary">+{overflowCount}</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground">Explore more</span>
-                  <span className="text-xs text-muted-foreground text-center">+{overflowCount} more concepts<br/>available</span>
-                  <span className="text-xs text-primary font-medium flex items-center gap-1">See more <span>→</span></span>
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-foreground">Concepts available</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Click to see all</p>
+                  </div>
                 </div>
               )}
             </div>
