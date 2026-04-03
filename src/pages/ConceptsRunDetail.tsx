@@ -22,7 +22,7 @@ import niveaMenLogo from "@/assets/competitors/nivea-men-logo.webp";
 const rowProducts = [
   {
     name: "Deo Wash Havana", img: oyProductDeoWashHavana,
-    competitor: { name: "Nivea Men", avatar: "https://logo.clearbit.com/nivea.com", ad: niveaFreshKickMorning },
+    competitor: { name: "Nivea Men", avatar: niveaMenLogo, ad: niveaFreshKickMorning },
   },
   {
     name: "Scalp & Hair Wash", img: oyProductScalpHairWash,
