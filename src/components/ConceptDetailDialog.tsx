@@ -14,8 +14,9 @@ interface ConceptDetailDialogProps {
   runLabel: string;
   open: boolean;
   onOpenChange: (o: boolean) => void;
-  onStatusChange: (id: string, status: "accepted" | "rejected") => void;
+  onStatusChange: (id: string, status: "accepted" | "rejected" | "pending") => void;
   onNavigate: (dir: "prev" | "next") => void;
+  getStatus: (id: string) => "pending" | "accepted" | "rejected";
 }
 
 export function ConceptDetailDialog({
