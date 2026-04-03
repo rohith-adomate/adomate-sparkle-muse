@@ -100,20 +100,19 @@ export default function ConceptsRunDetail() {
             )}
           </div>
 
-          {/* Workflow badge + time */}
+          {/* Time + workflow badge */}
           <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">{run.time} · {run.concepts.length} concepts generated</span>
             {run.workflowName && (
               <Badge
                 variant="outline"
-                className="text-xs bg-primary/10 text-primary border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors gap-1"
+                className="text-xs bg-muted/50 text-muted-foreground border-border cursor-pointer hover:bg-muted transition-colors gap-1"
                 onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${run.workflowId}`); }}
               >
                 <Workflow className="h-3 w-3" />
                 {run.workflowName}
-                <ExternalLink className="h-2.5 w-2.5 ml-0.5" />
               </Badge>
             )}
-            <span className="text-sm text-muted-foreground">{run.time} · {run.concepts.length} concepts generated</span>
           </div>
         </div>
       </div>
