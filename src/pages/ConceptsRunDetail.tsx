@@ -278,6 +278,8 @@ export default function ConceptsRunDetail() {
         onStatusChange={handleStatusChange}
         onNavigate={handleNavigate}
         getStatus={getStatus}
+        contextImages={selectedContextImages}
+        prompt={selectedPrompt}
       />
     </div>
   );
