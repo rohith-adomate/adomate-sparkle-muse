@@ -82,18 +82,8 @@ export default function ConceptsRunDetail() {
     setIsEditingTitle(false);
   };
 
-  const updateStatus = (id: string, status: "accepted" | "rejected") => {
-    setSwipeAnim(status === "accepted" ? "right" : "left");
-    setTimeout(() => {
-      setSelected(null);
-      setSwipeAnim(null);
-      setShowIterate(false);
-      toast.success(status === "accepted" ? "💚 Concept accepted!" : "❌ Concept rejected");
-    }, 400);
-  };
 
-  if (!run) {
-    return (
+
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <p className="text-muted-foreground">Agent run not found.</p>
         <Button variant="outline" onClick={() => navigate("/concepts")}>
