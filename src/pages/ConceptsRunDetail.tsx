@@ -2,14 +2,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, MessageSquare, Heart, Pencil, Workflow, Check, Package } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { ArrowLeft, X, Pencil, Workflow, Check, Package } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { ConceptDetailDialog } from "@/components/ConceptDetailDialog";
 import { toast } from "sonner";
-import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
+import { agentRunsById } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
 import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
 import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
@@ -44,8 +43,25 @@ export default function ConceptsRunDetail() {
   const run = runId ? agentRunsById[runId] : null;
 
   const [selected, setSelected] = useState<Concept | null>(null);
-  const [swipeAnim, setSwipeAnim] = useState<"left" | "right" | null>(null);
-  const [showIterate, setShowIterate] = useState(false);
+
+
+
+  // All concepts flat list for navigation
+  const allConcepts = run?.concepts ?? [];
+
+  const handleNavigate = useCallback((dir: "prev" | "next") => {
+    if (!selected || allConcepts.length === 0) return;
+    const idx = allConcepts.findIndex(c => c.id === selected.id);
+    if (dir === "prev") {
+      setSelected(allConcepts[(idx - 1 + allConcepts.length) % allConcepts.length]);
+    } else {
+      setSelected(allConcepts[(idx + 1) % allConcepts.length]);
+    }
+  }, [selected, allConcepts]);
+
+  const handleStatusChange = useCallback((id: string, status: "accepted" | "rejected") => {
+    toast.success(status === "accepted" ? "💚 Concept accepted!" : "❌ Concept rejected");
+  }, []);
 
   // Editable title state
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -65,17 +81,6 @@ export default function ConceptsRunDetail() {
     }
     setIsEditingTitle(false);
   };
-
-  const updateStatus = (id: string, status: "accepted" | "rejected") => {
-    setSwipeAnim(status === "accepted" ? "right" : "left");
-    setTimeout(() => {
-      setSelected(null);
-      setSwipeAnim(null);
-      setShowIterate(false);
-      toast.success(status === "accepted" ? "💚 Concept accepted!" : "❌ Concept rejected");
-    }, 400);
-  };
-
   if (!run) {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
@@ -241,59 +246,15 @@ export default function ConceptsRunDetail() {
         })}
       </div>
 
-      {/* Tinder-style concept detail */}
-      <Dialog open={!!selected} onOpenChange={(o) => { if (!o) { setSelected(null); setSwipeAnim(null); setShowIterate(false); } }}>
-        <DialogContent className="max-w-md p-0 overflow-hidden">
-          {selected && (
-            <div className="flex flex-col">
-              <div className={`relative transition-all duration-300 ease-out ${
-                swipeAnim === "left" ? "-translate-x-full opacity-0 rotate-[-12deg]" :
-                swipeAnim === "right" ? "translate-x-full opacity-0 rotate-[12deg]" : ""
-              }`}>
-                {swipeAnim && (
-                  <div className={`absolute inset-0 z-10 rounded-t-lg transition-opacity duration-200 ${
-                    swipeAnim === "right" ? "bg-emerald-500/20" : "bg-red-500/20"
-                  }`} />
-                )}
-                <div className="h-72 relative overflow-hidden bg-muted">
-                  <img src={selected.img || `https://picsum.photos/seed/${selected.imgSeed}/500/400`} alt={selected.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <div className="absolute top-4 left-4">
-                    <Badge variant="outline" className={`text-xs border ${statusBadge[selected.status]} bg-white/90 backdrop-blur-sm`}>{selected.status}</Badge>
-                  </div>
-                </div>
-              </div>
-              <div className="px-6 pt-4 pb-2 space-y-2">
-                <h2 className="text-xl font-bold tracking-tight">{selected.title}</h2>
-                <div className="flex gap-4 text-sm">
-                  <div><span className="text-xs text-muted-foreground uppercase tracking-wider">Source</span><p className="font-medium mt-0.5">{selected.source}</p></div>
-                  <div><span className="text-xs text-muted-foreground uppercase tracking-wider">Campaign</span><p className="font-medium mt-0.5">{selected.campaign}</p></div>
-                </div>
-              </div>
-              {showIterate && (
-                <div className="px-6 py-2 space-y-2">
-                  <Textarea placeholder="Provide feedback for iteration..." rows={3} />
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex-1" onClick={() => { setSelected(null); setShowIterate(false); toast.info("Feedback sent for iteration"); }}>Send Feedback</Button>
-                    <Button size="sm" variant="ghost" onClick={() => setShowIterate(false)}>Cancel</Button>
-                  </div>
-                </div>
-              )}
-              <div className="flex items-center justify-center gap-6 p-6 pt-3">
-                <button onClick={() => updateStatus(selected.id, "rejected")} className="h-16 w-16 rounded-full border-2 border-red-300 bg-red-50 flex items-center justify-center hover:bg-red-100 hover:border-red-400 hover:scale-110 transition-all shadow-lg">
-                  <X className="h-7 w-7 text-red-500" />
-                </button>
-                <button onClick={() => setShowIterate(!showIterate)} className="h-12 w-12 rounded-full border-2 border-blue-300 bg-blue-50 flex items-center justify-center hover:bg-blue-100 hover:border-blue-400 hover:scale-110 transition-all shadow-md">
-                  <MessageSquare className="h-5 w-5 text-blue-500" />
-                </button>
-                <button onClick={() => updateStatus(selected.id, "accepted")} className="h-16 w-16 rounded-full border-2 border-emerald-300 bg-emerald-50 flex items-center justify-center hover:bg-emerald-100 hover:border-emerald-400 hover:scale-110 transition-all shadow-lg">
-                  <Heart className="h-7 w-7 text-emerald-500" />
-                </button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ConceptDetailDialog
+        concept={selected}
+        run={run}
+        runLabel={editedTitle || run.label}
+        open={!!selected}
+        onOpenChange={(o) => { if (!o) setSelected(null); }}
+        onStatusChange={handleStatusChange}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 }
