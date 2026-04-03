@@ -46,6 +46,23 @@ export default function ConceptsRunDetail() {
   const [swipeAnim, setSwipeAnim] = useState<"left" | "right" | null>(null);
   const [showIterate, setShowIterate] = useState(false);
 
+  // All concepts flat list for navigation
+  const allConcepts = run?.concepts ?? [];
+
+  const handleNavigate = useCallback((dir: "prev" | "next") => {
+    if (!selected || allConcepts.length === 0) return;
+    const idx = allConcepts.findIndex(c => c.id === selected.id);
+    if (dir === "prev") {
+      setSelected(allConcepts[(idx - 1 + allConcepts.length) % allConcepts.length]);
+    } else {
+      setSelected(allConcepts[(idx + 1) % allConcepts.length]);
+    }
+  }, [selected, allConcepts]);
+
+  const handleStatusChange = useCallback((id: string, status: "accepted" | "rejected") => {
+    toast.success(status === "accepted" ? "💚 Concept accepted!" : "❌ Concept rejected");
+  }, []);
+
   // Editable title state
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(run?.label ?? "");
