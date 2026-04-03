@@ -71,7 +71,7 @@ export function ConceptDetailDialog({
                     ? "bg-primary text-primary-foreground"
                     : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
                 }`}
-                onClick={() => onStatusChange(concept.id, "accepted")}
+                onClick={() => onStatusChange(concept.id, status === "accepted" ? "pending" : "accepted")}
               >
                 <ThumbsUp className="h-4 w-4" />
               </button>
