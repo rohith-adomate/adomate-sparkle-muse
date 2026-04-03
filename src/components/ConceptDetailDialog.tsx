@@ -94,7 +94,8 @@ export function ConceptDetailDialog({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleNavigate("next"); }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleNavigate("next"); }}
                     className="h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
                   >
                     <ChevronRight className="h-5 w-5 text-foreground" />
