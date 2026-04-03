@@ -235,10 +235,12 @@ export default function ConceptsRunDetail() {
               <div className="flex-1 min-w-0 grid grid-cols-3 gap-4">
                 {pair.length > 0 ? (
                   <>
-                    {pair.map((c) => (
+                    {pair.map((c) => {
+                      const cStatus = getStatus(c.id);
+                      return (
                       <Card
                         key={c.id}
-                        className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
+                        className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${cStatus === "accepted" ? "ring-[3px] ring-emerald-400/70" : cStatus === "rejected" ? "ring-[3px] ring-red-400/70" : ""}`}
                         onClick={() => setSelected(c)}
                       >
                         <CardContent className="p-0">
