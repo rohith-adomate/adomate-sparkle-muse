@@ -235,7 +235,7 @@ export default function ConceptsRunDetail() {
                       return (
                       <Card
                         key={c.id}
-                        className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${cStatus === "accepted" ? "ring-[3px] ring-emerald-400/70" : cStatus === "rejected" ? "ring-[3px] ring-red-400/70" : ""}`}
+                        className={`cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-200 ${cStatus === "accepted" ? "ring-[3px] ring-emerald-400/70" : cStatus === "rejected" ? "ring-[3px] ring-red-400/70" : ""}`}
                         onClick={() => setSelected(c)}
                       >
                         <CardContent className="p-0">
@@ -243,7 +243,7 @@ export default function ConceptsRunDetail() {
                             <img
                               src={c.img || `https://picsum.photos/seed/${c.imgSeed}/400/400`}
                               alt={c.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                         </CardContent>
