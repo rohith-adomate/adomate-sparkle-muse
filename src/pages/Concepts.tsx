@@ -14,7 +14,7 @@ const rowStyle = {
   container: "rounded-xl p-4 -mx-4 transition-all duration-300 border border-transparent border-l-4 border-l-transparent",
   hover: "hover:bg-gradient-to-r hover:from-accent/40 hover:via-accent/20 hover:to-transparent hover:border-border/50 hover:border-l-primary",
   titleHover: "group-hover/run:text-pink-600",
-  cardHover: "group-hover/run:shadow-sm group-hover/run:ring-1 group-hover/run:ring-pink-200/50",
+  cardHover: "group-hover/run:shadow-lg group-hover/run:shadow-primary/10 transition-shadow duration-200",
   overflowIdle: "border-dashed border-border bg-muted/20",
   overflowHover: "group-hover/run:bg-pink-50 group-hover/run:border-pink-300/50",
 };
