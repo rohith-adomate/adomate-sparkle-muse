@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ThumbsUp, ThumbsDown, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Sparkles, Info, X, Download } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ThumbsUp, ThumbsDown, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Sparkles, Info, X, Download, Loader2, CheckCircle2 } from "lucide-react";
 import type { AgentRun, Concept } from "@/data/conceptsData";
 import { toast } from "sonner";
 
