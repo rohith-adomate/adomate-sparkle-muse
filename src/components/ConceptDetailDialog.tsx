@@ -22,6 +22,8 @@ interface ConceptDetailDialogProps {
   getStatus: (id: string) => "pending" | "accepted" | "rejected";
   contextImages?: ContextImage[];
   prompt?: string;
+  conceptIndex: number;
+  totalConcepts: number;
 }
 
 export function ConceptDetailDialog({
