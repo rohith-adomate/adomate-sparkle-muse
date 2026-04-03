@@ -21,7 +21,7 @@ export type AgentRun = {
 export const agentRuns: AgentRun[] = [
   {
     id: "ai-image-studio-1",
-    label: "AI Image Studio",
+    label: "Run #4",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
     workflowId: "wf-competitor-1",
