@@ -59,9 +59,15 @@ export default function ConceptsRunDetail() {
     }
   }, [selected, allConcepts]);
 
-  const handleStatusChange = useCallback((id: string, status: "accepted" | "rejected") => {
-    toast.success(status === "accepted" ? "💚 Concept accepted!" : "❌ Concept rejected");
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, "pending" | "accepted" | "rejected">>({});
+
+  const handleStatusChange = useCallback((id: string, status: "pending" | "accepted" | "rejected") => {
+    setStatusOverrides(prev => ({ ...prev, [id]: status }));
   }, []);
+
+  const getStatus = useCallback((id: string) => {
+    return statusOverrides[id] ?? allConcepts.find(c => c.id === id)?.status ?? "pending";
+  }, [statusOverrides, allConcepts]);
 
   // Editable title state
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -254,6 +260,7 @@ export default function ConceptsRunDetail() {
         onOpenChange={(o) => { if (!o) setSelected(null); }}
         onStatusChange={handleStatusChange}
         onNavigate={handleNavigate}
+        getStatus={getStatus}
       />
     </div>
   );

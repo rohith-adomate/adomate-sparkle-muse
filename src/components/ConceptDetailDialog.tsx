@@ -14,8 +14,9 @@ interface ConceptDetailDialogProps {
   runLabel: string;
   open: boolean;
   onOpenChange: (o: boolean) => void;
-  onStatusChange: (id: string, status: "accepted" | "rejected") => void;
+  onStatusChange: (id: string, status: "accepted" | "rejected" | "pending") => void;
   onNavigate: (dir: "prev" | "next") => void;
+  getStatus: (id: string) => "pending" | "accepted" | "rejected";
 }
 
 export function ConceptDetailDialog({
@@ -26,6 +27,7 @@ export function ConceptDetailDialog({
   onOpenChange,
   onStatusChange,
   onNavigate,
+  getStatus,
 }: ConceptDetailDialogProps) {
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
@@ -53,7 +55,7 @@ export function ConceptDetailDialog({
 
   if (!concept || !run) return null;
 
-  const status = concept.status;
+  const status = concept ? getStatus(concept.id) : "pending";
 
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowFeedback(false); setShowIterate(false); setFeedback(""); setIteratePrompt(""); setShowInfoPanel(false); } }}>
@@ -69,7 +71,7 @@ export function ConceptDetailDialog({
                     ? "bg-primary text-primary-foreground"
                     : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
                 }`}
-                onClick={() => onStatusChange(concept.id, "accepted")}
+                onClick={() => onStatusChange(concept.id, status === "accepted" ? "pending" : "accepted")}
               >
                 <ThumbsUp className="h-4 w-4" />
               </button>
@@ -79,7 +81,7 @@ export function ConceptDetailDialog({
                     ? "bg-destructive text-destructive-foreground"
                     : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
                 }`}
-                onClick={() => onStatusChange(concept.id, "rejected")}
+                onClick={() => onStatusChange(concept.id, status === "rejected" ? "pending" : "rejected")}
               >
                 <ThumbsDown className="h-4 w-4" />
               </button>
