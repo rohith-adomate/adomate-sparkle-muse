@@ -62,18 +62,28 @@ export function ConceptDetailDialog({
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowFeedback(false); setShowIterate(false); setFeedback(""); setIteratePrompt(""); setShowInfoPanel(false); } }}>
       <DialogContent className="max-w-5xl w-[calc(100vw-8rem)] h-[90vh] max-h-[90vh] p-0 overflow-hidden rounded-xl border-0 gap-0 [&>button]:hidden" aria-label={concept.title} aria-describedby={undefined}>
         {/* Nav arrows — outside modal visually */}
-        <button
-          onClick={(e) => { e.stopPropagation(); handleNavigate("prev"); }}
-          className="fixed left-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
-        >
-          <ChevronLeft className="h-5 w-5 text-foreground" />
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); handleNavigate("next"); }}
-          className="fixed right-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
-        >
-          <ChevronRight className="h-5 w-5 text-foreground" />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleNavigate("prev"); }}
+              className="fixed left-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5 text-foreground" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Previous concept</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleNavigate("next"); }}
+              className="fixed right-4 top-1/2 -translate-y-1/2 z-[60] h-10 w-10 rounded-full bg-white/90 shadow-lg hover:bg-white flex items-center justify-center transition-colors"
+            >
+              <ChevronRight className="h-5 w-5 text-foreground" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">Next concept</TooltipContent>
+        </Tooltip>
         <div className="flex h-full relative">
           {/* FULL-WIDTH Image */}
           <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
