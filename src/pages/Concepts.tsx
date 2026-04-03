@@ -102,7 +102,7 @@ export default function Concepts() {
                     {run.workflowName}
                   </Badge>
                 )}
-                {!run.seen && <UnseenIndicator />}
+                
               </div>
               <span className="text-xs text-muted-foreground ml-auto">{run.time}</span>
             </div>
