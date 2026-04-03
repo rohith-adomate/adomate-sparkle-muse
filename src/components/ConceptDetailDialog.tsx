@@ -27,6 +27,7 @@ export function ConceptDetailDialog({
   onOpenChange,
   onStatusChange,
   onNavigate,
+  getStatus,
 }: ConceptDetailDialogProps) {
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
