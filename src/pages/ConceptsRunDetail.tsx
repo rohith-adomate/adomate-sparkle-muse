@@ -12,6 +12,14 @@ import { toast } from "sonner";
 import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
 import type { Concept } from "@/data/conceptsData";
 import oyProductDeoWashHavana from "@/assets/oy/oy-product-deo-wash-havana.png";
+import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
+
+const rowProducts = [
+  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
+  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
+  { name: "Deo Wash Havana", img: oyProductDeoWashHavana },
+  { name: "Scalp & Hair Wash", img: oyProductScalpHairWash },
+];
 
 export default function ConceptsRunDetail() {
   const { runId } = useParams();
