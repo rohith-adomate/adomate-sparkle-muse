@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, Download, Loader2, CheckCircle2, Copy, Check } from "lucide-react";
+import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, Download, Loader2, CheckCircle2, Copy, Check, Workflow, Play } from "lucide-react";
 import type { AgentRun, Concept } from "@/data/conceptsData";
 import { toast } from "sonner";
 
@@ -202,19 +202,36 @@ export function ConceptDetailDialog({
               {/* Details */}
               <div className="px-5 py-4 space-y-3">
                 {run.workflowName && (
+                  <div className="space-y-1.5">
+                    <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Workflow</span>
+                    <div
+                      className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (run.workflowId) {
+                          window.location.href = `/workflows/${run.workflowId}`;
+                        }
+                      }}
+                    >
+                      <Workflow className="h-3.5 w-3.5 shrink-0" />
+                      <span className="font-medium text-foreground">{run.workflowName}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Run</span>
                   <div
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[12px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
                     onClick={() => {
                       if (run.workflowId) {
-                        window.location.href = `/workflows/${run.workflowId}`;
+                        window.location.href = `/workflows/${run.workflowId}?tab=runs&run=${run.id}`;
                       }
                     }}
                   >
-                    <span className="font-medium text-foreground">{run.workflowName}</span>
-                    <span className="text-muted-foreground/60">·</span>
-                    <span>{runLabel}</span>
+                    <Play className="h-3.5 w-3.5 shrink-0" />
+                    <span className="font-medium text-foreground">{runLabel}</span>
+                    <span className="text-muted-foreground/60 ml-auto">{run.time}</span>
                   </div>
-                )}
+                </div>
               </div>
 
               <div className="h-px bg-border/50" />
