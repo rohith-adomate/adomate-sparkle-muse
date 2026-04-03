@@ -248,13 +248,8 @@ export default function ConceptsRunDetail() {
               </div>
             );
           });
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          });
         })()}
+      </div>
       </div>
 
       {/* Tinder-style concept detail */}
