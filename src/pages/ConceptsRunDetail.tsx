@@ -43,8 +43,8 @@ export default function ConceptsRunDetail() {
   const run = runId ? agentRunsById[runId] : null;
 
   const [selected, setSelected] = useState<Concept | null>(null);
-  const [swipeAnim, setSwipeAnim] = useState<"left" | "right" | null>(null);
-  const [showIterate, setShowIterate] = useState(false);
+
+
 
   // All concepts flat list for navigation
   const allConcepts = run?.concepts ?? [];
