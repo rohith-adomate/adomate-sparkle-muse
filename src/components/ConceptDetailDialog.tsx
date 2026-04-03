@@ -6,6 +6,11 @@ import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, 
 import type { AgentRun, Concept } from "@/data/conceptsData";
 import { toast } from "sonner";
 
+interface ContextImage {
+  src: string;
+  label: string;
+}
+
 interface ConceptDetailDialogProps {
   concept: Concept | null;
   run: AgentRun | null;
@@ -15,6 +20,8 @@ interface ConceptDetailDialogProps {
   onStatusChange: (id: string, status: "accepted" | "rejected" | "pending") => void;
   onNavigate: (dir: "prev" | "next") => void;
   getStatus: (id: string) => "pending" | "accepted" | "rejected";
+  contextImages?: ContextImage[];
+  prompt?: string;
 }
 
 export function ConceptDetailDialog({
