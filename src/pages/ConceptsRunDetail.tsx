@@ -6,7 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, MessageSquare, Heart, Pencil, Workflow } from "lucide-react";
+import { ArrowLeft, X, MessageSquare, Heart, Pencil, Workflow, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { agentRunsById, statusDot, statusBadge } from "@/data/conceptsData";
