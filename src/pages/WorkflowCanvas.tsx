@@ -209,12 +209,25 @@ export default function WorkflowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow && !isNewCompetitor);
-  const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
-  const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(null);
-  const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
-  const [runPanelOpen, setRunPanelOpen] = useState(false);
+  const searchParams = new URLSearchParams(location.search);
+  const initialTab = searchParams.get("tab") === "runs" ? "runs" : "editor";
+  const initialRunId = searchParams.get("run");
 
   const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : isRedditWorkflow ? MOCK_REDDIT_RUNS : MOCK_RUNS;
+
+  const [activeTab, setActiveTab] = useState<"editor" | "runs">(initialTab);
+  const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(() => {
+    if (initialTab === "runs") {
+      if (initialRunId) {
+        const match = runs.find(r => r.id === initialRunId || String(r.number) === initialRunId);
+        if (match) return match;
+      }
+      return runs[0] ?? null;
+    }
+    return null;
+  });
+  const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
+  const [runPanelOpen, setRunPanelOpen] = useState(false);
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
