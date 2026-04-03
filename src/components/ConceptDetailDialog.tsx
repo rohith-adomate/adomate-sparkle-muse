@@ -42,6 +42,7 @@ export function ConceptDetailDialog({
   conceptIndex,
   totalConcepts,
 }: ConceptDetailDialogProps) {
+  const navigate = useNavigate();
   const [showInfoPanel, setShowInfoPanel] = useState(false);
   const [copied, setCopied] = useState(false);
 
