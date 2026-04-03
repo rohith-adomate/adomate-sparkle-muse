@@ -42,6 +42,98 @@ export default function Concepts() {
         </div>
       </HoverExplainer>
 
+      {/* ===== TEMPORARY: Explore More card variations ===== */}
+      <div className="space-y-3 rounded-xl border border-dashed border-primary/30 p-4 bg-primary/5">
+        <h2 className="text-sm font-semibold text-primary">Pick your favorite "Explore More" card variation</h2>
+        <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
+          {/* Variation 1: Current design */}
+          <div className="rounded-lg border border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2 aspect-square">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Plus className="h-5 w-5 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">Explore more</span>
+            <span className="text-xs text-muted-foreground text-center">+4 more concepts<br/>available</span>
+            <span className="text-xs text-primary font-medium">See more →</span>
+          </div>
+
+          {/* Variation 2: Minimal — just count + arrow */}
+          <div className="rounded-lg border border-border bg-muted/10 flex flex-col items-center justify-center gap-1.5 aspect-square">
+            <span className="text-2xl font-bold text-foreground">+4</span>
+            <span className="text-xs text-muted-foreground">more</span>
+          </div>
+
+          {/* Variation 3: Icon-forward, no text link */}
+          <div className="rounded-lg border border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-3 aspect-square">
+            <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+              <Plus className="h-6 w-6 text-primary" />
+            </div>
+            <span className="text-xs font-medium text-muted-foreground">4 more</span>
+          </div>
+
+          {/* Variation 4: Compact pill style */}
+          <div className="rounded-lg border border-border bg-background flex items-center justify-center aspect-square">
+            <div className="flex flex-col items-center gap-2">
+              <div className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-foreground">+4 concepts</div>
+              <span className="text-[11px] text-muted-foreground">Click to explore</span>
+            </div>
+          </div>
+
+          {/* Variation 5: Bold number with subtle background */}
+          <div className="rounded-lg border border-border bg-gradient-to-br from-muted/30 to-muted/10 flex flex-col items-center justify-center gap-1 aspect-square">
+            <span className="text-3xl font-bold text-primary/70">+4</span>
+            <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">concepts</span>
+          </div>
+
+          {/* Variation 6: Stacked cards visual metaphor */}
+          <div className="rounded-lg border border-dashed border-border bg-muted/10 flex flex-col items-center justify-center gap-2 aspect-square relative">
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 rounded bg-muted border border-border transform rotate-6" />
+              <div className="absolute inset-0 rounded bg-muted border border-border transform -rotate-3" />
+              <div className="absolute inset-0 rounded bg-background border border-border flex items-center justify-center">
+                <Plus className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+            <span className="text-xs text-muted-foreground">+4 more</span>
+          </div>
+
+          {/* Variation 7: Grid dots hint */}
+          <div className="rounded-lg border border-border bg-muted/10 flex flex-col items-center justify-center gap-3 aspect-square">
+            <div className="grid grid-cols-2 gap-1.5">
+              <div className="h-3 w-3 rounded-sm bg-muted-foreground/20" />
+              <div className="h-3 w-3 rounded-sm bg-muted-foreground/20" />
+              <div className="h-3 w-3 rounded-sm bg-muted-foreground/20" />
+              <div className="h-3 w-3 rounded-sm bg-muted-foreground/15" />
+            </div>
+            <span className="text-xs font-medium text-muted-foreground">+4 more</span>
+          </div>
+
+          {/* Variation 8: Arrow-only, ultra minimal */}
+          <div className="rounded-lg border border-border bg-background flex items-center justify-center aspect-square hover:bg-muted/30 transition-colors">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <span className="text-sm font-medium">+4</span>
+              <span className="text-lg">→</span>
+            </div>
+          </div>
+
+          {/* Variation 9: Blurred preview hint */}
+          <div className="rounded-lg border border-border bg-muted/20 flex flex-col items-center justify-center gap-2 aspect-square overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-muted/60 to-muted/90 backdrop-blur-sm" />
+            <div className="relative z-10 flex flex-col items-center gap-1.5">
+              <span className="text-lg font-bold text-foreground/80">+4</span>
+              <span className="text-[11px] text-muted-foreground">View all →</span>
+            </div>
+          </div>
+
+          {/* Variation 10: Outlined circle with count */}
+          <div className="rounded-lg border border-border bg-background flex items-center justify-center aspect-square">
+            <div className="h-14 w-14 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+              <span className="text-lg font-semibold text-muted-foreground">+4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ===== END TEMPORARY ===== */}
+
       {agentRuns.map((run) => {
         const hasOverflow = run.concepts.length > CARDS_PER_ROW;
         const visibleConcepts = run.concepts.slice(0, hasOverflow ? CARDS_PER_ROW - 1 : CARDS_PER_ROW);
