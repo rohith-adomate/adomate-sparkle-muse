@@ -189,18 +189,21 @@ export function ConceptDetailDialog({
               </div>
 
               {/* Details */}
-              <div className="px-5 py-4 space-y-2.5">
-                {[
-                  ["Concept", concept.title],
-                  ["Campaign", concept.campaign],
-                  ["Source", run.workflowName || concept.source],
-                  ["Run", `${runLabel} · ${run.time}`],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex items-start gap-3">
-                    <span className="text-[13px] text-muted-foreground w-20 shrink-0">{label}</span>
-                    <span className="text-[13px] text-foreground">{value}</span>
+              <div className="px-5 py-4 space-y-3">
+                {run.workflowName && (
+                  <div
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[12px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (run.workflowId) {
+                        window.location.href = `/workflows/${run.workflowId}`;
+                      }
+                    }}
+                  >
+                    <span className="font-medium text-foreground">{run.workflowName}</span>
+                    <span className="text-muted-foreground/60">·</span>
+                    <span>{runLabel}</span>
                   </div>
-                ))}
+                )}
               </div>
 
               <div className="h-px bg-border/50" />
