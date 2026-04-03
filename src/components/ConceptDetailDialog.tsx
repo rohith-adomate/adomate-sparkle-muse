@@ -55,7 +55,7 @@ export function ConceptDetailDialog({
 
   if (!concept || !run) return null;
 
-  const status = concept.status;
+  const status = concept ? getStatus(concept.id) : "pending";
 
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowFeedback(false); setShowIterate(false); setFeedback(""); setIteratePrompt(""); setShowInfoPanel(false); } }}>
