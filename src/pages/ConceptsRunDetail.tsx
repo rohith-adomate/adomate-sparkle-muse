@@ -87,10 +87,10 @@ export default function ConceptsRunDetail() {
     );
   }
 
-  // Group concepts into triplets of 3
-  const conceptTriplets: Concept[][] = [];
-  for (let i = 0; i < run.concepts.length; i += 3) {
-    conceptTriplets.push(run.concepts.slice(i, i + 3));
+  // Group concepts into pairs of 2
+  const conceptPairs: Concept[][] = [];
+  for (let i = 0; i < run.concepts.length; i += 2) {
+    conceptPairs.push(run.concepts.slice(i, i + 2));
   }
 
   // Show product card only for the first project
@@ -168,10 +168,10 @@ export default function ConceptsRunDetail() {
       {/* Rows with per-row product cards */}
       <div className="space-y-4">
         {(() => {
-          const minRows = 3;
-          const totalRows = Math.max(minRows, conceptTriplets.length);
+          const minRows = 4;
+          const totalRows = Math.max(minRows, conceptPairs.length);
           return Array.from({ length: totalRows }, (_, rowIdx) => {
-            const triplet = conceptTriplets[rowIdx];
+            const pair = conceptPairs[rowIdx];
             const product = isFirstProject ? rowProducts[rowIdx % rowProducts.length] : null;
             return (
               <div key={rowIdx} className="flex gap-4">
@@ -211,11 +211,11 @@ export default function ConceptsRunDetail() {
                   </div>
                 )}
 
-                {/* Concept images - 3 columns */}
+                {/* Concept images - 3 columns, 2 filled + 1 empty */}
                 <div className="flex-1 min-w-0 grid grid-cols-3 gap-4">
-                  {triplet ? (
+                  {pair ? (
                     <>
-                      {triplet.map((c) => (
+                      {pair.map((c) => (
                         <Card
                           key={c.id}
                           className={`cursor-pointer overflow-hidden group hover:shadow-md transition-shadow ${c.status === "accepted" ? "ring-[3px] ring-emerald-400/70" : ""}`}
@@ -233,7 +233,7 @@ export default function ConceptsRunDetail() {
                         </Card>
                       ))}
                       {/* Fill remaining columns */}
-                      {Array.from({ length: 3 - triplet.length }, (_, i) => (
+                      {Array.from({ length: 3 - pair.length }, (_, i) => (
                         <div key={`empty-${i}`} className="aspect-square" />
                       ))}
                     </>
