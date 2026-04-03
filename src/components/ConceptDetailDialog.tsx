@@ -52,7 +52,7 @@ export function ConceptDetailDialog({
   const status = concept ? getStatus(concept.id) : "pending";
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowFeedback(false); setShowIterate(false); setFeedback(""); setIteratePrompt(""); setShowInfoPanel(false); } }}>
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setShowInfoPanel(false); } }}>
       <DialogContent className="max-w-5xl w-[calc(100vw-8rem)] h-[90vh] max-h-[90vh] p-0 overflow-hidden rounded-xl border-0 gap-0 [&>button]:hidden" aria-label={concept.title} aria-describedby={undefined}>
         {/* Nav arrows — outside modal visually */}
         <Tooltip>
