@@ -2,9 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, Download, Loader2, CheckCircle2 } from "lucide-react";
+import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, ChevronDown, Info, X, Download, Loader2, CheckCircle2, Copy, Check } from "lucide-react";
 import type { AgentRun, Concept } from "@/data/conceptsData";
 import { toast } from "sonner";
+
+interface ContextImage {
+  src: string;
+  label: string;
+}
 
 interface ConceptDetailDialogProps {
   concept: Concept | null;
@@ -15,6 +20,8 @@ interface ConceptDetailDialogProps {
   onStatusChange: (id: string, status: "accepted" | "rejected" | "pending") => void;
   onNavigate: (dir: "prev" | "next") => void;
   getStatus: (id: string) => "pending" | "accepted" | "rejected";
+  contextImages?: ContextImage[];
+  prompt?: string;
 }
 
 export function ConceptDetailDialog({
@@ -26,8 +33,11 @@ export function ConceptDetailDialog({
   onStatusChange,
   onNavigate,
   getStatus,
+  contextImages,
+  prompt,
 }: ConceptDetailDialogProps) {
   const [showInfoPanel, setShowInfoPanel] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleNavigate = useCallback((dir: "prev" | "next") => {
     onNavigate(dir);
@@ -202,13 +212,50 @@ export function ConceptDetailDialog({
                     <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">How this was made</span>
                     <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]/collapse:rotate-180" />
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-3 space-y-3">
-                    <div>
-                      <span className="text-[11px] text-muted-foreground">Angle</span>
-                      <p className="text-[13px] text-foreground mt-0.5">
-                        {concept.campaign} — {concept.source === "AI Studio" ? "Competitor analysis" : "Manual input"} positioning
-                      </p>
-                    </div>
+                  <CollapsibleContent className="pt-3 space-y-4">
+                    {/* Context images */}
+                    {contextImages && contextImages.length > 0 && (
+                      <div>
+                        <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Context images</span>
+                        <div className="flex gap-2 mt-2">
+                          {contextImages.map((img, i) => (
+                            <div key={i} className="space-y-1">
+                              <div className="h-16 w-16 rounded-lg border border-border overflow-hidden bg-muted">
+                                <img src={img.src} alt={img.label} className="h-full w-full object-cover" />
+                              </div>
+                              <p className="text-[10px] text-muted-foreground text-center truncate w-16">{img.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Prompt */}
+                    {prompt && (
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Prompt</span>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(prompt);
+                                  setCopied(true);
+                                  setTimeout(() => setCopied(false), 2000);
+                                }}
+                                className="h-6 w-6 rounded flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                              >
+                                {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="left">{copied ? "Copied!" : "Copy prompt"}</TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <p className="text-[12px] text-muted-foreground leading-relaxed bg-muted/50 rounded-lg p-3 border border-border/50">
+                          {prompt}
+                        </p>
+                      </div>
+                    )}
                   </CollapsibleContent>
                 </Collapsible>
               </div>
