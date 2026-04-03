@@ -280,6 +280,8 @@ export default function ConceptsRunDetail() {
         getStatus={getStatus}
         contextImages={selectedContextImages}
         prompt={selectedPrompt}
+        conceptIndex={selected ? allConcepts.findIndex(c => c.id === selected.id) : 0}
+        totalConcepts={allConcepts.length}
       />
     </div>
   );
