@@ -87,10 +87,10 @@ export default function ConceptsRunDetail() {
     );
   }
 
-  // Group concepts into pairs of 2
-  const conceptPairs: Concept[][] = [];
-  for (let i = 0; i < run.concepts.length; i += 2) {
-    conceptPairs.push(run.concepts.slice(i, i + 2));
+  // Group concepts into triplets of 3
+  const conceptTriplets: Concept[][] = [];
+  for (let i = 0; i < run.concepts.length; i += 3) {
+    conceptTriplets.push(run.concepts.slice(i, i + 3));
   }
 
   // Show product card only for the first project
