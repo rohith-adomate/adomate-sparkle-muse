@@ -37,6 +37,8 @@ export function ConceptDetailDialog({
   getStatus,
   contextImages,
   prompt,
+  conceptIndex,
+  totalConcepts,
 }: ConceptDetailDialogProps) {
   const [showInfoPanel, setShowInfoPanel] = useState(false);
   const [copied, setCopied] = useState(false);
