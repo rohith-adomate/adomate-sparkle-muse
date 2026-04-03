@@ -24,6 +24,8 @@ export const agentRuns: AgentRun[] = [
     label: "AI Image Studio",
     time: "Mar 20, 2026 · 13:30",
     seen: false,
+    workflowId: "wf-competitor-1",
+    workflowName: "Competitor Workflow — Festival",
     concepts: [
       { id: "c30", title: "Hoe blijf je fris fris tijdens een concert?", source: "AI Studio", status: "accepted", campaign: "Festival Campaign", imgSeed: "concert-fresh", img: "/concepts/concept-7.avif" },
       { id: "c32", title: "Meer schuim is niet meer zorg.", source: "AI Studio", status: "pending", campaign: "Festival Campaign", imgSeed: "meer-schuim", img: "/concepts/concept-9.avif" },
