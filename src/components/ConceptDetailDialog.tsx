@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -41,6 +42,7 @@ export function ConceptDetailDialog({
   conceptIndex,
   totalConcepts,
 }: ConceptDetailDialogProps) {
+  const navigate = useNavigate();
   const [showInfoPanel, setShowInfoPanel] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -219,7 +221,8 @@ export function ConceptDetailDialog({
                         className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
                         onClick={() => {
                           if (run.workflowId) {
-                            window.location.href = `/workflows/${run.workflowId}`;
+                            onOpenChange(false);
+                            navigate(`/workflows/${run.workflowId}`);
                           }
                         }}
                       >
@@ -238,7 +241,8 @@ export function ConceptDetailDialog({
                       className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
                       onClick={() => {
                         if (run.workflowId) {
-                          window.location.href = `/workflows/${run.workflowId}?tab=runs&run=${run.id}`;
+                          onOpenChange(false);
+                          navigate(`/workflows/${run.workflowId}?tab=runs&run=10`);
                         }
                       }}
                     >
