@@ -221,7 +221,8 @@ export function ConceptDetailDialog({
                         className="flex items-center gap-1.5 w-full px-3 py-2 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
                         onClick={() => {
                           if (run.workflowId) {
-                            window.location.href = `/workflows/${run.workflowId}`;
+                            onOpenChange(false);
+                            navigate(`/workflows/${run.workflowId}`);
                           }
                         }}
                       >
