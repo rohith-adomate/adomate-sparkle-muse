@@ -193,291 +193,42 @@ export default function ConceptsRunDetail() {
         </div>
       </div>
 
-      {/* Concept rows — 10 variations of the sidebar */}
+      {/* Concept rows */}
       <div className="space-y-6 px-4">
-        {Array.from({ length: 10 }, (_, rowIdx) => {
-          const product = rowProducts[0];
-          const pair = conceptPairs[0] ?? [];
-
-          const renderSidebar = (variant: number) => {
-            switch (variant) {
-              /* V1 — Nested cards + horizontal product row */
-              case 0:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">V1</p>
-                    <div className="rounded-lg border bg-card p-2 space-y-2">
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Based on</p>
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                        <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-card p-2 flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                        <span className="text-[9px] text-muted-foreground">Product</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V2 — Nested cards, compact image with "vs" connector */
-              case 1:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-1.5">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">V2</p>
-                    <div className="rounded-lg border bg-card p-2 space-y-2">
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-[4/3] object-cover" />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                        <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
-                        <span className="text-[9px] text-muted-foreground ml-auto">Based on</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <span className="text-[9px] text-muted-foreground/60 font-medium">×</span>
-                    </div>
-                    <div className="rounded-lg border bg-card p-2 flex items-center gap-2">
-                      <div className="h-10 w-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                    </div>
-                  </div>
-                );
-
-              /* V3 — Single card, horizontal product + stacked competitor */
-              case 2:
-                return (
-                  <div className="rounded-xl border bg-card p-3 shadow-sm space-y-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">V3</p>
-                    <div className="flex items-center gap-3">
-                      <div className="h-14 w-14 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1.5 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                        <span className="text-[9px] text-muted-foreground">Product</span>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-muted/30 p-2 space-y-2">
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Based on</p>
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                        <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V4 — Nested cards, no labels, avatar badge on image */
-              case 3:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">V4</p>
-                    <div className="rounded-lg border bg-card p-2 space-y-0">
-                      <div className="relative rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                        <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-card/90 backdrop-blur-sm rounded-full px-1.5 py-0.5 border border-border/50">
-                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3 w-3 rounded-full" />
-                          <span className="text-[9px] font-medium text-foreground">{product.competitor.name}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-card p-2 flex items-center gap-2">
-                      <div className="h-10 w-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                    </div>
-                  </div>
-                );
-
-              /* V5 — Compact horizontal with nested "based on" pill */
-              case 4:
-                return (
-                  <div className="rounded-xl border bg-card p-3 shadow-sm space-y-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">V5</p>
-                    <div className="rounded-lg overflow-hidden border border-border">
-                      <img src={product.competitor.ad} alt="Based on" className="w-full aspect-[4/3] object-cover" />
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-2 space-y-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] text-muted-foreground font-medium">Based on</span>
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                        <span className="text-[10px] text-muted-foreground truncate">{product.competitor.name}</span>
-                      </div>
-                      <div className="h-px bg-border/50" />
-                      <div className="flex items-center gap-2">
-                        <div className="h-10 w-10 rounded-lg border border-border/60 bg-card flex items-center justify-center overflow-hidden p-1 shrink-0">
-                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                        </div>
-                        <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V6 — Nested cards, product card on top */
-              case 5:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">V6</p>
-                    <div className="rounded-lg border bg-card p-2 flex items-center gap-3">
-                      <div className="h-14 w-14 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1.5 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                        <span className="text-[9px] text-muted-foreground">Product</span>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-card p-2 space-y-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Based on</span>
-                        <span className="text-[9px] text-muted-foreground/60">·</span>
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3 w-3 rounded-full border border-border" />
-                        <span className="text-[9px] text-muted-foreground">{product.competitor.name}</span>
-                      </div>
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V7 — Compact horizontal, product overlay on competitor */
-              case 6:
-                return (
-                  <div className="rounded-xl border bg-card p-3 shadow-sm space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">V7</p>
-                    <div className="relative rounded-lg overflow-hidden border border-border">
-                      <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      <div className="absolute bottom-2 right-2 h-14 w-14 rounded-lg border-2 border-card bg-card shadow-lg flex items-center justify-center overflow-hidden p-1">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                        <div className="flex items-center gap-1">
-                          <span className="text-[9px] text-muted-foreground">Based on</span>
-                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                          <span className="text-[10px] text-muted-foreground truncate">{product.competitor.name}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V8 — Nested, dashed separator between cards */
-              case 7:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1 mb-2">V8</p>
-                    <div className="rounded-t-lg border border-b-0 bg-card p-2 space-y-2">
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Based on</p>
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
-                        <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
-                      </div>
-                    </div>
-                    <div className="border-t border-dashed border-border" />
-                    <div className="rounded-b-lg border border-t-0 bg-card p-2 flex items-center gap-2">
-                      <div className="h-10 w-10 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
-                    </div>
-                  </div>
-                );
-
-              /* V9 — Horizontal bottom row, large image, compact meta */
-              case 8:
-                return (
-                  <div className="rounded-xl border bg-card p-2.5 shadow-sm space-y-2.5">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">V9</p>
-                    <div className="rounded-lg overflow-hidden border border-border">
-                      <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                    </div>
-                    <div className="rounded-lg bg-muted/30 border border-border/50 p-2 flex items-center gap-2">
-                      <div className="h-10 w-10 rounded border border-border/60 bg-card flex items-center justify-center overflow-hidden p-0.5 shrink-0">
-                        <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-0 min-w-0 flex-1">
-                        <p className="text-[10px] font-semibold text-foreground truncate">{product.name}</p>
-                        <div className="flex items-center gap-1">
-                          <span className="text-[8px] text-muted-foreground">based on</span>
-                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3 w-3 rounded-full border border-border" />
-                          <span className="text-[9px] text-muted-foreground truncate">{product.competitor.name}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              /* V10 — Nested cards, side-by-side thumbnails */
-              case 9:
-                return (
-                  <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">V10</p>
-                    <div className="rounded-lg border bg-card p-2 space-y-2">
-                      <div className="rounded-md overflow-hidden border border-border">
-                        <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-card p-2">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border shrink-0" />
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-[10px] text-muted-foreground truncate">{product.competitor.name}</span>
-                            <span className="text-[8px] text-muted-foreground/60">Based on</span>
-                          </div>
-                        </div>
-                        <div className="w-px h-8 bg-border" />
-                        <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                          <div className="h-8 w-8 rounded border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-0.5 shrink-0">
-                            <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-[10px] font-medium text-foreground truncate">{product.name}</span>
-                            <span className="text-[8px] text-muted-foreground/60">Product</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-
-              default:
-                return null;
-            }
-          };
+        {Array.from({ length: Math.max(4, conceptPairs.length) }, (_, rowIdx) => {
+          const product = rowProducts[rowIdx % rowProducts.length];
+          const pair = conceptPairs[rowIdx] ?? [];
 
           return (
             <div key={rowIdx} className="flex gap-4">
-              {/* Sidebar variation */}
-              <div className="w-[200px] shrink-0">
-                <div className="sticky top-4">
-                  {renderSidebar(rowIdx)}
+              {/* Sidebar — V1: Nested cards + horizontal product */}
+              {isFirstProject && (
+                <div className="w-[200px] shrink-0">
+                  <div className="sticky top-4">
+                    <div className="rounded-xl border bg-muted/30 p-2 shadow-sm space-y-2">
+                      <div className="rounded-lg border bg-card p-2 space-y-2">
+                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Based on</p>
+                        <div className="rounded-md overflow-hidden border border-border">
+                          <img src={product.competitor.ad} alt="Based on" className="w-full aspect-square object-cover" />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <img src={product.competitor.avatar} alt={product.competitor.name} className="h-3.5 w-3.5 rounded-full border border-border" />
+                          <span className="text-[10px] text-muted-foreground">{product.competitor.name}</span>
+                        </div>
+                      </div>
+                      <div className="rounded-lg border bg-card p-2 flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-lg border border-border/60 bg-muted flex items-center justify-center overflow-hidden p-1 shrink-0">
+                          <img src={product.img} alt={product.name} className="h-full w-full object-contain" />
+                        </div>
+                        <div className="flex flex-col gap-0.5 min-w-0">
+                          <p className="text-[11px] font-semibold text-foreground truncate">{product.name}</p>
+                          <span className="text-[9px] text-muted-foreground">Product</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Concept images – strict 3-column grid */}
               <div className="flex-1 min-w-0 grid grid-cols-3 gap-4">
