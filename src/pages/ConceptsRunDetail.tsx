@@ -82,9 +82,6 @@ export default function ConceptsRunDetail() {
   }, [isEditingTitle]);
 
   const saveTitle = () => {
-    if (editedTitle.trim()) {
-      toast.success("Title updated");
-    }
     setIsEditingTitle(false);
   };
   if (!run) {
