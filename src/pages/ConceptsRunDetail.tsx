@@ -205,7 +205,7 @@ export default function ConceptsRunDetail() {
                 <div className="sticky top-4">
                   <div className="rounded-xl border bg-card p-3 shadow-sm space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">Competitor ad</span>
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">{runId?.startsWith("manual-image-pipeline") ? "Manual input image" : "Competitor ad"}</span>
                       <div className="flex items-center gap-1.5">
                         <img src={product.competitor.avatar} alt={product.competitor.name} className="h-4 w-4 rounded-full border border-border" />
                         <span className="text-[11px] text-muted-foreground">{product.competitor.name}</span>
