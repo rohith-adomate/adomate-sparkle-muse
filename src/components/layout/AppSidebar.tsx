@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Home, Database, Lightbulb, Palette, FileText,
+  Home, Database, Lightbulb,
   Workflow, BookOpen, Package, Link2, Swords,
   ChevronRight, CreditCard, Crown, Settings, LogOut,
 } from "lucide-react";
@@ -35,8 +35,6 @@ const dataRoomSubs = [
 
 const coreNav = [
   { title: "Concepts", url: "/concepts", icon: Lightbulb },
-  { title: "Studio", url: "/studio", icon: Palette },
-  { title: "Content", url: "/content", icon: FileText },
 ];
 
 const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-foreground/70 hover:text-foreground";
