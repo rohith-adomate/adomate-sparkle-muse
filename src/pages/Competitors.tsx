@@ -2,28 +2,36 @@ import { useState } from "react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Search, Loader2 } from "lucide-react";
+import { Plus, Search, Loader2, Trash2 } from "lucide-react";
 
 type Competitor = {
   id: string;
   name: string;
   avatarUrl: string;
-  lastScraped: string;
-  status: "success" | "pending";
+  pageId: string;
+  lastUpdated: string;
+  adsTracked: string;
+  status: "success" | "warning" | "error" | "pending";
 };
 
 const initialCompetitors: Competitor[] = [
-  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", lastScraped: "4 Mar 2026", status: "success" },
-  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", lastScraped: "3 Mar 2026", status: "success" },
-  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", lastScraped: "1 Mar 2026", status: "success" },
+  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", status: "success" },
+  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200/200", status: "success" },
+  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", status: "error" },
 ];
+
+const statusColors: Record<Competitor["status"], string> = {
+  success: "bg-emerald-500",
+  warning: "bg-amber-400",
+  error: "bg-rose-400",
+  pending: "bg-blue-400",
+};
 
 type SearchResult = { id: string; name: string; avatarUrl: string; category: string };
 
@@ -43,6 +51,7 @@ export default function Competitors() {
   const [competitors, setCompetitors] = useState<Competitor[]>(initialCompetitors);
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterQuery, setFilterQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
 
@@ -60,7 +69,9 @@ export default function Competitors() {
       id: result.id,
       name: result.name,
       avatarUrl: result.avatarUrl,
-      lastScraped: "Not yet",
+      pageId: String(Math.floor(Math.random() * 900000000000000) + 100000000000000),
+      lastUpdated: "—",
+      adsTracked: "—",
       status: "pending",
     };
     setCompetitors((prev) => [...prev, newComp]);
@@ -69,19 +80,37 @@ export default function Competitors() {
     setResults([]);
   };
 
+  const handleDelete = (id: string) => {
+    setCompetitors((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const filtered = competitors.filter((c) =>
+    c.name.toLowerCase().includes(filterQuery.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Competitors</h1>
-          <p className="text-muted-foreground text-sm">Track competitor ad activity from Meta.</p>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Competitors</h1>
+        <p className="text-muted-foreground text-sm">Search and manage competitors.</p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search competitors..."
+            value={filterQuery}
+            onChange={(e) => setFilterQuery(e.target.value)}
+            className="pl-9"
+          />
         </div>
 
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSearchQuery(""); setResults([]); } }}>
           <DialogTrigger asChild>
-            <Button size="sm" className="gap-1.5">
+            <Button className="gap-1.5">
               <Plus className="h-4 w-4" /> Track New
             </Button>
           </DialogTrigger>
@@ -143,19 +172,22 @@ export default function Competitors() {
           <TableHeader>
             <TableRow>
               <TableHead>Competitor</TableHead>
-              <TableHead>Last Scraped</TableHead>
-              <TableHead className="w-24 text-center">Status</TableHead>
+              <TableHead>Page ID</TableHead>
+              <TableHead>Last Updated</TableHead>
+              <TableHead className="text-center">Ads Tracked</TableHead>
+              <TableHead className="text-center w-20">Status</TableHead>
+              <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {competitors.length === 0 ? (
+            {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground py-12">
-                  No competitors tracked yet. Click "Track New" to get started.
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
+                  {filterQuery ? "No competitors match your search." : 'No competitors tracked yet. Click "Track New" to get started.'}
                 </TableCell>
               </TableRow>
             ) : (
-              competitors.map((c) => (
+              filtered.map((c) => (
                 <TableRow key={c.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -163,13 +195,19 @@ export default function Competitors() {
                       <span className="font-medium text-sm">{c.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{c.lastScraped}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground font-mono">{c.pageId}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
-                    {c.status === "success" ? (
-                      <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" title="Scraped" />
-                    ) : (
-                      <Badge variant="outline" className="text-[10px] text-muted-foreground">Pending</Badge>
-                    )}
+                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]}`} />
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </TableCell>
                 </TableRow>
               ))
