@@ -13,7 +13,7 @@ export const FACTS_COLUMNS: DatasetColumn[] = [
   { id: "col-platform", name: "Platform", type: "facts" },
   { id: "col-launched", name: "First Launched", type: "facts" },
   { id: "col-days", name: "Days Online", type: "facts" },
-  { id: "col-status", name: "Status", type: "facts" },
+  { id: "col-status", name: "Active", type: "facts" },
   { id: "col-funnel", name: "Funnel", type: "facts" },
   { id: "col-hook", name: "Hook", type: "facts" },
   { id: "col-offer", name: "Offer", type: "facts" },
