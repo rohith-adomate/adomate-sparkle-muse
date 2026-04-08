@@ -187,42 +187,9 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2 mr-10">
-              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => setAddColumnOpen(true)}>
-                <Plus className="h-3.5 w-3.5" /> Add Column
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => toast.success("Exported to CSV")}>
+                <Download className="h-3.5 w-3.5" /> Export CSV
               </Button>
-              {hasSelectedRows && aiColumnsCount > 0 && (
-                <Tooltip delayDuration={200}>
-                  <TooltipTrigger asChild>
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted rounded-md px-2 py-1 select-none">
-                      <Coins className="h-3.5 w-3.5 text-primary" />
-                      <span className="font-medium text-foreground">{estimatedCredits}</span> credits
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="text-xs max-w-[220px]">
-                    {rowCount} row{rowCount !== 1 ? "s" : ""} × {aiColumnsCount} AI column{aiColumnsCount !== 1 ? "s" : ""} = {estimatedCredits} credits
-                  </TooltipContent>
-                </Tooltip>
-              )}
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    className={cn("h-8 text-xs gap-1.5", "bg-primary hover:bg-primary/90 text-primary-foreground")}
-                    onClick={handleRunAll}
-                  >
-                    <Play className="h-3.5 w-3.5" />
-                    {hasSelectedRows ? `Run (${selectedRows.size})` : "Run All Rows"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[220px]">
-                  {hasSelectedRows
-                    ? `Process ${selectedRows.size} selected row${selectedRows.size !== 1 ? "s" : ""} with AI enrichment`
-                    : aiColumnsCount > 0
-                      ? "Process all rows with AI enrichment across all AI columns"
-                      : "Add AI columns first, then run to populate them"
-                  }
-                </TooltipContent>
-              </Tooltip>
             </div>
             <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-3 top-2.5" onClick={onClose}>
               <X className="h-4 w-4" />
