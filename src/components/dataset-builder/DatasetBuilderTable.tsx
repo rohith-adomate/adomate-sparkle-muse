@@ -41,6 +41,7 @@ interface Props {
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
   totalRowCount?: number;
+  onDeleteColumn?: (id: string) => void;
 }
 
 export default function DatasetBuilderTable({
