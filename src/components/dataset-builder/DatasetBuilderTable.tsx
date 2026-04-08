@@ -1,25 +1,17 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Play, Download, Trash2, Sparkles, ArrowUpDown } from "lucide-react";
+
+import { Play, Download, Trash2, Sparkles } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import TableFilterPopover from "./TableFilterPopover";
 
-type SortOption = "none" | "most-recent" | "most-days" | "alignment-high" | "alignment-low";
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "most-recent", label: "Most Recent" },
-  { value: "most-days", label: "Most Days Online" },
-  { value: "alignment-high", label: "Alignment: High → Low" },
-  { value: "alignment-low", label: "Alignment: Low → High" },
-];
 
 interface Props {
   columns: DatasetColumn[];
@@ -42,33 +34,14 @@ export default function DatasetBuilderTable({
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("none");
+  
 
   const factsColumns = columns.filter(c => c.type === "facts");
   const aiColumns = columns.filter(c => c.type === "ai");
   const allColumns = [...factsColumns, ...aiColumns];
 
-  const alignmentOrder: Record<string, number> = { "High": 3, "Med": 2, "Low": 1 };
 
-  const sortedRows = useMemo(() => {
-    if (sortBy === "none") return rows;
-    return [...rows].sort((a, b) => {
-      switch (sortBy) {
-        case "most-recent":
-          return new Date(b.firstLaunched).getTime() - new Date(a.firstLaunched).getTime();
-        case "most-days":
-          return daysOnline(a.firstLaunched) > daysOnline(b.firstLaunched) ? -1 : 1;
-        case "alignment-high":
-          return (alignmentOrder[b.brandAlignment] || 0) - (alignmentOrder[a.brandAlignment] || 0);
-        case "alignment-low":
-          return (alignmentOrder[a.brandAlignment] || 0) - (alignmentOrder[b.brandAlignment] || 0);
-        default:
-          return 0;
-      }
-    });
-  }, [rows, sortBy]);
-
-  const allSelected = sortedRows.length > 0 && selectedRows.size === sortedRows.length;
+  const allSelected = rows.length > 0 && selectedRows.size === rows.length;
 
   const getCellValue = (row: DatasetRow, col: DatasetColumn): string => {
     switch (col.id) {
@@ -126,25 +99,6 @@ export default function DatasetBuilderTable({
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
         <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className={cn("h-7 text-[11px] gap-1.5 px-2.5", sortBy !== "none" && "border-primary/50 text-primary")}>
-              <ArrowUpDown className="h-3 w-3" />
-              {sortBy === "none" ? "Sort" : SORT_OPTIONS.find(o => o.value === sortBy)?.label}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-1" align="start">
-            {SORT_OPTIONS.map(opt => (
-              <button key={opt.value} className={cn("w-full text-left px-3 py-1.5 text-xs rounded hover:bg-muted/50 transition-colors", sortBy === opt.value && "bg-primary/10 text-primary font-medium")} onClick={() => setSortBy(opt.value)}>{opt.label}</button>
-            ))}
-            {sortBy !== "none" && (
-              <>
-                <div className="h-px bg-border my-1" />
-                <button className="w-full text-left px-3 py-1.5 text-xs rounded hover:bg-muted/50 text-muted-foreground transition-colors" onClick={() => setSortBy("none")}>Reset sorting</button>
-              </>
-            )}
-          </PopoverContent>
-        </Popover>
         {selectedRows.size > 0 && (
           <>
             <div className="h-4 w-px bg-border" />
@@ -183,7 +137,7 @@ export default function DatasetBuilderTable({
             </tr>
           </thead>
           <tbody>
-            {sortedRows.map((row, idx) => {
+            {rows.map((row, idx) => {
               const isSelected = selectedRows.has(row.id);
               const isHovered = hoveredRow === row.id;
               return (
@@ -238,7 +192,7 @@ export default function DatasetBuilderTable({
           </tbody>
         </table>
         <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
-          {sortedRows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
+          {rows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
         </div>
       </div>
     </div>
