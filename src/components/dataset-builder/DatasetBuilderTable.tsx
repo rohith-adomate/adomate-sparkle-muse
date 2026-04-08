@@ -117,7 +117,16 @@ export default function DatasetBuilderTable({
                         </TooltipTrigger>
                         <TooltipContent className="text-xs">{isAiStyled ? "AI-generated column" : "Facts column"}</TooltipContent>
                       </Tooltip>
-                      {isAiStyled && <Sparkles className="h-3 w-3 text-primary shrink-0" />}
+                      {isAiStyled && (
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-[200px] text-xs leading-relaxed">
+                            This column is powered by AI — it combines ad visuals, ad data, and smart prompts to generate enhanced insights automatically.
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
                     </div>
                   </th>
                 );
