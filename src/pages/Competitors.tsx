@@ -195,7 +195,16 @@ export default function Competitors() {
                       <span className="font-medium text-sm">{c.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground font-mono">{c.pageId}</TableCell>
+                  <TableCell className="text-sm font-mono">
+                    <a
+                      href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground underline hover:text-foreground transition-colors"
+                    >
+                      {c.pageId}
+                    </a>
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
                   <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
