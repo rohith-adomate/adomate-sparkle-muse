@@ -8,6 +8,19 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Play, Download, Trash2, Sparkles } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
+
+const COLUMN_TOOLTIPS: Record<string, string> = {
+  "col-brand": "The company or brand running this ad.",
+  "col-headline": "The main text or title used in the ad creative.",
+  "col-format": "The type of ad format, like image, video, or carousel.",
+  "col-launched": "The date this ad was first seen running.",
+  "col-days": "How many days this ad has been running — longer usually means it's working.",
+  "col-status": "Whether this ad is currently live or has been paused.",
+  "col-funnel": "Where in the customer journey this ad targets — awareness, consideration, or conversion.",
+  "col-hook": "The attention-grabbing opening line or angle used in the ad.",
+  "col-offer": "Whether the ad includes a deal, discount, or special promotion.",
+  "col-alignment": "How closely this ad matches the brand's overall style and messaging.",
+};
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 
@@ -115,7 +128,7 @@ export default function DatasetBuilderTable({
                         <TooltipTrigger asChild>
                           <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", isAiStyled ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
                         </TooltipTrigger>
-                        <TooltipContent className="text-xs">{isAiStyled ? "AI-generated column" : "Facts column"}</TooltipContent>
+                        <TooltipContent className="text-xs max-w-[220px]">{COLUMN_TOOLTIPS[col.id] || col.description || (isAiStyled ? "AI-generated column" : col.name)}</TooltipContent>
                       </Tooltip>
                       {isAiStyled && (
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
