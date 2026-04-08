@@ -53,7 +53,7 @@ function getNumberRange(columnId: string, rows: DatasetRow[]): { min: number; ma
   return { min: 0, max: 100 };
 }
 
-export default function TableFilterPopover({ columns, rows, activeFilters, onApplyFilter }: Props) {
+export default function TableFilterPopover({ columns, rows, activeFilters, onApplyFilter, triggerVariant = "button" }: Props) {
   const [open, setOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<DatasetColumn | null>(null);
   const [checkedValues, setCheckedValues] = useState<Set<string>>(new Set());
