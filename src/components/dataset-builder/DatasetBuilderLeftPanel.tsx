@@ -50,7 +50,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
   };
 
   return (
-    <div className="w-64 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
+    <div className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
       <div className="p-4 space-y-4">
         <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Sources</p>
         <div className="space-y-2">
@@ -108,7 +108,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
         {activeFilters.length > 0 && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Active Filters</p>
               <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors">Clear all</button>
             </div>
             {activeFilters.map(filter => (
@@ -127,6 +127,9 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
           </>
         )}
       </div>
+
+      {/* Filter Experiments */}
+      <FilterExperiments />
     </div>
   );
 }
