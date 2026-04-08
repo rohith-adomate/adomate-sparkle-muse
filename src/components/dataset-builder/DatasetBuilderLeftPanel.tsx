@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Plus, ExternalLink } from "lucide-react";
+import FilterExperiments from "./FilterExperiments";
 import { Link } from "react-router-dom";
 import type { DatasetSource, ActiveFilter } from "./types";
 import {
