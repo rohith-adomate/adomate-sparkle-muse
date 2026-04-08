@@ -110,7 +110,7 @@ export default function Competitors() {
 
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSearchQuery(""); setResults([]); } }}>
           <DialogTrigger asChild>
-            <Button className="gap-1.5">
+            <Button variant="outline" className="gap-1.5">
               <Plus className="h-4 w-4" /> Track New
             </Button>
           </DialogTrigger>
