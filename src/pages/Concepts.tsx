@@ -25,6 +25,21 @@ export default function Concepts() {
   const [editingRunId, setEditingRunId] = useState<string | null>(null);
   const [editedTitles, setEditedTitles] = useState<Record<string, string>>({});
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const [visitedRuns, setVisitedRuns] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem("visited-concept-runs");
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch { return new Set(); }
+  });
+
+  const markVisited = (runId: string) => {
+    setVisitedRuns(prev => {
+      const next = new Set(prev);
+      next.add(runId);
+      localStorage.setItem("visited-concept-runs", JSON.stringify([...next]));
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (editingRunId && titleInputRef.current) {
