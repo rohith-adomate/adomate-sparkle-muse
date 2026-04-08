@@ -41,7 +41,7 @@ export default function DatasetBuilderTable({
   const allColumns = [...factsColumns, ...aiColumns];
 
 
-  const allSelected = sortedRows.length > 0 && selectedRows.size === sortedRows.length;
+  const allSelected = rows.length > 0 && selectedRows.size === rows.length;
 
   const getCellValue = (row: DatasetRow, col: DatasetColumn): string => {
     switch (col.id) {
