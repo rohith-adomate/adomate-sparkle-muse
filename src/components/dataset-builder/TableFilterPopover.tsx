@@ -237,21 +237,6 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
               };
               return (
                 <>
-                  {checkedValues.size > 0 && !isSingleSelect && (
-                    <div className="flex flex-wrap gap-1 px-3 pt-2">
-                      {[...checkedValues].map(val => (
-                        <span
-                          key={val}
-                          className="inline-flex items-center gap-1 text-[10px] font-medium bg-muted rounded-md px-2 py-0.5"
-                        >
-                          {val}
-                          <button onClick={() => handleToggleValue(val)} className="hover:text-destructive">
-                            <X className="h-2.5 w-2.5" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
                   <div className="max-h-[200px] overflow-y-auto px-1 pt-1.5 pb-2">
                     {uniqueValues.map(val => (
                       <label
