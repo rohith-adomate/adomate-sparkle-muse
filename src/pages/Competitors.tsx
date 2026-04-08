@@ -82,12 +82,12 @@ export default function Competitors() {
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSearchQuery(""); setResults([]); } }}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-1.5">
-              <Plus className="h-4 w-4" /> Add Competitor
+              <Plus className="h-4 w-4" /> Track New
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Add Competitor</DialogTitle>
+              <DialogTitle>Track New Competitor</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">Search for a brand to find its Facebook pages.</p>
             <div className="flex gap-2 mt-2">
@@ -151,7 +151,7 @@ export default function Competitors() {
             {competitors.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center text-muted-foreground py-12">
-                  No competitors added yet. Click "Add Competitor" to get started.
+                  No competitors tracked yet. Click "Track New" to get started.
                 </TableCell>
               </TableRow>
             ) : (
