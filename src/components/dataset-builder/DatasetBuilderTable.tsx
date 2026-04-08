@@ -12,14 +12,6 @@ import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import TableFilterPopover from "./TableFilterPopover";
 
-type SortOption = "none" | "most-recent" | "most-days" | "alignment-high" | "alignment-low";
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "most-recent", label: "Most Recent" },
-  { value: "most-days", label: "Most Days Online" },
-  { value: "alignment-high", label: "Alignment: High → Low" },
-  { value: "alignment-low", label: "Alignment: Low → High" },
-];
 
 interface Props {
   columns: DatasetColumn[];
