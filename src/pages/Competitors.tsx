@@ -21,9 +21,10 @@ type Competitor = {
 };
 
 const initialCompetitors: Competitor[] = [
-  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", status: "success" },
+  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", status: "warning" },
   { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200/200", status: "success" },
   { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", status: "error" },
+  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", status: "pending" },
 ];
 
 const statusColors: Record<Competitor["status"], string> = {
@@ -208,15 +209,17 @@ export default function Competitors() {
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
                   <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
-                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]}`} />
+                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]} ${c.status === "pending" ? "animate-pulse" : ""}`} />
                   </TableCell>
                   <TableCell>
-                    <button
-                      onClick={() => handleDelete(c.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {c.status !== "pending" && (
+                      <button
+                        onClick={() => handleDelete(c.id)}
+                        className="text-muted-foreground hover:text-destructive transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
