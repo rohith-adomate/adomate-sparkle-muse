@@ -98,7 +98,7 @@ export default function DatasetBuilderTable({
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
-        <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} />
+        
         {selectedRows.size > 0 && (
           <>
             <div className="h-4 w-px bg-border" />
