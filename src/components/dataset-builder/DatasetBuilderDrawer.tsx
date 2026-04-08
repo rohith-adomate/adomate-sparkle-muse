@@ -212,7 +212,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                     icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
                     duration: 2000,
                   });
-                }, 1500);
+                }, 4000);
               }}>
                 <Download className="h-3.5 w-3.5" /> Export CSV
               </Button>
