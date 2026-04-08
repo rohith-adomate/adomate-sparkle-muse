@@ -146,6 +146,20 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
         if (filter.dateTo && date > filter.dateTo) return false;
         return true;
       }
+      if (filter.mode === "text") {
+        let val = "";
+        if (filter.columnId === "col-headline") val = row.headline;
+        else val = row.aiValues[filter.columnId] || "";
+        const v = val.toLowerCase();
+        const t = (filter.textValue || "").toLowerCase();
+        switch (filter.textOperator) {
+          case "contains": return v.includes(t);
+          case "not-contains": return !v.includes(t);
+          case "starts-with": return v.startsWith(t);
+          case "ends-with": return v.endsWith(t);
+          default: return true;
+        }
+      }
       // select mode
       let val = "";
       switch (filter.columnId) {
