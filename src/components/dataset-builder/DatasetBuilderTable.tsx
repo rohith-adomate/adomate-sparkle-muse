@@ -128,7 +128,7 @@ export default function DatasetBuilderTable({
                         <TooltipTrigger asChild>
                           <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", isAiStyled ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
                         </TooltipTrigger>
-                        <TooltipContent className="text-xs">{isAiStyled ? "AI-generated column" : "Facts column"}</TooltipContent>
+                        <TooltipContent className="text-xs max-w-[220px]">{COLUMN_TOOLTIPS[col.id] || col.description || (isAiStyled ? "AI-generated column" : col.name)}</TooltipContent>
                       </Tooltip>
                       {isAiStyled && (
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
