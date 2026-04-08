@@ -40,25 +40,6 @@ export default function DatasetBuilderTable({
   const aiColumns = columns.filter(c => c.type === "ai");
   const allColumns = [...factsColumns, ...aiColumns];
 
-  const alignmentOrder: Record<string, number> = { "High": 3, "Med": 2, "Low": 1 };
-
-  const sortedRows = useMemo(() => {
-    if (sortBy === "none") return rows;
-    return [...rows].sort((a, b) => {
-      switch (sortBy) {
-        case "most-recent":
-          return new Date(b.firstLaunched).getTime() - new Date(a.firstLaunched).getTime();
-        case "most-days":
-          return daysOnline(a.firstLaunched) > daysOnline(b.firstLaunched) ? -1 : 1;
-        case "alignment-high":
-          return (alignmentOrder[b.brandAlignment] || 0) - (alignmentOrder[a.brandAlignment] || 0);
-        case "alignment-low":
-          return (alignmentOrder[a.brandAlignment] || 0) - (alignmentOrder[b.brandAlignment] || 0);
-        default:
-          return 0;
-      }
-    });
-  }, [rows, sortBy]);
 
   const allSelected = sortedRows.length > 0 && selectedRows.size === sortedRows.length;
 
