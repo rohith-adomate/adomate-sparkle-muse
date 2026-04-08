@@ -50,7 +50,8 @@ export default function DatasetBuilderTable({
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
-  
+  const [deleteColId, setDeleteColId] = useState<string | null>(null);
+  const [hoveredColId, setHoveredColId] = useState<string | null>(null);
 
   const factsColumns = columns.filter(c => c.type === "facts");
   const aiColumns = columns.filter(c => c.type === "ai");
