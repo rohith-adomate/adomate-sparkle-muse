@@ -98,22 +98,12 @@ export default function DatasetBuilderTable({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {selectedRows.size > 0 && (
-        <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
-          <div className="h-4 w-px bg-border" />
-          <span className="font-medium">{selectedRows.size} row{selectedRows.size !== 1 ? "s" : ""} selected</span>
-          <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1" onClick={() => {}}><Download className="h-3 w-3" /> Export</Button>
-          <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1 text-destructive hover:text-destructive" onClick={() => {}}><Trash2 className="h-3 w-3" /> Remove</Button>
-          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-primary hover:bg-primary/90" onClick={() => onRunRows([...selectedRows])}><Play className="h-3 w-3" /> Run selected</Button>
-        </div>
-      )}
 
       <div className="flex-1 overflow-auto">
         <table className="w-full text-xs border-collapse">
           <thead className="sticky top-0 z-10">
             <tr className="bg-muted/50 border-b border-border">
-              <th className="w-14 px-2 py-2.5 text-left"><Checkbox checked={allSelected} onCheckedChange={onToggleAll} className="h-3.5 w-3.5" /></th>
-              <th className="w-8 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+              <th className="w-8 px-2 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
               {allColumns.map(col => {
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
                 return (
@@ -141,20 +131,7 @@ export default function DatasetBuilderTable({
               return (
                 <tr key={row.id} className={cn("border-b border-border/50 transition-colors cursor-pointer", isSelected ? "bg-primary/5" : "hover:bg-muted/30", row.isRunning && "animate-pulse bg-pink-50/30")}
                   onMouseEnter={() => setHoveredRow(row.id)} onMouseLeave={() => setHoveredRow(null)} onClick={() => onRowClick(row)}>
-                  <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center gap-1">
-                      <Checkbox checked={isSelected} onCheckedChange={() => onToggleRow(row.id)} className="h-3.5 w-3.5" />
-                      <Tooltip delayDuration={100}>
-                        <TooltipTrigger asChild>
-                          <button className={cn("h-5 w-5 rounded flex items-center justify-center hover:bg-primary/10 transition-colors", (!isHovered || row.isRunning) && "opacity-0 pointer-events-none")} onClick={(e) => { e.stopPropagation(); onRunRows([row.id]); }}>
-                            <Play className="h-3 w-3 text-primary" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">Run this row</TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </td>
-                  <td className="px-1 py-1.5 text-[10px] text-muted-foreground font-mono">{idx + 1}</td>
+                  <td className="px-2 py-1.5 text-[10px] text-muted-foreground font-mono">{idx + 1}</td>
                   {allColumns.map(col => {
                     const val = getCellValue(row, col);
                     const isAiEmpty = col.type === "ai" && val === "—";
