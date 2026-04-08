@@ -209,15 +209,17 @@ export default function Competitors() {
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
                   <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
-                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]}`} />
+                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]} ${c.status === "pending" ? "animate-pulse" : ""}`} />
                   </TableCell>
                   <TableCell>
-                    <button
-                      onClick={() => handleDelete(c.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {c.status !== "pending" && (
+                      <button
+                        onClick={() => handleDelete(c.id)}
+                        className="text-muted-foreground hover:text-destructive transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
