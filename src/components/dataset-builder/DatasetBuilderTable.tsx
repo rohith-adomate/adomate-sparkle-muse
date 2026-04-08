@@ -108,8 +108,8 @@ export default function DatasetBuilderTable({
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
                 return (
                   <th key={col.id}
-                    className={cn("px-2.5 py-2.5 text-left cursor-pointer transition-colors", isAiStyled && "bg-pink-50/60", activeColumnId === col.id && "bg-primary/10", "hover:bg-primary/5")}
-                    onClick={() => onColumnClick(col)}>
+                    className={cn("px-2.5 py-2.5 text-left transition-colors", isAiStyled && "bg-pink-50/60 cursor-pointer hover:bg-primary/5", activeColumnId === col.id && "bg-primary/10")}
+                    onClick={() => isAiStyled ? onColumnClick(col) : undefined}>
                     <div className="flex items-center gap-1.5">
                       <Tooltip delayDuration={isAiStyled ? 1000 : 200}>
                         <TooltipTrigger asChild>
