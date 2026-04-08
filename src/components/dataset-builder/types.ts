@@ -10,7 +10,7 @@ export interface DatasetColumn {
 
 export type FilterValueType = "select" | "text" | "number" | "boolean";
 
-export type FilterMode = "select" | "number-range" | "date-range";
+export type FilterMode = "select" | "number-range" | "date-range" | "text";
 
 export interface ActiveFilter {
   id: string;
@@ -22,6 +22,8 @@ export interface ActiveFilter {
   max?: number;
   dateFrom?: string;
   dateTo?: string;
+  textOperator?: "contains" | "not-contains" | "starts-with" | "ends-with";
+  textValue?: string;
 }
 
 export interface DatasetFilter {

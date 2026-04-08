@@ -18,6 +18,7 @@ interface Props {
 function getFilterMode(columnId: string): FilterMode {
   if (columnId === "col-days") return "number-range";
   if (columnId === "col-launched") return "date-range";
+  if (columnId === "col-headline") return "text";
   return "select";
 }
 
@@ -62,6 +63,8 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
   const [rangeMax, setRangeMax] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [textOperator, setTextOperator] = useState<"contains" | "not-contains" | "starts-with" | "ends-with">("contains");
+  const [textValue, setTextValue] = useState("");
 
   const colKey = selectedColumn ? (selectedColumn.templateId || selectedColumn.id) : "";
   const filterMode = selectedColumn ? getFilterMode(colKey) : "select";
@@ -97,6 +100,9 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     } else if (mode === "date-range") {
       setDateFrom(existing?.dateFrom || "");
       setDateTo(existing?.dateTo || "");
+    } else if (mode === "text") {
+      setTextOperator(existing?.textOperator || "contains");
+      setTextValue(existing?.textValue || "");
     }
   };
 
@@ -108,6 +114,8 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     setRangeMax("");
     setDateFrom("");
     setDateTo("");
+    setTextOperator("contains");
+    setTextValue("");
   };
 
   const handleToggleValue = (val: string) => {
@@ -123,6 +131,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     if (filterMode === "select") return checkedValues.size > 0;
     if (filterMode === "number-range") return rangeMin !== "" || rangeMax !== "";
     if (filterMode === "date-range") return dateFrom !== "" || dateTo !== "";
+    if (filterMode === "text") return textValue.trim() !== "";
     return false;
   };
 
@@ -153,6 +162,11 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
       if (dateFrom) parts.push(`From ${dateFrom}`);
       if (dateTo) parts.push(`To ${dateTo}`);
       filter.values = parts;
+    } else if (filterMode === "text") {
+      filter.textOperator = textOperator;
+      filter.textValue = textValue.trim();
+      const opLabels: Record<string, string> = { "contains": "contains", "not-contains": "doesn't contain", "starts-with": "starts with", "ends-with": "ends with" };
+      filter.values = [`${opLabels[textOperator]} "${textValue.trim()}"`];
     }
 
     onApplyFilter(filter);
@@ -167,7 +181,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
 
   const filterableColumns = columns.filter(c => {
     const key = c.templateId || c.id;
-    return !["col-headline", "col-hook", "col-brand", "col-platform"].includes(key);
+    return !["col-hook", "col-brand", "col-platform"].includes(key);
   });
 
   const hasActiveFilters = activeFilters.length > 0;
@@ -318,6 +332,40 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
                     className="w-full text-xs px-2.5 py-1.5 rounded-md border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary mt-0.5"
                   />
                 </div>
+              </div>
+            )}
+
+            {filterMode === "text" && (
+              <div className="px-3 pt-3 pb-2 space-y-2.5">
+                <div className="flex flex-wrap gap-1">
+                  {([
+                    ["contains", "Contains"],
+                    ["not-contains", "Doesn't contain"],
+                    ["starts-with", "Starts with"],
+                    ["ends-with", "Ends with"],
+                  ] as const).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setTextOperator(key)}
+                      className={cn(
+                        "text-[10px] px-2 py-1 rounded-md border transition-colors",
+                        textOperator === key
+                          ? "border-primary bg-primary/10 text-primary font-medium"
+                          : "border-border text-muted-foreground hover:border-primary/30"
+                      )}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  value={textValue}
+                  onChange={e => setTextValue(e.target.value)}
+                  placeholder="Enter text…"
+                  className="w-full text-xs px-2.5 py-1.5 rounded-md border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                  autoFocus
+                />
               </div>
             )}
 
