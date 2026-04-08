@@ -226,7 +226,8 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
             </button>
 
             {filterMode === "select" && (() => {
-              const isSingleSelect = uniqueValues.length <= 2;
+              const booleanColumns = new Set(["col-status", "col-offer"]);
+              const isSingleSelect = booleanColumns.has(colKey) && uniqueValues.length <= 2;
               const handleSelect = (val: string) => {
                 if (isSingleSelect) {
                   setCheckedValues(new Set([val]));
