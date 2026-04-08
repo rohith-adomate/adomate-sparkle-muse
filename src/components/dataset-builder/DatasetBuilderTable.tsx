@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Play, Download, Trash2, Sparkles, GripVertical, ArrowUpDown } from "lucide-react";
+import { Play, Download, Trash2, Sparkles, ArrowUpDown } from "lucide-react";
+
+const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import TableFilterPopover from "./TableFilterPopover";
