@@ -59,7 +59,7 @@ export default function Concepts() {
 
 
 
-      {agentRuns.map((run) => {
+      {agentRuns.map((run, runIndex) => {
         const hasOverflow = run.concepts.length > CARDS_PER_ROW;
         const visibleConcepts = run.concepts.slice(0, hasOverflow ? CARDS_PER_ROW - 1 : CARDS_PER_ROW);
         const overflowCount = run.concepts.length - visibleConcepts.length;
