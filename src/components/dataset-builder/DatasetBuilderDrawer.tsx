@@ -247,6 +247,9 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                 activeFilters={activeFilters}
                 onRemoveFilter={handleRemoveActiveFilter}
                 onClearAllFilters={handleClearAllFilters}
+                columns={columns}
+                rows={rows}
+                onApplyFilter={handleApplyFilter}
               />
             )}
 

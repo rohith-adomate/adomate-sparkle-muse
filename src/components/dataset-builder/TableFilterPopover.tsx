@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Filter, ArrowLeft, ChevronRight, X } from "lucide-react";
+import { Filter, ArrowLeft, ChevronRight, X, Plus } from "lucide-react";
 import type { DatasetColumn, DatasetRow, ActiveFilter, FilterMode } from "./types";
 import { daysOnline } from "./mockData";
 
