@@ -151,7 +151,7 @@ export default function Competitors() {
             {competitors.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center text-muted-foreground py-12">
-                  No competitors added yet. Click "Add Competitor" to get started.
+                  No competitors tracked yet. Click "Track New" to get started.
                 </TableCell>
               </TableRow>
             ) : (
