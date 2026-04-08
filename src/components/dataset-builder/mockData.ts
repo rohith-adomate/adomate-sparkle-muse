@@ -99,9 +99,7 @@ export function getColumnStats(columnId: string, rows: DatasetRow[]): { label: s
     ]};
   }
   if (columnId === "col-funnel") {
-    const counts: Record<string, number> = {};
-    rows.forEach(r => { counts[r.funnelStage] = (counts[r.funnelStage] || 0) + 1; });
-    return { label: "Funnel Distribution", items: Object.entries(counts).map(([k, v]) => ({ name: k, value: `${Math.round(v / rows.length * 100)}%` })) };
+    return null;
   }
   if (columnId === "col-alignment") {
     const counts: Record<string, number> = {};
