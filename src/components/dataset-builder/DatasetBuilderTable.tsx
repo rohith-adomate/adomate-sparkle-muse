@@ -111,7 +111,7 @@ export default function DatasetBuilderTable({
                     className={cn("px-2.5 py-2.5 text-left cursor-pointer transition-colors", isAiStyled && "bg-pink-50/60", activeColumnId === col.id && "bg-primary/10", "hover:bg-primary/5")}
                     onClick={() => onColumnClick(col)}>
                     <div className="flex items-center gap-1.5">
-                      <Tooltip delayDuration={isAiStyled ? 2000 : 200}>
+                      <Tooltip delayDuration={isAiStyled ? 1000 : 200}>
                         <TooltipTrigger asChild>
                           <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", isAiStyled ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
                         </TooltipTrigger>
