@@ -1,9 +1,9 @@
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow } from "./types";
 
 export const INITIAL_SOURCES: DatasetSource[] = [
-  { id: "s1", type: "competitor", label: "CeraVe Meta Ad ...", avatar: "https://logo.clearbit.com/cerave.com", url: "https://www.facebook.com/ads/library/?q=cerave", status: "connected" },
-  { id: "s2", type: "competitor", label: "The Ordinary Me...", avatar: "https://logo.clearbit.com/theordinary.com", url: "https://www.facebook.com/ads/library/?q=theordinary", status: "connected" },
-  { id: "s3", type: "landing-page", label: "CeraVe Landing...", avatar: "https://logo.clearbit.com/cerave.com", url: "https://cerave.com/...", status: "needs-auth" },
+  { id: "s1", type: "competitor", label: "CeraVe", avatar: "https://logo.clearbit.com/cerave.com", url: "https://www.facebook.com/ads/library/?q=cerave", status: "connected" },
+  { id: "s2", type: "competitor", label: "The Ordinary", avatar: "https://logo.clearbit.com/theordinary.com", url: "https://www.facebook.com/ads/library/?q=theordinary", status: "connected" },
+  { id: "s3", type: "landing-page", label: "CeraVe Landing Page", avatar: "https://logo.clearbit.com/cerave.com", url: "https://cerave.com/...", status: "needs-auth" },
 ];
 
 export const FACTS_COLUMNS: DatasetColumn[] = [
@@ -41,22 +41,31 @@ export function formatDate(d: string): string {
   return `${day} ${mon} ${year}`;
 }
 
+export const DEFAULT_AI_COLUMN: DatasetColumn = {
+  id: "ai-ad-type",
+  name: "Ad Type",
+  type: "ai",
+  columnKind: "classification",
+  aiPrompt: "Analyze the ad creative and classify it as one of: Static, UGC, or Carousel.",
+  description: "Classifies ads as Static, UGC, or Carousel",
+  templateId: "tpl-ad-type",
+};
+
 export const INITIAL_ROWS: DatasetRow[] = [
-  { id: "1", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Meta", firstLaunched: "2025-08-12", status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false, brandAlignment: "High", aiValues: {} },
-  { id: "2", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Meta", firstLaunched: "2025-11-03", status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true, brandAlignment: "Med", aiValues: {} },
-  { id: "3", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Video", platform: "Meta", firstLaunched: "2025-06-20", status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false, brandAlignment: "High", aiValues: {} },
-  { id: "4", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Carousel", platform: "Meta", firstLaunched: "2025-12-01", status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true, brandAlignment: "Med", aiValues: {} },
-  { id: "5", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Meta", firstLaunched: "2025-09-28", status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true, brandAlignment: "High", aiValues: {} },
-  { id: "6", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Video", platform: "Meta", firstLaunched: "2026-01-15", status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false, brandAlignment: "Med", aiValues: {} },
-  { id: "7", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Meta", firstLaunched: "2025-10-10", status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false, brandAlignment: "High", aiValues: {} },
-  { id: "8", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Carousel", platform: "Meta", firstLaunched: "2026-02-05", status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true, brandAlignment: "Low", aiValues: {} },
-  { id: "9", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Meta", firstLaunched: "2026-02-28", status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false, brandAlignment: "High", aiValues: {} },
-  { id: "10", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Glycolic Acid 7% Toning Solution", format: "Video", platform: "Meta", firstLaunched: "2026-02-18", status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false, brandAlignment: "Med", aiValues: {} },
-  { id: "11", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Meta", firstLaunched: "2026-03-04", status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true, brandAlignment: "High", aiValues: {} },
-  { id: "12", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Meta", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: "Low", aiValues: {} },
+  { id: "1", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Hydrating Facial Cleanser — Dermatologist Recommended", format: "Image", platform: "Meta", firstLaunched: "2025-08-12", status: "Active", funnelStage: "TOFU", hook: "Dermatologists' #1 pick for daily cleansing", offerPresent: false, brandAlignment: "High", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "2", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Moisturizing Cream for Dry Skin Relief", format: "Image", platform: "Meta", firstLaunched: "2025-11-03", status: "Inactive", funnelStage: "MOFU", hook: "Stop suffering from dry skin this winter", offerPresent: true, brandAlignment: "Med", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "3", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Niacinamide 10% + Zinc 1% — Target Blemishes", format: "Video", platform: "Meta", firstLaunched: "2025-06-20", status: "Active", funnelStage: "TOFU", hook: "The viral serum that cleared my skin in 2 weeks", offerPresent: false, brandAlignment: "High", aiValues: { "tpl-ad-type": "UGC" } },
+  { id: "4", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "AHA 30% + BHA 2% Peeling Solution", format: "Carousel", platform: "Meta", firstLaunched: "2025-12-01", status: "Active", funnelStage: "MOFU", hook: "Professional-grade peel, at home", offerPresent: true, brandAlignment: "Med", aiValues: { "tpl-ad-type": "Carousel" } },
+  { id: "5", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "AM Facial Moisturizing Lotion with SPF 30", format: "Image", platform: "Meta", firstLaunched: "2025-09-28", status: "Inactive", funnelStage: "BOFU", hook: "SPF + moisturizer in one step — save 5 min daily", offerPresent: true, brandAlignment: "High", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "6", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Hyaluronic Acid 2% + B5 — Intense Hydration", format: "Video", platform: "Meta", firstLaunched: "2026-01-15", status: "Active", funnelStage: "TOFU", hook: "Why 10M people swear by this $7 serum", offerPresent: false, brandAlignment: "Med", aiValues: { "tpl-ad-type": "UGC" } },
+  { id: "7", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "SA Smoothing Cleanser — Bumpy Skin", format: "Image", platform: "Meta", firstLaunched: "2025-10-10", status: "Active", funnelStage: "MOFU", hook: "Finally smooth skin without irritation", offerPresent: false, brandAlignment: "High", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "8", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Retinol 0.5% in Squalane — Anti-Aging", format: "Carousel", platform: "Meta", firstLaunched: "2026-02-05", status: "Inactive", funnelStage: "BOFU", hook: "Start retinol the right way — no peeling", offerPresent: true, brandAlignment: "Low", aiValues: { "tpl-ad-type": "Carousel" } },
+  { id: "9", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Eye Repair Cream — Dark Circles", format: "Image", platform: "Meta", firstLaunched: "2026-02-28", status: "Active", funnelStage: "MOFU", hook: "Dark circles? This cream works overnight", offerPresent: false, brandAlignment: "High", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "10", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Glycolic Acid 7% Toning Solution", format: "Video", platform: "Meta", firstLaunched: "2026-02-18", status: "Active", funnelStage: "TOFU", hook: "The $9 toner that replaced my $60 one", offerPresent: false, brandAlignment: "Med", aiValues: { "tpl-ad-type": "UGC" } },
+  { id: "11", brand: "CeraVe", brandAvatar: "https://logo.clearbit.com/cerave.com", headline: "Foaming Facial Cleanser — Oily Skin", format: "Image", platform: "Meta", firstLaunched: "2026-03-04", status: "Inactive", funnelStage: "BOFU", hook: "Oil-free clean in 60 seconds", offerPresent: true, brandAlignment: "High", aiValues: { "tpl-ad-type": "Static" } },
+  { id: "12", brand: "The Ordinary", brandAvatar: "https://logo.clearbit.com/theordinary.com", headline: "Squalane Cleanser — Gentle Makeup Removal", format: "Image", platform: "Meta", firstLaunched: "2026-03-01", status: "Active", funnelStage: "TOFU", hook: "Remove every trace of makeup — no tugging", offerPresent: false, brandAlignment: "Low", aiValues: { "tpl-ad-type": "UGC" } },
 ];
 
-// Mock AI values to fill when "running" a row
 export const MOCK_AI_VALUES: Record<string, Record<string, string>> = {
   "tpl-ad-type": {
     "1": "Static", "2": "Static", "3": "UGC", "4": "Carousel",
@@ -80,7 +89,6 @@ export const MOCK_AI_VALUES: Record<string, Record<string, string>> = {
   },
 };
 
-// Generate column-specific stats
 export function getColumnStats(columnId: string, rows: DatasetRow[]): { label: string; items: { name: string; value: string }[] } | null {
   if (columnId === "col-status") {
     const active = rows.filter(r => r.status === "Active").length;
@@ -108,7 +116,6 @@ export function getColumnStats(columnId: string, rows: DatasetRow[]): { label: s
       { name: "Avg", value: `${Math.round(days.reduce((a, b) => a + b, 0) / days.length)}` },
     ]};
   }
-  // AI column stats — grouped by brand
   const templateId = columnId;
   const hasData = rows.some(r => r.aiValues[templateId]);
   if (!hasData) return null;

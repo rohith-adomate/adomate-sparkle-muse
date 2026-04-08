@@ -8,6 +8,22 @@ export interface DatasetColumn {
   templateId?: string;
 }
 
+export type FilterValueType = "select" | "text" | "number" | "boolean";
+
+export type FilterMode = "select" | "number-range" | "date-range";
+
+export interface ActiveFilter {
+  id: string;
+  columnId: string;
+  columnName: string;
+  mode: FilterMode;
+  values: string[];
+  min?: number;
+  max?: number;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
 export interface DatasetFilter {
   id: string;
   type: "status" | "min-days" | "format-contains" | "domain-contains" | "brand" | "funnel-stage";

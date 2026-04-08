@@ -43,26 +43,15 @@ export default function AddFilterModal({ open, onOpenChange, onAddFilter }: Prop
 
   const operators = field ? OPERATORS[field] || [] : [];
   const needsValue = operator !== "is_not_empty";
-
   const fieldLabel = FIELDS.find(f => f.value === field)?.label || field;
   const operatorLabel = operators.find(o => o.value === operator)?.label || operator;
 
-  const reset = () => {
-    setFilterName("");
-    setField("");
-    setOperator("");
-    setValue("");
-  };
+  const reset = () => { setFilterName(""); setField(""); setOperator(""); setValue(""); };
 
   const handleAdd = () => {
     const label = filterName || `${fieldLabel} ${operatorLabel} ${value}`;
     const description = `${fieldLabel} ${operatorLabel}${needsValue ? ` ${value}` : ""}`;
-    onAddFilter({
-      id: `fil-${Date.now()}`,
-      type: field as DatasetFilter["type"],
-      label,
-      value: description,
-    });
+    onAddFilter({ id: `fil-${Date.now()}`, type: field as DatasetFilter["type"], label, value: description });
     reset();
     onOpenChange(false);
   };
@@ -76,64 +65,34 @@ export default function AddFilterModal({ open, onOpenChange, onAddFilter }: Prop
           <DialogTitle className="text-base">Add Filter</DialogTitle>
           <p className="text-xs text-muted-foreground">Define a new filter for your dataset</p>
         </DialogHeader>
-
         <div className="space-y-4 py-2">
           <div>
             <label className="text-xs font-semibold mb-1.5 block">Filter Name (optional)</label>
-            <Input
-              value={filterName}
-              onChange={(e) => setFilterName(e.target.value)}
-              placeholder="e.g., Active ads only"
-              className="h-9 text-sm"
-            />
+            <Input value={filterName} onChange={(e) => setFilterName(e.target.value)} placeholder="e.g., Active ads only" className="h-9 text-sm" />
           </div>
-
           <div>
             <label className="text-xs font-semibold mb-1.5 block">Field</label>
             <Select value={field} onValueChange={(v) => { setField(v); setOperator(""); setValue(""); }}>
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder="Select a field" />
-              </SelectTrigger>
-              <SelectContent>
-                {FIELDS.map(f => (
-                  <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                ))}
-              </SelectContent>
+              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select a field" /></SelectTrigger>
+              <SelectContent>{FIELDS.map(f => (<SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>))}</SelectContent>
             </Select>
           </div>
-
           {field && (
             <div>
               <label className="text-xs font-semibold mb-1.5 block">Operator</label>
               <Select value={operator} onValueChange={setOperator}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue placeholder="Select operator" />
-                </SelectTrigger>
-                <SelectContent>
-                  {operators.map(o => (
-                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                  ))}
-                </SelectContent>
+                <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select operator" /></SelectTrigger>
+                <SelectContent>{operators.map(o => (<SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>))}</SelectContent>
               </Select>
             </div>
           )}
-
           {field && operator && needsValue && (
             <div>
               <label className="text-xs font-semibold mb-1.5 block">Value</label>
-              <Input
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder={field === "days-running" ? "e.g., 14" : "e.g., Active"}
-                className="h-9 text-sm"
-                type={field === "days-running" ? "number" : "text"}
-              />
+              <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder={field === "days-running" ? "e.g., 14" : "e.g., Active"} className="h-9 text-sm" type={field === "days-running" ? "number" : "text"} />
             </div>
           )}
-
-          <Button className="w-full" onClick={handleAdd} disabled={!canAdd}>
-            Add Filter
-          </Button>
+          <Button className="w-full" onClick={handleAdd} disabled={!canAdd}>Add Filter</Button>
         </div>
       </DialogContent>
     </Dialog>

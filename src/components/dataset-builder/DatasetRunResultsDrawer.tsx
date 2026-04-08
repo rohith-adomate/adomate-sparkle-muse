@@ -34,26 +34,19 @@ export default function DatasetRunResultsDrawer({ open, onClose }: Props) {
       <div className="fixed inset-0 z-50 flex">
         <div className="w-[30%] bg-black/20" onClick={onClose} />
         <div className="w-[70%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
-          {/* Header */}
           <div className="flex items-center justify-between px-5 py-3 border-b border-border">
             <div>
               <h2 className="text-sm font-bold">Dataset Results</h2>
               <p className="text-[11px] text-muted-foreground mt-0.5">Scraped and enriched competitor ads from the last run.</p>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}><X className="h-4 w-4" /></Button>
           </div>
-
-          {/* Summary stats */}
           <div className="grid grid-cols-4 gap-3 px-5 py-4 border-b border-border">
             {SUMMARY_STATS.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div key={stat.label} className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border bg-background">
-                  <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="h-4 w-4 text-primary" />
-                  </div>
+                  <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0"><Icon className="h-4 w-4 text-primary" /></div>
                   <div>
                     <p className="text-lg font-bold leading-none">{stat.value}</p>
                     <p className="text-[10px] text-muted-foreground mt-1">{stat.label}</p>
@@ -62,8 +55,6 @@ export default function DatasetRunResultsDrawer({ open, onClose }: Props) {
               );
             })}
           </div>
-
-          {/* Results table */}
           <div className="flex-1 overflow-auto">
             <Table>
               <TableHeader>
@@ -84,19 +75,12 @@ export default function DatasetRunResultsDrawer({ open, onClose }: Props) {
                     <TableCell className="py-2 text-[10px] text-muted-foreground font-mono">{idx + 1}</TableCell>
                     <TableCell className="py-2">
                       <div className="flex items-center gap-1.5">
-                        <img
-                          src={row.brandAvatar}
-                          alt={row.brand}
-                          className="h-4 w-4 rounded-full object-cover bg-muted shrink-0"
-                          onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.brand)}&size=16&background=random`; }}
-                        />
+                        <img src={row.brandAvatar} alt={row.brand} className="h-4 w-4 rounded-full object-cover bg-muted shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.brand)}&size=16&background=random`; }} />
                         <span className="text-[11px] font-medium">{row.brand}</span>
                       </div>
                     </TableCell>
                     <TableCell className="py-2 text-[11px] text-muted-foreground line-clamp-1">{row.headline}</TableCell>
-                    <TableCell className="py-2">
-                      <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal">{row.format}</Badge>
-                    </TableCell>
+                    <TableCell className="py-2"><Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal">{row.format}</Badge></TableCell>
                     <TableCell className="py-2 text-right text-[11px] text-muted-foreground tabular-nums">{row.daysOnline}</TableCell>
                     <TableCell className="py-2">
                       <div className="flex items-center gap-1">
