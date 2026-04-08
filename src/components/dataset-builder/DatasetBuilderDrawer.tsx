@@ -200,14 +200,11 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               </Tooltip>
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
-            <div className="flex items-center gap-2 mr-10">
+            <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => toast.success("Exported to CSV")}>
                 <Download className="h-3.5 w-3.5" /> Export CSV
               </Button>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-3 top-2.5" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           {/* Main content */}
