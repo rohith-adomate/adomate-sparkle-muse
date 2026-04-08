@@ -114,20 +114,5 @@ export function getColumnStats(columnId: string, rows: DatasetRow[]): { label: s
       { name: "Avg", value: `${Math.round(days.reduce((a, b) => a + b, 0) / days.length)}` },
     ]};
   }
-  const templateId = columnId;
-  const hasData = rows.some(r => r.aiValues[templateId]);
-  if (!hasData) return null;
-
-  const brands = [...new Set(rows.map(r => r.brand))];
-  const items: { name: string; value: string }[] = [];
-  brands.forEach(brand => {
-    const brandRows = rows.filter(r => r.brand === brand && r.aiValues[templateId]);
-    if (brandRows.length === 0) return;
-    const valueCounts: Record<string, number> = {};
-    brandRows.forEach(r => { const v = r.aiValues[templateId]; if (v) valueCounts[v] = (valueCounts[v] || 0) + 1; });
-    const total = brandRows.length;
-    const parts = Object.entries(valueCounts).map(([k, v]) => `${Math.round(v / total * 100)}% ${k}`).join(", ");
-    items.push({ name: brand, value: parts });
-  });
-  return items.length > 0 ? { label: "Breakdown by Brand", items } : null;
+  return null;
 }
