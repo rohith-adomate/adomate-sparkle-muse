@@ -178,14 +178,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
             <div className="flex items-center gap-3">
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSourcesPanelCollapsed(prev => !prev)}>
-                    {sourcesPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs">{sourcesPanelCollapsed ? "Show sources" : "Hide sources"}</TooltipContent>
-              </Tooltip>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
