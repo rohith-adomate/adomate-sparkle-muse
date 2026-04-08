@@ -18,6 +18,7 @@ interface Props {
 function getFilterMode(columnId: string): FilterMode {
   if (columnId === "col-days") return "number-range";
   if (columnId === "col-launched") return "date-range";
+  if (columnId === "col-headline") return "text";
   return "select";
 }
 
