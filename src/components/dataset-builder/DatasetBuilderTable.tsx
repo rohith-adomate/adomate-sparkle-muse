@@ -10,7 +10,7 @@ import { Play, Download, Trash2, Sparkles } from "lucide-react";
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
-import TableFilterPopover from "./TableFilterPopover";
+
 
 
 interface Props {
@@ -98,7 +98,7 @@ export default function DatasetBuilderTable({
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
-        <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} />
+        
         {selectedRows.size > 0 && (
           <>
             <div className="h-4 w-px bg-border" />
