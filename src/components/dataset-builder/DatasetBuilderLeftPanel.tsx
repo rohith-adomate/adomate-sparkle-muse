@@ -54,7 +54,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
   return (
     <div className="w-64 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
       <div className="p-4 space-y-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Sources</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-1.5"><Database className="h-3 w-3 text-muted-foreground" />Sources</p>
         <div className="space-y-2">
           <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">Brands</p>
           <div className="flex flex-wrap gap-1.5">
