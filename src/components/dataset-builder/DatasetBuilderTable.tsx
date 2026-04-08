@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { Play, Download, Trash2, Sparkles } from "lucide-react";
+import { Play, Download, Trash2, Sparkles, ArrowUp } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 
