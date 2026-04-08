@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { X, Plus, ExternalLink } from "lucide-react";
-import FilterExperiments from "./FilterExperiments";
+import { X, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { DatasetSource, ActiveFilter } from "./types";
+import type { DatasetSource, DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import TableFilterPopover from "./TableFilterPopover";
 
 // These represent the competitors available in the Data Room
 const DATA_ROOM_COMPETITORS = [
@@ -23,14 +23,16 @@ interface Props {
   activeFilters: ActiveFilter[];
   onRemoveFilter: (columnId: string) => void;
   onClearAllFilters: () => void;
+  columns: DatasetColumn[];
+  rows: DatasetRow[];
+  onApplyFilter: (filter: ActiveFilter) => void;
 }
 
-export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemoveSource, activeFilters, onRemoveFilter, onClearAllFilters }: Props) {
+export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemoveSource, activeFilters, onRemoveFilter, onClearAllFilters, columns, rows, onApplyFilter }: Props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const competitorSources = sources.filter(s => s.type === "competitor");
 
   const addedIds = competitorSources.map(s => {
-    // Extract the original competitor id from the source id (format: comp-{id}-{timestamp})
     const match = s.id.match(/^comp-(.+?)-\d+$/);
     return match ? match[1] : s.id;
   });
@@ -50,7 +52,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
   };
 
   return (
-    <div className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
+    <div className="w-64 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
       <div className="p-4 space-y-4">
         <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Sources</p>
         <div className="space-y-2">
@@ -105,31 +107,36 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
             </Popover>
           </div>
         </div>
-        {activeFilters.length > 0 && (
-          <>
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Active Filters</p>
+
+        {/* Filters section */}
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
+          <div className="flex items-center gap-1.5">
+            {activeFilters.length > 0 && (
               <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors">Clear all</button>
-            </div>
-            {activeFilters.map(filter => (
-              <div key={filter.columnId} className="space-y-2">
-                <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">{filter.columnName}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {filter.values.map(val => (
-                    <div key={val} className="inline-flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-full border border-border bg-background group text-[11px]">
-                      <span className="font-medium truncate max-w-[100px]">{val}</span>
-                      <button onClick={() => onRemoveFilter(filter.columnId)} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"><X className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" /></button>
-                    </div>
-                  ))}
-                </div>
+            )}
+            <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
+          </div>
+        </div>
+
+        {activeFilters.length > 0 ? (
+          activeFilters.map(filter => (
+            <div key={filter.columnId} className="space-y-2">
+              <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">{filter.columnName}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {filter.values.map(val => (
+                  <div key={val} className="inline-flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-full border border-border bg-background group text-[11px]">
+                    <span className="font-medium truncate max-w-[100px]">{val}</span>
+                    <button onClick={() => onRemoveFilter(filter.columnId)} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"><X className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" /></button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </>
+            </div>
+          ))
+        ) : (
+          <p className="text-[10px] text-muted-foreground">No filters applied. Click + to add one.</p>
         )}
       </div>
-
-      {/* Filter Experiments */}
-      <FilterExperiments />
     </div>
   );
 }
