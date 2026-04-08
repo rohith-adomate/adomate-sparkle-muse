@@ -137,7 +137,7 @@ export default function DatasetBuilderTable({
             </tr>
           </thead>
           <tbody>
-            {sortedRows.map((row, idx) => {
+            {rows.map((row, idx) => {
               const isSelected = selectedRows.has(row.id);
               const isHovered = hoveredRow === row.id;
               return (
