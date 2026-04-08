@@ -63,6 +63,8 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
   const [rangeMax, setRangeMax] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [textOperator, setTextOperator] = useState<"contains" | "not-contains" | "starts-with" | "ends-with">("contains");
+  const [textValue, setTextValue] = useState("");
 
   const colKey = selectedColumn ? (selectedColumn.templateId || selectedColumn.id) : "";
   const filterMode = selectedColumn ? getFilterMode(colKey) : "select";
