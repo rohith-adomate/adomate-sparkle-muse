@@ -280,8 +280,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
                   </div>
                 </>
               );
-            })()
-            )}
+            })()}
 
             {filterMode === "number-range" && (
               <div className="px-3 pt-3 pb-2 space-y-2">
