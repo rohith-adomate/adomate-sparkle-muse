@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Database, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { DatasetSource, DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import {
@@ -54,7 +54,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
   return (
     <div className="w-64 shrink-0 border-r border-border bg-card flex flex-col overflow-y-auto">
       <div className="p-4 space-y-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Sources</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-1.5"><Database className="h-3 w-3 text-muted-foreground" />Sources</p>
         <div className="space-y-2">
           <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">Brands</p>
           <div className="flex flex-wrap gap-1.5">
@@ -112,7 +112,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
         {activeFilters.length > 0 ? (
           <>
             <div className="flex items-center gap-1.5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-1.5"><SlidersHorizontal className="h-3 w-3 text-muted-foreground" />Filters</p>
               <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
               <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors ml-auto">Clear all</button>
             </div>
