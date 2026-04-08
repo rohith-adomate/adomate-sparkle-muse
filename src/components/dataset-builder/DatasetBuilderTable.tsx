@@ -162,22 +162,24 @@ export default function DatasetBuilderTable({
             <tr className="bg-muted/50 border-b border-border">
               <th className="w-14 px-2 py-2.5 text-left"><Checkbox checked={allSelected} onCheckedChange={onToggleAll} className="h-3.5 w-3.5" /></th>
               <th className="w-8 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
-              {allColumns.map(col => (
-                <th key={col.id} draggable onDragStart={() => handleDragStart(col.id)} onDragOver={(e) => handleDragOver(e, col.id)} onDrop={() => handleDrop(col.id)} onDragEnd={() => { setDragColId(null); setDragOverColId(null); }}
-                  className={cn("px-2.5 py-2.5 text-left cursor-pointer transition-colors group", col.type === "ai" && "bg-pink-50/60", activeColumnId === col.id && "bg-primary/10", dragOverColId === col.id && dragColId !== col.id && "bg-primary/20", "hover:bg-primary/5")}
-                  onClick={() => onColumnClick(col)}>
-                  <div className="flex items-center gap-1.5">
-                    <GripVertical className="h-3 w-3 text-muted-foreground/0 group-hover:text-muted-foreground/50 transition-colors shrink-0 cursor-grab" />
-                    <Tooltip delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", col.type === "ai" ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs">{col.type === "ai" ? "AI-generated column" : "Facts column"}</TooltipContent>
-                    </Tooltip>
-                    {col.type === "ai" && <Sparkles className="h-3 w-3 text-primary shrink-0" />}
-                  </div>
-                </th>
-              ))}
+              {allColumns.map(col => {
+                const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
+                return (
+                  <th key={col.id}
+                    className={cn("px-2.5 py-2.5 text-left cursor-pointer transition-colors", isAiStyled && "bg-pink-50/60", activeColumnId === col.id && "bg-primary/10", "hover:bg-primary/5")}
+                    onClick={() => onColumnClick(col)}>
+                    <div className="flex items-center gap-1.5">
+                      <Tooltip delayDuration={200}>
+                        <TooltipTrigger asChild>
+                          <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", isAiStyled ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">{isAiStyled ? "AI-generated column" : "Facts column"}</TooltipContent>
+                      </Tooltip>
+                      {isAiStyled && <Sparkles className="h-3 w-3 text-primary shrink-0" />}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
