@@ -369,6 +369,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
               </div>
             )}
 
+            <div className="px-3 pb-2.5 pt-1">
               <Button
                 size="sm"
                 className="w-full h-8 text-xs bg-primary hover:bg-primary/90"
