@@ -90,7 +90,7 @@ export default function Competitors() {
   );
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-3xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
       <div>
