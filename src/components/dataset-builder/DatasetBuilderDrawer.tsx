@@ -27,7 +27,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
-  const [sourcesPanelCollapsed, setSourcesPanelCollapsed] = useState(false);
+  
 
   const handleAddSource = useCallback((src: DatasetSource) => {
     setSources(prev => [...prev, src]);
