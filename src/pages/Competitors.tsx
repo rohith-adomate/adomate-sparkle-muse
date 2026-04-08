@@ -95,7 +95,7 @@ export default function Competitors() {
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Competitors</h1>
-        <p className="text-muted-foreground text-sm">Search and manage competitors.</p>
+        <p className="text-muted-foreground text-sm">Track competitors on Meta Ad Library.</p>
       </div>
 
       <div className="flex items-center justify-between">
