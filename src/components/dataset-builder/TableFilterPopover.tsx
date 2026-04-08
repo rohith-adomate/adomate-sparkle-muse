@@ -337,27 +337,16 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
 
             {filterMode === "text" && (
               <div className="px-3 pt-3 pb-2 space-y-2.5">
-                <div className="flex flex-wrap gap-1">
-                  {([
-                    ["contains", "Contains"],
-                    ["not-contains", "Doesn't contain"],
-                    ["starts-with", "Starts with"],
-                    ["ends-with", "Ends with"],
-                  ] as const).map(([key, label]) => (
-                    <button
-                      key={key}
-                      onClick={() => setTextOperator(key)}
-                      className={cn(
-                        "text-[10px] px-2 py-1 rounded-md border transition-colors",
-                        textOperator === key
-                          ? "border-primary bg-primary/10 text-primary font-medium"
-                          : "border-border text-muted-foreground hover:border-primary/30"
-                      )}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                <select
+                  value={textOperator}
+                  onChange={e => setTextOperator(e.target.value as typeof textOperator)}
+                  className="w-full text-xs px-2.5 py-1.5 rounded-md border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+                >
+                  <option value="contains">Contains</option>
+                  <option value="not-contains">Doesn&#39;t contain</option>
+                  <option value="starts-with">Starts with</option>
+                  <option value="ends-with">Ends with</option>
+                </select>
                 <input
                   type="text"
                   value={textValue}
