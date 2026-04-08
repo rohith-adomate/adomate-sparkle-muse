@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, Plus, Play, PanelLeftClose, PanelLeftOpen, Coins } from "lucide-react";
+import { ArrowLeft, X, Plus, Play, Coins } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
@@ -27,7 +27,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
-  const [sourcesPanelCollapsed, setSourcesPanelCollapsed] = useState(false);
+  
 
   const handleAddSource = useCallback((src: DatasetSource) => {
     setSources(prev => [...prev, src]);
@@ -178,14 +178,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
             <div className="flex items-center gap-3">
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSourcesPanelCollapsed(prev => !prev)}>
-                    {sourcesPanelCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs">{sourcesPanelCollapsed ? "Show sources" : "Hide sources"}</TooltipContent>
-              </Tooltip>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
@@ -239,19 +231,17 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
 
           {/* Main content */}
           <div className="flex flex-1 overflow-hidden">
-            {!sourcesPanelCollapsed && (
-              <DatasetBuilderLeftPanel
-                sources={sources}
-                onAddSource={handleAddSource}
-                onRemoveSource={handleRemoveSource}
-                activeFilters={activeFilters}
-                onRemoveFilter={handleRemoveActiveFilter}
-                onClearAllFilters={handleClearAllFilters}
-                columns={columns}
-                rows={rows}
-                onApplyFilter={handleApplyFilter}
-              />
-            )}
+            <DatasetBuilderLeftPanel
+              sources={sources}
+              onAddSource={handleAddSource}
+              onRemoveSource={handleRemoveSource}
+              activeFilters={activeFilters}
+              onRemoveFilter={handleRemoveActiveFilter}
+              onClearAllFilters={handleClearAllFilters}
+              columns={columns}
+              rows={rows}
+              onApplyFilter={handleApplyFilter}
+            />
 
             <DatasetBuilderTable
               columns={columns}
