@@ -123,7 +123,7 @@ export default function DatasetBuilderTable({
                             <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors cursor-help" />
                           </TooltipTrigger>
                           <TooltipContent side="bottom" className="max-w-[200px] text-xs leading-relaxed">
-                            This column is powered by AI — it combines ad visuals, ad data, and smart prompts to generate enhanced insights automatically.
+                            This column is powered by AI — it combines ad visuals, ad data, and prompts to generate new insights automatically.
                           </TooltipContent>
                         </Tooltip>
                       )}
