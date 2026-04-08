@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Home, Database, Lightbulb, Palette, FileText,
+  Home, Database, Lightbulb,
   Workflow, BookOpen, Package, Link2, Swords,
   ChevronRight, CreditCard, Crown, Settings, LogOut,
 } from "lucide-react";
