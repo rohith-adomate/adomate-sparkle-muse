@@ -172,9 +172,9 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
         case "col-alignment": val = row.brandAlignment; break;
         default: val = row.aiValues[filter.columnId] || ""; break;
       }
-      return filter.values.includes(val);
+    return filter.values.includes(val);
     });
-  });
+  }).sort((a, b) => new Date(a.firstLaunched).getTime() - new Date(b.firstLaunched).getTime());
 
   const hasSelectedRows = selectedRows.size > 0;
   const aiColumnsCount = columns.filter(c => c.type === "ai").length;
