@@ -22,6 +22,8 @@ export interface ActiveFilter {
   max?: number;
   dateFrom?: string;
   dateTo?: string;
+  textOperator?: "contains" | "not-contains" | "starts-with" | "ends-with";
+  textValue?: string;
 }
 
 export interface DatasetFilter {
