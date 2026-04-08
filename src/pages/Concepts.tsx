@@ -47,7 +47,7 @@ export default function Concepts() {
       <HoverExplainer text="Concepts Gallery: Agent runs displayed as horizontal rows with fixed-size cards and overflow indicators.">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Concepts</h1>
-          <p className="text-muted-foreground text-sm">AI Image Studio generations.</p>
+          <p className="text-muted-foreground text-sm">Browse and review your generated concepts in one place.</p>
         </div>
       </HoverExplainer>
 
