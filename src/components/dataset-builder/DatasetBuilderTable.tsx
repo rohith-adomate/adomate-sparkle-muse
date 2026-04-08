@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { Play, Download, Trash2, Sparkles } from "lucide-react";
+import { Play, Download, Trash2, Sparkles, ArrowUp } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 
@@ -133,6 +133,9 @@ export default function DatasetBuilderTable({
                       </Tooltip>
                       {isAiStyled && (
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
+                      )}
+                      {col.id === "col-launched" && (
+                        <ArrowUp className="h-3 w-3 shrink-0 text-muted-foreground/40" />
                       )}
                     </div>
                   </th>
