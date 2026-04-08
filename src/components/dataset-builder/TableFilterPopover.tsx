@@ -131,6 +131,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     if (filterMode === "select") return checkedValues.size > 0;
     if (filterMode === "number-range") return rangeMin !== "" || rangeMax !== "";
     if (filterMode === "date-range") return dateFrom !== "" || dateTo !== "";
+    if (filterMode === "text") return textValue.trim() !== "";
     return false;
   };
 
