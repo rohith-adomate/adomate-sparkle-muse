@@ -25,6 +25,21 @@ export default function Concepts() {
   const [editingRunId, setEditingRunId] = useState<string | null>(null);
   const [editedTitles, setEditedTitles] = useState<Record<string, string>>({});
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const [visitedRuns, setVisitedRuns] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem("visited-concept-runs");
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch { return new Set(); }
+  });
+
+  const markVisited = (runId: string) => {
+    setVisitedRuns(prev => {
+      const next = new Set(prev);
+      next.add(runId);
+      localStorage.setItem("visited-concept-runs", JSON.stringify([...next]));
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (editingRunId && titleInputRef.current) {
@@ -54,7 +69,7 @@ export default function Concepts() {
           <div
             key={run.id}
             className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover}`}
-            onClick={() => navigate(`/concepts/${run.id}`)}
+            onClick={() => { markVisited(run.id); navigate(`/concepts/${run.id}`); }}
           >
             <div className="flex items-center gap-2 flex-1">
               <div className="flex items-center gap-2 group/title">
@@ -93,6 +108,12 @@ export default function Concepts() {
                   </div>
                 ) : (
                   <>
+                    {!visitedRuns.has(run.id) && (
+                      <span className="relative flex h-2 w-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                      </span>
+                    )}
                     <h2 className={`text-sm font-semibold transition-colors ${style.titleHover}`}>{editedTitles[run.id] || run.label}</h2>
                     <Tooltip>
                       <TooltipTrigger asChild>
