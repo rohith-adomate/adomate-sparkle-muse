@@ -98,8 +98,8 @@ export default function Competitors() {
         <p className="text-muted-foreground text-sm">Search and manage competitors.</p>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="relative flex-1 max-w-[250px]">
+      <div className="flex items-center justify-between">
+        <div className="relative max-w-[250px] w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search competitors..."
@@ -111,7 +111,7 @@ export default function Competitors() {
 
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSearchQuery(""); setResults([]); } }}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="gap-1.5">
+            <Button className="gap-1.5">
               <Plus className="h-4 w-4" /> Track New
             </Button>
           </DialogTrigger>
