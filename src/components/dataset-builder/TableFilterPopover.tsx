@@ -335,7 +335,40 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
               </div>
             )}
 
-            <div className="px-3 pb-2.5 pt-1">
+            {filterMode === "text" && (
+              <div className="px-3 pt-3 pb-2 space-y-2.5">
+                <div className="flex flex-wrap gap-1">
+                  {([
+                    ["contains", "Contains"],
+                    ["not-contains", "Doesn't contain"],
+                    ["starts-with", "Starts with"],
+                    ["ends-with", "Ends with"],
+                  ] as const).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setTextOperator(key)}
+                      className={cn(
+                        "text-[10px] px-2 py-1 rounded-md border transition-colors",
+                        textOperator === key
+                          ? "border-primary bg-primary/10 text-primary font-medium"
+                          : "border-border text-muted-foreground hover:border-primary/30"
+                      )}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  value={textValue}
+                  onChange={e => setTextValue(e.target.value)}
+                  placeholder="Enter text…"
+                  className="w-full text-xs px-2.5 py-1.5 rounded-md border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                  autoFocus
+                />
+              </div>
+            )}
+
               <Button
                 size="sm"
                 className="w-full h-8 text-xs bg-primary hover:bg-primary/90"
