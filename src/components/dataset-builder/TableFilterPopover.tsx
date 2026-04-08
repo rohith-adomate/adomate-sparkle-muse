@@ -175,22 +175,28 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "h-7 text-[11px] gap-1.5 px-2.5",
-            hasActiveFilters && "border-primary/50 text-primary"
-          )}
-        >
-          <Filter className="h-3 w-3" />
-          Filter
-          {hasActiveFilters && (
-            <span className="ml-0.5 h-4 min-w-[16px] rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center px-1">
-              {activeFilters.length}
-            </span>
-          )}
-        </Button>
+        {triggerVariant === "icon" ? (
+          <button className="inline-flex items-center justify-center h-5 w-5 rounded-md border border-dashed border-primary/30 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors">
+            <Plus className="h-3 w-3" />
+          </button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "h-7 text-[11px] gap-1.5 px-2.5",
+              hasActiveFilters && "border-primary/50 text-primary"
+            )}
+          >
+            <Filter className="h-3 w-3" />
+            Filter
+            {hasActiveFilters && (
+              <span className="ml-0.5 h-4 min-w-[16px] rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center px-1">
+                {activeFilters.length}
+              </span>
+            )}
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0" align="start">
         {!selectedColumn ? (
