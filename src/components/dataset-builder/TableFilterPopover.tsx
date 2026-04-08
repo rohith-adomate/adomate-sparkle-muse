@@ -162,6 +162,11 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
       if (dateFrom) parts.push(`From ${dateFrom}`);
       if (dateTo) parts.push(`To ${dateTo}`);
       filter.values = parts;
+    } else if (filterMode === "text") {
+      filter.textOperator = textOperator;
+      filter.textValue = textValue.trim();
+      const opLabels: Record<string, string> = { "contains": "contains", "not-contains": "doesn't contain", "starts-with": "starts with", "ends-with": "ends with" };
+      filter.values = [`${opLabels[textOperator]} "${textValue.trim()}"`];
     }
 
     onApplyFilter(filter);
