@@ -69,7 +69,7 @@ export default function Concepts() {
           <div
             key={run.id}
             className={`space-y-2.5 group/run cursor-pointer ${style.container} ${style.hover}`}
-            onClick={() => navigate(`/concepts/${run.id}`)}
+            onClick={() => { markVisited(run.id); navigate(`/concepts/${run.id}`); }}
           >
             <div className="flex items-center gap-2 flex-1">
               <div className="flex items-center gap-2 group/title">
