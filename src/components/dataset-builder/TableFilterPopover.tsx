@@ -12,6 +12,7 @@ interface Props {
   rows: DatasetRow[];
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
+  triggerVariant?: "button" | "icon";
 }
 
 function getFilterMode(columnId: string): FilterMode {
