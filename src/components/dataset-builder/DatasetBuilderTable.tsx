@@ -26,10 +26,11 @@ interface Props {
   onReorderColumns?: (columns: DatasetColumn[]) => void;
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
+  totalRowCount?: number;
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
@@ -189,7 +190,7 @@ export default function DatasetBuilderTable({
           </tbody>
         </table>
         <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
-          {rows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
+          Showing {rows.length} / {totalRowCount ?? rows.length} rows
         </div>
       </div>
     </div>

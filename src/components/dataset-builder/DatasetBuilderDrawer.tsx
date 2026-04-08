@@ -266,6 +266,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               onReorderColumns={setColumns}
               activeFilters={activeFilters}
               onApplyFilter={handleApplyFilter}
+              totalRowCount={rows.length}
             />
 
             {inspectorColumn && (
