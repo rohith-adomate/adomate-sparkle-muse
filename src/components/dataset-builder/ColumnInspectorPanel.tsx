@@ -22,7 +22,7 @@ export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateCo
     <div className="w-72 shrink-0 border-l border-border bg-card flex flex-col overflow-y-auto animate-slide-in-right">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
-          {column.type === "ai" && <Sparkles className="h-3.5 w-3.5 text-purple-500 shrink-0" />}
+          
           <h3 className="text-sm font-semibold truncate">{column.name}</h3>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose}><ChevronsRight className="h-4 w-4" /></Button>
