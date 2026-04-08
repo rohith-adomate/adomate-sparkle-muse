@@ -90,7 +90,7 @@ export default function Competitors() {
   );
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="space-y-4 max-w-3xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
       <div>
@@ -99,7 +99,7 @@ export default function Competitors() {
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="relative max-w-[250px] w-full">
+        <div className="relative max-w-[350px] w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search competitors..."
