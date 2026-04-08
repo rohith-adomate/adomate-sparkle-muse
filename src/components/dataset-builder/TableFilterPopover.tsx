@@ -114,6 +114,8 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     setRangeMax("");
     setDateFrom("");
     setDateTo("");
+    setTextOperator("contains");
+    setTextValue("");
   };
 
   const handleToggleValue = (val: string) => {
