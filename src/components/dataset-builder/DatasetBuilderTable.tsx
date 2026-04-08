@@ -98,15 +98,6 @@ export default function DatasetBuilderTable({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {selectedRows.size > 0 && (
-        <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
-          <div className="h-4 w-px bg-border" />
-          <span className="font-medium">{selectedRows.size} row{selectedRows.size !== 1 ? "s" : ""} selected</span>
-          <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1" onClick={() => {}}><Download className="h-3 w-3" /> Export</Button>
-          <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] gap-1 text-destructive hover:text-destructive" onClick={() => {}}><Trash2 className="h-3 w-3" /> Remove</Button>
-          <Button variant="default" size="sm" className="h-6 px-2 text-[11px] gap-1 bg-primary hover:bg-primary/90" onClick={() => onRunRows([...selectedRows])}><Play className="h-3 w-3" /> Run selected</Button>
-        </div>
-      )}
 
       <div className="flex-1 overflow-auto">
         <table className="w-full text-xs border-collapse">
