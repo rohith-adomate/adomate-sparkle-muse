@@ -103,8 +103,7 @@ export default function DatasetBuilderTable({
         <table className="w-full text-xs border-collapse">
           <thead className="sticky top-0 z-10">
             <tr className="bg-muted/50 border-b border-border">
-              <th className="w-14 px-2 py-2.5 text-left"><Checkbox checked={allSelected} onCheckedChange={onToggleAll} className="h-3.5 w-3.5" /></th>
-              <th className="w-8 px-1 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+              <th className="w-8 px-2 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
               {allColumns.map(col => {
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
                 return (
