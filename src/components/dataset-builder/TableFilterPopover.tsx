@@ -167,7 +167,7 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
 
   const filterableColumns = columns.filter(c => {
     const key = c.templateId || c.id;
-    return !["col-headline", "col-hook", "col-brand"].includes(key);
+    return !["col-headline", "col-hook", "col-brand", "col-platform"].includes(key);
   });
 
   const hasActiveFilters = activeFilters.length > 0;

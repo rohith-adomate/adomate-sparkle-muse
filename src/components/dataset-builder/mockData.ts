@@ -10,7 +10,7 @@ export const FACTS_COLUMNS: DatasetColumn[] = [
   { id: "col-brand", name: "Brand", type: "facts" },
   { id: "col-headline", name: "Headline", type: "facts" },
   { id: "col-format", name: "Format", type: "facts" },
-  { id: "col-platform", name: "Platform", type: "facts" },
+  
   { id: "col-launched", name: "First Launched", type: "facts" },
   { id: "col-days", name: "Days Online", type: "facts" },
   { id: "col-status", name: "Active", type: "facts" },
