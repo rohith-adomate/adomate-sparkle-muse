@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Filter, ArrowLeft, ChevronRight, X } from "lucide-react";
+import { Filter, ArrowLeft, ChevronRight, X, Plus } from "lucide-react";
 import type { DatasetColumn, DatasetRow, ActiveFilter, FilterMode } from "./types";
 import { daysOnline } from "./mockData";
 
@@ -12,6 +12,7 @@ interface Props {
   rows: DatasetRow[];
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
+  triggerVariant?: "button" | "icon";
 }
 
 function getFilterMode(columnId: string): FilterMode {
@@ -52,7 +53,7 @@ function getNumberRange(columnId: string, rows: DatasetRow[]): { min: number; ma
   return { min: 0, max: 100 };
 }
 
-export default function TableFilterPopover({ columns, rows, activeFilters, onApplyFilter }: Props) {
+export default function TableFilterPopover({ columns, rows, activeFilters, onApplyFilter, triggerVariant = "button" }: Props) {
   const [open, setOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<DatasetColumn | null>(null);
   const [checkedValues, setCheckedValues] = useState<Set<string>>(new Set());
@@ -174,22 +175,28 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "h-7 text-[11px] gap-1.5 px-2.5",
-            hasActiveFilters && "border-primary/50 text-primary"
-          )}
-        >
-          <Filter className="h-3 w-3" />
-          Filter
-          {hasActiveFilters && (
-            <span className="ml-0.5 h-4 min-w-[16px] rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center px-1">
-              {activeFilters.length}
-            </span>
-          )}
-        </Button>
+        {triggerVariant === "icon" ? (
+          <button className="inline-flex items-center justify-center h-5 w-5 rounded-md border border-dashed border-primary/30 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors">
+            <Plus className="h-3 w-3" />
+          </button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "h-7 text-[11px] gap-1.5 px-2.5",
+              hasActiveFilters && "border-primary/50 text-primary"
+            )}
+          >
+            <Filter className="h-3 w-3" />
+            Filter
+            {hasActiveFilters && (
+              <span className="ml-0.5 h-4 min-w-[16px] rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center px-1">
+                {activeFilters.length}
+              </span>
+            )}
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0" align="start">
         {!selectedColumn ? (
