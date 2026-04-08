@@ -29,10 +29,6 @@ export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateCo
       </div>
       <div className="flex-1 p-4 space-y-5">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Name</p>
-          <Input value={column.name} onChange={(e) => onUpdateColumn({ ...column, name: e.target.value })} className="h-8 text-xs" />
-        </div>
-        <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Prompt</p>
           <Textarea value={column.aiPrompt || ""} onChange={(e) => onUpdateColumn({ ...column, aiPrompt: e.target.value })} placeholder="Describe what the AI should analyze or extract..." className="text-xs min-h-[80px] resize-none" />
         </div>
