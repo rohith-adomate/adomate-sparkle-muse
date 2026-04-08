@@ -10,7 +10,7 @@ import { Play, Download, Trash2, Sparkles } from "lucide-react";
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import { daysOnline, formatDate } from "./mockData";
-import TableFilterPopover from "./TableFilterPopover";
+
 
 
 interface Props {
