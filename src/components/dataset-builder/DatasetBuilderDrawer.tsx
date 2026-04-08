@@ -205,9 +205,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
                 <Download className="h-3.5 w-3.5" /> Export CSV
               </Button>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-3 top-2.5" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           {/* Main content */}
