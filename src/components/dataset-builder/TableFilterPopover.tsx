@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Filter, ArrowLeft, ChevronRight, X, Plus } from "lucide-react";
+import { Filter, ArrowLeft, ChevronRight, X, Plus, Circle } from "lucide-react";
 import type { DatasetColumn, DatasetRow, ActiveFilter, FilterMode } from "./types";
 import { daysOnline } from "./mockData";
 
@@ -225,52 +225,62 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
               {selectedColumn.name}
             </button>
 
-            {filterMode === "select" && (
-              <>
-                {checkedValues.size > 0 && (
-                  <div className="flex flex-wrap gap-1 px-3 pt-2">
-                    {[...checkedValues].map(val => (
-                      <span
-                        key={val}
-                        className="inline-flex items-center gap-1 text-[10px] font-medium bg-muted rounded-md px-2 py-0.5"
-                      >
-                        {val}
-                        <button onClick={() => handleToggleValue(val)} className="hover:text-destructive">
-                          <X className="h-2.5 w-2.5" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <div className="px-3 pt-2 pb-1.5">
-                  <input
-                    type="text"
-                    placeholder="Search or enter value..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    className="w-full text-xs px-2.5 py-1.5 rounded-md border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-                <div className="max-h-[200px] overflow-y-auto px-1 pb-2">
-                  {filteredValues.map(val => (
-                    <label
-                      key={val}
-                      className="flex items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-muted/30 rounded cursor-pointer"
-                    >
-                      <Checkbox
-                        checked={checkedValues.has(val)}
-                        onCheckedChange={() => handleToggleValue(val)}
-                        className="h-3.5 w-3.5"
-                      />
-                      <span>{val}</span>
-                    </label>
-                  ))}
-                  {filteredValues.length === 0 && (
-                    <p className="text-[10px] text-muted-foreground px-3 py-2">No values found</p>
+            {filterMode === "select" && (() => {
+              const isSingleSelect = uniqueValues.length <= 2;
+              const handleSelect = (val: string) => {
+                if (isSingleSelect) {
+                  setCheckedValues(new Set([val]));
+                } else {
+                  handleToggleValue(val);
+                }
+              };
+              return (
+                <>
+                  {checkedValues.size > 0 && !isSingleSelect && (
+                    <div className="flex flex-wrap gap-1 px-3 pt-2">
+                      {[...checkedValues].map(val => (
+                        <span
+                          key={val}
+                          className="inline-flex items-center gap-1 text-[10px] font-medium bg-muted rounded-md px-2 py-0.5"
+                        >
+                          {val}
+                          <button onClick={() => handleToggleValue(val)} className="hover:text-destructive">
+                            <X className="h-2.5 w-2.5" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
                   )}
-                </div>
-              </>
-            )}
+                  <div className="max-h-[200px] overflow-y-auto px-1 pt-1.5 pb-2">
+                    {uniqueValues.map(val => (
+                      <label
+                        key={val}
+                        className="flex items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-muted/30 rounded cursor-pointer"
+                      >
+                        {isSingleSelect ? (
+                          <span className={cn(
+                            "h-3.5 w-3.5 rounded-full border flex items-center justify-center shrink-0",
+                            checkedValues.has(val) ? "border-primary bg-primary" : "border-muted-foreground/40"
+                          )}>
+                            {checkedValues.has(val) && <Circle className="h-1.5 w-1.5 fill-primary-foreground text-primary-foreground" />}
+                          </span>
+                        ) : (
+                          <Checkbox
+                            checked={checkedValues.has(val)}
+                            onCheckedChange={() => handleSelect(val)}
+                            className="h-3.5 w-3.5"
+                          />
+                        )}
+                        <span onClick={() => handleSelect(val)}>{val}</span>
+                      </label>
+                    ))}
+                    {uniqueValues.length === 0 && (
+                      <p className="text-[10px] text-muted-foreground px-3 py-2">No values found</p>
+                    )}
+                  </div>
+                </>
+              );
+            })()}
 
             {filterMode === "number-range" && (
               <div className="px-3 pt-3 pb-2 space-y-2">
