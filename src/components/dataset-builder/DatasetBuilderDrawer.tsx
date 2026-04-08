@@ -231,19 +231,17 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
 
           {/* Main content */}
           <div className="flex flex-1 overflow-hidden">
-            {!sourcesPanelCollapsed && (
-              <DatasetBuilderLeftPanel
-                sources={sources}
-                onAddSource={handleAddSource}
-                onRemoveSource={handleRemoveSource}
-                activeFilters={activeFilters}
-                onRemoveFilter={handleRemoveActiveFilter}
-                onClearAllFilters={handleClearAllFilters}
-                columns={columns}
-                rows={rows}
-                onApplyFilter={handleApplyFilter}
-              />
-            )}
+            <DatasetBuilderLeftPanel
+              sources={sources}
+              onAddSource={handleAddSource}
+              onRemoveSource={handleRemoveSource}
+              activeFilters={activeFilters}
+              onRemoveFilter={handleRemoveActiveFilter}
+              onClearAllFilters={handleClearAllFilters}
+              columns={columns}
+              rows={rows}
+              onApplyFilter={handleApplyFilter}
+            />
 
             <DatasetBuilderTable
               columns={columns}
