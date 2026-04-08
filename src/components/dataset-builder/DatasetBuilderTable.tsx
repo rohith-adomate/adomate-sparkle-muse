@@ -183,22 +183,6 @@ export default function DatasetBuilderTable({
           Showing {rows.length} / {totalRowCount ?? rows.length} rows
         </div>
       </div>
-      <AlertDialog open={!!deleteColId} onOpenChange={(open) => !open && setDeleteColId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete column</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this column? This action cannot be undone and all generated data in this column will be lost.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { if (deleteColId && onDeleteColumn) { onDeleteColumn(deleteColId); setDeleteColId(null); } }}>
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
