@@ -99,25 +99,6 @@ export default function DatasetBuilderTable({
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-2 border-b border-border text-xs">
         <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className={cn("h-7 text-[11px] gap-1.5 px-2.5", sortBy !== "none" && "border-primary/50 text-primary")}>
-              <ArrowUpDown className="h-3 w-3" />
-              {sortBy === "none" ? "Sort" : SORT_OPTIONS.find(o => o.value === sortBy)?.label}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-1" align="start">
-            {SORT_OPTIONS.map(opt => (
-              <button key={opt.value} className={cn("w-full text-left px-3 py-1.5 text-xs rounded hover:bg-muted/50 transition-colors", sortBy === opt.value && "bg-primary/10 text-primary font-medium")} onClick={() => setSortBy(opt.value)}>{opt.label}</button>
-            ))}
-            {sortBy !== "none" && (
-              <>
-                <div className="h-px bg-border my-1" />
-                <button className="w-full text-left px-3 py-1.5 text-xs rounded hover:bg-muted/50 text-muted-foreground transition-colors" onClick={() => setSortBy("none")}>Reset sorting</button>
-              </>
-            )}
-          </PopoverContent>
-        </Popover>
         {selectedRows.size > 0 && (
           <>
             <div className="h-4 w-px bg-border" />
