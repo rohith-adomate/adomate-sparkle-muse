@@ -207,7 +207,7 @@ export default function DatasetBuilderTable({
                     const val = getCellValue(row, col);
                     const isAiEmpty = col.type === "ai" && val === "—";
                     return (
-                      <td key={col.id} className={cn("px-2.5 py-1.5", col.type === "ai" && "bg-pink-50/20", activeColumnId === col.id && "bg-primary/5")}>
+                      <td key={col.id} className={cn("px-2.5 py-1.5", (col.type === "ai" || AI_STYLED_COLS.has(col.id)) && "bg-pink-50/20", activeColumnId === col.id && "bg-primary/5")}>
                         {col.id === "col-brand" ? (
                           <div className="flex items-center gap-1.5">
                             <img src={row.brandAvatar || "/placeholder.svg"} alt={row.brand} className="h-4 w-4 rounded-full object-cover bg-muted shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.brand)}&size=16&background=random`; }} />
