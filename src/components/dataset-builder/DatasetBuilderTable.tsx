@@ -188,16 +188,14 @@ export default function DatasetBuilderTable({
                   <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-1">
                       <Checkbox checked={isSelected} onCheckedChange={() => onToggleRow(row.id)} className="h-3.5 w-3.5" />
-                      {isHovered && !row.isRunning && (
-                        <Tooltip delayDuration={100}>
-                          <TooltipTrigger asChild>
-                            <button className="h-5 w-5 rounded flex items-center justify-center hover:bg-primary/10 transition-colors" onClick={(e) => { e.stopPropagation(); onRunRows([row.id]); }}>
-                              <Play className="h-3 w-3 text-primary" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent className="text-xs">Run this row</TooltipContent>
-                        </Tooltip>
-                      )}
+                      <Tooltip delayDuration={100}>
+                        <TooltipTrigger asChild>
+                          <button className={cn("h-5 w-5 rounded flex items-center justify-center hover:bg-primary/10 transition-colors", (!isHovered || row.isRunning) && "opacity-0 pointer-events-none")} onClick={(e) => { e.stopPropagation(); onRunRows([row.id]); }}>
+                            <Play className="h-3 w-3 text-primary" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">Run this row</TooltipContent>
+                      </Tooltip>
                     </div>
                   </td>
                   <td className="px-1 py-1.5 text-[10px] text-muted-foreground font-mono">{idx + 1}</td>
