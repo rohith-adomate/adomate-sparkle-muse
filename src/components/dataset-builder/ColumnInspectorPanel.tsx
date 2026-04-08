@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ChevronsRight, Sparkles, Trash2 } from "lucide-react";
 import type { DatasetColumn, DatasetRow } from "./types";
 import { getColumnStats } from "./mockData";
+
+const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 
 interface Props {
   column: DatasetColumn;
@@ -17,12 +21,13 @@ interface Props {
 
 export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateColumn, onDeleteColumn }: Props) {
   const stats = getColumnStats(column.templateId || column.id, rows);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const isAiStyled = column.type === "ai" || AI_STYLED_COLS.has(column.id);
 
   return (
     <div className="w-72 shrink-0 border-l border-border bg-card flex flex-col overflow-y-auto animate-slide-in-right">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
-          
           <h3 className="text-sm font-semibold truncate">{column.name}</h3>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose}><ChevronsRight className="h-4 w-4" /></Button>
@@ -48,15 +53,31 @@ export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateCo
             </div>
           </>
         )}
-        {column.type === "ai" && (
+        {isAiStyled && (
           <>
             <Separator />
-            <Button variant="ghost" size="sm" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 text-xs gap-1.5" onClick={() => onDeleteColumn(column.id)}>
+            <Button variant="ghost" size="sm" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 text-xs gap-1.5" onClick={() => setConfirmOpen(true)}>
               <Trash2 className="h-3.5 w-3.5" /> Delete Column
             </Button>
           </>
         )}
       </div>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete column</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{column.name}"? This action cannot be undone and all generated data in this column will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => onDeleteColumn(column.id)}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

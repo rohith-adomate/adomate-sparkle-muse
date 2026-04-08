@@ -4,9 +4,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
-import { Play, Download, Trash2, Sparkles, X } from "lucide-react";
+import { Play, Download, Trash2, Sparkles } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
 
@@ -41,16 +40,15 @@ interface Props {
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
   totalRowCount?: number;
-  onDeleteColumn?: (id: string) => void;
+  
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount, onDeleteColumn,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
-  const [deleteColId, setDeleteColId] = useState<string | null>(null);
   const [hoveredColId, setHoveredColId] = useState<string | null>(null);
 
   const factsColumns = columns.filter(c => c.type === "facts");
@@ -124,10 +122,8 @@ export default function DatasetBuilderTable({
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
                 return (
                   <th key={col.id}
-                    className={cn("px-2.5 py-2.5 text-left transition-colors relative", isAiStyled && "bg-pink-50/60 cursor-pointer hover:bg-primary/5", activeColumnId === col.id && "bg-primary/10")}
-                    onClick={() => isAiStyled ? onColumnClick(col) : undefined}
-                    onMouseEnter={() => setHoveredColId(col.id)}
-                    onMouseLeave={() => setHoveredColId(null)}>
+                    className={cn("px-2.5 py-2.5 text-left transition-colors", isAiStyled && "bg-pink-50/60 cursor-pointer hover:bg-primary/5", activeColumnId === col.id && "bg-primary/10")}
+                    onClick={() => isAiStyled ? onColumnClick(col) : undefined}>
                     <div className="flex items-center gap-1.5">
                       <Tooltip delayDuration={isAiStyled ? 1000 : 200}>
                         <TooltipTrigger asChild>
@@ -137,14 +133,6 @@ export default function DatasetBuilderTable({
                       </Tooltip>
                       {isAiStyled && (
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
-                      )}
-                      {col.type === "ai" && hoveredColId === col.id && onDeleteColumn && (
-                        <button
-                          className="ml-auto h-4 w-4 rounded-sm flex items-center justify-center text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
-                          onClick={(e) => { e.stopPropagation(); setDeleteColId(col.id); }}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
                       )}
                     </div>
                   </th>
@@ -195,22 +183,6 @@ export default function DatasetBuilderTable({
           Showing {rows.length} / {totalRowCount ?? rows.length} rows
         </div>
       </div>
-      <AlertDialog open={!!deleteColId} onOpenChange={(open) => !open && setDeleteColId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete column</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this column? This action cannot be undone and all generated data in this column will be lost.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { if (deleteColId && onDeleteColumn) { onDeleteColumn(deleteColId); setDeleteColId(null); } }}>
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
