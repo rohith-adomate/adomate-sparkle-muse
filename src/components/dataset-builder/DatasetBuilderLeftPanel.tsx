@@ -96,8 +96,8 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
                     className="flex items-center gap-2 px-2.5 py-2 rounded-md hover:bg-muted transition-colors text-xs text-muted-foreground hover:text-foreground"
                     onClick={() => setPopoverOpen(false)}
                   >
-                    <ExternalLink className="h-3 w-3 shrink-0" />
-                    <span>Manage competitors</span>
+                    <Plus className="h-3 w-3 shrink-0" />
+                    <span>Track new competitor</span>
                   </Link>
                 </div>
               </PopoverContent>
