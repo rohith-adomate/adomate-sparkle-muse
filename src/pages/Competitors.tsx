@@ -87,7 +87,7 @@ export default function Competitors() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Add Competitor</DialogTitle>
+              <DialogTitle>Track New Competitor</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">Search for a brand to find its Facebook pages.</p>
             <div className="flex gap-2 mt-2">
