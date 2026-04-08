@@ -100,6 +100,9 @@ export default function TableFilterPopover({ columns, rows, activeFilters, onApp
     } else if (mode === "date-range") {
       setDateFrom(existing?.dateFrom || "");
       setDateTo(existing?.dateTo || "");
+    } else if (mode === "text") {
+      setTextOperator(existing?.textOperator || "contains");
+      setTextValue(existing?.textValue || "");
     }
   };
 
