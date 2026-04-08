@@ -26,6 +26,7 @@ interface Props {
   onReorderColumns?: (columns: DatasetColumn[]) => void;
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
+  totalRowCount?: number;
 }
 
 export default function DatasetBuilderTable({
