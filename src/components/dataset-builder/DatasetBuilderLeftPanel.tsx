@@ -108,6 +108,7 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
           </div>
         </div>
 
+        <div className="border-t border-border/40" />
         {/* Filters section */}
         {activeFilters.length > 0 ? (
           <>
