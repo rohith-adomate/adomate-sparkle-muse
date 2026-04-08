@@ -29,30 +29,13 @@ export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateCo
       </div>
       <div className="flex-1 p-4 space-y-5">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Type</p>
-          <div className={cn("inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium", column.type === "ai" ? "bg-purple-50 text-purple-700 border border-purple-200" : "bg-muted text-foreground border border-border")}>
-            {column.type === "ai" && <Sparkles className="h-3 w-3" />}
-            {column.type === "ai" ? "AI-generated" : "Facts"}
-            {column.columnKind && <span className="text-muted-foreground">· {column.columnKind}</span>}
-          </div>
-        </div>
-        <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Name</p>
           <Input value={column.name} onChange={(e) => onUpdateColumn({ ...column, name: e.target.value })} className="h-8 text-xs" />
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Description</p>
-          <Textarea value={column.description || ""} onChange={(e) => onUpdateColumn({ ...column, description: e.target.value })} placeholder="Describe what this column captures..." className="text-xs min-h-[60px] resize-none" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Prompt</p>
+          <Textarea value={column.aiPrompt || ""} onChange={(e) => onUpdateColumn({ ...column, aiPrompt: e.target.value })} placeholder="Describe what the AI should analyze or extract..." className="text-xs min-h-[80px] resize-none" />
         </div>
-        {column.type === "ai" && column.aiPrompt && (
-          <>
-            <Separator />
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">AI Prompt</p>
-              <div className="rounded-md border border-purple-200 bg-purple-50/50 p-3 text-[11px] text-foreground leading-relaxed whitespace-pre-wrap font-mono">{column.aiPrompt}</div>
-            </div>
-          </>
-        )}
         {stats && (
           <>
             <Separator />
