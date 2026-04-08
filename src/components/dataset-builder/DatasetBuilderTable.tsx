@@ -124,8 +124,10 @@ export default function DatasetBuilderTable({
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
                 return (
                   <th key={col.id}
-                    className={cn("px-2.5 py-2.5 text-left transition-colors", isAiStyled && "bg-pink-50/60 cursor-pointer hover:bg-primary/5", activeColumnId === col.id && "bg-primary/10")}
-                    onClick={() => isAiStyled ? onColumnClick(col) : undefined}>
+                    className={cn("px-2.5 py-2.5 text-left transition-colors relative", isAiStyled && "bg-pink-50/60 cursor-pointer hover:bg-primary/5", activeColumnId === col.id && "bg-primary/10")}
+                    onClick={() => isAiStyled ? onColumnClick(col) : undefined}
+                    onMouseEnter={() => setHoveredColId(col.id)}
+                    onMouseLeave={() => setHoveredColId(null)}>
                     <div className="flex items-center gap-1.5">
                       <Tooltip delayDuration={isAiStyled ? 1000 : 200}>
                         <TooltipTrigger asChild>
@@ -135,6 +137,14 @@ export default function DatasetBuilderTable({
                       </Tooltip>
                       {isAiStyled && (
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
+                      )}
+                      {col.type === "ai" && hoveredColId === col.id && onDeleteColumn && (
+                        <button
+                          className="ml-auto h-4 w-4 rounded-sm flex items-center justify-center text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          onClick={(e) => { e.stopPropagation(); setDeleteColId(col.id); }}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       )}
                     </div>
                   </th>
