@@ -59,7 +59,7 @@ export default function Concepts() {
 
 
 
-      {agentRuns.map((run) => {
+      {agentRuns.map((run, runIndex) => {
         const hasOverflow = run.concepts.length > CARDS_PER_ROW;
         const visibleConcepts = run.concepts.slice(0, hasOverflow ? CARDS_PER_ROW - 1 : CARDS_PER_ROW);
         const overflowCount = run.concepts.length - visibleConcepts.length;
@@ -108,7 +108,7 @@ export default function Concepts() {
                   </div>
                 ) : (
                   <>
-                    {!visitedRuns.has(run.id) && (
+                    {runIndex === 0 && !visitedRuns.has(run.id) && (
                       <span className="relative flex h-2 w-2 shrink-0">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
