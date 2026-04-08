@@ -109,30 +109,29 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
         </div>
 
         {/* Filters section */}
-        <div className="flex items-center gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
-          <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
-          {activeFilters.length > 0 && (
-            <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors ml-auto">Clear all</button>
-          )}
-        </div>
-
         {activeFilters.length > 0 ? (
-          activeFilters.map(filter => (
-            <div key={filter.columnId} className="space-y-2">
-              <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">{filter.columnName}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {filter.values.map(val => (
-                  <div key={val} className="inline-flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-full border border-border bg-background group text-[11px]">
-                    <span className="font-medium truncate max-w-[100px]">{val}</span>
-                    <button onClick={() => onRemoveFilter(filter.columnId)} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"><X className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" /></button>
-                  </div>
-                ))}
-              </div>
+          <>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
+              <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
+              <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors ml-auto">Clear all</button>
             </div>
-          ))
+            {activeFilters.map(filter => (
+              <div key={filter.columnId} className="space-y-2">
+                <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70">{filter.columnName}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {filter.values.map(val => (
+                    <div key={val} className="inline-flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-full border border-border bg-background group text-[11px]">
+                      <span className="font-medium truncate max-w-[100px]">{val}</span>
+                      <button onClick={() => onRemoveFilter(filter.columnId)} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"><X className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" /></button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
         ) : (
-          <p className="text-[10px] text-muted-foreground">No filters applied. Click + to add one.</p>
+          <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="button" />
         )}
       </div>
     </div>
