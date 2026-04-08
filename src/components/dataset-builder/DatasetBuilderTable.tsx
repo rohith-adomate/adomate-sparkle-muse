@@ -34,7 +34,7 @@ export default function DatasetBuilderTable({
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
   const [dragOverColId, setDragOverColId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("none");
+  
 
   const factsColumns = columns.filter(c => c.type === "facts");
   const aiColumns = columns.filter(c => c.type === "ai");
