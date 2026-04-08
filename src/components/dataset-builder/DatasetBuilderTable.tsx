@@ -192,7 +192,7 @@ export default function DatasetBuilderTable({
           </tbody>
         </table>
         <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
-          {sortedRows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
+          {rows.length} rows · {allColumns.length} columns · {columns.filter(c => c.type === "ai").length > 0 && `${columns.filter(c => c.type === "ai").length} AI columns`}
         </div>
       </div>
     </div>
