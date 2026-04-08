@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Plus, Database, SlidersHorizontal } from "lucide-react";
+import { X, Plus, Database, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { DatasetSource, DatasetColumn, DatasetRow, ActiveFilter } from "./types";
 import {
