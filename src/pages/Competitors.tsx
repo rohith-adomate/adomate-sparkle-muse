@@ -29,7 +29,7 @@ const initialCompetitors: Competitor[] = [
 
 const statusColors: Record<Competitor["status"], string> = {
   success: "bg-emerald-500",
-  warning: "bg-amber-400",
+  warning: "bg-orange-500",
   error: "bg-rose-400",
   pending: "bg-blue-400",
 };
