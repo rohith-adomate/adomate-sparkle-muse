@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, X, Download } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
@@ -201,7 +201,19 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => toast.success("Exported to CSV")}>
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => {
+                const toastId = toast("Exporting to CSV…", {
+                  icon: <Loader2 className="h-4 w-4 animate-spin" />,
+                  duration: Infinity,
+                });
+                setTimeout(() => {
+                  toast.success("Exported to CSV", {
+                    id: toastId,
+                    icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+                    duration: 2000,
+                  });
+                }, 1500);
+              }}>
                 <Download className="h-3.5 w-3.5" /> Export CSV
               </Button>
             </div>
