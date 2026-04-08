@@ -82,7 +82,7 @@ export default function Competitors() {
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setSearchQuery(""); setResults([]); } }}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-1.5">
-              <Plus className="h-4 w-4" /> Add Competitor
+              <Plus className="h-4 w-4" /> Track New
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
