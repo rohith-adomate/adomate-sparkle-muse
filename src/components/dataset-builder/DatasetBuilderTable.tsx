@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import { Play, Download, Trash2, Sparkles } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
