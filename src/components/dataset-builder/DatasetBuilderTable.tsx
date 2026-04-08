@@ -166,10 +166,7 @@ export default function DatasetBuilderTable({
                             <span className="text-[11px] font-medium truncate">{val}</span>
                           </div>
                         ) : col.id === "col-status" ? (
-                          <div className="flex items-center gap-1">
-                            <div className={cn("h-1.5 w-1.5 rounded-full", val === "Active" ? "bg-green-500" : "bg-muted-foreground/40")} />
-                            <span className="text-[10px]">{val}</span>
-                          </div>
+                          <div className={cn("h-2 w-2 rounded-full mx-auto", val === "Active" ? "bg-primary" : "bg-muted-foreground/20")} />
                         ) : col.id === "col-alignment" ? (
                           <Badge variant="outline" className={cn("text-[9px] py-0 px-1.5 font-medium", val === "High" && "border-green-500/30 text-green-600 bg-green-500/10", val === "Med" && "border-yellow-500/30 text-yellow-600 bg-yellow-500/10", val === "Low" && "border-red-500/30 text-red-600 bg-red-500/10")}>{val}</Badge>
                         ) : col.id === "col-funnel" ? (
