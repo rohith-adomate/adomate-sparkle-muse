@@ -111,21 +111,14 @@ export default function DatasetBuilderTable({
                     className={cn("px-2.5 py-2.5 text-left cursor-pointer transition-colors", isAiStyled && "bg-pink-50/60", activeColumnId === col.id && "bg-primary/10", "hover:bg-primary/5")}
                     onClick={() => onColumnClick(col)}>
                     <div className="flex items-center gap-1.5">
-                      <Tooltip delayDuration={200}>
+                      <Tooltip delayDuration={isAiStyled ? 2000 : 200}>
                         <TooltipTrigger asChild>
                           <span className={cn("text-[10px] font-bold uppercase tracking-wider truncate", isAiStyled ? "text-primary" : "text-muted-foreground")}>{col.name}</span>
                         </TooltipTrigger>
                         <TooltipContent className="text-xs">{isAiStyled ? "AI-generated column" : "Facts column"}</TooltipContent>
                       </Tooltip>
                       {isAiStyled && (
-                        <Tooltip delayDuration={200}>
-                          <TooltipTrigger asChild>
-                            <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors cursor-help" />
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom" className="max-w-[200px] text-xs leading-relaxed">
-                            This column is powered by AI — it combines ad visuals, ad data, and prompts to generate new insights automatically.
-                          </TooltipContent>
-                        </Tooltip>
+                        <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
                       )}
                     </div>
                   </th>
