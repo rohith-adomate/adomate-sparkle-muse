@@ -109,14 +109,12 @@ export default function DatasetBuilderLeftPanel({ sources, onAddSource, onRemove
         </div>
 
         {/* Filters section */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Filters</p>
-          <div className="flex items-center gap-1.5">
-            {activeFilters.length > 0 && (
-              <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors">Clear all</button>
-            )}
-            <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
-          </div>
+          <TableFilterPopover columns={columns} rows={rows} activeFilters={activeFilters} onApplyFilter={onApplyFilter} triggerVariant="icon" />
+          {activeFilters.length > 0 && (
+            <button onClick={onClearAllFilters} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors ml-auto">Clear all</button>
+          )}
         </div>
 
         {activeFilters.length > 0 ? (
