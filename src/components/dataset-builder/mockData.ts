@@ -14,7 +14,7 @@ export const FACTS_COLUMNS: DatasetColumn[] = [
   { id: "col-status", name: "Active", type: "facts" },
   { id: "col-landing", name: "Landing Page", type: "facts" },
   { id: "col-headline", name: "Headline", type: "facts" },
-  { id: "col-alignment", name: "Brand Align.", type: "facts" },
+  { id: "col-alignment", name: "Brand Align.", type: "facts", aiPrompt: `Classify whether the competitor ad fits the brand context as-is, or could be easily adapted to fit it.\n\nReturn exactly one categorical value from allowedValues in Validation.\n\nUse High when the ad already matches the brand's value proposition and tone, or would need only minimal adaptation.\n\nUse Medium when the ad is partially aligned and could fit with moderate adaptation.\n\nUse Low when the ad is weakly aligned, contradictory, or would require major adaptation to fit the brand context.` },
 ];
 
 export const TEMPLATE_COLUMNS: { id: string; name: string; description: string; columnKind: DatasetColumn["columnKind"]; aiPrompt: string }[] = [
@@ -43,7 +43,7 @@ export const DEFAULT_AI_COLUMN: DatasetColumn = {
   name: "Ad Style",
   type: "ai",
   columnKind: "classification",
-  aiPrompt: "Analyze the ad creative and classify it as one of: Static, UGC, or Carousel.",
+  aiPrompt: `Classify the competitor ad into exactly one ad style from allowedValues in Validation.\n\nUse product_lifestyle when the ad primarily shows product usage or brand lifestyle context.\n\nUse testimonial_social_proof when the ad focuses on testimonials, reviews, ratings, or social validation.\n\nUse product_demo_explainer when the ad demonstrates how the product works or explains features.\n\nUse problem_solution when the ad frames a clear pain point and presents the product as the solution.\n\nUse before_after when the ad compares a before state versus an after result.\n\nUse offer_promo when the ad is mostly a promotion, discount, bundle, or limited-time offer.`,
   description: "Classifies ads as Static, UGC, or Carousel",
   templateId: "tpl-ad-type",
 };
