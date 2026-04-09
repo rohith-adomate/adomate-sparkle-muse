@@ -500,6 +500,7 @@ export default function WorkflowCanvas() {
     setSelectedRun(exec);
     setRunPanelOpen(false);
     setRunOutputNode(null);
+    setSupportNotifyState("idle");
     // Update node statuses based on run
     setNodes((prev) =>
       prev.map((n) => ({
