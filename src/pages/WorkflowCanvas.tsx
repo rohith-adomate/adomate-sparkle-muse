@@ -1011,25 +1011,80 @@ export default function WorkflowCanvas() {
           </span>
         </div>
 
-        {/* Running progress banner — centered within canvas */}
+        {/* Running progress banner variations — stacked for comparison */}
         {activeTab === "runs" && selectedRun?.status === "running" && (() => {
           const total = isManualWorkflow ? 18 : isRedditWorkflow ? 24 : 60;
           const completed = isManualWorkflow ? 11 : isRedditWorkflow ? 16 : 43;
+          const pct = (completed / total) * 100;
+          const nav = () => navigate("/concepts/ai-image-studio-1");
+
           return (
-            <button
-              onClick={() => navigate("/concepts/ai-image-studio-1")}
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-lg hover:shadow-xl hover:border-primary/40 transition-all group cursor-pointer"
-            >
-              <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
-              <div className="flex flex-col items-start">
-                <span className="text-xs font-semibold text-foreground">Generation in progress</span>
-                <span className="text-[11px] text-muted-foreground">{completed} of {total} ads completed</span>
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col gap-4 items-center">
+
+              {/* V1 — Pill with "View concepts →" link */}
+              <button onClick={nav} className="flex items-center gap-3 rounded-full border border-border bg-card pl-3 pr-2 py-2 shadow-lg hover:shadow-xl hover:border-primary/40 transition-all group cursor-pointer">
+                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                <div className="flex flex-col items-start">
+                  <span className="text-xs font-semibold text-foreground">Generation in progress</span>
+                  <span className="text-[10px] text-muted-foreground">{completed} of {total} ads completed</span>
+                </div>
+                <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                </div>
+                <span className="ml-1 text-[11px] font-medium text-primary group-hover:underline whitespace-nowrap">View concepts →</span>
+              </button>
+
+              {/* V2 — Card with separated CTA button */}
+              <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
+                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                <div className="flex flex-col items-start">
+                  <span className="text-xs font-semibold text-foreground">Generation in progress</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground tabular-nums">{completed}/{total}</span>
+                  </div>
+                </div>
+                <button onClick={nav} className="ml-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[11px] font-medium hover:bg-primary/90 transition-colors whitespace-nowrap">
+                  View concepts
+                </button>
               </div>
-              <div className="ml-2 h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-                <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(completed / total) * 100}%` }} />
-              </div>
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 ml-1" />
-            </button>
+
+              {/* V3 — Minimal inline with chevron */}
+              <button onClick={nav} className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-3.5 py-2.5 shadow-md hover:shadow-lg hover:bg-muted/30 transition-all group cursor-pointer">
+                <div className="relative h-5 w-5 shrink-0">
+                  <Loader2 className="h-5 w-5 text-primary animate-spin absolute inset-0" />
+                </div>
+                <span className="text-[11px] text-foreground"><span className="font-semibold">{completed}</span><span className="text-muted-foreground">/{total} concepts generated</span></span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
+              </button>
+
+              {/* V4 — Full-width progress bar as background */}
+              <button onClick={nav} className="relative flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-lg hover:shadow-xl transition-all group cursor-pointer overflow-hidden min-w-[320px]">
+                <div className="absolute inset-0 bg-primary/5" style={{ width: `${pct}%` }} />
+                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0 relative z-10" />
+                <div className="flex flex-col items-start relative z-10 flex-1">
+                  <span className="text-xs font-semibold text-foreground">Generating concepts…</span>
+                  <span className="text-[10px] text-muted-foreground">{completed} of {total} ads · {Math.round(pct)}% complete</span>
+                </div>
+                <span className="text-[11px] font-medium text-primary group-hover:underline relative z-10 shrink-0">Open ↗</span>
+              </button>
+
+              {/* V5 — Dark/inverted style with glow */}
+              <button onClick={nav} className="flex items-center gap-3 rounded-xl bg-foreground text-background px-4 py-3 shadow-xl hover:shadow-2xl transition-all group cursor-pointer">
+                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                <div className="flex flex-col items-start">
+                  <span className="text-xs font-semibold">Generation in progress</span>
+                  <span className="text-[10px] text-background/60">{completed}/{total} concepts ready</span>
+                </div>
+                <div className="ml-1 h-1.5 w-16 rounded-full bg-background/20 overflow-hidden">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-background/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+              </button>
+
+            </div>
           );
         })()}
 
