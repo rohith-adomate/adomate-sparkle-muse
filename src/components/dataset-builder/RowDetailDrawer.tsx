@@ -1,40 +1,18 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { X, Play, Image, Video, LayoutGrid } from "lucide-react";
-import type { DatasetColumn, DatasetRow } from "./types";
-import { daysOnline, formatDate } from "./mockData";
+import type { DatasetRow } from "./types";
 
 interface Props {
   row: DatasetRow | null;
-  columns: DatasetColumn[];
   onClose: () => void;
   onRunRow: (rowId: string) => void;
 }
 
 const formatIcon: Record<string, typeof Image> = { Image, Video, Carousel: LayoutGrid };
 
-export default function RowDetailDrawer({ row, columns, onClose, onRunRow }: Props) {
+export default function RowDetailDrawer({ row, onClose, onRunRow }: Props) {
   if (!row) return null;
   const FormatIcon = formatIcon[row.format] || Image;
-
-  const getCellValue = (col: DatasetColumn): string => {
-    switch (col.id) {
-      case "col-brand": return row.brand;
-      case "col-headline": return row.headline;
-      case "col-format": return row.format;
-      case "col-platform": return row.platform;
-      case "col-launched": return formatDate(row.firstLaunched);
-      case "col-days": return String(daysOnline(row.firstLaunched));
-      case "col-status": return row.status;
-      case "col-funnel": return row.funnelStage;
-      case "col-hook": return row.hook;
-      case "col-offer": return row.offerPresent ? "Yes" : "No";
-      case "col-alignment": return row.brandAlignment;
-    }
-    return row.aiValues[col.templateId || col.id] || "—";
-  };
 
   return (
     <div className="fixed inset-0 z-[60] flex justify-end">
