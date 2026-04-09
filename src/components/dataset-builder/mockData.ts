@@ -43,7 +43,7 @@ export const DEFAULT_AI_COLUMN: DatasetColumn = {
   name: "Ad Style",
   type: "ai",
   columnKind: "classification",
-  aiPrompt: "Analyze the ad creative and classify it as one of: Static, UGC, or Carousel.",
+  aiPrompt: `Classify the competitor ad into exactly one ad style from allowedValues in Validation.\n\nUse product_lifestyle when the ad primarily shows product usage or brand lifestyle context.\n\nUse testimonial_social_proof when the ad focuses on testimonials, reviews, ratings, or social validation.\n\nUse product_demo_explainer when the ad demonstrates how the product works or explains features.\n\nUse problem_solution when the ad frames a clear pain point and presents the product as the solution.\n\nUse before_after when the ad compares a before state versus an after result.\n\nUse offer_promo when the ad is mostly a promotion, discount, bundle, or limited-time offer.`,
   description: "Classifies ads as Static, UGC, or Carousel",
   templateId: "tpl-ad-type",
 };
