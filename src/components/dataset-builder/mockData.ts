@@ -18,7 +18,7 @@ export const FACTS_COLUMNS: DatasetColumn[] = [
 ];
 
 export const TEMPLATE_COLUMNS: { id: string; name: string; description: string; columnKind: DatasetColumn["columnKind"]; aiPrompt: string }[] = [
-  { id: "tpl-ad-type", name: "Ad Type", description: "Classifies ads as Static, UGC, or Carousel", columnKind: "classification", aiPrompt: "Analyze the ad creative and classify it as one of: Static, UGC, or Carousel. Consider visual elements, production style, and format indicators." },
+  { id: "tpl-ad-type", name: "Style", description: "Classifies the creative style of the ad, such as UGC, product demo, or lifestyle", columnKind: "classification", aiPrompt: "Analyze the ad creative and classify its style as one of: Static, UGC, or Carousel. Consider visual elements, production style, and format indicators." },
   { id: "tpl-visual-format", name: "Visual Format Signals", description: "Detects testimonials, product demos, founder-led, before/after", columnKind: "classification", aiPrompt: "Identify the visual format of this ad. Classify as one of: Testimonial, Product Demo, Founder-led, Before/After, Lifestyle, or Other." },
   { id: "tpl-landing-page", name: "Landing Page Usage Mix", description: "Top landing pages with % share", columnKind: "extraction", aiPrompt: "Extract the landing page URL this ad points to and categorize it (Homepage, Product Page, Collection, Blog, Custom LP)." },
   { id: "tpl-longest-running", name: "Longest Running Ads", description: "Flags likely winners by longevity", columnKind: "scoring", aiPrompt: "Score this ad's longevity signal from 1-10 based on days running and consistency. Ads running 90+ days with stable performance get 8-10." },
