@@ -40,7 +40,7 @@ export function formatDate(d: string): string {
 
 export const DEFAULT_AI_COLUMN: DatasetColumn = {
   id: "ai-ad-type",
-  name: "Style",
+  name: "Ad Style",
   type: "ai",
   columnKind: "classification",
   aiPrompt: "Analyze the ad creative and classify it as one of: Static, UGC, or Carousel.",
