@@ -1048,7 +1048,7 @@ export default function WorkflowCanvas() {
               <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
               <div className="flex flex-col items-start">
                 <span className="text-xs font-semibold text-foreground">Generation complete</span>
-                <span className="text-[10px] text-muted-foreground">{total} concepts generated · {selectedRun.duration}</span>
+                <span className="text-[10px] text-muted-foreground">{total} concepts generated</span>
               </div>
               <button onClick={nav} className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap">
                 View concepts
