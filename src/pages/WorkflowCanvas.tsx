@@ -1057,6 +1057,23 @@ export default function WorkflowCanvas() {
           );
         })()}
 
+        {/* Failed run banner */}
+        {activeTab === "runs" && selectedRun?.status === "failed" && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
+            <XCircle className="h-4 w-4 text-destructive shrink-0" />
+            <div className="flex flex-col items-start">
+              <span className="text-xs font-semibold text-foreground">Generation failed</span>
+              <span className="text-[10px] text-muted-foreground">Something went wrong during this run</span>
+            </div>
+            <button
+              onClick={() => toast.success("Support has been notified — we'll fix this shortly.")}
+              className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap"
+            >
+              Notify support
+            </button>
+          </div>
+        )}
+
       </div>
       <DatasetBuilderDrawer
         open={datasetDrawerOpen}
