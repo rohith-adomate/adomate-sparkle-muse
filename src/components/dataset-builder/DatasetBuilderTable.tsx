@@ -172,7 +172,7 @@ export default function DatasetBuilderTable({
                         ) : isAiEmpty ? (
                           <span className="text-muted-foreground/40">—</span>
                         ) : (
-                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-right block", col.id === "col-headline" && "text-muted-foreground")}>{val}</span>
+                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-center block", col.id === "col-headline" && "text-muted-foreground")}>{val}</span>
                         )}
                       </td>
                     );
