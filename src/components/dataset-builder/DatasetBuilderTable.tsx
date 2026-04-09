@@ -68,6 +68,7 @@ export default function DatasetBuilderTable({
       case "col-launched": return formatDate(row.firstLaunched);
       case "col-days": return String(daysOnline(row.firstLaunched));
       case "col-status": return row.status;
+      case "col-landing": return row.landingPage || "—";
       case "col-funnel": return row.funnelStage;
       case "col-hook": return row.hook;
       case "col-offer": return row.offerPresent ? "Yes" : "No";

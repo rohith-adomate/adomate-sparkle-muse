@@ -54,6 +54,7 @@ export interface DatasetRow {
   funnelStage: string;
   hook: string;
   offerPresent: boolean;
+  landingPage?: string;
   brandAlignment: "High" | "Med" | "Low";
   aiValues: Record<string, string>;
   isRunning?: boolean;
