@@ -15,10 +15,14 @@ interface Props {
   triggerVariant?: "button" | "icon";
 }
 
+const TEXT_FILTER_COLS = new Set(["col-headline", "col-format", "col-landing", "col-alignment"]);
+
 function getFilterMode(columnId: string): FilterMode {
   if (columnId === "col-days") return "number-range";
   if (columnId === "col-launched") return "date-range";
-  if (columnId === "col-headline") return "text";
+  if (TEXT_FILTER_COLS.has(columnId)) return "text";
+  // AI columns (ad style, etc.) also use text filter
+  if (columnId.startsWith("tpl-")) return "text";
   return "select";
 }
 
