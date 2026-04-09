@@ -271,7 +271,6 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
 
       <RowDetailDrawer
         row={detailRow}
-        columns={columns}
         onClose={() => setDetailRow(null)}
         onRunRow={(id) => handleRunRows([id])}
       />
