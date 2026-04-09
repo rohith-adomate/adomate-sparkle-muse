@@ -228,6 +228,7 @@ export default function WorkflowCanvas() {
   });
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
   const [runPanelOpen, setRunPanelOpen] = useState(false);
+  const [supportNotifyState, setSupportNotifyState] = useState<"idle" | "loading" | "done">("idle");
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -1065,12 +1066,24 @@ export default function WorkflowCanvas() {
               <span className="text-xs font-semibold text-foreground">Generation failed</span>
               <span className="text-[10px] text-muted-foreground">Something went wrong during this run</span>
             </div>
-            <button
-              onClick={() => toast.success("Support has been notified — we'll fix this shortly.")}
-              className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap"
-            >
-              Notify support
-            </button>
+            {supportNotifyState === "done" ? (
+              <div className="ml-2 flex items-center gap-1.5 px-3 py-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span className="text-[11px] font-medium text-emerald-600 whitespace-nowrap">Support notified</span>
+              </div>
+            ) : (
+              <button
+                disabled={supportNotifyState === "loading"}
+                onClick={() => {
+                  setSupportNotifyState("loading");
+                  setTimeout(() => setSupportNotifyState("done"), 1500);
+                }}
+                className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
+              >
+                {supportNotifyState === "loading" && <Loader2 className="h-3 w-3 animate-spin" />}
+                {supportNotifyState === "loading" ? "Contacting…" : "Notify support"}
+              </button>
+            )}
           </div>
         )}
 
