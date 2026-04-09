@@ -33,9 +33,9 @@ function getUniqueValues(columnId: string, rows: DatasetRow[]): string[] {
     switch (columnId) {
       case "col-brand": val = row.brand; break;
       case "col-headline": val = row.headline; break;
+      case "col-status": val = row.status === "Active" ? "True" : "False"; break;
       case "col-format": val = row.format; break;
       case "col-platform": val = row.platform; break;
-      case "col-status": val = row.status; break;
       case "col-funnel": val = row.funnelStage; break;
       case "col-hook": val = row.hook; break;
       case "col-offer": val = row.offerPresent ? "Yes" : "No"; break;
