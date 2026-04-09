@@ -27,6 +27,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
+  const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
   
 
   const handleAddSource = useCallback((src: DatasetSource) => {
@@ -174,7 +175,10 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
       }
     return filter.values.includes(val);
     });
-  }).sort((a, b) => new Date(a.firstLaunched).getTime() - new Date(b.firstLaunched).getTime());
+  }).sort((a, b) => {
+    const diff = new Date(a.firstLaunched).getTime() - new Date(b.firstLaunched).getTime();
+    return launchedSortAsc ? diff : -diff;
+  });
 
   const hasSelectedRows = selectedRows.size > 0;
   const aiColumnsCount = columns.filter(c => c.type === "ai").length;
