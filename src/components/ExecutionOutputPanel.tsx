@@ -35,8 +35,8 @@ export interface RunNodeOutput {
 
 export const MOCK_RUNS: WorkflowRun[] = [
   {
-    id: "exec-13", number: 13, status: "success", startedAt: "18 Mar 2026 · 09:00", duration: "2m 14s",
-    nodeStatuses: { "n0": "success", "n1": "success", "n3": "success", "n2b": "success", "n5": "success" },
+    id: "exec-13", number: 13, status: "running", startedAt: "18 Mar 2026 · 09:00", duration: "1m 02s…",
+    nodeStatuses: { "n0": "success", "n1": "success", "n3": "running", "n2b": "success", "n5": "running" },
   },
   {
     id: "exec-12", number: 12, status: "failed", startedAt: "17 Mar 2026 · 09:00", duration: "1m 42s",
@@ -66,8 +66,8 @@ export const MOCK_RUNS: WorkflowRun[] = [
 
 export const MOCK_MANUAL_RUNS: WorkflowRun[] = [
   {
-    id: "mexec-5", number: 5, status: "success", startedAt: "18 Mar 2026 · 11:32", duration: "1m 45s",
-    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success" },
+    id: "mexec-5", number: 5, status: "running", startedAt: "18 Mar 2026 · 11:32", duration: "0m 38s…",
+    nodeStatuses: { "n0": "success", "n1": "running", "n2": "running" },
   },
   {
     id: "mexec-4", number: 4, status: "success", startedAt: "17 Mar 2026 · 14:10", duration: "1m 22s",
@@ -81,8 +81,8 @@ export const MOCK_MANUAL_RUNS: WorkflowRun[] = [
 
 export const MOCK_REDDIT_RUNS: WorkflowRun[] = [
   {
-    id: "rexec-5", number: 5, status: "success", startedAt: "20 Mar 2026 · 09:00", duration: "3m 22s",
-    nodeStatuses: { "n0": "success", "n1": "success", "n2": "success", "n3": "success" },
+    id: "rexec-5", number: 5, status: "running", startedAt: "20 Mar 2026 · 09:00", duration: "1m 10s…",
+    nodeStatuses: { "n0": "success", "n1": "success", "n2": "running", "n3": "running" },
   },
   {
     id: "rexec-4", number: 4, status: "failed", startedAt: "19 Mar 2026 · 09:00", duration: "2m 11s",
