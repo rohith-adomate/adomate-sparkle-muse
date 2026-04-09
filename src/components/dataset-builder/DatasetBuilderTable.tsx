@@ -132,7 +132,7 @@ export default function DatasetBuilderTable({
                         <Sparkles className="h-3 w-3 shrink-0 text-pink-300/60 hover:text-primary transition-colors" />
                       )}
                       {col.id === "col-launched" && (
-                        <ArrowUp className="h-3 w-3 shrink-0 text-muted-foreground/40" />
+                        <ArrowUp className={cn("h-3 w-3 shrink-0 text-muted-foreground/60 hover:text-foreground cursor-pointer transition-transform", !launchedSortAsc && "rotate-180")} onClick={(e) => { e.stopPropagation(); onToggleLaunchedSort?.(); }} />
                       )}
                     </div>
                   </th>
