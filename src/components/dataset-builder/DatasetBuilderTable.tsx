@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 import { Play, Download, Trash2, Sparkles, ArrowUp } from "lucide-react";
 
-const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
+const AI_STYLED_COLS = new Set(["col-alignment"]);
 
 const COLUMN_TOOLTIPS: Record<string, string> = {
   "col-brand": "The company or brand running this ad.",
