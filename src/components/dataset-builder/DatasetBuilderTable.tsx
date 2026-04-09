@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 import { Play, Download, Trash2, Sparkles, ArrowUp } from "lucide-react";
 
-const AI_STYLED_COLS = new Set(["col-funnel", "col-hook", "col-offer", "col-alignment"]);
+const AI_STYLED_COLS = new Set(["col-alignment"]);
 
 const COLUMN_TOOLTIPS: Record<string, string> = {
   "col-brand": "The company or brand running this ad.",
@@ -17,9 +17,6 @@ const COLUMN_TOOLTIPS: Record<string, string> = {
   "col-days": "How many days this ad has been running — longer usually means it's working.",
   "col-status": "Whether this ad is currently live or has been paused.",
   "col-landing": "The webpage people land on after clicking this ad.",
-  "col-funnel": "Where in the customer journey this ad targets — awareness, consideration, or conversion.",
-  "col-hook": "The attention-grabbing opening line or angle used in the ad.",
-  "col-offer": "Whether the ad includes a deal, discount, or special promotion.",
   "col-alignment": "How closely this ad matches the brand's overall style and messaging.",
 };
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
@@ -69,9 +66,6 @@ export default function DatasetBuilderTable({
       case "col-days": return String(daysOnline(row.firstLaunched));
       case "col-status": return row.status;
       case "col-landing": return row.landingPage || "—";
-      case "col-funnel": return row.funnelStage;
-      case "col-hook": return row.hook;
-      case "col-offer": return row.offerPresent ? "Yes" : "No";
       case "col-alignment": return row.brandAlignment;
     }
     const templateId = col.templateId || col.id;
@@ -174,14 +168,10 @@ export default function DatasetBuilderTable({
                           </Tooltip>
                         ) : col.id === "col-alignment" ? (
                           <Badge variant="outline" className={cn("text-[9px] py-0 px-1.5 font-medium", val === "High" && "border-green-500/30 text-green-600 bg-green-500/10", val === "Med" && "border-yellow-500/30 text-yellow-600 bg-yellow-500/10", val === "Low" && "border-red-500/30 text-red-600 bg-red-500/10")}>{val}</Badge>
-                        ) : col.id === "col-funnel" ? (
-                          <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal">{val}</Badge>
-                        ) : col.id === "col-offer" ? (
-                          <div className={cn("h-2 w-2 rounded-full mx-auto", val === "Yes" ? "bg-primary" : "bg-muted-foreground/20")} />
                         ) : isAiEmpty ? (
                           <span className="text-muted-foreground/40">—</span>
                         ) : (
-                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-right block", (col.id === "col-hook" || col.id === "col-headline") && "text-muted-foreground")}>{val}</span>
+                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-right block", col.id === "col-headline" && "text-muted-foreground")}>{val}</span>
                         )}
                       </td>
                     );
