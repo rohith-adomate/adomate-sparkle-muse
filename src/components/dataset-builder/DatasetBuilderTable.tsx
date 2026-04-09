@@ -38,11 +38,12 @@ interface Props {
   activeFilters: ActiveFilter[];
   onApplyFilter: (filter: ActiveFilter) => void;
   totalRowCount?: number;
-  
+  launchedSortAsc?: boolean;
+  onToggleLaunchedSort?: () => void;
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount, launchedSortAsc = true, onToggleLaunchedSort,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);

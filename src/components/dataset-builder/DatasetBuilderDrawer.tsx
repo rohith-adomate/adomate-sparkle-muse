@@ -251,6 +251,8 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
               activeFilters={activeFilters}
               onApplyFilter={handleApplyFilter}
               totalRowCount={rows.length}
+              launchedSortAsc={launchedSortAsc}
+              onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
             />
 
             {inspectorColumn && (
