@@ -1037,6 +1037,26 @@ export default function WorkflowCanvas() {
           );
         })()}
 
+        {/* Success completion banner */}
+        {activeTab === "runs" && selectedRun?.status === "success" && (() => {
+          const conceptCounts: Record<number, number> = { 11: 54, 10: 60, 8: 48, 7: 52, 5: 18, 4: 18, 3: 24 };
+          const total = conceptCounts[selectedRun.number] ?? (isManualWorkflow ? 18 : isRedditWorkflow ? 24 : 60);
+          const nav = () => navigate("/concepts/ai-image-studio-1");
+
+          return (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="text-xs font-semibold text-foreground">Generation complete</span>
+                <span className="text-[10px] text-muted-foreground">{total} concepts generated · {selectedRun.duration}</span>
+              </div>
+              <button onClick={nav} className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap">
+                View concepts
+              </button>
+            </div>
+          );
+        })()}
+
       </div>
       <DatasetBuilderDrawer
         open={datasetDrawerOpen}
