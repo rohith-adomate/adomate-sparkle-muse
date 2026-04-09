@@ -14,7 +14,7 @@ export const FACTS_COLUMNS: DatasetColumn[] = [
   { id: "col-status", name: "Active", type: "facts" },
   { id: "col-landing", name: "Landing Page", type: "facts" },
   { id: "col-headline", name: "Headline", type: "facts" },
-  { id: "col-alignment", name: "Brand Align.", type: "facts", aiPrompt: `Classify whether the competitor ad fits the brand context as-is, or could be easily adapted to fit it.\n\nReturn exactly one categorical value from allowedValues in Validation.\n\nUse High when the ad already matches the brand's value proposition and tone, or would need only minimal adaptation.\n\nUse Medium when the ad is partially aligned and could fit with moderate adaptation.\n\nUse Low when the ad is weakly aligned, contradictory, or would require major adaptation to fit the brand context.` },
+  
 ];
 
 export const TEMPLATE_COLUMNS: { id: string; name: string; description: string; columnKind: DatasetColumn["columnKind"]; aiPrompt: string }[] = [

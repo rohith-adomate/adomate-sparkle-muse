@@ -170,7 +170,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
         case "col-status": val = row.status === "Active" ? "True" : "False"; break;
         case "col-funnel": val = row.funnelStage; break;
         case "col-offer": val = row.offerPresent ? "Yes" : "No"; break;
-        case "col-alignment": val = row.brandAlignment; break;
+        
         default: val = row.aiValues[filter.columnId] || ""; break;
       }
     return filter.values.includes(val);
