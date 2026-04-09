@@ -25,7 +25,7 @@ export default function ColumnInspectorPanel({ column, rows, onClose, onUpdateCo
   const isAiStyled = column.type === "ai" || AI_STYLED_COLS.has(column.id);
 
   return (
-    <div className="w-72 shrink-0 border-l border-border bg-card flex flex-col overflow-y-auto animate-slide-in-right">
+    <div className="w-[382px] shrink-0 border-l border-border bg-card flex flex-col overflow-y-auto animate-slide-in-right">
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
           <h3 className="text-sm font-semibold truncate">{column.name}</h3>
