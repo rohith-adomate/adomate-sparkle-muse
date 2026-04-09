@@ -165,6 +165,13 @@ export default function DatasetBuilderTable({
                           </div>
                         ) : col.id === "col-status" ? (
                           <div className={cn("h-2 w-2 rounded-full mx-auto", val === "Active" ? "bg-primary" : "bg-muted-foreground/20")} />
+                        ) : col.id === "col-landing" ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <a href={val !== "—" ? val : undefined} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn("text-[11px] truncate block max-w-[140px]", val !== "—" ? "text-primary underline underline-offset-2 hover:text-primary/80" : "text-muted-foreground/40")}>{val !== "—" ? val.replace(/^https?:\/\/(www\.)?/, "") : "—"}</a>
+                            </TooltipTrigger>
+                            {val !== "—" && <TooltipContent className="text-xs max-w-[400px] break-all">{val}</TooltipContent>}
+                          </Tooltip>
                         ) : col.id === "col-alignment" ? (
                           <Badge variant="outline" className={cn("text-[9px] py-0 px-1.5 font-medium", val === "High" && "border-green-500/30 text-green-600 bg-green-500/10", val === "Med" && "border-yellow-500/30 text-yellow-600 bg-yellow-500/10", val === "Low" && "border-red-500/30 text-red-600 bg-red-500/10")}>{val}</Badge>
                         ) : col.id === "col-funnel" ? (
