@@ -17,9 +17,6 @@ const COLUMN_TOOLTIPS: Record<string, string> = {
   "col-days": "How many days this ad has been running — longer usually means it's working.",
   "col-status": "Whether this ad is currently live or has been paused.",
   "col-landing": "The webpage people land on after clicking this ad.",
-  "col-funnel": "Where in the customer journey this ad targets — awareness, consideration, or conversion.",
-  "col-hook": "The attention-grabbing opening line or angle used in the ad.",
-  "col-offer": "Whether the ad includes a deal, discount, or special promotion.",
   "col-alignment": "How closely this ad matches the brand's overall style and messaging.",
 };
 import type { DatasetColumn, DatasetRow, ActiveFilter } from "./types";
