@@ -168,10 +168,6 @@ export default function DatasetBuilderTable({
                           </Tooltip>
                         ) : col.id === "col-alignment" ? (
                           <Badge variant="outline" className={cn("text-[9px] py-0 px-1.5 font-medium", val === "High" && "border-green-500/30 text-green-600 bg-green-500/10", val === "Med" && "border-yellow-500/30 text-yellow-600 bg-yellow-500/10", val === "Low" && "border-red-500/30 text-red-600 bg-red-500/10")}>{val}</Badge>
-                        ) : col.id === "col-funnel" ? (
-                          <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal">{val}</Badge>
-                        ) : col.id === "col-offer" ? (
-                          <div className={cn("h-2 w-2 rounded-full mx-auto", val === "Yes" ? "bg-primary" : "bg-muted-foreground/20")} />
                         ) : isAiEmpty ? (
                           <span className="text-muted-foreground/40">—</span>
                         ) : (
