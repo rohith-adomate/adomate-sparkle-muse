@@ -25,7 +25,7 @@ export default function RowDetailDrawer({ row, onClose, onRunRow }: Props) {
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="h-4 w-4" /></Button>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto flex items-center justify-center p-5">
+        <div className="flex-1 overflow-y-auto p-5">
           <div className="w-full rounded-xl border border-border bg-muted/30 overflow-hidden" style={{ aspectRatio: "4/5" }}>
             <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted-foreground">
               <FormatIcon className="h-10 w-10" />
