@@ -95,9 +95,6 @@ export function getColumnStats(columnId: string, rows: DatasetRow[]): { label: s
       { name: "Inactive", value: `${Math.round(inactive / rows.length * 100)}%` },
     ]};
   }
-  if (columnId === "col-funnel") {
-    return null;
-  }
   if (columnId === "col-alignment") {
     const counts: Record<string, number> = {};
     rows.forEach(r => { counts[r.brandAlignment] = (counts[r.brandAlignment] || 0) + 1; });
