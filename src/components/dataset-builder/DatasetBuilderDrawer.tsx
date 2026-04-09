@@ -166,7 +166,7 @@ export default function DatasetBuilderDrawer({ open, onClose }: Props) {
         case "col-brand": val = row.brand; break;
         case "col-format": val = row.format; break;
         case "col-platform": val = row.platform; break;
-        case "col-status": val = row.status; break;
+        case "col-status": val = row.status === "Active" ? "True" : "False"; break;
         case "col-funnel": val = row.funnelStage; break;
         case "col-offer": val = row.offerPresent ? "Yes" : "No"; break;
         case "col-alignment": val = row.brandAlignment; break;
