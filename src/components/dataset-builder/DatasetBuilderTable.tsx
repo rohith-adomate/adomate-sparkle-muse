@@ -159,7 +159,7 @@ export default function DatasetBuilderTable({
                             <span className="text-[11px] font-medium truncate">{val}</span>
                           </div>
                         ) : col.id === "col-status" ? (
-                          <div className={cn("h-2 w-2 rounded-full mx-auto", val === "Active" ? "bg-primary" : "bg-muted-foreground/20")} />
+                          <div className="flex justify-center"><div className={cn("h-2 w-2 rounded-full", val === "Active" ? "bg-primary" : "bg-muted-foreground/20")} /></div>
                         ) : col.id === "col-landing" ? (
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -172,7 +172,7 @@ export default function DatasetBuilderTable({
                         ) : isAiEmpty ? (
                           <span className="text-muted-foreground/40">—</span>
                         ) : (
-                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-right block", col.id === "col-headline" && "text-muted-foreground")}>{val}</span>
+                          <span className={cn("text-[11px] line-clamp-1", col.id === "col-days" && "tabular-nums text-muted-foreground text-center block", col.id === "col-headline" && "text-muted-foreground")}>{val}</span>
                         )}
                       </td>
                     );
