@@ -8,12 +8,12 @@ export const INITIAL_SOURCES: DatasetSource[] = [
 
 export const FACTS_COLUMNS: DatasetColumn[] = [
   { id: "col-brand", name: "Brand", type: "facts" },
-  { id: "col-headline", name: "Headline", type: "facts" },
   { id: "col-format", name: "Format", type: "facts" },
-  
   { id: "col-launched", name: "First Launched", type: "facts" },
   { id: "col-days", name: "Days Online", type: "facts" },
   { id: "col-status", name: "Active", type: "facts" },
+  { id: "col-landing", name: "Landing Page", type: "facts" },
+  { id: "col-headline", name: "Headline", type: "facts" },
   { id: "col-funnel", name: "Funnel", type: "facts" },
   { id: "col-hook", name: "Hook", type: "facts" },
   { id: "col-offer", name: "Offer", type: "facts" },
