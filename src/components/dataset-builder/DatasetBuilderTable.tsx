@@ -67,7 +67,7 @@ export default function DatasetBuilderTable({
       case "col-days": return String(daysOnline(row.firstLaunched));
       case "col-status": return row.status;
       case "col-landing": return row.landingPage || "—";
-      case "col-alignment": return row.brandAlignment;
+      
     }
     const templateId = col.templateId || col.id;
     return row.aiValues[templateId] || "—";

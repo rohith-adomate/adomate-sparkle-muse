@@ -9,7 +9,7 @@ import { ChevronsRight, Sparkles, Trash2 } from "lucide-react";
 import type { DatasetColumn, DatasetRow } from "./types";
 import { getColumnStats } from "./mockData";
 
-const AI_STYLED_COLS = new Set(["col-alignment"]);
+const AI_STYLED_COLS = new Set<string>([]);
 
 interface Props {
   column: DatasetColumn;
