@@ -1085,26 +1085,6 @@ export default function WorkflowCanvas() {
         runNumber={selectedRun?.number}
       />
 
-      {/* Running progress banner */}
-      {activeTab === "runs" && selectedRun?.status === "running" && (() => {
-        const total = isManualWorkflow ? 18 : isRedditWorkflow ? 24 : 60;
-        const completed = isManualWorkflow ? 11 : isRedditWorkflow ? 16 : 43;
-        return (
-          <button
-            onClick={() => navigate("/concepts/ai-image-studio-1")}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          >
-            <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
-            <div className="flex flex-col items-start">
-              <span className="text-xs font-semibold text-foreground">Generation in progress</span>
-              <span className="text-[11px] text-muted-foreground">{completed} of {total} ads completed</span>
-            </div>
-            <div className="ml-2 h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(completed / total) * 100}%` }} />
-            </div>
-          </button>
-        );
-      })()}
     </div>
   );
 }
