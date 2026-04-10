@@ -29,7 +29,7 @@ import Settings from "./pages/Settings";
 
 import NotFound from "./pages/NotFound";
 import Credits from "./pages/Credits";
-import BrandSwitchDemo from "./pages/BrandSwitchDemo";
+
 import OnboardingPage from "./pages/OnboardingPage";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -54,7 +54,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/onboarding" element={<OnboardingPage />} />
-          <Route path="/brand-switch-demo" element={<BrandSwitchDemo />} />
+          
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/brand-data-room" element={<BrandDataRoom />} />

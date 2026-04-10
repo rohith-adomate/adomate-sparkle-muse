@@ -79,8 +79,8 @@ export function TopNav() {
                   </span>
                 )}
               </span>
-              <span className={`transition-opacity duration-300 ${isSwitching ? "opacity-50" : "opacity-100"}`}>
-                {isSwitching ? "Switching…" : activeBrand.name}
+              <span className={`transition-all duration-300 ${isSwitching ? "blur-[4px] opacity-50" : "blur-0 opacity-100"}`}>
+                {activeBrand.name}
               </span>
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
