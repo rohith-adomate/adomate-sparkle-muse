@@ -45,7 +45,15 @@ function SaveIndicator({ state }: { state: string }) {
 
 export function TopNav() {
   const [activeBrand, setActiveBrand] = useState(brands[0]);
+  const [isSwitching, setIsSwitching] = useState(false);
   const nav = useNavigate();
+
+  const handleBrandSwitch = useCallback((b: typeof brands[0]) => {
+    if (b.name === activeBrand.name) return;
+    setIsSwitching(true);
+    setActiveBrand(b);
+    setTimeout(() => setIsSwitching(false), 800);
+  }, [activeBrand.name]);
   const { saveState } = useSaveIndicator();
 
   return (
