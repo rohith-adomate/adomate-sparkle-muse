@@ -301,8 +301,6 @@ export default function BrandKnowledge() {
             <MarkdownEditor
               value={field.value}
               onChange={(val) => { updateFieldValue(field.id, val); handleFieldChange(); }}
-              compact
-              placeholder={`Add ${field.title.toLowerCase()}…`}
             />
           </div>
           <div className="w-6 shrink-0 flex items-start pt-6">
