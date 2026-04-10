@@ -109,6 +109,9 @@ export default function DatasetBuilderTable({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0">
+        Showing {rows.length} / {totalRowCount ?? rows.length} rows
+      </div>
 
       <div className="flex-1 overflow-auto">
         <table className="w-full text-xs border-collapse">
@@ -182,9 +185,6 @@ export default function DatasetBuilderTable({
             })}
           </tbody>
         </table>
-        <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
-          Showing {rows.length} / {totalRowCount ?? rows.length} rows
-        </div>
       </div>
     </div>
   );
