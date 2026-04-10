@@ -185,9 +185,6 @@ export default function DatasetBuilderTable({
             })}
           </tbody>
         </table>
-        <div className="px-4 py-2 text-[10px] text-muted-foreground border-t border-border/50">
-          Showing {rows.length} / {totalRowCount ?? rows.length} rows
-        </div>
       </div>
     </div>
   );
