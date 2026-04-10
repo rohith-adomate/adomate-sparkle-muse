@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import oyLogoSrc from "@/assets/oy/oy-logo.png";
 
-const brand1 = { name: "Oy Care", logo: oyLogoSrc };
-const brand2 = { name: "Beta Brand", color: "hsl(152 60% 42%)" };
+type Brand = { name: string; logo?: string; color?: string };
+const brand1: Brand = { name: "Oy Care", logo: oyLogoSrc };
+const brand2: Brand = { name: "Beta Brand", color: "hsl(152 60% 42%)" };
 
-function BrandIcon({ brand, isSwitching }: { brand: typeof brand1 | typeof brand2; isSwitching: boolean }) {
+function BrandIcon({ brand, isSwitching }: { brand: Brand; isSwitching: boolean }) {
   return (
     <span className={`relative flex items-center justify-center h-5 w-5 transition-all duration-300 ${isSwitching ? "scale-90 opacity-60" : ""}`}>
       {isSwitching && (
