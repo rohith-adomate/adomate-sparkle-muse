@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSaveIndicator } from "@/contexts/SaveIndicatorContext";
 import { FeedbackPopover } from "@/components/FeedbackPopover";
@@ -45,7 +45,15 @@ function SaveIndicator({ state }: { state: string }) {
 
 export function TopNav() {
   const [activeBrand, setActiveBrand] = useState(brands[0]);
+  const [isSwitching, setIsSwitching] = useState(false);
   const nav = useNavigate();
+
+  const handleBrandSwitch = useCallback((b: typeof brands[0]) => {
+    if (b.name === activeBrand.name) return;
+    setIsSwitching(true);
+    setActiveBrand(b);
+    setTimeout(() => setIsSwitching(false), 800);
+  }, [activeBrand.name]);
   const { saveState } = useSaveIndicator();
 
   return (
@@ -55,24 +63,31 @@ export function TopNav() {
         <span className="mx-1 h-5 w-px bg-border" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2 font-medium">
-              {activeBrand.logo ? (
-                <img src={activeBrand.logo} alt={activeBrand.name} className="h-5 w-5 rounded-md object-contain" />
-              ) : (
-                <span
-                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                  style={{ background: activeBrand.color }}
-                >
-                  {activeBrand.name[0]}
-                </span>
-              )}
-              {activeBrand.name}
+            <Button variant="ghost" size="sm" className="gap-2 font-medium" disabled={isSwitching}>
+              <span className={`relative flex items-center justify-center h-5 w-5 transition-all duration-300 ${isSwitching ? "scale-90 opacity-60" : "scale-100 opacity-100"}`}>
+                {isSwitching && (
+                  <span className="absolute inset-0 rounded-md border-2 border-primary/40 border-t-primary animate-spin" />
+                )}
+                {activeBrand.logo ? (
+                  <img src={activeBrand.logo} alt={activeBrand.name} className="h-5 w-5 rounded-md object-contain" />
+                ) : (
+                  <span
+                    className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                    style={{ background: activeBrand.color }}
+                  >
+                    {activeBrand.name[0]}
+                  </span>
+                )}
+              </span>
+              <span className={`transition-opacity duration-300 ${isSwitching ? "opacity-50" : "opacity-100"}`}>
+                {isSwitching ? "Switching…" : activeBrand.name}
+              </span>
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             {brands.map((b) => (
-              <DropdownMenuItem key={b.name} onClick={() => setActiveBrand(b)} className="gap-2">
+              <DropdownMenuItem key={b.name} onClick={() => handleBrandSwitch(b)} className="gap-2">
                 {b.logo ? (
                   <img src={b.logo} alt={b.name} className="h-5 w-5 rounded-md object-contain" />
                 ) : (
