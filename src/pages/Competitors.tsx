@@ -13,7 +13,6 @@ import { Plus, Search, Loader2, Trash2, Check, RefreshCw, ExternalLink } from "l
 import { toast } from "sonner";
 
 type ScrapingStatus = "scraping" | "ready" | "failed";
-type ScrapingVariant = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 type Competitor = {
   id: string;
@@ -23,177 +22,25 @@ type Competitor = {
   lastUpdated: string;
   adsTracked: string;
   scrapingStatus: ScrapingStatus;
-  scrapingVariant?: ScrapingVariant;
 };
 
 const initialCompetitors: Competitor[] = [
   { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185", scrapingStatus: "ready" },
   { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200", scrapingStatus: "ready" },
   { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", scrapingStatus: "failed" },
-  { id: "v1", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 1 },
-  { id: "v2", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "211433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 2 },
-  { id: "v3", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "311433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 3 },
-  { id: "v4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "411433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 4 },
-  { id: "v5", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "511433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 5 },
-  { id: "v6", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "611433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 6 },
-  { id: "v7", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "711433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 7 },
-  { id: "v8", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "811433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 8 },
-  { id: "v9", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "911433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 9 },
-  { id: "v10", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "011433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping", scrapingVariant: 10 },
+  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping" },
 ];
 
-/* ─── Variant 1: Gradient shimmer bar + text ─── */
-function ScrapingV1() {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1">
-      <div className="relative h-1.5 w-16 rounded-full bg-muted overflow-hidden">
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/60 via-primary to-primary/60 animate-[shimmer_1.5s_ease-in-out_infinite]" />
-      </div>
-      <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 2: Three bouncing dots + text ─── */
-function ScrapingV2() {
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1">
-      {[0, 1, 2].map(i => (
-        <span
-          key={i}
-          className="h-1.5 w-1.5 rounded-full bg-primary"
-          style={{ animation: `bounce-dot 1.4s ease-in-out ${i * 0.16}s infinite` }}
-        />
-      ))}
-      <span className="text-[10px] font-medium text-muted-foreground ml-1">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 3: Rotating ring with gradient ─── */
-function ScrapingV3() {
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
-      <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" className="text-primary/20" />
-        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-primary" />
-      </svg>
-      <span className="text-[10px] font-medium text-primary">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 4: Progress wave (equalizer bars) ─── */
-function ScrapingV4() {
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1">
-      <div className="flex items-end gap-[2px] h-3">
-        {[0, 1, 2, 3, 4].map(i => (
-          <span
-            key={i}
-            className="w-[3px] rounded-full bg-primary"
-            style={{ animation: `equalizer 1s ease-in-out ${i * 0.1}s infinite`, minHeight: "3px" }}
-          />
-        ))}
-      </div>
-      <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 5: Pulsing glow dot + text ─── */
-function ScrapingV5() {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1">
-      <span className="relative flex h-2.5 w-2.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-      </span>
-      <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 6: Orbiting dots ─── */
-function ScrapingV6() {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent px-3 py-1">
-      <div className="relative h-4 w-4">
-        {[0, 1, 2].map(i => (
-          <span
-            key={i}
-            className="absolute h-1.5 w-1.5 rounded-full bg-primary"
-            style={{
-              animation: `orbit 1.5s linear ${i * 0.5}s infinite`,
-              top: "50%", left: "50%",
-              transformOrigin: "0 0",
-            }}
-          />
-        ))}
-      </div>
-      <span className="text-[10px] font-medium text-primary/80">Scraping…</span>
-    </div>
-  );
-}
-
-/* ─── Variant 7: Sliding gradient underline ─── */
-function ScrapingV7() {
-  return (
-    <div className="inline-flex flex-col items-center gap-0.5">
-      <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
-      <div className="relative h-[2px] w-14 rounded-full bg-muted overflow-hidden">
-        <div className="absolute h-full w-6 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
-      </div>
-    </div>
-  );
-}
-
-/* ─── Variant 8: Breathing badge ─── */
-function ScrapingV8() {
-  return (
-    <Badge
-      variant="outline"
-      className="gap-1.5 text-[10px] font-medium border-primary/30 text-primary animate-[breathe_2s_ease-in-out_infinite]"
-    >
-      <div className="h-1.5 w-1.5 rounded-full bg-primary animate-[breathe_2s_ease-in-out_infinite]" />
-      Scraping…
-    </Badge>
-  );
-}
-
-/* ─── Variant 9: Typewriter dots ─── */
-function ScrapingV9() {
-  return (
-    <div className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
-      <Loader2 className="h-3 w-3 text-primary animate-[spin_2s_linear_infinite]" />
-      <span className="text-[10px] font-medium text-primary tracking-wide animate-[typewriter-dots_1.5s_steps(4)_infinite]">
-        Scraping<span className="inline-block w-[1em] text-left animate-[dots_1.5s_steps(4)_infinite]">...</span>
-      </span>
-    </div>
-  );
-}
-
-/* ─── Variant 10: Neon outline pulse ─── */
-function ScrapingV10() {
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 border border-primary/40 animate-[neon-pulse_2s_ease-in-out_infinite]">
-      <svg className="h-3 w-3 text-primary" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="animate-[spin_3s_linear_infinite] origin-center" />
-      </svg>
-      <span className="text-[10px] font-medium text-primary">Scraping…</span>
-    </div>
-  );
-}
-
-const scrapingVariants: Record<ScrapingVariant, () => JSX.Element> = {
-  1: ScrapingV1, 2: ScrapingV2, 3: ScrapingV3, 4: ScrapingV4, 5: ScrapingV5,
-  6: ScrapingV6, 7: ScrapingV7, 8: ScrapingV8, 9: ScrapingV9, 10: ScrapingV10,
-};
-
-function StatusChip({ status, onRetry, variant }: { status: ScrapingStatus; onRetry?: () => void; variant?: ScrapingVariant }) {
+function StatusChip({ status, onRetry }: { status: ScrapingStatus; onRetry?: () => void }) {
   if (status === "scraping") {
-    const Variant = variant ? scrapingVariants[variant] : ScrapingV1;
-    return <Variant />;
+    return (
+      <div className="inline-flex flex-col items-center gap-1 rounded-full border px-3 py-1">
+        <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
+        <div className="relative h-[2px] w-14 rounded-full bg-muted overflow-hidden">
+          <div className="absolute h-full w-6 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
+        </div>
+      </div>
+    );
   }
   if (status === "ready") {
     return (
