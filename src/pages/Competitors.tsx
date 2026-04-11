@@ -25,8 +25,8 @@ type Competitor = {
 };
 
 const initialCompetitors: Competitor[] = [
-  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", scrapingStatus: "ready" },
-  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200/200", scrapingStatus: "ready" },
+  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185", scrapingStatus: "ready" },
+  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200", scrapingStatus: "ready" },
   { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", scrapingStatus: "failed" },
   { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping" },
 ];
@@ -74,7 +74,7 @@ export default function Competitors() {
     const delay = 3000 + Math.random() * 3000;
     setTimeout(() => {
       setCompetitors(prev => prev.map(c =>
-        c.id === comp.id ? { ...c, scrapingStatus: "ready" as ScrapingStatus, lastUpdated: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }), adsTracked: `${Math.floor(Math.random() * 150 + 50)}/200` } : c
+        c.id === comp.id ? { ...c, scrapingStatus: "ready" as ScrapingStatus, lastUpdated: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }), adsTracked: `${Math.floor(Math.random() * 150 + 50)}` } : c
       ));
       toast.success(`${comp.name} is ready`, { description: "Competitor data has been scraped successfully." });
     }, delay);
