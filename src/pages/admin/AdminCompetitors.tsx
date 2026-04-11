@@ -92,7 +92,7 @@ export default function AdminCompetitors() {
     <div className="space-y-4 max-w-6xl mx-auto">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Competitors</h1>
-        <p className="text-muted-foreground text-sm">All competitors tracked across brands and companies.</p>
+        <p className="text-muted-foreground text-sm">All competitors tracked across brands and companies, sorted by most recently added.</p>
       </div>
 
       <div className="relative max-w-[350px] w-full">
