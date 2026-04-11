@@ -28,7 +28,7 @@ const initialCompetitors: Competitor[] = [
   { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185", scrapingStatus: "ready" },
   { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200", scrapingStatus: "ready" },
   { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", scrapingStatus: "failed" },
-  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping" },
+  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "5", scrapingStatus: "scraping" },
 ];
 
 function StatusChip({ status, onRetry }: { status: ScrapingStatus; onRetry?: () => void }) {
@@ -249,7 +249,18 @@ export default function Competitors() {
                     </a>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground text-center">
+                    {c.scrapingStatus === "scraping" ? (
+                      <div className="inline-flex flex-col items-center gap-0.5">
+                        <span>{c.adsTracked}</span>
+                        <div className="relative h-[2px] w-8 rounded-full bg-muted overflow-hidden">
+                          <div className="absolute h-full w-4 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
+                        </div>
+                      </div>
+                    ) : (
+                      c.adsTracked
+                    )}
+                  </TableCell>
                   <TableCell className="text-center">
                     <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
                   </TableCell>
