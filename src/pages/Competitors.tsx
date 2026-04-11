@@ -402,7 +402,7 @@ export default function Competitors() {
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
                   <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
-                    <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
+                    <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} variant={c.scrapingVariant} />
                   </TableCell>
                   <TableCell>
                     {c.scrapingStatus !== "scraping" && (
