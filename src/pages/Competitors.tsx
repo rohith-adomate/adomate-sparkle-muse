@@ -34,7 +34,7 @@ const initialCompetitors: Competitor[] = [
 function StatusChip({ status, onRetry }: { status: ScrapingStatus; onRetry?: () => void }) {
   if (status === "scraping") {
     return (
-      <div className="inline-flex flex-col items-center gap-1 rounded-full border px-3 py-1">
+      <div className="inline-flex flex-col items-center gap-0 rounded-full border px-3 py-0.5">
         <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
         <div className="relative h-[2px] w-14 rounded-full bg-muted overflow-hidden">
           <div className="absolute h-full w-6 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
