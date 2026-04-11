@@ -211,7 +211,7 @@ export default function Competitors() {
   const hasSocial = (s?: SocialInfo) => s && (s.fbHandle || s.igHandle);
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-4 max-w-5xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
       <div>
@@ -219,174 +219,89 @@ export default function Competitors() {
         <p className="text-muted-foreground text-sm">Track competitors on Meta Ad Library.</p>
       </div>
 
-      {/* ── OPTION A: Inline icons column ── */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Option A — Socials Column</h2>
+      <div className="flex items-center justify-between">
+        <div className="relative max-w-[350px] w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search competitors..." value={filterQuery} onChange={(e) => setFilterQuery(e.target.value)} className="pl-9" />
         </div>
-        <div className="flex items-center justify-between">
-          <div className="relative max-w-[350px] w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search competitors..." value={filterQuery} onChange={(e) => setFilterQuery(e.target.value)} className="pl-9" />
-          </div>
-          {searchDialog}
-        </div>
-        <div className="rounded-xl border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Competitor</TableHead>
-                <TableHead>Socials</TableHead>
-                <TableHead>Page ID</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead className="text-center">Ads Tracked</TableHead>
-                <TableHead className="text-center w-28">Status</TableHead>
-                <TableHead className="w-12" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground py-12">
-                    {filterQuery ? "No competitors match your search." : 'No competitors tracked yet. Click "Track New" to get started.'}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filtered.map((c) => (
-                  <TableRow key={c.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <img src={c.avatarUrl} alt="" className="h-8 w-8 rounded-full bg-muted object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }} />
-                        <span className="font-medium text-sm">{c.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {hasSocial(c.social) ? (
-                        <div className="flex flex-col gap-0.5">
-                          {c.social?.fbHandle && (
-                            <SocialBadge icon={Facebook} handle={c.social.fbHandle} followers={c.social.fbFollowers!} />
-                          )}
-                          {c.social?.igHandle && (
-                            <SocialBadge icon={Instagram} handle={c.social.igHandle} followers={c.social.igFollowers!} />
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-xs text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-sm font-mono">
-                      <a href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
-                        {c.pageId.slice(0, 8)}…
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground text-center">
-                      {c.scrapingStatus === "scraping" ? (
-                        <div className="inline-flex flex-col items-center gap-0.5">
-                          <span>{c.adsTracked}</span>
-                          <div className="relative h-[2px] w-8 rounded-full bg-muted overflow-hidden">
-                            <div className="absolute h-full w-4 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
-                          </div>
-                        </div>
-                      ) : c.adsTracked}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
-                    </TableCell>
-                    <TableCell>
-                      {c.scrapingStatus !== "scraping" && (
-                        <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive transition-colors">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        {searchDialog}
       </div>
 
-      {/* ── OPTION B: Sub-row beneath competitor name ── */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Option B — Sub-row under Name</h2>
-        </div>
-        <div className="rounded-xl border bg-card">
-          <Table>
-            <TableHeader>
+      <div className="rounded-xl border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Competitor</TableHead>
+              <TableHead>Socials</TableHead>
+              <TableHead>Page ID</TableHead>
+              <TableHead>Last Updated</TableHead>
+              <TableHead className="text-center">Ads Tracked</TableHead>
+              <TableHead className="text-center w-28">Status</TableHead>
+              <TableHead className="w-12" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.length === 0 ? (
               <TableRow>
-                <TableHead>Competitor</TableHead>
-                <TableHead>Page ID</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead className="text-center">Ads Tracked</TableHead>
-                <TableHead className="text-center w-28">Status</TableHead>
-                <TableHead className="w-12" />
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-12">
+                  {filterQuery ? "No competitors match your search." : 'No competitors tracked yet. Click "Track New" to get started.'}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
-                    {filterQuery ? "No competitors match your search." : 'No competitors tracked yet. Click "Track New" to get started.'}
+            ) : (
+              filtered.map((c) => (
+                <TableRow key={c.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <img src={c.avatarUrl} alt="" className="h-8 w-8 rounded-full bg-muted object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }} />
+                      <span className="font-medium text-sm">{c.name}</span>
+                    </div>
                   </TableCell>
-                </TableRow>
-              ) : (
-                filtered.map((c) => (
-                  <TableRow key={c.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <img src={c.avatarUrl} alt="" className="h-8 w-8 rounded-full bg-muted object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }} />
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm">{c.name}</span>
-                          {hasSocial(c.social) ? (
-                            <div className="flex items-center gap-3 mt-0.5">
-                              {c.social?.fbHandle && (
-                                <SocialBadge icon={Facebook} handle={c.social.fbHandle} followers={c.social.fbFollowers!} />
-                              )}
-                              {c.social?.igHandle && (
-                                <SocialBadge icon={Instagram} handle={c.social.igHandle} followers={c.social.igFollowers!} />
-                              )}
-                            </div>
-                          ) : null}
+                  <TableCell>
+                    {hasSocial(c.social) ? (
+                      <div className="flex flex-col gap-0.5">
+                        {c.social?.fbHandle && (
+                          <SocialBadge icon={Facebook} handle={c.social.fbHandle} followers={c.social.fbFollowers!} />
+                        )}
+                        {c.social?.igHandle && (
+                          <SocialBadge icon={Instagram} handle={c.social.igHandle} followers={c.social.igFollowers!} />
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/50">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm font-mono">
+                    <a href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
+                      {c.pageId.slice(0, 8)}…
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground text-center">
+                    {c.scrapingStatus === "scraping" ? (
+                      <div className="inline-flex flex-col items-center gap-0.5">
+                        <span>{c.adsTracked}</span>
+                        <div className="relative h-[2px] w-8 rounded-full bg-muted overflow-hidden">
+                          <div className="absolute h-full w-4 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-sm font-mono">
-                      <a href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
-                        {c.pageId.slice(0, 8)}…
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground text-center">
-                      {c.scrapingStatus === "scraping" ? (
-                        <div className="inline-flex flex-col items-center gap-0.5">
-                          <span>{c.adsTracked}</span>
-                          <div className="relative h-[2px] w-8 rounded-full bg-muted overflow-hidden">
-                            <div className="absolute h-full w-4 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
-                          </div>
-                        </div>
-                      ) : c.adsTracked}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
-                    </TableCell>
-                    <TableCell>
-                      {c.scrapingStatus !== "scraping" && (
-                        <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive transition-colors">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                    ) : c.adsTracked}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
+                  </TableCell>
+                  <TableCell>
+                    {c.scrapingStatus !== "scraping" && (
+                      <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
