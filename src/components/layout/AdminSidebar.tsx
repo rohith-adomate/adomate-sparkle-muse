@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Home, Users, Crown, CreditCard, Settings, BarChart3,
-  Building2, ClipboardCheck, ChevronRight,
+  Building2, ClipboardCheck, ChevronRight, Swords,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ const topNav = [
   { title: "Home", url: "/admin", icon: Home },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Admins", url: "/admin/admins", icon: Crown },
+  { title: "Competitors", url: "/admin/competitors", icon: Swords },
   { title: "Credits", url: "/admin/credits", icon: CreditCard },
   { title: "System Settings", url: "/admin/system-settings", icon: Settings },
 ];

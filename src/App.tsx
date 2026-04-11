@@ -40,6 +40,7 @@ import AdminUsersOverview from "./pages/admin/AdminUsersOverview";
 import AdminOnboardingQA from "./pages/admin/AdminOnboardingQA";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
+import AdminCompetitors from "./pages/admin/AdminCompetitors";
 
 
 
@@ -90,6 +91,7 @@ const App = () => (
             <Route path="/admin/dashboards/users" element={<AdminUsersOverview />} />
             <Route path="/admin/dashboards/companies" element={<AdminCompanies />} />
             <Route path="/admin/dashboards/onboarding-qa" element={<AdminOnboardingQA />} />
+            <Route path="/admin/competitors" element={<AdminCompetitors />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
