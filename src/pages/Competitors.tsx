@@ -108,9 +108,10 @@ export default function Competitors() {
       pageId: String(Math.floor(Math.random() * 900000000000000) + 100000000000000),
       lastUpdated: "—",
       adsTracked: "—",
-      status: "pending",
+      scrapingStatus: "scraping",
     };
     setCompetitors((prev) => [...prev, newComp]);
+    simulateScraping(newComp);
     setOpen(false);
     setSearchQuery("");
     setResults([]);
@@ -125,7 +126,7 @@ export default function Competitors() {
   );
 
   return (
-    <div className="space-y-4 max-w-3xl mx-auto">
+    <div className="space-y-4 max-w-4xl mx-auto">
       <Breadcrumbs items={[{ label: "Data Room", href: "/brand-data-room" }, { label: "Competitors" }]} />
 
       <div>
@@ -211,7 +212,7 @@ export default function Competitors() {
               <TableHead>Page ID</TableHead>
               <TableHead>Last Updated</TableHead>
               <TableHead className="text-center">Ads Tracked</TableHead>
-              <TableHead className="text-center w-20">Status</TableHead>
+              <TableHead className="text-center w-28">Status</TableHead>
               <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
@@ -236,18 +237,19 @@ export default function Competitors() {
                       href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted-foreground underline hover:text-foreground transition-colors"
+                      className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1"
                     >
-                      {c.pageId}
+                      {c.pageId.slice(0, 8)}…
+                      <ExternalLink className="h-3 w-3" />
                     </a>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{c.lastUpdated}</TableCell>
                   <TableCell className="text-sm text-muted-foreground text-center">{c.adsTracked}</TableCell>
                   <TableCell className="text-center">
-                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColors[c.status]} ${c.status === "pending" ? "animate-pulse" : ""}`} />
+                    <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
                   </TableCell>
                   <TableCell>
-                    {c.status !== "pending" && (
+                    {c.scrapingStatus !== "scraping" && (
                       <button
                         onClick={() => handleDelete(c.id)}
                         className="text-muted-foreground hover:text-destructive transition-colors"
