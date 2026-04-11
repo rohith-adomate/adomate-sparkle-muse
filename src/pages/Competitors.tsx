@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Search, Loader2, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Trash2, Check, RefreshCw, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
+
+type ScrapingStatus = "scraping" | "ready" | "failed";
 
 type Competitor = {
   id: string;
@@ -17,22 +21,37 @@ type Competitor = {
   pageId: string;
   lastUpdated: string;
   adsTracked: string;
-  status: "success" | "warning" | "error" | "pending";
+  scrapingStatus: ScrapingStatus;
 };
 
 const initialCompetitors: Competitor[] = [
-  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", status: "warning" },
-  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200/200", status: "success" },
-  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", status: "error" },
-  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", status: "pending" },
+  { id: "1", name: "Canva Ads", avatarUrl: "https://logo.clearbit.com/canva.com", pageId: "284789375333902", lastUpdated: "4 Mar 2026", adsTracked: "185/200", scrapingStatus: "ready" },
+  { id: "2", name: "Smartly.io", avatarUrl: "https://logo.clearbit.com/smartly.io", pageId: "959624700738003", lastUpdated: "3 Mar 2026", adsTracked: "200/200", scrapingStatus: "ready" },
+  { id: "3", name: "AdCreative.ai", avatarUrl: "https://logo.clearbit.com/adcreative.ai", pageId: "355782130956396", lastUpdated: "—", adsTracked: "—", scrapingStatus: "failed" },
+  { id: "4", name: "Icon", avatarUrl: "https://logo.clearbit.com/icon.com", pageId: "111433260868447", lastUpdated: "—", adsTracked: "—", scrapingStatus: "scraping" },
 ];
 
-const statusColors: Record<Competitor["status"], string> = {
-  success: "bg-emerald-500",
-  warning: "bg-orange-500",
-  error: "bg-rose-400",
-  pending: "bg-blue-400",
-};
+function StatusChip({ status, onRetry }: { status: ScrapingStatus; onRetry?: () => void }) {
+  if (status === "scraping") {
+    return (
+      <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground animate-pulse">
+        <Loader2 className="h-3 w-3 animate-spin" /> Scraping…
+      </Badge>
+    );
+  }
+  if (status === "ready") {
+    return (
+      <Badge variant="outline" className="gap-1 text-[10px] text-emerald-600 border-emerald-200 bg-emerald-50">
+        <Check className="h-3 w-3" /> Ready
+      </Badge>
+    );
+  }
+  return (
+    <Button variant="outline" size="sm" className="h-6 gap-1 text-[10px] text-destructive border-destructive/30 hover:bg-destructive/10" onClick={onRetry}>
+      <RefreshCw className="h-3 w-3" /> Retry
+    </Button>
+  );
+}
 
 type SearchResult = { id: string; name: string; avatarUrl: string; category: string };
 
@@ -50,6 +69,22 @@ const mockSearch = (query: string): Promise<SearchResult[]> =>
 
 export default function Competitors() {
   const [competitors, setCompetitors] = useState<Competitor[]>(initialCompetitors);
+
+  const simulateScraping = useCallback((comp: Competitor) => {
+    const delay = 3000 + Math.random() * 3000;
+    setTimeout(() => {
+      setCompetitors(prev => prev.map(c =>
+        c.id === comp.id ? { ...c, scrapingStatus: "ready" as ScrapingStatus, lastUpdated: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }), adsTracked: `${Math.floor(Math.random() * 150 + 50)}/200` } : c
+      ));
+      toast.success(`${comp.name} is ready`, { description: "Competitor data has been scraped successfully." });
+    }, delay);
+  }, []);
+
+  const handleRetry = (id: string) => {
+    setCompetitors(prev => prev.map(c => c.id === id ? { ...c, scrapingStatus: "scraping" as ScrapingStatus } : c));
+    const comp = competitors.find(c => c.id === id);
+    if (comp) simulateScraping({ ...comp, scrapingStatus: "scraping" });
+  };
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterQuery, setFilterQuery] = useState("");
