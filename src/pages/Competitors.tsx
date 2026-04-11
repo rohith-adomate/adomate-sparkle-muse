@@ -32,27 +32,29 @@ const initialCompetitors: Competitor[] = [
 ];
 
 function StatusChip({ status, onRetry }: { status: ScrapingStatus; onRetry?: () => void }) {
+  const base = "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium";
+
   if (status === "scraping") {
     return (
-      <div className="inline-flex flex-col items-center gap-0 rounded-full border px-3 py-0.5">
-        <span className="text-[10px] font-medium text-muted-foreground">Scraping…</span>
-        <div className="relative h-[2px] w-14 rounded-full bg-muted overflow-hidden">
-          <div className="absolute h-full w-6 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent animate-[slide-bar_1.2s_ease-in-out_infinite]" />
-        </div>
-      </div>
+      <span className={`${base} text-muted-foreground border-border bg-muted/30`}>
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Scraping…
+      </span>
     );
   }
   if (status === "ready") {
     return (
-      <Badge variant="outline" className="gap-1 text-[10px] text-emerald-600 border-emerald-200 bg-emerald-50">
-        <Check className="h-3 w-3" /> Ready
-      </Badge>
+      <span className={`${base} text-emerald-600 border-emerald-200 bg-emerald-50`}>
+        <Check className="h-3 w-3" />
+        Ready
+      </span>
     );
   }
   return (
-    <Button variant="outline" size="sm" className="h-6 gap-1 text-[10px] text-destructive border-destructive/30 hover:bg-destructive/10" onClick={onRetry}>
-      <RefreshCw className="h-3 w-3" /> Retry
-    </Button>
+    <button onClick={onRetry} className={`${base} text-destructive border-destructive/30 bg-destructive/5 hover:bg-destructive/10 transition-colors cursor-pointer`}>
+      <RefreshCw className="h-3 w-3" />
+      Retry
+    </button>
   );
 }
 
