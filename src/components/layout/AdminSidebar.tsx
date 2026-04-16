@@ -1,6 +1,6 @@
 import {
   Home, Users, Crown, CreditCard, Settings, Building2,
-  ClipboardCheck, Swords, Image, Code2, BarChart3, ChevronRight,
+  Swords, Image, Code2, BarChart3,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -8,9 +8,6 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -28,8 +25,8 @@ const topNav = [
   { title: "Image GPTs", url: "/admin/image-gpts", icon: Image },
 ];
 
-const devQaSubs = [
-  { title: "Dev & QA Tools", url: "/admin/dev-qa-tools", icon: Settings },
+const bottomNav = [
+  { title: "Dev & QA Tools", url: "/admin/dev-qa-tools", icon: Code2 },
   { title: "Users overview", url: "/admin/dashboards/users", icon: Users },
 ];
 
@@ -60,7 +57,7 @@ export function AdminSidebar() {
   const nav = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const inDevQa = devQaSubs.some((s) => pathname.startsWith(s.url));
+  
 
   return (
     <Sidebar
@@ -84,48 +81,17 @@ export function AdminSidebar() {
 
         <Separator className="mx-3 w-auto my-1 bg-primary/20" />
 
-        {/* Dev & QA Tools */}
+        {/* Bottom nav items */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {collapsed ? (
-                <SidebarMenuItem>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <NavLink to="/admin/dashboards/onboarding-qa" className={cn(linkCls, "justify-center px-0")} activeClassName={activeCls}>
-                        <Code2 className="h-4 w-4 shrink-0" />
-                      </NavLink>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" align="center">Dev & QA Tools</TooltipContent>
-                  </Tooltip>
+              {bottomNav.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <AdminNavItem item={item} collapsed={collapsed} />
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
-              ) : (
-                <li>
-                  <Collapsible defaultOpen={inDevQa}>
-                    <CollapsibleTrigger
-                      className={cn(linkCls, "w-full justify-between group/dash", inDevQa && "text-foreground font-medium")}
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <Code2 className="h-4 w-4" />
-                        <span>Dev & QA Tools</span>
-                      </span>
-                      <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dash:rotate-90" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-primary/20 pl-3">
-                        {devQaSubs.map((sub) => (
-                          <li key={sub.url}>
-                            <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
-                              <sub.icon className="h-3.5 w-3.5" />
-                              <span>{sub.title}</span>
-                            </NavLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </li>
-              )}
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
