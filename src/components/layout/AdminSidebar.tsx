@@ -1,14 +1,12 @@
-import { useState } from "react";
 import {
-  Home, Users, Crown, CreditCard, Settings, BarChart3,
-  Building2, ClipboardCheck, ChevronRight, Swords,
+  Home, Users, Crown, CreditCard, Settings, Building2,
+  ClipboardCheck, Swords, Image, Code2, BarChart3, ChevronRight,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-  useSidebar,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
@@ -21,17 +19,19 @@ import {
 
 const topNav = [
   { title: "Home", url: "/admin", icon: Home },
-  { title: "Users", url: "/admin/users", icon: Users },
   { title: "Admins", url: "/admin/admins", icon: Crown },
+  { title: "Users", url: "/admin/users", icon: Users },
+  { title: "Companies & Brands", url: "/admin/dashboards/companies", icon: Building2 },
   { title: "Competitors", url: "/admin/competitors", icon: Swords },
+  { title: "Competitor Ads", url: "/admin/competitor-ads", icon: BarChart3 },
   { title: "Credits", url: "/admin/credits", icon: CreditCard },
-  { title: "System Settings", url: "/admin/system-settings", icon: Settings },
+  { title: "Image GPTs", url: "/admin/image-gpts", icon: Image },
 ];
 
-const dashboardSubs = [
-  { title: "Users overview", url: "/admin/dashboards/users", icon: Users },
-  { title: "Companies & brands", url: "/admin/dashboards/companies", icon: Building2 },
+const devQaSubs = [
   { title: "Onboarding QA", url: "/admin/dashboards/onboarding-qa", icon: ClipboardCheck },
+  { title: "System Settings", url: "/admin/system-settings", icon: Settings },
+  { title: "Users overview", url: "/admin/dashboards/users", icon: Users },
 ];
 
 const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-white/15 text-white/70 hover:text-white";
@@ -61,7 +61,7 @@ export function AdminSidebar() {
   const nav = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const inDashboards = pathname.startsWith("/admin/dashboards");
+  const inDevQa = devQaSubs.some((s) => pathname.startsWith(s.url));
 
   return (
     <Sidebar
@@ -85,7 +85,7 @@ export function AdminSidebar() {
 
         <Separator className="mx-3 w-auto my-1 bg-white/20" />
 
-        {/* Dashboards */}
+        {/* Dev & QA Tools */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -93,28 +93,28 @@ export function AdminSidebar() {
                 <SidebarMenuItem>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <NavLink to="/admin/dashboards/users" className={cn(linkCls, "justify-center px-0")} activeClassName={activeCls}>
-                        <BarChart3 className="h-4 w-4 shrink-0" />
+                      <NavLink to="/admin/dashboards/onboarding-qa" className={cn(linkCls, "justify-center px-0")} activeClassName={activeCls}>
+                        <Code2 className="h-4 w-4 shrink-0" />
                       </NavLink>
                     </TooltipTrigger>
-                    <TooltipContent side="right" align="center">Dashboards</TooltipContent>
+                    <TooltipContent side="right" align="center">Dev & QA Tools</TooltipContent>
                   </Tooltip>
                 </SidebarMenuItem>
               ) : (
                 <li>
-                  <Collapsible defaultOpen={inDashboards}>
+                  <Collapsible defaultOpen={inDevQa}>
                     <CollapsibleTrigger
-                      className={cn(linkCls, "w-full justify-between group/dash", inDashboards && "text-white font-medium")}
+                      className={cn(linkCls, "w-full justify-between group/dash", inDevQa && "text-white font-medium")}
                     >
                       <span className="flex items-center gap-2.5">
-                        <BarChart3 className="h-4 w-4" />
-                        <span>Dashboards</span>
+                        <Code2 className="h-4 w-4" />
+                        <span>Dev & QA Tools</span>
                       </span>
                       <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dash:rotate-90" />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-white/20 pl-3">
-                        {dashboardSubs.map((sub) => (
+                        {devQaSubs.map((sub) => (
                           <li key={sub.url}>
                             <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
                               <sub.icon className="h-3.5 w-3.5" />
