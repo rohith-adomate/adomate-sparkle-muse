@@ -13,7 +13,7 @@ function SidebarToggleNotch() {
     <>
       <button
         onClick={toggleSidebar}
-        className="fixed z-50 h-8 w-4 rounded-r-md border border-border bg-sidebar flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+        className="fixed z-50 h-8 w-4 rounded-r-md border border-primary/30 bg-primary flex items-center justify-center text-white/70 hover:text-white hover:bg-primary/90 transition-all duration-200"
         style={{
           left: sidebarEdge,
           top: "50%",
