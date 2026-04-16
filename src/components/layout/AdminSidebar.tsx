@@ -83,7 +83,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-3 w-auto my-1 bg-white/20" />
+        <Separator className="mx-3 w-auto my-1 bg-primary/20" />
 
         {/* Dev & QA Tools */}
         <SidebarGroup>
@@ -104,7 +104,7 @@ export function AdminSidebar() {
                 <li>
                   <Collapsible defaultOpen={inDevQa}>
                     <CollapsibleTrigger
-                      className={cn(linkCls, "w-full justify-between group/dash", inDevQa && "text-white font-medium")}
+                      className={cn(linkCls, "w-full justify-between group/dash", inDevQa && "text-foreground font-medium")}
                     >
                       <span className="flex items-center gap-2.5">
                         <Code2 className="h-4 w-4" />
@@ -113,7 +113,7 @@ export function AdminSidebar() {
                       <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dash:rotate-90" />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-white/20 pl-3">
+                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-primary/20 pl-3">
                         {devQaSubs.map((sub) => (
                           <li key={sub.url}>
                             <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
@@ -132,18 +132,18 @@ export function AdminSidebar() {
         </SidebarGroup>
 
         {/* User avatar at bottom */}
-        <div className="mt-auto px-3 py-3 border-t border-white/20">
+        <div className="mt-auto px-3 py-3 border-t border-primary/20">
           <button
             onClick={() => nav("/")}
             className={cn("w-full flex items-center cursor-pointer hover:opacity-80 transition-opacity", collapsed ? "justify-center" : "gap-2.5")}
           >
-            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
-              <span className="text-sm font-bold text-primary">N</span>
+            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-sm shrink-0">
+              <span className="text-sm font-bold text-primary-foreground">N</span>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium truncate text-white">Ankit Kumar</p>
-                <p className="text-[11px] text-white/60 truncate">ankit@adomate.com</p>
+                <p className="text-sm font-medium truncate text-foreground">Ankit Kumar</p>
+                <p className="text-[11px] text-muted-foreground truncate">ankit@adomate.com</p>
               </div>
             )}
           </button>
