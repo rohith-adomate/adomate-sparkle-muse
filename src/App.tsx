@@ -90,7 +90,7 @@ const App = () => (
             <Route path="/admin/credits" element={<AdminCredits />} />
             <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
             <Route path="/admin/dev-qa-tools" element={<AdminDevQATools />} />
-            <Route path="/admin/dashboards/users" element={<AdminUsersOverview />} />
+            
             <Route path="/admin/dashboards/companies" element={<AdminCompanies />} />
             <Route path="/admin/dashboards/onboarding-qa" element={<AdminOnboardingQA />} />
             <Route path="/admin/competitors" element={<AdminCompetitors />} />
