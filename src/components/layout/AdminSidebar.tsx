@@ -64,7 +64,7 @@ export function AdminSidebar() {
   const inDashboards = pathname.startsWith("/admin/dashboards");
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" className="border-r bg-primary text-primary-foreground [&_*]:border-primary-foreground/20">
       <SidebarContent className="pb-3 flex flex-col h-full">
         <SidebarGroup>
           <SidebarGroupContent>
