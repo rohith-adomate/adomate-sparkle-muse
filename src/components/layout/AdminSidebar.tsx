@@ -34,8 +34,8 @@ const dashboardSubs = [
   { title: "Onboarding QA", url: "/admin/dashboards/onboarding-qa", icon: ClipboardCheck },
 ];
 
-const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-muted text-foreground/70 hover:text-foreground";
-const activeCls = "bg-primary/10 text-foreground font-semibold border border-primary/30";
+const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-white/15 text-white/70 hover:text-white";
+const activeCls = "bg-white/20 text-white font-semibold border border-white/30";
 
 function AdminNavItem({ item, collapsed }: { item: { title: string; url: string; icon: React.ElementType }; collapsed: boolean }) {
   const link = (
@@ -64,7 +64,19 @@ export function AdminSidebar() {
   const inDashboards = pathname.startsWith("/admin/dashboards");
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar
+      collapsible="icon"
+      className="border-r"
+      style={{
+        "--sidebar-background": "336 78% 50%",
+        "--sidebar-foreground": "0 0% 100%",
+        "--sidebar-border": "336 78% 40%",
+        "--sidebar-accent": "336 78% 45%",
+        "--sidebar-accent-foreground": "0 0% 100%",
+        "--sidebar-primary": "0 0% 100%",
+        "--sidebar-primary-foreground": "336 78% 50%",
+      } as React.CSSProperties}
+    >
       <SidebarContent className="pb-3 flex flex-col h-full">
         <SidebarGroup>
           <SidebarGroupContent>
@@ -80,7 +92,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="mx-3 w-auto my-1" />
+        <Separator className="mx-3 w-auto my-1 bg-white/20" />
 
         {/* Dashboards */}
         <SidebarGroup>
@@ -101,7 +113,7 @@ export function AdminSidebar() {
                 <li>
                   <Collapsible defaultOpen={inDashboards}>
                     <CollapsibleTrigger
-                      className={cn(linkCls, "w-full justify-between group/dash", inDashboards && "text-sidebar-accent-foreground font-medium")}
+                      className={cn(linkCls, "w-full justify-between group/dash", inDashboards && "text-white font-medium")}
                     >
                       <span className="flex items-center gap-2.5">
                         <BarChart3 className="h-4 w-4" />
@@ -110,7 +122,7 @@ export function AdminSidebar() {
                       <ChevronRight className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/dash:rotate-90" />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-sidebar-border pl-3">
+                      <ul className="ml-[18px] mt-1 space-y-0.5 border-l border-white/20 pl-3">
                         {dashboardSubs.map((sub) => (
                           <li key={sub.url}>
                             <NavLink to={sub.url} className={cn(linkCls, "text-xs py-1.5")} activeClassName={activeCls}>
@@ -129,18 +141,18 @@ export function AdminSidebar() {
         </SidebarGroup>
 
         {/* User avatar at bottom */}
-        <div className="mt-auto px-3 py-3 border-t border-sidebar-border">
+        <div className="mt-auto px-3 py-3 border-t border-white/20">
           <button
             onClick={() => nav("/")}
             className={cn("w-full flex items-center cursor-pointer hover:opacity-80 transition-opacity", collapsed ? "justify-center" : "gap-2.5")}
           >
-            <div className="h-8 w-8 rounded-full bg-foreground flex items-center justify-center shadow-sm shrink-0">
-              <span className="text-sm font-bold text-background">N</span>
+            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
+              <span className="text-sm font-bold text-primary">N</span>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium truncate">Ankit Kumar</p>
-                <p className="text-[11px] text-muted-foreground truncate">ankit@adomate.com</p>
+                <p className="text-sm font-medium truncate text-white">Ankit Kumar</p>
+                <p className="text-[11px] text-white/60 truncate">ankit@adomate.com</p>
               </div>
             )}
           </button>
