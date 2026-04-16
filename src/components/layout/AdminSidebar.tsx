@@ -66,16 +66,7 @@ export function AdminSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r"
-      style={{
-        "--sidebar-background": "336 78% 50%",
-        "--sidebar-foreground": "0 0% 100%",
-        "--sidebar-border": "336 78% 40%",
-        "--sidebar-accent": "336 78% 45%",
-        "--sidebar-accent-foreground": "0 0% 100%",
-        "--sidebar-primary": "0 0% 100%",
-        "--sidebar-primary-foreground": "336 78% 50%",
-      } as React.CSSProperties}
+      className="border-r admin-sidebar"
     >
       <SidebarContent className="pb-3 flex flex-col h-full">
         <SidebarGroup>
