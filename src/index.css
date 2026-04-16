@@ -309,11 +309,11 @@
 }
 
 .admin-sidebar {
-  --sidebar-background: 336 78% 50%;
-  --sidebar-foreground: 0 0% 100%;
-  --sidebar-border: 336 78% 40%;
-  --sidebar-accent: 336 78% 45%;
-  --sidebar-accent-foreground: 0 0% 100%;
-  --sidebar-primary: 0 0% 100%;
-  --sidebar-primary-foreground: 336 78% 50%;
+  --sidebar-background: 336 80% 95%;
+  --sidebar-foreground: 336 40% 20%;
+  --sidebar-border: 336 50% 88%;
+  --sidebar-accent: 336 70% 88%;
+  --sidebar-accent-foreground: 336 60% 30%;
+  --sidebar-primary: 336 78% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
 }
