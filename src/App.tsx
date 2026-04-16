@@ -38,6 +38,7 @@ import AdminCredits from "./pages/admin/AdminCredits";
 import AdminSystemSettings from "./pages/admin/AdminSystemSettings";
 import AdminUsersOverview from "./pages/admin/AdminUsersOverview";
 import AdminOnboardingQA from "./pages/admin/AdminOnboardingQA";
+import AdminDevQATools from "./pages/admin/AdminDevQATools";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 import AdminCompetitors from "./pages/admin/AdminCompetitors";
