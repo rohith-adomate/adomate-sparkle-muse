@@ -64,8 +64,19 @@ export function AdminSidebar() {
   const inDashboards = pathname.startsWith("/admin/dashboards");
 
   return (
-    <Sidebar collapsible="icon" className="border-r bg-primary text-primary-foreground [&_*]:border-primary-foreground/20">
-      <SidebarContent className="pb-3 flex flex-col h-full">
+    <Sidebar
+      collapsible="icon"
+      className="border-r"
+      style={{
+        "--sidebar-background": "336 78% 50%",
+        "--sidebar-foreground": "0 0% 100%",
+        "--sidebar-border": "336 78% 40%",
+        "--sidebar-accent": "336 78% 45%",
+        "--sidebar-accent-foreground": "0 0% 100%",
+        "--sidebar-primary": "0 0% 100%",
+        "--sidebar-primary-foreground": "336 78% 50%",
+      } as React.CSSProperties}
+    >
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
