@@ -76,6 +76,7 @@ export function AdminSidebar() {
         "--sidebar-primary": "0 0% 100%",
         "--sidebar-primary-foreground": "336 78% 50%",
       } as React.CSSProperties}
+    >
       <SidebarContent className="pb-3 flex flex-col h-full">
         <SidebarGroup>
           <SidebarGroupContent>
