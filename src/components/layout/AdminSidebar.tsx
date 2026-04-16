@@ -29,8 +29,7 @@ const topNav = [
 ];
 
 const devQaSubs = [
-  { title: "Onboarding QA", url: "/admin/dashboards/onboarding-qa", icon: ClipboardCheck },
-  { title: "System Settings", url: "/admin/system-settings", icon: Settings },
+  { title: "Dev & QA Tools", url: "/admin/dev-qa-tools", icon: Settings },
   { title: "Users overview", url: "/admin/dashboards/users", icon: Users },
 ];
 
