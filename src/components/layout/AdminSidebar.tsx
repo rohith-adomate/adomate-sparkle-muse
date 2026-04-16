@@ -34,8 +34,8 @@ const devQaSubs = [
   { title: "Users overview", url: "/admin/dashboards/users", icon: Users },
 ];
 
-const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-white/15 text-white/70 hover:text-white";
-const activeCls = "bg-white/20 text-white font-semibold border border-white/30";
+const linkCls = "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-150 hover:bg-primary/15 text-foreground/70 hover:text-foreground";
+const activeCls = "bg-primary/20 text-primary font-semibold border border-primary/30";
 
 function AdminNavItem({ item, collapsed }: { item: { title: string; url: string; icon: React.ElementType }; collapsed: boolean }) {
   const link = (
