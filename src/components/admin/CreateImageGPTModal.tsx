@@ -30,11 +30,17 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
   const [industries, setIndustries] = useState<string[]>([]);
   const [visualStyles, setVisualStyles] = useState<string[]>([]);
   const [funnelStages, setFunnelStages] = useState<string[]>([]);
+  const [includeBrand, setIncludeBrand] = useState(true);
+  const [includeProduct, setIncludeProduct] = useState(true);
+  const [includeProductImage, setIncludeProductImage] = useState(true);
+  const [includePreviousImages, setIncludePreviousImages] = useState(false);
 
   const reset = () => {
     setAutoSuggest(true);
     setName(""); setPrompt(""); setFeasibility("");
     setIndustries([]); setVisualStyles([]); setFunnelStages([]);
+    setIncludeBrand(true); setIncludeProduct(true);
+    setIncludeProductImage(true); setIncludePreviousImages(false);
   };
 
   const handleClose = (o: boolean) => {
@@ -73,7 +79,7 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
           </div>
 
           {/* Profile details */}
-          <div className="space-y-4">
+          <div className="space-y-4 bg-primary/5 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold">Profile details</h3>
               <Badge className="bg-primary/15 text-primary hover:bg-primary/15 text-[10px] font-bold tracking-wide">
@@ -166,6 +172,19 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
               </>
             )}
           </div>
+
+          {/* Generation settings */}
+          {!autoSuggest && (
+            <div className="bg-primary/5 rounded-xl p-4 space-y-3">
+              <h3 className="text-sm font-semibold">Generation settings</h3>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                <ToggleRow label="Include brand" checked={includeBrand} onChange={setIncludeBrand} />
+                <ToggleRow label="Include product" checked={includeProduct} onChange={setIncludeProduct} />
+                <ToggleRow label="Include product image" checked={includeProductImage} onChange={setIncludeProductImage} />
+                <ToggleRow label="Include previous images" checked={includePreviousImages} onChange={setIncludePreviousImages} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -183,6 +202,17 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ToggleRow({
+  label, checked, onChange,
+}: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer">
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <span className="text-sm text-foreground">{label}</span>
+    </label>
   );
 }
 
