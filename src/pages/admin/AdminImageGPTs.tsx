@@ -170,20 +170,7 @@ function ProfileCard({ profile }: { profile: Profile }) {
 
       {/* Text */}
       <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-        <h3 className="font-semibold text-base leading-tight mb-1 line-clamp-2">{profile.title}</h3>
-        <p className="text-xs text-white/80 mb-2">{profile.subtitle}</p>
-        {profile.tags && profile.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {profile.tags.map((t) => (
-              <span
-                key={t}
-                className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/20 backdrop-blur border border-white/25"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
+        <h3 className="font-semibold text-base leading-tight line-clamp-2">{profile.title}</h3>
       </div>
     </button>
   );
