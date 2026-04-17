@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Search, Plus, Check, MoreHorizontal } from "lucide-react";
+import { CreateCompanyModal } from "@/components/admin/CreateCompanyModal";
 
 const companies = [
   {
@@ -16,8 +18,10 @@ const companies = [
 ];
 
 export default function AdminCompanies() {
+  const [createOpen, setCreateOpen] = useState(false);
   return (
     <div className="min-h-full bg-muted/40 -m-6 p-6">
+      <CreateCompanyModal open={createOpen} onOpenChange={setCreateOpen} />
       <div className="space-y-4 max-w-6xl mx-auto">
         {/* Header card */}
         <Card className="border border-border/60 shadow-sm rounded-xl">
@@ -47,7 +51,7 @@ export default function AdminCompanies() {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="h-10 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5">
+            <Button onClick={() => setCreateOpen(true)} className="h-10 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5">
               <Plus className="h-4 w-4" />
               Create company
             </Button>
