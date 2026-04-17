@@ -42,6 +42,7 @@ import AdminDevQATools from "./pages/admin/AdminDevQATools";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 import AdminCompetitors from "./pages/admin/AdminCompetitors";
+import AdminImageGPTs from "./pages/admin/AdminImageGPTs";
 
 
 
@@ -94,6 +95,7 @@ const App = () => (
             <Route path="/admin/dashboards/companies" element={<AdminCompanies />} />
             <Route path="/admin/dashboards/onboarding-qa" element={<AdminOnboardingQA />} />
             <Route path="/admin/competitors" element={<AdminCompetitors />} />
+            <Route path="/admin/image-gpts" element={<AdminImageGPTs />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
