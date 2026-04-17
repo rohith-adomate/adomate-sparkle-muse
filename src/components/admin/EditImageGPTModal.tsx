@@ -31,6 +31,10 @@ type EditState = {
   visualStyles: string[];
   funnelStages: string[];
   image: string | null;
+  includeBrand: boolean;
+  includeProduct: boolean;
+  includeProductImage: boolean;
+  includePreviousImages: boolean;
 };
 
 const VISUAL_STYLE_OPTIONS = ["MINIMALIST_MODERN", "VALUE_BUDGET", "BOLD_PLAYFUL", "PREMIUM_LUXE", "EDITORIAL"];
