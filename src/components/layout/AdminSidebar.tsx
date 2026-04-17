@@ -20,7 +20,6 @@ const topNav = [
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Companies & Brands", url: "/admin/dashboards/companies", icon: Building2 },
   { title: "Competitors", url: "/admin/competitors", icon: Swords },
-  { title: "Competitor Ads", url: "/admin/competitor-ads", icon: BarChart3 },
   { title: "Credits", url: "/admin/credits", icon: CreditCard },
   { title: "Image GPTs", url: "/admin/image-gpts", icon: Image },
 ];
