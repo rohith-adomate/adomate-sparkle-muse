@@ -131,6 +131,8 @@ export default function AdminImageGPTs() {
         onOpenChange={(o) => !o && setEditing(null)}
         profile={editing}
       />
+
+      <CreateImageGPTModal open={creating} onOpenChange={setCreating} />
     </div>
   );
 }
