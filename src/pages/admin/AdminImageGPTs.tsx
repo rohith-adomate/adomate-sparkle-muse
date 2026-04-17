@@ -170,7 +170,7 @@ function ProfileCard({ profile, onClick }: { profile: Profile; onClick: () => vo
     <button
       onClick={onClick}
       className={cn(
-        "group relative aspect-[4/5] rounded-2xl overflow-hidden border bg-muted text-left",
+        "group relative aspect-[3/4] w-full rounded-2xl overflow-hidden border bg-muted text-left",
         "shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5",
       )}
     >
