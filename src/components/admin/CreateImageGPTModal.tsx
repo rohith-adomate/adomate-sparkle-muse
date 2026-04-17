@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function CreateImageGPTModal({ open, onOpenChange }: Props) {
-  const [autoSuggest, setAutoSuggest] = useState(false);
+  const [autoSuggest, setAutoSuggest] = useState(true);
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
   const [feasibility, setFeasibility] = useState("");
