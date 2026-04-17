@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import { EditImageGPTModal } from "@/components/admin/EditImageGPTModal";
+import { CreateImageGPTModal } from "@/components/admin/CreateImageGPTModal";
 
 type Profile = {
   id: string;
