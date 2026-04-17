@@ -162,10 +162,10 @@ function ProfileCard({ profile }: { profile: Profile }) {
 
       {/* Options */}
       <div
-        className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/85 backdrop-blur flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity shadow-sm"
+        className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black flex items-center justify-center shadow-sm transition-all hover:opacity-90 hover:scale-105"
         onClick={(e) => e.stopPropagation()}
       >
-        <MoreHorizontal className="h-4 w-4 text-foreground" />
+        <MoreHorizontal className="h-4 w-4 text-white" />
       </div>
 
       {/* Text */}
