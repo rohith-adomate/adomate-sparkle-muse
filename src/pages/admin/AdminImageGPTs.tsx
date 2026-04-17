@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Plus, Search, MoreHorizontal, X } from "lucide-react";
+import { Plus, Search, MoreHorizontal, X, ChevronsUpDown } from "lucide-react";
+import * as SelectPrimitive from "@radix-ui/react-select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
