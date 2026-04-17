@@ -172,6 +172,19 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
               </>
             )}
           </div>
+
+          {/* Generation settings */}
+          {!autoSuggest && (
+            <div className="bg-primary/5 rounded-xl p-4 space-y-3">
+              <h3 className="text-sm font-semibold">Generation settings</h3>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                <ToggleRow label="Include brand" checked={includeBrand} onChange={setIncludeBrand} />
+                <ToggleRow label="Include product" checked={includeProduct} onChange={setIncludeProduct} />
+                <ToggleRow label="Include product image" checked={includeProductImage} onChange={setIncludeProductImage} />
+                <ToggleRow label="Include previous images" checked={includePreviousImages} onChange={setIncludePreviousImages} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
