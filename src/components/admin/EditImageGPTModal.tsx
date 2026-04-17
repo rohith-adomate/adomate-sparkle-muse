@@ -210,6 +210,45 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
             <SummaryTag>{state.industries.length} INDUSTRIES</SummaryTag>
           </div>
         </div>
+
+        {/* Generation settings */}
+        <div className="px-6 pb-2">
+          <div className="bg-primary/5 rounded-xl p-4 space-y-3">
+            <h3 className="text-sm font-semibold">Generation settings</h3>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <ToggleRow
+                label="Include brand"
+                checked={state.includeBrand}
+                onChange={(v) => setState((s) => ({ ...s, includeBrand: v }))}
+              />
+              <ToggleRow
+                label="Include product"
+                checked={state.includeProduct}
+                onChange={(v) => setState((s) => ({ ...s, includeProduct: v }))}
+              />
+              <ToggleRow
+                label="Include product image"
+                checked={state.includeProductImage}
+                onChange={(v) => setState((s) => ({ ...s, includeProductImage: v }))}
+              />
+              <ToggleRow
+                label="Include previous images"
+                checked={state.includePreviousImages}
+                onChange={(v) => setState((s) => ({ ...s, includePreviousImages: v }))}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-lg">
+            Cancel
+          </Button>
+          <Button onClick={() => onOpenChange(false)} className="rounded-lg">
+            Save
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
