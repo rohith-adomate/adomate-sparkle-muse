@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
+import { EditImageGPTModal } from "@/components/admin/EditImageGPTModal";
 
 type Profile = {
   id: string;
@@ -45,6 +46,7 @@ export default function AdminImageGPTs() {
   const [fStage, setFStage] = useState<string>("");
   const [feas, setFeas] = useState<string>("");
   const [ind, setInd] = useState<string>("");
+  const [editing, setEditing] = useState<Profile | null>(null);
 
   const filtered = useMemo(() => {
     return profiles.filter((p) => {
@@ -112,7 +114,7 @@ export default function AdminImageGPTs() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {filtered.map((p) => (
-          <ProfileCard key={p.id} profile={p} />
+          <ProfileCard key={p.id} profile={p} onClick={() => setEditing(p)} />
         ))}
       </div>
 
@@ -121,6 +123,12 @@ export default function AdminImageGPTs() {
           No profiles match your filters.
         </div>
       )}
+
+      <EditImageGPTModal
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        profile={editing}
+      />
     </div>
   );
 }
@@ -143,9 +151,10 @@ function FilterSelect({
   );
 }
 
-function ProfileCard({ profile }: { profile: Profile }) {
+function ProfileCard({ profile, onClick }: { profile: Profile; onClick: () => void }) {
   return (
     <button
+      onClick={onClick}
       className={cn(
         "group relative aspect-[4/5] rounded-2xl overflow-hidden border bg-muted text-left",
         "shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5",
