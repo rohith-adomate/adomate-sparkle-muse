@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Plus, Search, MoreHorizontal, X } from "lucide-react";
+import { Plus, Search, MoreHorizontal, X, ChevronsUpDown } from "lucide-react";
+import * as SelectPrimitive from "@radix-ui/react-select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -68,13 +69,17 @@ export default function AdminImageGPTs() {
   const hasFilters = query || vStyle || fStage || feas || ind;
 
   return (
-    <div className="p-4 md:p-6 w-full">
+    <div className="min-h-screen bg-[#f5f5f5] p-6 md:p-8 w-full">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-2">
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">ImageGPTs</h1>
-          <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">{filtered.length} SHOWN</Badge>
-          <Badge variant="secondary" className="bg-muted text-muted-foreground">{profiles.length} TOTAL</Badge>
+          <span className="inline-flex items-center rounded-full bg-pink-100 text-pink-700 px-3 py-1 text-xs font-semibold">
+            {filtered.length} shown
+          </span>
+          <span className="inline-flex items-center rounded-full bg-gray-200 text-gray-600 px-3 py-1 text-xs font-semibold">
+            {profiles.length} total
+          </span>
         </div>
         <Button className="rounded-xl shadow-sm" onClick={() => setCreating(true)}>
           <Plus className="h-4 w-4" /> Add profile
@@ -85,9 +90,9 @@ export default function AdminImageGPTs() {
       </p>
 
       {/* Filter bar */}
-      <div className="bg-card border rounded-2xl p-4 mb-6 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-8 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm font-semibold text-foreground">
             Library filters
           </span>
           {hasFilters && (
@@ -114,7 +119,7 @@ export default function AdminImageGPTs() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((p) => (
           <ProfileCard key={p.id} profile={p} onClick={() => setEditing(p)} />
         ))}
@@ -142,9 +147,14 @@ function FilterSelect({
 }: { value: string; onChange: (v: string) => void; placeholder: string; options: string[] }) {
   return (
     <Select value={value || undefined} onValueChange={(v) => onChange(v === "__all" ? "" : v)}>
-      <SelectTrigger className="rounded-xl">
+      <SelectPrimitive.Trigger
+        className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 [&>span]:line-clamp-1"
+      >
         <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
+        <SelectPrimitive.Icon asChild>
+          <ChevronsUpDown className="h-4 w-4 opacity-50" />
+        </SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
       <SelectContent>
         <SelectItem value="__all">All {placeholder.toLowerCase()}</SelectItem>
         {options.map((o) => (
