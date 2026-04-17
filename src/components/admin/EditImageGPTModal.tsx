@@ -130,7 +130,7 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
           </div>
 
           {/* Profile details */}
-          <div className="space-y-4">
+          <div className="space-y-4 bg-primary/5 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold">Profile details</h3>
               <Badge className="bg-primary/15 text-primary hover:bg-primary/15 text-[10px] font-bold tracking-wide">AI READY</Badge>
