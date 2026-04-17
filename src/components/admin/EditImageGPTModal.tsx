@@ -254,6 +254,17 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
   );
 }
 
+function ToggleRow({
+  label, checked, onChange,
+}: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer">
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <span className="text-sm text-foreground">{label}</span>
+    </label>
+  );
+}
+
 function Field({
   label, required, children,
 }: { label: string; required?: boolean; children: React.ReactNode }) {
