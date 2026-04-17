@@ -88,7 +88,7 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
           {/* Profile picture */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Profile picture (optional)</Label>
-            <div className="bg-muted/60 rounded-xl p-4 flex items-center gap-4">
+            <div className="bg-primary/5 rounded-xl p-4 flex items-center gap-4">
               <div className="relative">
                 <div className="h-20 w-20 rounded-lg overflow-hidden bg-background border">
                   {state.image && (
@@ -118,10 +118,8 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
           {/* Profile details */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                Profile details
-              </h3>
-              <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">AI READY</Badge>
+              <h3 className="text-sm font-semibold">Profile details</h3>
+              <Badge className="bg-primary/15 text-primary hover:bg-primary/15 text-[10px] font-bold tracking-wide">AI READY</Badge>
             </div>
 
             <Field label="Name" required>
