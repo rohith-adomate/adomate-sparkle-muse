@@ -74,6 +74,10 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
         visualStyles: ["MINIMALIST_MODERN", "VALUE_BUDGET"],
         funnelStages: ["PRODUCT_AWARE", "MOST_AWARE"],
         image: profile.image,
+        includeBrand: true,
+        includeProduct: true,
+        includeProductImage: true,
+        includePreviousImages: false,
       });
     }
   }, [profile]);
