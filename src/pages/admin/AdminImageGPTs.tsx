@@ -154,7 +154,7 @@ function ProfileCard({ profile }: { profile: Profile }) {
       <img
         src={profile.image}
         alt={profile.title}
-        className="absolute inset-0 h-full w-full object-contain object-center bg-muted transition-transform duration-500 group-hover:scale-[1.02]"
+        className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
         loading="lazy"
       />
       {/* Overlay */}
