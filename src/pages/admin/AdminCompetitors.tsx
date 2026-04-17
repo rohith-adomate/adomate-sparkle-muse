@@ -117,6 +117,7 @@ export default function AdminCompetitors() {
               <TableHead>Last Updated</TableHead>
               <TableHead className="text-center">Ads Tracked</TableHead>
               <TableHead className="text-center w-28">Status</TableHead>
+              <TableHead className="text-center w-24">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
