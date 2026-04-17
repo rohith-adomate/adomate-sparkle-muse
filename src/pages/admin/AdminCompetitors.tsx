@@ -179,6 +179,21 @@ export default function AdminCompetitors() {
                   <TableCell className="text-center">
                     <StatusChip status={c.scrapingStatus} />
                   </TableCell>
+                  <TableCell className="text-center">
+                    <div className="inline-flex items-center justify-center">
+                      {c.scrapingStatus === "failed" ? (
+                        <button title="Retry" className="inline-flex items-center justify-center text-[hsl(217,91%,60%)] hover:opacity-80">
+                          <RefreshCw className="h-[18px] w-[18px]" />
+                        </button>
+                      ) : c.scrapingStatus === "scraping" ? (
+                        <span title="Needs attention" className="inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[hsl(25,95%,53%)] text-white">
+                          <AlertCircle className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                        </span>
+                      ) : (
+                        <span className="text-[hsl(220,9%,65%)]">—</span>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))
             )}
