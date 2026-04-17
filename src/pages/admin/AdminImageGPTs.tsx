@@ -48,6 +48,7 @@ export default function AdminImageGPTs() {
   const [feas, setFeas] = useState<string>("");
   const [ind, setInd] = useState<string>("");
   const [editing, setEditing] = useState<Profile | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const filtered = useMemo(() => {
     return profiles.filter((p) => {
