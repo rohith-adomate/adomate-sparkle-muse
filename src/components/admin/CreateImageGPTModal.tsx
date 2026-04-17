@@ -30,11 +30,17 @@ export function CreateImageGPTModal({ open, onOpenChange }: Props) {
   const [industries, setIndustries] = useState<string[]>([]);
   const [visualStyles, setVisualStyles] = useState<string[]>([]);
   const [funnelStages, setFunnelStages] = useState<string[]>([]);
+  const [includeBrand, setIncludeBrand] = useState(true);
+  const [includeProduct, setIncludeProduct] = useState(true);
+  const [includeProductImage, setIncludeProductImage] = useState(true);
+  const [includePreviousImages, setIncludePreviousImages] = useState(false);
 
   const reset = () => {
     setAutoSuggest(true);
     setName(""); setPrompt(""); setFeasibility("");
     setIndustries([]); setVisualStyles([]); setFunnelStages([]);
+    setIncludeBrand(true); setIncludeProduct(true);
+    setIncludeProductImage(true); setIncludePreviousImages(false);
   };
 
   const handleClose = (o: boolean) => {
