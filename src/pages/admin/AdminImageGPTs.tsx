@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import { EditImageGPTModal } from "@/components/admin/EditImageGPTModal";
+import { CreateImageGPTModal } from "@/components/admin/CreateImageGPTModal";
 
 type Profile = {
   id: string;
@@ -47,6 +48,7 @@ export default function AdminImageGPTs() {
   const [feas, setFeas] = useState<string>("");
   const [ind, setInd] = useState<string>("");
   const [editing, setEditing] = useState<Profile | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const filtered = useMemo(() => {
     return profiles.filter((p) => {
@@ -74,7 +76,7 @@ export default function AdminImageGPTs() {
           <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">{filtered.length} SHOWN</Badge>
           <Badge variant="secondary" className="bg-muted text-muted-foreground">{profiles.length} TOTAL</Badge>
         </div>
-        <Button className="rounded-xl shadow-sm">
+        <Button className="rounded-xl shadow-sm" onClick={() => setCreating(true)}>
           <Plus className="h-4 w-4" /> Add profile
         </Button>
       </div>
@@ -129,6 +131,8 @@ export default function AdminImageGPTs() {
         onOpenChange={(o) => !o && setEditing(null)}
         profile={editing}
       />
+
+      <CreateImageGPTModal open={creating} onOpenChange={setCreating} />
     </div>
   );
 }
