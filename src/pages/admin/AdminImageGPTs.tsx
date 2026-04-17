@@ -147,9 +147,14 @@ function FilterSelect({
 }: { value: string; onChange: (v: string) => void; placeholder: string; options: string[] }) {
   return (
     <Select value={value || undefined} onValueChange={(v) => onChange(v === "__all" ? "" : v)}>
-      <SelectTrigger className="rounded-xl">
+      <SelectPrimitive.Trigger
+        className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 [&>span]:line-clamp-1"
+      >
         <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
+        <SelectPrimitive.Icon asChild>
+          <ChevronsUpDown className="h-4 w-4 opacity-50" />
+        </SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
       <SelectContent>
         <SelectItem value="__all">All {placeholder.toLowerCase()}</SelectItem>
         {options.map((o) => (
