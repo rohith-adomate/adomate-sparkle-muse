@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -29,6 +31,10 @@ type EditState = {
   visualStyles: string[];
   funnelStages: string[];
   image: string | null;
+  includeBrand: boolean;
+  includeProduct: boolean;
+  includeProductImage: boolean;
+  includePreviousImages: boolean;
 };
 
 const VISUAL_STYLE_OPTIONS = ["MINIMALIST_MODERN", "VALUE_BUDGET", "BOLD_PLAYFUL", "PREMIUM_LUXE", "EDITORIAL"];
@@ -51,6 +57,10 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
     visualStyles: ["MINIMALIST_MODERN", "VALUE_BUDGET"],
     funnelStages: ["PRODUCT_AWARE", "MOST_AWARE"],
     image: null,
+    includeBrand: true,
+    includeProduct: true,
+    includeProductImage: true,
+    includePreviousImages: false,
   });
 
   useEffect(() => {
@@ -64,6 +74,10 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
         visualStyles: ["MINIMALIST_MODERN", "VALUE_BUDGET"],
         funnelStages: ["PRODUCT_AWARE", "MOST_AWARE"],
         image: profile.image,
+        includeBrand: true,
+        includeProduct: true,
+        includeProductImage: true,
+        includePreviousImages: false,
       });
     }
   }, [profile]);
@@ -116,7 +130,7 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
           </div>
 
           {/* Profile details */}
-          <div className="space-y-4">
+          <div className="space-y-4 bg-primary/5 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold">Profile details</h3>
               <Badge className="bg-primary/15 text-primary hover:bg-primary/15 text-[10px] font-bold tracking-wide">AI READY</Badge>
@@ -196,8 +210,58 @@ export function EditImageGPTModal({ open, onOpenChange, profile }: Props) {
             <SummaryTag>{state.industries.length} INDUSTRIES</SummaryTag>
           </div>
         </div>
+
+        {/* Generation settings */}
+        <div className="px-6 pb-2">
+          <div className="bg-primary/5 rounded-xl p-4 space-y-3">
+            <h3 className="text-sm font-semibold">Generation settings</h3>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <ToggleRow
+                label="Include brand"
+                checked={state.includeBrand}
+                onChange={(v) => setState((s) => ({ ...s, includeBrand: v }))}
+              />
+              <ToggleRow
+                label="Include product"
+                checked={state.includeProduct}
+                onChange={(v) => setState((s) => ({ ...s, includeProduct: v }))}
+              />
+              <ToggleRow
+                label="Include product image"
+                checked={state.includeProductImage}
+                onChange={(v) => setState((s) => ({ ...s, includeProductImage: v }))}
+              />
+              <ToggleRow
+                label="Include previous images"
+                checked={state.includePreviousImages}
+                onChange={(v) => setState((s) => ({ ...s, includePreviousImages: v }))}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-lg">
+            Cancel
+          </Button>
+          <Button onClick={() => onOpenChange(false)} className="rounded-lg">
+            Save
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ToggleRow({
+  label, checked, onChange,
+}: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer">
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <span className="text-sm text-foreground">{label}</span>
+    </label>
   );
 }
 
