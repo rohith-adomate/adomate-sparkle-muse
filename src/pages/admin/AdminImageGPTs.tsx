@@ -76,7 +76,7 @@ export default function AdminImageGPTs() {
           <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">{filtered.length} SHOWN</Badge>
           <Badge variant="secondary" className="bg-muted text-muted-foreground">{profiles.length} TOTAL</Badge>
         </div>
-        <Button className="rounded-xl shadow-sm">
+        <Button className="rounded-xl shadow-sm" onClick={() => setCreating(true)}>
           <Plus className="h-4 w-4" /> Add profile
         </Button>
       </div>
