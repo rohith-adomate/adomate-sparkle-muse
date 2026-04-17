@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Search, Loader2, Check, RefreshCw, Facebook, Instagram, ExternalLink } from "lucide-react";
+import { Search, Loader2, Check, RefreshCw, Facebook, Instagram, ExternalLink, AlertCircle } from "lucide-react";
 
 type ScrapingStatus = "scraping" | "ready" | "failed";
 
@@ -117,12 +117,13 @@ export default function AdminCompetitors() {
               <TableHead>Last Updated</TableHead>
               <TableHead className="text-center">Ads Tracked</TableHead>
               <TableHead className="text-center w-28">Status</TableHead>
+              <TableHead className="text-center w-24">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
+                <TableCell colSpan={9} className="text-center text-muted-foreground py-12">
                   No competitors match your search.
                 </TableCell>
               </TableRow>
@@ -177,6 +178,21 @@ export default function AdminCompetitors() {
                   </TableCell>
                   <TableCell className="text-center">
                     <StatusChip status={c.scrapingStatus} />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="inline-flex items-center justify-center">
+                      {c.scrapingStatus === "failed" ? (
+                        <button title="Retry" className="inline-flex items-center justify-center text-[hsl(217,91%,60%)] hover:opacity-80">
+                          <RefreshCw className="h-[18px] w-[18px]" />
+                        </button>
+                      ) : c.scrapingStatus === "scraping" ? (
+                        <span title="Needs attention" className="inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[hsl(25,95%,53%)] text-white">
+                          <AlertCircle className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                        </span>
+                      ) : (
+                        <span className="text-[hsl(220,9%,65%)]">—</span>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
