@@ -48,6 +48,7 @@ const feasibilities = ["Easy", "Medium", "Hard"];
 const industries = ["Skincare", "Haircare", "Personal care"];
 
 export default function AdminImageGPTs() {
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
   const [query, setQuery] = useState("");
   const [vStyle, setVStyle] = useState<string>("");
   const [fStage, setFStage] = useState<string>("");
@@ -55,6 +56,7 @@ export default function AdminImageGPTs() {
   const [ind, setInd] = useState<string>("");
   const [editing, setEditing] = useState<Profile | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<Profile | null>(null);
 
   const filtered = useMemo(() => {
     return profiles.filter((p) => {
@@ -65,13 +67,20 @@ export default function AdminImageGPTs() {
       if (ind && p.industry !== ind) return false;
       return true;
     });
-  }, [query, vStyle, fStage, feas, ind]);
+  }, [profiles, query, vStyle, fStage, feas, ind]);
 
   const clearFilters = () => {
     setQuery(""); setVStyle(""); setFStage(""); setFeas(""); setInd("");
   };
 
   const hasFilters = query || vStyle || fStage || feas || ind;
+
+  const handleConfirmDelete = () => {
+    if (!deleting) return;
+    setProfiles((prev) => prev.filter((p) => p.id !== deleting.id));
+    toast.success(`Deleted "${deleting.title}"`);
+    setDeleting(null);
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] p-6 md:p-8 w-full">
@@ -126,7 +135,13 @@ export default function AdminImageGPTs() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((p) => (
-          <ProfileCard key={p.id} profile={p} onClick={() => setEditing(p)} />
+          <ProfileCard
+            key={p.id}
+            profile={p}
+            onClick={() => setEditing(p)}
+            onEdit={() => setEditing(p)}
+            onDelete={() => setDeleting(p)}
+          />
         ))}
       </div>
 
@@ -143,6 +158,12 @@ export default function AdminImageGPTs() {
       />
 
       <CreateImageGPTModal open={creating} onOpenChange={setCreating} />
+
+      <DeleteProfileDialog
+        profile={deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
