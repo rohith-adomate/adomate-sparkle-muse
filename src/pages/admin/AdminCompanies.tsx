@@ -6,6 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Search, Plus, Check, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { CreateCompanyModal } from "@/components/admin/CreateCompanyModal";
+import { EditCompanyModal } from "@/components/admin/EditCompanyModal";
+import { AddBrandModal } from "@/components/admin/AddBrandModal";
+import { DeleteCompanyModal } from "@/components/admin/DeleteCompanyModal";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
