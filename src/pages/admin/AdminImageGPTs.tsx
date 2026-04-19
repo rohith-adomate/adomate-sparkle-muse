@@ -34,6 +34,11 @@ const profiles: Profile[] = [
   { id: "2", title: "Oy Deo Wash Daily Status", subtitle: "Before / After", tags: ["Probleem", "Oplossing"], image: oyAdImages[1], visualStyle: "Lifestyle", funnelStage: "Consideration", feasibility: "Medium", industry: "Skincare" },
   { id: "3", title: "Oy Deo Wash Freshness Simple", subtitle: "Texture claim", image: oyAdImages[2], visualStyle: "Product close-up", funnelStage: "Awareness", feasibility: "Easy", industry: "Skincare" },
   { id: "4", title: "Oy Deo Wash Microbiome Balance", subtitle: "Skin science", tags: ["Educatief"], image: oyAdImages[3], visualStyle: "Educational", funnelStage: "Consideration", feasibility: "Hard", industry: "Skincare" },
+const initialProfiles: Profile[] = [
+  { id: "1", title: "Oy Deo Wash Benefits", subtitle: "Infographic", tags: ["Probleem"], image: oyAdImages[0], visualStyle: "Infographic", funnelStage: "Awareness", feasibility: "Easy", industry: "Skincare" },
+  { id: "2", title: "Oy Deo Wash Daily Status", subtitle: "Before / After", tags: ["Probleem", "Oplossing"], image: oyAdImages[1], visualStyle: "Lifestyle", funnelStage: "Consideration", feasibility: "Medium", industry: "Skincare" },
+  { id: "3", title: "Oy Deo Wash Freshness Simple", subtitle: "Texture claim", image: oyAdImages[2], visualStyle: "Product close-up", funnelStage: "Awareness", feasibility: "Easy", industry: "Skincare" },
+  { id: "4", title: "Oy Deo Wash Microbiome Balance", subtitle: "Skin science", tags: ["Educatief"], image: oyAdImages[3], visualStyle: "Educational", funnelStage: "Consideration", feasibility: "Hard", industry: "Skincare" },
   { id: "5", title: "Oy Deo Wash Success Story", subtitle: "Confidence story", image: oyAdImages[4], visualStyle: "Lifestyle", funnelStage: "Decision", feasibility: "Medium", industry: "Personal care" },
   { id: "6", title: "Oy Deo Wash Texture Transition", subtitle: "Usage demo", tags: ["Tiener"], image: oyAdImages[5], visualStyle: "Lifestyle", funnelStage: "Consideration", feasibility: "Medium", industry: "Skincare" },
   { id: "7", title: "Oy Face Wash Science In Jar", subtitle: "Zweetzorg uitgelegd", tags: ["Wetenschap"], image: oyAdImages[6], visualStyle: "Educational", funnelStage: "Consideration", feasibility: "Hard", industry: "Skincare" },
