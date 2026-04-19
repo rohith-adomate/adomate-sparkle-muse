@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, Search, MoreHorizontal, X, ChevronsUpDown } from "lucide-react";
+import { Plus, Search, MoreHorizontal, X, ChevronsUpDown, Pencil, Trash2 } from "lucide-react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +7,12 @@ import { Input } from "@/components/ui/input";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { oyAdImages } from "@/data/oyImages";
 import { EditImageGPTModal } from "@/components/admin/EditImageGPTModal";
 import { CreateImageGPTModal } from "@/components/admin/CreateImageGPTModal";
@@ -24,7 +29,7 @@ type Profile = {
   industry: string;
 };
 
-const profiles: Profile[] = [
+const initialProfiles: Profile[] = [
   { id: "1", title: "Oy Deo Wash Benefits", subtitle: "Infographic", tags: ["Probleem"], image: oyAdImages[0], visualStyle: "Infographic", funnelStage: "Awareness", feasibility: "Easy", industry: "Skincare" },
   { id: "2", title: "Oy Deo Wash Daily Status", subtitle: "Before / After", tags: ["Probleem", "Oplossing"], image: oyAdImages[1], visualStyle: "Lifestyle", funnelStage: "Consideration", feasibility: "Medium", industry: "Skincare" },
   { id: "3", title: "Oy Deo Wash Freshness Simple", subtitle: "Texture claim", image: oyAdImages[2], visualStyle: "Product close-up", funnelStage: "Awareness", feasibility: "Easy", industry: "Skincare" },
@@ -43,6 +48,7 @@ const feasibilities = ["Easy", "Medium", "Hard"];
 const industries = ["Skincare", "Haircare", "Personal care"];
 
 export default function AdminImageGPTs() {
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
   const [query, setQuery] = useState("");
   const [vStyle, setVStyle] = useState<string>("");
   const [fStage, setFStage] = useState<string>("");
@@ -50,6 +56,7 @@ export default function AdminImageGPTs() {
   const [ind, setInd] = useState<string>("");
   const [editing, setEditing] = useState<Profile | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<Profile | null>(null);
 
   const filtered = useMemo(() => {
     return profiles.filter((p) => {
@@ -60,13 +67,20 @@ export default function AdminImageGPTs() {
       if (ind && p.industry !== ind) return false;
       return true;
     });
-  }, [query, vStyle, fStage, feas, ind]);
+  }, [profiles, query, vStyle, fStage, feas, ind]);
 
   const clearFilters = () => {
     setQuery(""); setVStyle(""); setFStage(""); setFeas(""); setInd("");
   };
 
   const hasFilters = query || vStyle || fStage || feas || ind;
+
+  const handleConfirmDelete = () => {
+    if (!deleting) return;
+    setProfiles((prev) => prev.filter((p) => p.id !== deleting.id));
+    toast.success(`Deleted "${deleting.title}"`);
+    setDeleting(null);
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] p-6 md:p-8 w-full">
@@ -121,7 +135,13 @@ export default function AdminImageGPTs() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((p) => (
-          <ProfileCard key={p.id} profile={p} onClick={() => setEditing(p)} />
+          <ProfileCard
+            key={p.id}
+            profile={p}
+            onClick={() => setEditing(p)}
+            onEdit={() => setEditing(p)}
+            onDelete={() => setDeleting(p)}
+          />
         ))}
       </div>
 
@@ -138,6 +158,12 @@ export default function AdminImageGPTs() {
       />
 
       <CreateImageGPTModal open={creating} onOpenChange={setCreating} />
+
+      <DeleteProfileDialog
+        profile={deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
@@ -165,12 +191,30 @@ function FilterSelect({
   );
 }
 
-function ProfileCard({ profile, onClick }: { profile: Profile; onClick: () => void }) {
+function ProfileCard({
+  profile,
+  onClick,
+  onEdit,
+  onDelete,
+}: {
+  profile: Profile;
+  onClick: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       className={cn(
-        "group relative aspect-[3/4] w-full rounded-2xl overflow-hidden border bg-muted text-left",
+        "group relative aspect-[3/4] w-full rounded-2xl overflow-hidden border bg-muted text-left cursor-pointer",
         "shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5",
       )}
     >
@@ -185,16 +229,78 @@ function ProfileCard({ profile, onClick }: { profile: Profile; onClick: () => vo
 
       {/* Options */}
       <div
-        className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black flex items-center justify-center shadow-sm transition-all hover:opacity-90 hover:scale-105"
+        className="absolute top-3 right-3"
         onClick={(e) => e.stopPropagation()}
       >
-        <MoreHorizontal className="h-4 w-4 text-white" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="h-8 w-8 rounded-full bg-black/80 flex items-center justify-center shadow-sm transition-all hover:bg-black hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring"
+              aria-label="Open actions"
+            >
+              <MoreHorizontal className="h-4 w-4 text-white" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44 rounded-lg shadow-lg border bg-popover">
+            <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={onEdit}>
+              <Pencil className="h-4 w-4" /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+              onSelect={onDelete}
+            >
+              <Trash2 className="h-4 w-4" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Text */}
       <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
         <h3 className="font-semibold text-base leading-tight line-clamp-2">{profile.title}</h3>
       </div>
-    </button>
+    </div>
+  );
+}
+
+function DeleteProfileDialog({
+  profile,
+  onOpenChange,
+  onConfirm,
+}: {
+  profile: Profile | null;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Dialog open={!!profile} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-[460px] p-0 overflow-hidden rounded-2xl border-0 shadow-2xl">
+        <div className="px-6 pt-5 pb-2">
+          <h2 className="text-lg font-semibold text-foreground">Delete Image GPT profile?</h2>
+        </div>
+        <div className="px-6 py-3">
+          <p className="text-sm text-muted-foreground">
+            You are about to delete{" "}
+            <span className="font-semibold text-foreground">{profile?.title}</span>.
+            This action cannot be undone.
+          </p>
+        </div>
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-muted/30">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-2"
+          >
+            Cancel
+          </button>
+          <Button
+            onClick={onConfirm}
+            className="rounded-full bg-red-500 hover:bg-red-600 text-white"
+          >
+            Delete profile
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
