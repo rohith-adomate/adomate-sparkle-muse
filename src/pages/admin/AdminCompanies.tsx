@@ -26,11 +26,46 @@ const companies = [
   },
 ];
 
+type CompanyAction = "edit" | "addBrand" | "delete" | null;
+
 export default function AdminCompanies() {
   const [createOpen, setCreateOpen] = useState(false);
+  const [activeAction, setActiveAction] = useState<CompanyAction>(null);
+  const [activeCompany, setActiveCompany] = useState<typeof companies[number] | null>(null);
+
+  const openAction = (action: Exclude<CompanyAction, null>, company: typeof companies[number]) => {
+    setActiveCompany(company);
+    setActiveAction(action);
+  };
+  const closeAction = () => setActiveAction(null);
+
   return (
     <div className="min-h-full bg-muted/40 -m-6 p-6">
       <CreateCompanyModal open={createOpen} onOpenChange={setCreateOpen} />
+      {activeCompany && (
+        <>
+          <EditCompanyModal
+            open={activeAction === "edit"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            initialStatus={activeCompany.status as "DEMO"}
+            initialOnboarded={activeCompany.onboarded}
+          />
+          <AddBrandModal
+            open={activeAction === "addBrand"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            existingBrands={activeCompany.brands.split(",").map((b) => b.trim())}
+          />
+          <DeleteCompanyModal
+            open={activeAction === "delete"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            userCount={activeCompany.users}
+            brandCount={activeCompany.brands.split(",").length}
+          />
+        </>
+      )}
       <div className="space-y-4 max-w-6xl mx-auto">
         {/* Header card */}
         <Card className="border border-border/60 shadow-sm rounded-xl">
