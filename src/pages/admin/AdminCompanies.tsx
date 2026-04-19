@@ -4,8 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Search, Plus, Check, MoreHorizontal } from "lucide-react";
+import { Search, Plus, Check, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { CreateCompanyModal } from "@/components/admin/CreateCompanyModal";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const companies = [
   {
