@@ -142,15 +142,18 @@ export default function AdminCompanies() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border bg-popover">
-                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                          <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={() => openAction("edit", c)}>
                             <Pencil className="h-4 w-4" />
                             Edit company
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                          <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={() => openAction("addBrand", c)}>
                             <Plus className="h-4 w-4" />
                             Add brand
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                          <DropdownMenuItem
+                            className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+                            onSelect={() => openAction("delete", c)}
+                          >
                             <Trash2 className="h-4 w-4" />
                             Delete company
                           </DropdownMenuItem>
