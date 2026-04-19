@@ -6,6 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Search, Plus, Check, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { CreateCompanyModal } from "@/components/admin/CreateCompanyModal";
+import { EditCompanyModal } from "@/components/admin/EditCompanyModal";
+import { AddBrandModal } from "@/components/admin/AddBrandModal";
+import { DeleteCompanyModal } from "@/components/admin/DeleteCompanyModal";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -23,11 +26,46 @@ const companies = [
   },
 ];
 
+type CompanyAction = "edit" | "addBrand" | "delete" | null;
+
 export default function AdminCompanies() {
   const [createOpen, setCreateOpen] = useState(false);
+  const [activeAction, setActiveAction] = useState<CompanyAction>(null);
+  const [activeCompany, setActiveCompany] = useState<typeof companies[number] | null>(null);
+
+  const openAction = (action: Exclude<CompanyAction, null>, company: typeof companies[number]) => {
+    setActiveCompany(company);
+    setActiveAction(action);
+  };
+  const closeAction = () => setActiveAction(null);
+
   return (
     <div className="min-h-full bg-muted/40 -m-6 p-6">
       <CreateCompanyModal open={createOpen} onOpenChange={setCreateOpen} />
+      {activeCompany && (
+        <>
+          <EditCompanyModal
+            open={activeAction === "edit"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            initialStatus={activeCompany.status as "DEMO"}
+            initialOnboarded={activeCompany.onboarded}
+          />
+          <AddBrandModal
+            open={activeAction === "addBrand"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            existingBrands={activeCompany.brands.split(",").map((b) => b.trim())}
+          />
+          <DeleteCompanyModal
+            open={activeAction === "delete"}
+            onOpenChange={(v) => !v && closeAction()}
+            companyName={activeCompany.name}
+            userCount={activeCompany.users}
+            brandCount={activeCompany.brands.split(",").length}
+          />
+        </>
+      )}
       <div className="space-y-4 max-w-6xl mx-auto">
         {/* Header card */}
         <Card className="border border-border/60 shadow-sm rounded-xl">
@@ -104,15 +142,18 @@ export default function AdminCompanies() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border bg-popover">
-                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                          <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={() => openAction("edit", c)}>
                             <Pencil className="h-4 w-4" />
                             Edit company
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                          <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={() => openAction("addBrand", c)}>
                             <Plus className="h-4 w-4" />
                             Add brand
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                          <DropdownMenuItem
+                            className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+                            onSelect={() => openAction("delete", c)}
+                          >
                             <Trash2 className="h-4 w-4" />
                             Delete company
                           </DropdownMenuItem>
