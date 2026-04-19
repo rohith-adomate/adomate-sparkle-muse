@@ -97,9 +97,27 @@ export default function AdminCompanies() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border bg-popover">
+                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                            <Pencil className="h-4 w-4" />
+                            Edit company
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                            <Plus className="h-4 w-4" />
+                            Add brand
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                            <Trash2 className="h-4 w-4" />
+                            Delete company
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
