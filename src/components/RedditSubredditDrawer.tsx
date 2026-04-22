@@ -17,6 +17,8 @@ import {
 interface RedditSubredditDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 const ALL_SUBREDDITS = [

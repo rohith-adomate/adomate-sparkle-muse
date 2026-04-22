@@ -52,7 +52,9 @@ const MONTH_DAY_TYPE = [
 interface ScheduleDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onScheduleChange?: (summary: string) => void;
+  onScheduleChange?: (summary: string, firstNextRun?: Date | null) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 function getNextRuns(

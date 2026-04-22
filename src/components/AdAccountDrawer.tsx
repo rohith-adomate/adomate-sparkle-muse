@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 interface AdAccountDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 const MOCK_CAMPAIGNS = [

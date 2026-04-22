@@ -79,9 +79,14 @@ interface ProductDataDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectionChange?: (count: number) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
+  initialEmpty?: boolean;
 }
 
-export default function ProductDataDrawer({ open, onOpenChange, onSelectionChange }: ProductDataDrawerProps) {
+export default function ProductDataDrawer({ open, onOpenChange, onSelectionChange, onContinue, continueLabel, initialEmpty }: ProductDataDrawerProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _unused = { onContinue, continueLabel, initialEmpty };
   const [selectedProducts, setSelectedProducts] = useState<string[]>(["prod-1"]);
   const [selectedImages, setSelectedImages] = useState<Record<string, string[]>>({
     "prod-1": ["img-1-1"],

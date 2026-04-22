@@ -20,11 +20,15 @@ import { Info, Brain } from "lucide-react";
 interface GenerateConceptsDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 const SIMILARITY_LABELS = ["Low", "Medium", "High"];
 
-export default function GenerateConceptsDrawer({ open, onOpenChange }: GenerateConceptsDrawerProps) {
+export default function GenerateConceptsDrawer({ open, onOpenChange, onContinue, continueLabel }: GenerateConceptsDrawerProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _unused = { onContinue, continueLabel };
   const [numConcepts, setNumConcepts] = useState("6");
   const [brandBrainActive, setBrandBrainActive] = useState(true);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
