@@ -10,9 +10,11 @@ import { useSidebar } from "@/components/ui/sidebar";
 import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
-  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone, ExternalLink, ChevronRight, ArrowRight,
+  PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
+  Upload, X, Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
+import confetti from "canvas-confetti";
 import ProductDataDrawer from "@/components/ProductDataDrawer";
 import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
@@ -22,7 +24,7 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import AdAccountDrawer from "@/components/AdAccountDrawer";
-import ManualImageUploadModal from "@/components/ManualImageUploadModal";
+
 import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
 import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
 import RunOutputPanel, {
@@ -30,6 +32,7 @@ import RunOutputPanel, {
   type WorkflowRun, type RunNodeOutput,
 } from "@/components/ExecutionOutputPanel";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { getOyImage } from "@/data/oyImages";
 
 /* ── Types ── */
 
@@ -103,6 +106,8 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 const NODE_W = 200;
 const NODE_H = 72;
+const MANUAL_NODE_BASE_H = 120;
+const MANUAL_NODE_IMG_ROW_H = 52;
 const PORT_R = 6;
 
 /* ── Default nodes for demo ── */
@@ -113,33 +118,33 @@ function getDefaultNodes(agentName: string, isNew?: boolean): CanvasNode[] {
     { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: isNew ? "No sources selected." : "Collect, enrich & filter competitor ads.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
     { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: isNew ? undefined : "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
 }
 
-function getManualNodes(): CanvasNode[] {
+function getManualNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "manual-image-input", category: "dynamic-data", label: "Manual Image Input", description: "Upload images at run time.", x: 100, y: 200, inputs: [], outputs: ["Images"] },
-    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"] },
-    { id: "n2", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Images", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "manual-image-input", category: "dynamic-data", label: "Manual Image Input", description: isNew ? "No images uploaded yet." : "Upload images at run time.", x: 100, y: 200, inputs: [], outputs: ["Images"] },
+    { id: "n1", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"] },
+    { id: "n2", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 450, y: 260, inputs: ["Images", "Products"], outputs: ["Variations"] },
   ];
 }
 
-function getAdAccountNodes(): CanvasNode[] {
+function getAdAccountNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: "All campaigns · All ad sets", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: "success" },
-    { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: "success" },
-    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: "success" },
-    { id: "n5", type: "generate-concepts", category: "ai", label: "Generate Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: isNew ? "No campaigns selected." : "All campaigns · All ad sets", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: isNew ? "No selection rule set." : "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: isNew ? undefined : "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
   ];
 }
 
-function getRedditNodes(): CanvasNode[] {
+function getRedditNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: "success" },
-    { id: "n1", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reddit Data"], status: "success" },
-    { id: "n2", type: "product-data", category: "static-data", label: "Product Data", description: "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: "success" },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: isNew ? "No subreddits selected." : "Scrape subreddits for insights.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reddit Data"], status: isNew ? undefined : "success" },
+    { id: "n2", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", x: 450, y: 270, inputs: ["Reddit Data", "Products"], outputs: ["Variations"] },
   ];
 }
@@ -171,9 +176,10 @@ const REDDIT_EDGES: Edge[] = [
 
 /* ── Helpers ── */
 
-function getPortPos(node: CanvasNode, side: "input" | "output", index: number, total: number) {
+function getPortPos(node: CanvasNode, side: "input" | "output", index: number, total: number, heightOverride?: number) {
+  const h = heightOverride || NODE_H;
   const x = side === "input" ? node.x : node.x + NODE_W;
-  const spacing = NODE_H / (total + 1);
+  const spacing = h / (total + 1);
   const y = node.y + spacing * (index + 1);
   return { x, y };
 }
@@ -193,7 +199,12 @@ export default function WorkflowCanvas() {
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
   const isRedditWorkflow = (location.state as any)?.type === "reddit";
-  const isNewCompetitor = (location.state as any)?.isNew === true && (location.state as any)?.type === "competitor";
+  const isFromTemplate = (location.state as any)?.isNew === true;
+  const isNewCompetitor = isFromTemplate && (location.state as any)?.type === "competitor";
+  const isNewAdAccount = isFromTemplate && isAdAccountWorkflow;
+  const isNewReddit = isFromTemplate && isRedditWorkflow;
+  const isNewManual = isFromTemplate && isManualWorkflow;
+  const isAnyNew = isFromTemplate;
 
   // Derive agent name from id
   const agentName = useMemo(() => {
@@ -205,30 +216,21 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes() : isAdAccountWorkflow ? getAdAccountNodes() : isRedditWorkflow ? getRedditNodes() : getDefaultNodes(agentName, isNewCompetitor));
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
+  const [nextRunDate, setNextRunDate] = useState<Date | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow && !isNewCompetitor);
-  const searchParams = new URLSearchParams(location.search);
-  const initialTab = searchParams.get("tab") === "runs" ? "runs" : "editor";
-  const initialRunId = searchParams.get("run");
-
-  const runs = isManualWorkflow ? MOCK_MANUAL_RUNS : isRedditWorkflow ? MOCK_REDDIT_RUNS : MOCK_RUNS;
-
-  const [activeTab, setActiveTab] = useState<"editor" | "runs">(initialTab);
-  const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(() => {
-    if (initialTab === "runs") {
-      if (initialRunId) {
-        const match = runs.find(r => r.id === initialRunId || String(r.number) === initialRunId);
-        if (match) return match;
-      }
-      return runs[0] ?? null;
-    }
-    return null;
-  });
+  const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
+  const [scheduleSummary, setScheduleSummary] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<"editor" | "runs">("editor");
+  
+  const [selectedRun, setSelectedRun] = useState<WorkflowRun | null>(null);
   const [runOutputNode, setRunOutputNode] = useState<RunNodeOutput | null>(null);
   const [runPanelOpen, setRunPanelOpen] = useState(false);
-  const [supportNotifyState, setSupportNotifyState] = useState<"idle" | "loading" | "done">("idle");
+
+  const baseRuns = isManualWorkflow ? MOCK_MANUAL_RUNS : isRedditWorkflow ? MOCK_REDDIT_RUNS : MOCK_RUNS;
+  const [localRuns, setLocalRuns] = useState<WorkflowRun[]>([]);
+  const runs = [...localRuns, ...baseRuns];
 
   // Canvas state
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -241,7 +243,7 @@ export default function WorkflowCanvas() {
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-  const [selectedProductCount, setSelectedProductCount] = useState(isNewCompetitor ? 0 : 1);
+  const [selectedProductCount, setSelectedProductCount] = useState(0);
   const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
@@ -250,9 +252,257 @@ export default function WorkflowCanvas() {
   const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
   const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
-  const [manualImageUploadModalOpen, setManualImageUploadModalOpen] = useState(false);
+  
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
+  // Tracks node types the user has configured (for visual unconfigured state)
+  const [configuredTypes, setConfiguredTypes] = useState<Set<string>>(
+    () => new Set(isAnyNew ? [] : ["schedule", "top-select", "generate-concepts", "ad-account", "reddit-subreddit", "reddit-ad-generator", "manual-image-input"])
+  );
+  const markConfigured = useCallback((type: string) => {
+    setConfiguredTypes((prev) => {
+      if (prev.has(type)) return prev;
+      const next = new Set(prev);
+      next.add(type);
+      return next;
+    });
+  }, []);
+
+  // Pipeline order per workflow type — drives Continue chaining in drawers
+  const pipeline = useMemo<string[]>(() => {
+    if (isManualWorkflow) return ["manual-image-input", "product-data", "generate-concepts"];
+    if (isAdAccountWorkflow) return ["schedule", "ad-account", "top-select", "product-data", "generate-concepts"];
+    if (isRedditWorkflow) return ["schedule", "reddit-subreddit", "product-data", "reddit-ad-generator"];
+    return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+  }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow]);
+
+  const openDrawerFor = useCallback((type: string) => {
+    if (type === "schedule") setScheduleDrawerOpen(true);
+    else if (type === "dataset") setDatasetDrawerOpen(true);
+    else if (type === "ad-account") setAdAccountDrawerOpen(true);
+    else if (type === "reddit-subreddit") setRedditSubredditDrawerOpen(true);
+    else if (type === "top-select") setTopSelectDrawerOpen(true);
+    else if (type === "product-data") setProductDataDrawerOpen(true);
+    else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
+    else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
+    else if (type === "manual-image-input") setManualImageDrawerOpen(true);
+  }, []);
+
+  const openNextDrawerFor = useCallback((currentType: string) => {
+    markConfigured(currentType);
+    const idx = pipeline.indexOf(currentType);
+    if (idx === -1 || idx === pipeline.length - 1) return;
+    const next = pipeline[idx + 1];
+    // Defer so the current drawer's onOpenChange(false) can complete first
+    setTimeout(() => openDrawerFor(next), 50);
+  }, [pipeline, openDrawerFor, markConfigured]);
+
+  const continueLabelFor = useCallback((currentType: string) => {
+    const idx = pipeline.indexOf(currentType);
+    return idx === pipeline.length - 1 ? "Finish" : "Continue";
+  }, [pipeline]);
+
+  // Briefly flash unconfigured-node pulsing dots when user tries to Run
+  const [flashUnconfigured, setFlashUnconfigured] = useState(false);
+  // One-time celebration along edges when workflow becomes fully configured
+  const [celebrating, setCelebrating] = useState(false);
+  const [celebrationBannerOpen, setCelebrationBannerOpen] = useState(false);
+  const wasFullyConfiguredRef = useRef(false);
+  const didInitialConfigCheckRef = useRef(false);
+  // Editor-mode run simulation: drives moving connector dot + per-node status ring
+  const [isRunning, setIsRunning] = useState(false);
+  const [runCompleted, setRunCompleted] = useState(false);
+  const [nodeImages, setNodeImages] = useState<Record<string, string[]>>({});
+  const [nodeDragOver, setNodeDragOver] = useState<string | null>(null);
+  const manualFileRef = useRef<HTMLInputElement>(null);
+
+  // Fire confetti from the canvas — pink + green palette
+  const fireConfetti = useCallback(() => {
+    const colors = ["#DB2777", "#F9A8D4", "#22C55E", "#FFFFFF"];
+    const burst = (originX: number) => {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        startVelocity: 45,
+        origin: { x: originX, y: 0.35 },
+        colors,
+        scalar: 0.9,
+        ticks: 200,
+      });
+    };
+    burst(0.3);
+    setTimeout(() => burst(0.7), 150);
+    setTimeout(() => burst(0.5), 300);
+  }, []);
+
+  // Execute the workflow run simulation (extracted so the celebration banner can reuse it)
+  const runWorkflow = useCallback(() => {
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const unconfiguredCount = nodes.filter((n) => {
+      if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "product-data") return selectedProductCount === 0;
+      return !configuredTypes.has(n.type);
+    }).length;
+    if (unconfiguredCount > 0) {
+      toast.error("Configure all nodes before running");
+      setFlashUnconfigured(true);
+      setTimeout(() => setFlashUnconfigured(false), 1500);
+      return;
+    }
+    const hasManualInput = nodes.some((n) => n.type === "manual-image-input");
+    if (hasManualInput) {
+      const manualNode = nodes.find((n) => n.type === "manual-image-input");
+      const imgs = manualNode ? (nodeImages[manualNode.id] || []) : [];
+      if (imgs.length === 0) {
+        toast.error("Upload at least one image to the Manual Image Input node before running.");
+        return;
+      }
+    }
+    // Note: celebrationBannerOpen is left untouched; the persistent ready hint
+    // is suppressed during a run via the isRunning flag in the editor.
+    const TOTAL_CONCEPTS = 75;
+    const STEP_MS = 700;
+    const ordered = [...nodes].sort((a, b) => a.x - b.x);
+    setRunCompleted(false);
+    setIsRunning(true);
+    setNodes((prev) => prev.map((n) => ({ ...n, status: undefined })));
+
+    // Create a session run, switch to Runs tab, and select it
+    const totalDurationMs = ordered.length * STEP_MS + 200;
+    const startedAtLabel = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const nextNumber = (baseRuns[0]?.number ?? 0) + localRuns.length + 1;
+    const newRunId = `local-${Date.now()}`;
+    const newRun: WorkflowRun = {
+      id: newRunId,
+      number: nextNumber,
+      status: "running",
+      startedAt: `Just now · ${startedAtLabel}`,
+      duration: "Running…",
+      nodeStatuses: Object.fromEntries(ordered.map((n) => [n.id, "running"])) as Record<string, "success" | "error" | "running">,
+    };
+    setLocalRuns((prev) => [newRun, ...prev]);
+    setActiveTab("runs");
+    setSelectedRun(newRun);
+    setRunPanelOpen(false);
+    setRunOutputNode(null);
+
+    const toastAction = {
+      label: "View concepts",
+      onClick: () => navigate(`/concepts/${id}`),
+    };
+    const runToastId = toast.loading(`Generating 0 / ${TOTAL_CONCEPTS} concepts…`, { action: toastAction });
+    let completed = 0;
+
+    ordered.forEach((node, idx) => {
+      window.setTimeout(() => {
+        setNodes((prev) => prev.map((n) => (n.id === node.id ? { ...n, status: "running" } : n)));
+      }, idx * STEP_MS);
+      window.setTimeout(() => {
+        setNodes((prev) => prev.map((n) => (n.id === node.id ? { ...n, status: "success" } : n)));
+        completed += 1;
+        const progress = Math.round((completed / ordered.length) * TOTAL_CONCEPTS);
+        if (completed < ordered.length) {
+          toast.loading(`Generating ${progress} / ${TOTAL_CONCEPTS} concepts…`, { id: runToastId, action: toastAction });
+        }
+      }, (idx + 1) * STEP_MS);
+    });
+
+    window.setTimeout(() => {
+      setIsRunning(false);
+      setRunCompleted(true);
+      const seconds = Math.max(1, Math.round(totalDurationMs / 1000));
+      const finalDuration = `${seconds}s`;
+      const finishedNodeStatuses = Object.fromEntries(
+        ordered.map((n) => [n.id, "success"])
+      ) as Record<string, "success" | "error" | "running">;
+      setLocalRuns((prev) =>
+        prev.map((r) =>
+          r.id === newRunId
+            ? { ...r, status: "success", duration: finalDuration, nodeStatuses: finishedNodeStatuses }
+            : r
+        )
+      );
+      setSelectedRun((prev) =>
+        prev && prev.id === newRunId
+          ? { ...prev, status: "success", duration: finalDuration, nodeStatuses: finishedNodeStatuses }
+          : prev
+      );
+      toast.success(`Generated ${TOTAL_CONCEPTS} concepts`, {
+        id: runToastId,
+        duration: 8000,
+        action: {
+          label: "View concepts",
+          onClick: () => navigate(`/concepts/${id}`),
+        },
+      });
+    }, totalDurationMs);
+  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages, navigate, id, baseRuns, localRuns.length]);
+  useEffect(() => {
+    if (activeTab !== "editor") return;
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const unconfiguredCount = nodes.filter((n) => {
+      if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "product-data") return selectedProductCount === 0;
+      return !configuredTypes.has(n.type);
+    }).length;
+    const hasAnyConfigurable = nodes.some((n) => UNCONFIGURED_TYPES.includes(n.type));
+    const fullyConfigured = hasAnyConfigurable && unconfiguredCount === 0;
+    // On first evaluation after mount, just sync the ref — don't celebrate
+    // an already-configured workflow that the user just opened.
+    if (!didInitialConfigCheckRef.current) {
+      didInitialConfigCheckRef.current = true;
+      wasFullyConfiguredRef.current = fullyConfigured;
+      if (fullyConfigured) setCelebrationBannerOpen(true);
+      return;
+    }
+    if (fullyConfigured && !wasFullyConfiguredRef.current) {
+      wasFullyConfiguredRef.current = true;
+      setCelebrating(true);
+      setCelebrationBannerOpen(true);
+      fireConfetti();
+      // Auto-activate the workflow when everything is configured (manual workflows stay manual)
+      const hasManual = nodes.some((n) => n.type === "manual-image-input");
+      if (!hasManual) {
+        setAgentEnabled(true);
+      }
+      const t = setTimeout(() => setCelebrating(false), 2000);
+      return () => clearTimeout(t);
+    }
+    if (!fullyConfigured) {
+      wasFullyConfiguredRef.current = false;
+      setCelebrationBannerOpen(false);
+    }
+  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, activeTab, fireConfetti]);
+
+  const getNodeHeight = useCallback((node: CanvasNode) => {
+    if (node.type === "manual-image-input") {
+      const imgs = nodeImages[node.id] || [];
+      const rows = Math.ceil(imgs.length / 4);
+      return MANUAL_NODE_BASE_H + (rows > 0 ? rows * MANUAL_NODE_IMG_ROW_H + 8 : 0);
+    }
+    return NODE_H;
+  }, [nodeImages]);
+
+  const addNodeImages = useCallback((nodeId: string, files: FileList | File[]) => {
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (imageFiles.length === 0) return;
+    const urls = imageFiles.map((f) => URL.createObjectURL(f));
+    setNodeImages((prev) => ({
+      ...prev,
+      [nodeId]: [...(prev[nodeId] || []), ...urls],
+    }));
+    // Also update the global uploadedImages for the run
+    setUploadedImages((prev) => [...prev, ...urls]);
+  }, []);
+
+  const removeNodeImage = useCallback((nodeId: string, index: number) => {
+    setNodeImages((prev) => ({
+      ...prev,
+      [nodeId]: (prev[nodeId] || []).filter((_, i) => i !== index),
+    }));
+  }, []);
 
   // Update top-select node description when config changes
   const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
@@ -473,8 +723,21 @@ export default function WorkflowCanvas() {
   const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
     if (hasManualImageInput) return false;
-    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit");
+    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit" || n.type === "ad-account");
   }, [nodes, hasManualImageInput]);
+
+  // Fully-configured = every configurable node in this workflow is configured.
+  const fullyConfigured = useMemo(() => {
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "ad-account", "reddit-subreddit", "top-select", "product-data", "generate-concepts", "reddit-ad-generator", "manual-image-input"];
+    const configurableNodes = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+    if (configurableNodes.length === 0) return false;
+    return configurableNodes.every((n) => {
+      if (n.type === "dataset") return !datasetEmpty;
+      if (n.type === "product-data") return selectedProductCount > 0;
+      if (n.type === "manual-image-input") return (nodeImages[n.id] || []).length > 0 || configuredTypes.has("manual-image-input");
+      return configuredTypes.has(n.type);
+    });
+  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages]);
 
   // Force agent off when manual image input node exists
   useEffect(() => {
@@ -500,7 +763,6 @@ export default function WorkflowCanvas() {
     setSelectedRun(exec);
     setRunPanelOpen(false);
     setRunOutputNode(null);
-    setSupportNotifyState("idle");
     // Update node statuses based on run
     setNodes((prev) =>
       prev.map((n) => ({
@@ -518,6 +780,8 @@ export default function WorkflowCanvas() {
       setSelectedRun(null);
       setRunPanelOpen(false);
       setRunOutputNode(null);
+      setRunCompleted(false);
+      setIsRunning(false);
       // Reset node statuses to editor defaults
       setNodes((prev) =>
         prev.map((n) => ({
@@ -682,36 +946,86 @@ export default function WorkflowCanvas() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={agentEnabled}
-                    onCheckedChange={(v) => { if (canActivate) setAgentEnabled(v); }}
-                    disabled={!canActivate}
-                    className={!canActivate ? "opacity-50 cursor-not-allowed" : ""}
+                    onCheckedChange={(v) => { if (canActivate && fullyConfigured) setAgentEnabled(v); }}
+                    disabled={!canActivate || !fullyConfigured}
+                    className={(!canActivate || !fullyConfigured) ? "opacity-50 cursor-not-allowed" : ""}
                   />
                   <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
                 </div>
               </TooltipTrigger>
-              {!canActivate && (
-                <TooltipContent side="bottom" className="text-xs max-w-[200px]">
+              {(!canActivate || !fullyConfigured) && (
+                <TooltipContent side="bottom" className="text-xs max-w-[220px]">
                   {hasManualImageInput
                     ? "Manual Image Input nodes require manual runs. Scheduling is disabled."
-                    : "Add a Dataset node to activate this workflow."}
+                    : !canActivate
+                    ? "Add a Dataset node to activate this workflow."
+                    : "Configure all nodes first."}
                 </TooltipContent>
               )}
             </Tooltip>
             <Button
               size="sm"
-              className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground"
-              onClick={() => {
-                if (hasManualImageInput) {
-                  setManualImageUploadModalOpen(true);
-                } else {
-                  toast.success("Workflow run started");
-                }
-              }}
+              disabled={!fullyConfigured}
+              className="h-8 gap-1.5 bg-success hover:bg-success/90 text-success-foreground disabled:opacity-50"
+              onClick={() => runWorkflow()}
             >
               <Play className="h-3.5 w-3.5" /> Run
             </Button>
           </div>
         </div>
+
+        {/* Canvas-level hint: inactive workflow OR count of unconfigured nodes */}
+        {(() => {
+          if (!agentEnabled && !hasManualImageInput) {
+            return (
+              <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 text-[11px] text-muted-foreground animate-fade-in">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+                Workflow inactive — no scheduled runs
+              </div>
+            );
+          }
+          if (activeTab !== "editor") return null;
+          const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+          const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+          const total = tracked.length;
+          const remaining = tracked.filter((n) => {
+            if (n.type === "dataset") return datasetEmpty;
+            if (n.type === "product-data") return selectedProductCount === 0;
+            return !configuredTypes.has(n.type);
+          }).length;
+          const done = total - remaining;
+          if (total === 0 || remaining === 0) return null;
+          const pct = Math.round((done / total) * 100);
+          return (
+            <div className="absolute top-14 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 text-[11px] text-primary/90">
+              <span className="font-medium tabular-nums">{done} of {total} nodes configured</span>
+              <div className="h-1 w-24 rounded-full bg-primary/15 overflow-hidden">
+                <div className="h-full bg-primary transition-all duration-300" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Persistent "Workflow ready" hint — visible whenever active + fully configured */}
+        {!isRunning && fullyConfigured && agentEnabled && (() => {
+          const isManual = isManualWorkflow || hasManualImageInput;
+          if (isManual) {
+            return (
+              <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 text-[11px] text-success/90 animate-fade-in">
+                <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                Run manually to generate concepts.
+              </div>
+            );
+          }
+          const next = nextRunDate ?? (() => { const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(9, 0, 0, 0); return d; })();
+          const dateStr = next.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+          return (
+            <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 text-[11px] text-success/90 animate-fade-in">
+              <span className="h-1.5 w-1.5 rounded-full bg-success" />
+              Next concepts ready around {dateStr}
+            </div>
+          );
+        })()}
 
         {/* Canvas */}
         <div
@@ -751,42 +1065,56 @@ export default function WorkflowCanvas() {
                   <circle cx="2" cy="2" r="1.5" fill="hsl(var(--primary))" opacity="0.6" />
                 </marker>
               </defs>
-              {edges.map((edge) => {
-                const fromNode = nodes.find((n) => n.id === edge.from);
-                const toNode = nodes.find((n) => n.id === edge.to);
-                if (!fromNode || !toNode) return null;
-                const fromPos = getPortPos(fromNode, "output", edge.fromPort, fromNode.outputs.length);
-                const toPos = getPortPos(toNode, "input", edge.toPort, toNode.inputs.length);
-                const path = cubicPath(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                const pathId = `path-${edge.id}`;
-                return (
-                  <g key={edge.id}>
-                    {/* Invisible wide hitbox for clicking */}
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke="transparent"
-                      strokeWidth="14"
-                      style={{ pointerEvents: "stroke", cursor: "pointer" }}
-                      onClick={(e) => { e.stopPropagation(); deleteEdge(edge.id); }}
-                    />
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke="hsl(var(--border))"
-                      strokeWidth="2"
-                      strokeDasharray="6 4"
-                      style={{ pointerEvents: "none" }}
-                    />
-                    <path id={pathId} d={path} fill="none" stroke="none" />
-                    <circle r="3" fill="hsl(var(--primary))" opacity="0.6">
-                      <animateMotion dur="2s" repeatCount="indefinite">
-                        <mpath href={`#${pathId}`} />
-                      </animateMotion>
-                    </circle>
-                  </g>
-                );
-              })}
+              {(() => {
+                const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+                const isNodeUnconfigured = (n: CanvasNode) => {
+                  if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+                  if (activeTab !== "editor") return false;
+                  if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "product-data") return selectedProductCount === 0;
+                  return !configuredTypes.has(n.type);
+                };
+                return edges.map((edge) => {
+                  const fromNode = nodes.find((n) => n.id === edge.from);
+                  const toNode = nodes.find((n) => n.id === edge.to);
+                  if (!fromNode || !toNode) return null;
+                  const fromPos = getPortPos(fromNode, "output", edge.fromPort, fromNode.outputs.length, getNodeHeight(fromNode));
+                  const toPos = getPortPos(toNode, "input", edge.toPort, toNode.inputs.length, getNodeHeight(toNode));
+                  const path = cubicPath(fromPos.x, fromPos.y, toPos.x, toPos.y);
+                  const pathId = `path-${edge.id}`;
+                  const bothUnconfigured = isNodeUnconfigured(fromNode) && isNodeUnconfigured(toNode);
+                  const bothConfigured = !isNodeUnconfigured(fromNode) && !isNodeUnconfigured(toNode);
+                  return (
+                    <g key={edge.id}>
+                      <path
+                        d={path}
+                        fill="none"
+                        stroke="transparent"
+                        strokeWidth="14"
+                        style={{ pointerEvents: "stroke", cursor: "pointer" }}
+                        onClick={(e) => { e.stopPropagation(); deleteEdge(edge.id); }}
+                      />
+                      <path
+                        d={path}
+                        fill="none"
+                        stroke="hsl(var(--border))"
+                        strokeWidth="2"
+                        strokeDasharray={bothConfigured ? undefined : "6 4"}
+                        opacity={bothUnconfigured ? 0.5 : 1}
+                        style={{ pointerEvents: "none", transition: "stroke 0.4s ease, opacity 0.4s ease" }}
+                      />
+                      <path id={pathId} d={path} fill="none" stroke="none" />
+                      {(activeTab === "runs" || isRunning) && (
+                        <circle r="3" fill="hsl(var(--primary))" opacity="0.6">
+                          <animateMotion dur="2s" repeatCount="indefinite">
+                            <mpath href={`#${pathId}`} />
+                          </animateMotion>
+                        </circle>
+                      )}
+                    </g>
+                  );
+                });
+              })()}
               {/* Live connecting preview line */}
               {connecting && (() => {
                 const fromNode = nodes.find((n) => n.id === connecting.fromNodeId);
@@ -808,13 +1136,30 @@ export default function WorkflowCanvas() {
             </svg>
 
             {/* Nodes */}
-            {nodes.map((node) => {
+            {(() => {
+              const UNCONFIGURED_TYPES_FOR_FIRST = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+              const unconfiguredOrdered = [...nodes]
+                .filter((n) => {
+                  if (!UNCONFIGURED_TYPES_FOR_FIRST.includes(n.type)) return false;
+                  if (activeTab !== "editor") return false;
+                  if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "product-data") return selectedProductCount === 0;
+                  return !configuredTypes.has(n.type);
+                })
+                .sort((a, b) => a.x - b.x);
+              const firstUnconfiguredId = unconfiguredOrdered[0]?.id;
+              const trackedTotal = nodes.filter((n) => UNCONFIGURED_TYPES_FOR_FIRST.includes(n.type)).length;
+              const noneConfiguredYet = unconfiguredOrdered.length === trackedTotal;
+              return nodes.map((node) => {
               const color = CATEGORY_COLORS[node.category];
               const isSelected = selectedNode === node.id;
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
               const Icon = catalogItem?.icon || Database;
+              const isManualInput = node.type === "manual-image-input";
+              const manualImages = isManualInput ? (nodeImages[node.id] || []) : [];
+              const currentNodeH = getNodeHeight(node);
 
-              // Orange warning border for unconfigured nodes
+              // Orange warning border for unconfigured nodes (existing data-driven warnings)
               const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
               const warningTooltip = node.type === "dataset" && datasetEmpty
                 ? "The dataset table is currently empty. Click to add competitor sources."
@@ -822,16 +1167,44 @@ export default function WorkflowCanvas() {
                 ? "No products are selected yet. Click to choose products for this workflow."
                 : null;
 
+              // Visual "unconfigured" state — applies to a known set of node types until user touches them
+              const UNCONFIGURED_HELPER: Record<string, string> = {
+                "schedule": "Define when this workflow runs",
+                "dataset": "Build a custom ad dataset from any brands",
+                "top-select": "Set your ad selection filters",
+                "product-data": "Choose your products",
+                "generate-concepts": "Configure your variation output",
+              };
+              const helperText = UNCONFIGURED_HELPER[node.type];
+              const isConfigurable = helperText !== undefined;
+              const isUnconfigured =
+                isConfigurable &&
+                activeTab === "editor" &&
+                (
+                  (node.type === "dataset" && datasetEmpty) ||
+                  (node.type === "product-data" && selectedProductCount === 0) ||
+                  (node.type !== "dataset" && node.type !== "product-data" && !configuredTypes.has(node.type))
+                );
+
+              const isConfiguredNode = isConfigurable && !isUnconfigured;
+
               const nodeEl = (
                 <div
                   key={node.id}
                   className={cn(
-                    "absolute rounded-xl border bg-card shadow-sm transition-shadow",
+                    "group absolute rounded-xl border bg-card shadow-sm transition-all",
                     isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md",
-                    activeTab === "runs" && node.status === "success" && "ring-2 ring-success",
-                    activeTab === "runs" && node.status === "error" && "ring-2 ring-destructive",
-                    activeTab === "runs" && node.status === "running" && "ring-2 ring-primary animate-pulse",
-                    activeTab === "editor" && needsConfig && !isSelected && "border-orange-400 ring-1 ring-orange-400/50",
+                    // Running / completed states use a single border color (no pink+green stacking)
+                    (activeTab === "runs" || isRunning || runCompleted) && node.status === "success" && "border-success ring-1 ring-success/40",
+                    (activeTab === "runs" || isRunning) && node.status === "error" && "border-destructive ring-1 ring-destructive/40",
+                    (activeTab === "runs" || isRunning) && node.status === "running" && "border-primary ring-1 ring-primary/40",
+                    // Uniform dashed light grey border for ALL unconfigured nodes (no per-type colors)
+                    isUnconfigured && !isSelected && "border-dashed border-muted-foreground/30 bg-muted/40",
+                    isUnconfigured && "cursor-pointer hover:bg-muted/70 hover:border-muted-foreground/50",
+                    // Configured nodes: neutral border + pointer cursor
+                    isConfiguredNode && "cursor-pointer",
+                    // Inactive workflow: dim all nodes in the editor
+                    activeTab === "editor" && !agentEnabled && !isRunning && !runCompleted && "opacity-50 grayscale",
                   )}
                   style={{
                     left: node.x,
@@ -856,12 +1229,15 @@ export default function WorkflowCanvas() {
                         setProductDataDrawerOpen(true);
                       } else if (node.type === "generate-concepts") {
                         setGenerateConceptsDrawerOpen(true);
+                        markConfigured("generate-concepts");
                       } else if (node.type === "schedule") {
                         setScheduleDrawerOpen(true);
+                        markConfigured("schedule");
                       } else if (node.type === "top-select") {
                         setTopSelectDrawerOpen(true);
+                        markConfigured("top-select");
                       } else if (node.type === "manual-image-input") {
-                        setManualImageDrawerOpen(true);
+                        // Don't open drawer on click — interaction is inline now
                       } else if (node.type === "ad-account") {
                         setAdAccountDrawerOpen(true);
                       } else if (node.type === "reddit-subreddit") {
@@ -872,52 +1248,300 @@ export default function WorkflowCanvas() {
                     }
                   }}
                 >
-                  {/* Left accent border */}
-                  <div
-                    className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
-                    style={{ background: needsConfig && activeTab === "editor" ? "hsl(30 90% 55%)" : `hsl(${color})` }}
-                  />
+                  {/* Left accent border — hidden for unconfigured AND configured nodes (uniform borders) */}
+                  {!isUnconfigured && !isConfiguredNode && (
+                    <div
+                      className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
+                      style={{ background: `hsl(${color})` }}
+                    />
+                  )}
 
-                  {node.type === "product-data" && selectedProductCount > 0 && (
+                  {/* "Start here" badge only on the very first node before any progress; otherwise just a pulsing dot */}
+                  {isUnconfigured && node.id === firstUnconfiguredId && noneConfiguredYet && (
+                    <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-20 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wide shadow-sm flex items-center gap-1 animate-glow">
+                      <span className="h-1 w-1 rounded-full bg-primary-foreground" />
+                      Start here
+                    </div>
+                  )}
+                  {isUnconfigured && node.id === firstUnconfiguredId && !noneConfiguredYet && (
+                    <span className="absolute -top-1 -right-1 z-20 h-2 w-2 rounded-full bg-primary animate-glow" />
+                  )}
+
+                  {/* Hover "+" affordance for other unconfigured nodes */}
+                  {isUnconfigured && node.id !== firstUnconfiguredId && (
+                    <div className="absolute -top-2 -right-2 z-20 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Plus className="h-3 w-3" />
+                    </div>
+                  )}
+
+
+                  {node.type === "product-data" && selectedProductCount > 0 && !isConfiguredNode && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
-                      <Badge variant="outline" className="text-[9px] gap-0.5 px-1.5 py-0">
+                      <Badge variant="outline" className="text-[9px] gap-0.5 px-1.5 py-0 ">
                         <Package className="h-2.5 w-2.5" />
                         {selectedProductCount}
                       </Badge>
                     </div>
                   )}
 
-                  <div className="pl-3.5 pr-3 py-2.5" style={{ paddingRight: node.type === "product-data" && selectedProductCount > 0 ? '3.5rem' : undefined }}>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="shrink-0 rounded-md p-1"
-                        style={{ background: `hsl(${color} / 0.12)` }}
-                      >
-                        <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
-                      </div>
-                      <span className="text-xs font-bold truncate">{node.label}</span>
-                      {activeTab === "runs" && node.status && (
-                        <div className="ml-auto shrink-0">
-                          <div
-                            className={`h-2.5 w-2.5 rounded-full ${
-                              node.status === "success"
-                                ? "bg-success"
-                                : node.status === "running"
-                                ? "bg-primary animate-pulse"
-                                : "bg-destructive"
-                            }`}
+                  {/* Standard node body */}
+                  {!isManualInput && (
+                    <div className="pl-3.5 pr-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="shrink-0 rounded-md p-1"
+                          style={{ background: isUnconfigured ? "hsl(var(--muted))" : `hsl(${color} / 0.12)` }}
+                        >
+                          <Icon
+                            className="h-3.5 w-3.5"
+                            style={{ color: isUnconfigured ? "hsl(var(--muted-foreground))" : `hsl(${color})` }}
                           />
                         </div>
+                        <span className="text-xs font-bold truncate">{node.label}</span>
+                        {(activeTab === "runs" || isRunning || runCompleted) && node.status && (
+                          <div className="ml-auto shrink-0 flex items-center">
+                            {node.status === "running" ? (
+                              <Loader2 className="h-3 w-3 text-primary animate-spin" />
+                            ) : (
+                              <div
+                                className={`h-2.5 w-2.5 rounded-full ${
+                                  node.status === "success" ? "bg-success" : "bg-destructive"
+                                }`}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      {isUnconfigured ? (
+                        <div className="mt-2 -mx-3.5 -mb-2.5">
+                          <div className="px-3.5 pb-2">
+                            {node.type === "schedule" && (
+                              <div className="h-12 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center gap-2">
+                                <Clock className="h-4 w-4 text-muted-foreground/50" />
+                                <span className="text-[11px] font-medium text-muted-foreground/70">Set cadence</span>
+                              </div>
+                            )}
+                            {node.type === "dataset" && (
+                              <div className="h-12 flex items-center justify-start -space-x-2">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                  <div key={i} className="h-9 w-9 rounded-full border border-dashed border-muted-foreground/30 bg-muted/30 ring-2 ring-card" />
+                                ))}
+                              </div>
+                            )}
+                            {node.type === "top-select" && (
+                              <div className="h-12 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center gap-1.5">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <div key={i} className="h-7 w-5 rounded bg-muted-foreground/15" />
+                                ))}
+                              </div>
+                            )}
+                            {node.type === "product-data" && (
+                              <div className="h-12 flex items-center justify-start -space-x-2">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                  <div key={i} className="h-9 w-9 aspect-square rounded-md border border-dashed border-muted-foreground/30 bg-muted/30 ring-2 ring-card flex items-center justify-center">
+                                    <ImagePlus className="h-3.5 w-3.5 text-muted-foreground/50" />
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            {node.type === "generate-concepts" && (
+                              <div className="h-12 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center">
+                                <div className="flex items-end gap-2 tabular-nums text-muted-foreground/60">
+                                  <div className="flex flex-col items-center leading-none">
+                                    <span className="text-[12px] font-semibold">—</span>
+                                    <span className="text-[7px] uppercase tracking-wide mt-0.5">prod</span>
+                                  </div>
+                                  <span className="text-[11px] leading-none pb-2">×</span>
+                                  <div className="flex flex-col items-center leading-none">
+                                    <span className="text-[12px] font-semibold">—</span>
+                                    <span className="text-[7px] uppercase tracking-wide mt-0.5">ads</span>
+                                  </div>
+                                  <span className="text-[11px] leading-none pb-2">×</span>
+                                  <div className="flex flex-col items-center leading-none">
+                                    <span className="text-[12px] font-semibold">—</span>
+                                    <span className="text-[7px] uppercase tracking-wide mt-0.5">var</span>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : isConfiguredNode ? ((() => {
+                          // Shared output data per node type
+                          const brands = [
+                            { initials: "CV", bg: "hsl(220 70% 55%)" },
+                            { initials: "LO", bg: "hsl(0 70% 55%)" },
+                            { initials: "NX", bg: "hsl(280 60% 55%)" },
+                          ];
+                          const productCount = selectedProductCount > 0 ? selectedProductCount : 3;
+                          const productDisplay = Math.min(productCount, 4);
+
+                          const isAllNew = topSelectConfig.mode === "all-new";
+
+                          // ── Variant C · Card stack (full-width hero strip + bottom metric row)
+                          return (
+                            <div className="mt-2 -mx-3.5 -mb-2.5">
+                              <div className="px-3.5 pb-2">
+                                {node.type === "schedule" && (
+                                  <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center gap-2">
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <span className="text-[13px] font-semibold">Mondays</span>
+                                  </div>
+                                )}
+                                {node.type === "dataset" && (
+                                  <div className="h-12 flex items-center justify-start -space-x-2">
+                                    {brands.map((b) => (
+                                      <div key={b.initials} className="h-9 w-9 rounded-full ring-2 ring-card flex items-center justify-center text-[11px] font-bold text-white" style={{ background: b.bg }}>
+                                        {b.initials}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                                {node.type === "top-select" && (
+                                  isAllNew ? (
+                                    <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center gap-2">
+                                      <span className="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-bold uppercase tracking-wide">New</span>
+                                      <span className="text-[12px] font-semibold">Since last run</span>
+                                    </div>
+                                  ) : (
+                                    <div className="h-12 rounded-md bg-muted/50 flex items-center justify-center gap-1.5">
+                                      {Array.from({ length: 5 }).map((_, i) => (
+                                        <div key={i} className="h-7 w-5 rounded bg-primary/70" style={{ opacity: 1 - i * 0.15 }} />
+                                      ))}
+                                    </div>
+                                  )
+                                )}
+                                {node.type === "product-data" && (
+                                  <div className="h-12 flex items-center justify-start -space-x-2">
+                                    {Array.from({ length: productDisplay }).map((_, i) => (
+                                      <img key={i} src={getOyImage(i)} alt="" className="h-9 w-9 aspect-square rounded-md object-cover ring-2 ring-card bg-muted" />
+                                    ))}
+                                  </div>
+                                )}
+                                {node.type === "generate-concepts" && (
+                                  <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center">
+                                    <div className="flex items-end gap-2 tabular-nums">
+                                      <div className="flex flex-col items-center leading-none">
+                                        <span className="text-[12px] font-semibold text-foreground">3</span>
+                                        <span className="text-[7px] uppercase tracking-wide text-muted-foreground mt-0.5">prod</span>
+                                      </div>
+                                      <span className="text-muted-foreground text-[11px] leading-none pb-2">×</span>
+                                      <div className="flex flex-col items-center leading-none">
+                                        <span className="text-[12px] font-semibold text-foreground">5</span>
+                                        <span className="text-[7px] uppercase tracking-wide text-muted-foreground mt-0.5">ads</span>
+                                      </div>
+                                      <span className="text-muted-foreground text-[11px] leading-none pb-2">×</span>
+                                      <div className="flex flex-col items-center leading-none">
+                                        <span className="text-[12px] font-semibold text-foreground">5</span>
+                                        <span className="text-[7px] uppercase tracking-wide text-muted-foreground mt-0.5">var</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="px-3.5 py-1.5 border-t border-border/50 bg-muted/20 rounded-b-xl flex items-center justify-between">
+                                <span className="text-[9px] uppercase tracking-wide text-muted-foreground font-medium">
+                                  {node.type === "schedule" && "Cadence"}
+                                  {node.type === "dataset" && "Matched"}
+                                  {node.type === "top-select" && "Selected"}
+                                  {node.type === "product-data" && "Products"}
+                                  {node.type === "generate-concepts" && "Per run"}
+                                </span>
+                                <span className={cn("text-[11px] font-medium text-muted-foreground", node.type === "generate-concepts" && "font-semibold text-primary")}>
+                                  {node.type === "schedule" && "Weekly"}
+                                  {node.type === "dataset" && "641 ads"}
+                                  {node.type === "top-select" && (isAllNew ? "All new" : "Top 5")}
+                                  {node.type === "product-data" && productCount}
+                                  {node.type === "generate-concepts" && "~75 concepts"}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })()) : (
+                        <p className="text-[10px] text-muted-foreground mt-1 leading-tight line-clamp-1">
+                          {node.description}
+                        </p>
                       )}
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1 leading-tight line-clamp-1">
-                      {node.description}
-                    </p>
-                  </div>
+                  )}
+
+                  {/* Manual image input node — custom body */}
+                  {isManualInput && (
+                    <div className="pl-3.5 pr-3 py-2.5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div
+                          className="shrink-0 rounded-md p-1"
+                          style={{ background: `hsl(${color} / 0.12)` }}
+                        >
+                          <Icon className="h-3.5 w-3.5" style={{ color: `hsl(${color})` }} />
+                        </div>
+                        <span className="text-xs font-bold truncate">{node.label}</span>
+                        {manualImages.length > 0 && (
+                          <Badge variant="outline" className="text-[9px] gap-0.5 px-1.5 py-0 ml-auto">
+                            {manualImages.length}
+                          </Badge>
+                        )}
+                      </div>
+                      {/* Drop zone */}
+                      <div
+                        className={cn(
+                          "rounded-lg border border-dashed flex flex-col items-center justify-center gap-0.5 py-2 cursor-pointer transition-colors",
+                          nodeDragOver === node.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-muted-foreground/40"
+                        )}
+                        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setNodeDragOver(node.id); }}
+                        onDragLeave={(e) => { e.stopPropagation(); setNodeDragOver(null); }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setNodeDragOver(null);
+                          addNodeImages(node.id, e.dataTransfer.files);
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          manualFileRef.current?.click();
+                        }}
+                      >
+                        <Upload className="h-3 w-3 text-muted-foreground" />
+                        <p className="text-[9px] text-muted-foreground">
+                          Drop or <span className="text-primary font-medium">browse</span>
+                        </p>
+                        <p className="text-[8px] text-muted-foreground/50">PNG, JPG, WEBP</p>
+                      </div>
+                      {/* Thumbnails */}
+                      {manualImages.length > 0 && (
+                        <div className="grid grid-cols-4 gap-1 mt-2">
+                          {manualImages.map((src, imgIdx) => (
+                            <div key={imgIdx} className="relative group aspect-square rounded border border-border overflow-hidden bg-muted">
+                              <img src={src} alt="" className="w-full h-full object-cover" />
+                              <button
+                                onClick={(e) => { e.stopPropagation(); removeNodeImage(node.id, imgIdx); }}
+                                className="absolute top-0 right-0 h-3.5 w-3.5 rounded-bl bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-2 w-2" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <input
+                        ref={manualFileRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files) addNodeImages(node.id, e.target.files);
+                          e.target.value = "";
+                        }}
+                      />
+                    </div>
+                  )}
 
                   {/* Input ports */}
                   {node.inputs.map((_, i) => {
-                    const pos = getPortPos(node, "input", i, node.inputs.length);
+                    const pos = getPortPos(node, "input", i, node.inputs.length, currentNodeH);
                     return (
                       <div
                         key={`in-${i}`}
@@ -936,7 +1560,7 @@ export default function WorkflowCanvas() {
 
                   {/* Output ports */}
                   {node.outputs.map((_, i) => {
-                    const pos = getPortPos(node, "output", i, node.outputs.length);
+                    const pos = getPortPos(node, "output", i, node.outputs.length, currentNodeH);
                     return (
                       <div
                         key={`out-${i}`}
@@ -966,7 +1590,8 @@ export default function WorkflowCanvas() {
               }
 
               return nodeEl;
-            })}
+            });
+            })()}
           </div>
         </div>
 
@@ -1013,85 +1638,14 @@ export default function WorkflowCanvas() {
           </span>
         </div>
 
-        {/* Running progress banner */}
-        {activeTab === "runs" && selectedRun?.status === "running" && (() => {
-          const total = isManualWorkflow ? 18 : isRedditWorkflow ? 24 : 60;
-          const completed = isManualWorkflow ? 11 : isRedditWorkflow ? 16 : 43;
-          const pct = (completed / total) * 100;
-          const nav = () => navigate("/concepts/ai-image-studio-1");
-
-          return (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
-              <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
-              <div className="flex flex-col items-start">
-                <span className="text-xs font-semibold text-foreground">Generation in progress</span>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
-                  </div>
-                  <span className="text-[10px] text-muted-foreground tabular-nums">{completed}/{total}</span>
-                </div>
-              </div>
-              <button onClick={nav} className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap">
-                View concepts
-              </button>
-            </div>
-          );
-        })()}
-
-        {/* Success completion banner */}
-        {activeTab === "runs" && selectedRun?.status === "success" && (() => {
-          const conceptCounts: Record<number, number> = { 11: 54, 10: 60, 8: 48, 7: 52, 5: 18, 4: 18, 3: 24 };
-          const total = conceptCounts[selectedRun.number] ?? (isManualWorkflow ? 18 : isRedditWorkflow ? 24 : 60);
-          const nav = () => navigate("/concepts/ai-image-studio-1");
-
-          return (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-              <div className="flex flex-col items-start">
-                <span className="text-xs font-semibold text-foreground">Generation complete</span>
-                <span className="text-[10px] text-muted-foreground">{total} concepts generated</span>
-              </div>
-              <button onClick={nav} className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap">
-                View concepts
-              </button>
-            </div>
-          );
-        })()}
-
-        {/* Failed run banner */}
-        {activeTab === "runs" && selectedRun?.status === "failed" && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
-            <XCircle className="h-4 w-4 text-destructive shrink-0" />
-            <div className="flex flex-col items-start">
-              <span className="text-xs font-semibold text-foreground">Generation failed</span>
-              <span className="text-[10px] text-muted-foreground">Something went wrong during this run</span>
-            </div>
-            {supportNotifyState === "done" ? (
-              <div className="ml-2 flex items-center gap-1.5 px-3 py-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                <span className="text-[11px] font-medium text-emerald-600 whitespace-nowrap">Support notified</span>
-              </div>
-            ) : (
-              <button
-                disabled={supportNotifyState === "loading"}
-                onClick={() => {
-                  setSupportNotifyState("loading");
-                  setTimeout(() => setSupportNotifyState("done"), 1500);
-                }}
-                className="ml-2 px-3 py-1.5 rounded-md border border-border bg-muted/50 text-foreground text-[11px] font-medium hover:bg-muted transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
-              >
-                {supportNotifyState === "loading" && <Loader2 className="h-3 w-3 animate-spin" />}
-                {supportNotifyState === "loading" ? "Contacting…" : "Notify support"}
-              </button>
-            )}
-          </div>
-        )}
-
       </div>
       <DatasetBuilderDrawer
         open={datasetDrawerOpen}
         onClose={() => setDatasetDrawerOpen(false)}
+        initialEmpty={isNewCompetitor}
+        onSourcesChange={(count) => setDatasetEmpty(count === 0)}
+        onContinue={() => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); }}
+        continueLabel={continueLabelFor("dataset")}
       />
       <DatasetRunResultsDrawer
         open={datasetRunResultsOpen}
@@ -1101,10 +1655,14 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
         onSelectionChange={setSelectedProductCount}
+        onContinue={() => openNextDrawerFor("product-data")}
+        continueLabel={continueLabelFor("product-data")}
       />
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
+        onContinue={() => openNextDrawerFor("generate-concepts")}
+        continueLabel={continueLabelFor("generate-concepts")}
       />
       <NodeOutputDrawer
         open={outputDrawerOpen}
@@ -1114,46 +1672,50 @@ export default function WorkflowCanvas() {
       <ScheduleDrawer
         open={scheduleDrawerOpen}
         onOpenChange={setScheduleDrawerOpen}
-        onScheduleChange={(summary) => {
+        onScheduleChange={(summary, firstNextRun) => {
+          setScheduleSummary(summary);
+          setNextRunDate(firstNextRun);
           setNodes((prev) =>
             prev.map((n) =>
               n.type === "schedule" ? { ...n, description: summary } : n
             )
           );
         }}
+        onContinue={() => openNextDrawerFor("schedule")}
+        continueLabel={continueLabelFor("schedule")}
       />
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
         config={topSelectConfig}
         onConfigChange={handleTopSelectChange}
+        onContinue={() => openNextDrawerFor("top-select")}
+        continueLabel={continueLabelFor("top-select")}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}
         onOpenChange={setManualImageDrawerOpen}
         uploadedImages={uploadedImages}
-      />
-      <ManualImageUploadModal
-        open={manualImageUploadModalOpen}
-        onOpenChange={setManualImageUploadModalOpen}
-        onConfirm={(files) => {
-          const urls = files.map((f) => URL.createObjectURL(f));
-          setUploadedImages(urls);
-          setManualImageUploadModalOpen(false);
-          toast.success(`Workflow run started with ${files.length} image${files.length !== 1 ? "s" : ""}`);
-        }}
+        onContinue={() => openNextDrawerFor("manual-image-input")}
+        continueLabel={continueLabelFor("manual-image-input")}
       />
       <AdAccountDrawer
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
+        onContinue={() => openNextDrawerFor("ad-account")}
+        continueLabel={continueLabelFor("ad-account")}
       />
       <RedditSubredditDrawer
         open={redditSubredditDrawerOpen}
         onOpenChange={setRedditSubredditDrawerOpen}
+        onContinue={() => openNextDrawerFor("reddit-subreddit")}
+        continueLabel={continueLabelFor("reddit-subreddit")}
       />
       <RedditAdGeneratorDrawer
         open={redditAdGeneratorDrawerOpen}
         onOpenChange={setRedditAdGeneratorDrawerOpen}
+        onContinue={() => openNextDrawerFor("reddit-ad-generator")}
+        continueLabel={continueLabelFor("reddit-ad-generator")}
       />
       <RunOutputPanel
         open={runPanelOpen}
@@ -1161,7 +1723,6 @@ export default function WorkflowCanvas() {
         node={runOutputNode}
         runNumber={selectedRun?.number}
       />
-
     </div>
   );
 }
