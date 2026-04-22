@@ -6,6 +6,8 @@ interface ManualImageInputDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   uploadedImages?: string[];
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 export default function ManualImageInputDrawer({ open, onOpenChange, uploadedImages = [] }: ManualImageInputDrawerProps) {

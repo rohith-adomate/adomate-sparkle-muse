@@ -22,6 +22,8 @@ interface TopAdsSelectionDrawerProps {
   onOpenChange: (open: boolean) => void;
   config?: SelectConfig;
   onConfigChange?: (config: SelectConfig) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 function buildSummary(config: SelectConfig): string {

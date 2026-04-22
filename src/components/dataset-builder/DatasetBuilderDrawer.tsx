@@ -15,9 +15,15 @@ import RowDetailDrawer from "./RowDetailDrawer";
 interface Props {
   open: boolean;
   onClose: () => void;
+  initialEmpty?: boolean;
+  onSourcesChange?: (count: number) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
-export default function DatasetBuilderDrawer({ open, onClose }: Props) {
+export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSourcesChange, onContinue, continueLabel }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _unused = { initialEmpty, onSourcesChange, onContinue, continueLabel };
   const [sources, setSources] = useState<DatasetSource[]>(INITIAL_SOURCES);
   const [columns, setColumns] = useState<DatasetColumn[]>([...FACTS_COLUMNS, DEFAULT_AI_COLUMN]);
   const [filters, setFilters] = useState<DatasetFilter[]>([]);

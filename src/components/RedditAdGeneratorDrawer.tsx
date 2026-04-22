@@ -12,6 +12,8 @@ import { Info } from "lucide-react";
 interface RedditAdGeneratorDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onContinue?: () => void;
+  continueLabel?: string;
 }
 
 type OutputType = "commercial" | "meme" | "trend";
