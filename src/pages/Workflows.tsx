@@ -1,22 +1,19 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Trash2, Calendar as CalendarIcon, MoreVertical, Eye, Lightbulb, TreePine, Ghost, ShoppingCart, PartyPopper, Heart, Sparkles, ChevronRight, Pencil, ImagePlus, MessageSquare,
-} from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
-
-/* ── Types & Data ── */
+import { Search, ChevronLeft, ChevronRight, History, Pencil, Check } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { WorkflowTemplateThumbnail, type WorkflowTemplateVariant } from "@/components/workflow-diagrams/WorkflowTemplateThumbnail";
+import trackBrandAdsThumbnail from "@/assets/competitor-template-thumbnail.png";
+import uploadYourOwnThumbnail from "@/assets/manual-template-thumbnail.png";
+import voiceOfCustomerThumbnail from "@/assets/voice-of-customer-thumbnail.png";
 
 type AgentType = "holiday" | "competitor" | "manual" | "ad-account" | "reddit";
 
@@ -30,99 +27,85 @@ interface Agent {
   nextRun: string;
 }
 
+const sourceTemplates: {
+  id: string;
+  title: string;
+  subtitle: string;
+  variant: WorkflowTemplateVariant;
+  type: AgentType;
+  badge: string;
+  badgeBg: string;
+  badgeText: string;
+  thumbnailImg?: string;
+  comingSoon?: boolean;
+}[] = [
+  { id: "src-competitor", title: "Ad library tracker", subtitle: "Track brands and generate ad variations", variant: "competitor", type: "competitor", badge: "", badgeBg: "transparent", badgeText: "transparent", thumbnailImg: trackBrandAdsThumbnail },
+  { id: "src-manual", title: "Upload your own images", subtitle: "Generate ad variations from your images", variant: "manual", type: "manual", badge: "", badgeBg: "transparent", badgeText: "transparent", thumbnailImg: uploadYourOwnThumbnail },
+  { id: "src-reviews", title: "Voice of customer", subtitle: "Turn real customer reviews into high-converting ads", variant: "reviews", type: "manual", badge: "", badgeBg: "transparent", badgeText: "transparent", comingSoon: true, thumbnailImg: voiceOfCustomerThumbnail },
+  { id: "src-reddit", title: "Listen on Reddit", subtitle: "Mine subreddit conversations for ad angles that hit", variant: "reddit", type: "reddit", badge: "", badgeBg: "transparent", badgeText: "transparent", comingSoon: true },
+];
+
 const defaultAgents: Agent[] = [
-  {
-    id: "competitor-1",
-    name: "Nike Ad Monitor",
-    type: "competitor",
-    description: "Weekly scan of Nike ads → generate on-brand variations.",
-    concepts: 9,
-    enabled: true,
-    nextRun: "14 Mar 2026",
-  },
-  {
-    id: "competitor-2",
-    name: "Adidas Creative Tracker",
-    type: "competitor",
-    description: "Monitor Adidas campaigns and produce counter-creatives.",
-    concepts: 5,
-    enabled: true,
-    nextRun: "21 Mar 2026",
-  },
-  {
-    id: "manual-1",
-    name: "Manual Image Pipeline",
-    type: "manual",
-    description: "Upload your own images and generate ad variations on demand.",
-    concepts: 0,
-    enabled: false,
-    nextRun: "Manual only",
-  },
+  { id: "competitor-1", name: "Nike Ad Monitor", type: "competitor", description: "Weekly scan of Nike ads → generate on-brand variations.", concepts: 9, enabled: true, nextRun: "14 Mar 2026" },
+  { id: "competitor-2", name: "Adidas Creative Tracker", type: "competitor", description: "Monitor Adidas campaigns and produce counter-creatives.", concepts: 5, enabled: true, nextRun: "21 Mar 2026" },
+  { id: "manual-1", name: "Manual Image Pipeline", type: "manual", description: "Upload your own images and generate ad variations on demand.", concepts: 0, enabled: false, nextRun: "Manual only" },
 ];
 
-const eventAgents = [
-  { id: "christmas", name: "Christmas", description: "Generate festive holiday creatives with seasonal themes and messaging.", icon: TreePine, color: "text-green-600 bg-green-50 border-green-200" },
-  { id: "halloween", name: "Halloween", description: "Spooky-themed ads with dark aesthetics and Halloween visuals.", icon: Ghost, color: "text-orange-600 bg-orange-50 border-orange-200" },
-  { id: "black-friday", name: "Black Friday", description: "Deal-focused creatives with urgency-driven messaging.", icon: ShoppingCart, color: "text-foreground bg-muted border-border" },
-  { id: "valentines", name: "Valentine's Day", description: "Romantic-themed creatives for Valentine's Day campaigns.", icon: Heart, color: "text-pink-600 bg-pink-50 border-pink-200" },
-  { id: "new-year", name: "New Year", description: "Fresh-start messaging and celebratory visuals for the new year.", icon: PartyPopper, color: "text-amber-600 bg-amber-50 border-amber-200" },
-  { id: "custom", name: "Custom Season", description: "Create a custom seasonal workflow for any occasion or date.", icon: Sparkles, color: "text-primary bg-primary/5 border-primary/20" },
+const BORDER = "0.5px solid rgba(0,0,0,0.12)";
+const CARD_RADIUS = "12px";
+
+const activeWorkflows: {
+  id: string;
+  name: string;
+  type: AgentType;
+  badge: string;
+  badgeBg: string;
+  badgeText: string;
+  enabled: boolean;
+  schedule: "daily" | "weekly" | "monthly" | "manual";
+  lastRun: string;
+  cadence: string;
+  link: { text: string; color: string; href: string };
+  thumbnails: string[];
+}[] = [
+  { id: "competitor-1", name: "Nike Ad Monitor", type: "competitor", badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100", enabled: true, schedule: "weekly", lastRun: "Last run: 12 Mar · 3m 12s", cadence: "Cadence: Weekly", link: { text: "→ View 9 new concepts", color: "#D4537E", href: "/concepts/ai-image-studio-1" }, thumbnails: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200","https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200","https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=200","https://images.unsplash.com/photo-1539185441755-769473a23570?w=200"] },
+  { id: "competitor-2", name: "Adidas Creative Tracker", type: "competitor", badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100", enabled: true, schedule: "weekly", lastRun: "Last run: 8 Mar · 1m 03s", cadence: "Cadence: Weekly", link: { text: "⚠ Last run failed — check settings", color: "#E24B4A", href: `/workflows/competitor-2` }, thumbnails: ["https://images.unsplash.com/photo-1539185441755-769473a23570?w=200","https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=200","https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200","https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"] },
 ];
 
-const competitorAgents = [
-  { id: "visual-variations", name: "Visual Variations", description: "Takes top-performing competitor designs and rebuilds them with your brand assets.", icon: Eye },
-  { id: "strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle.", icon: Lightbulb },
+const runHistory: { id: string; workflowId: string; name: string; date: string; duration: string; status: "success" | "failed"; concepts: number; conceptsRunId?: string; thumbnails: string[]; setup: string[]; }[] = [
+  { id: "r1", workflowId: "competitor-1", name: "Nike Ad Monitor", date: "12 Mar 2026 · 14:32", duration: "3m 12s", status: "success", concepts: 9, conceptsRunId: "ai-image-studio-1", thumbnails: [], setup: ["Nike Meta ads · Top 20 by days online", "4 products", "9 concepts generated"] },
+  { id: "r2", workflowId: "competitor-1", name: "Nike Ad Monitor", date: "5 Mar 2026 · 14:30", duration: "2m 48s", status: "success", concepts: 7, conceptsRunId: "ai-image-studio-1", thumbnails: [], setup: ["Nike Meta ads · Top 20 by days online", "4 products", "7 concepts generated"] },
+  { id: "r3", workflowId: "competitor-2", name: "Adidas Creative Tracker", date: "8 Mar 2026 · 11:05", duration: "1m 03s", status: "failed", concepts: 0, thumbnails: [], setup: ["Adidas Meta ads · All new since last run", "2 products", "Failed at Generate concepts"] },
+  { id: "r4", workflowId: "competitor-2", name: "Adidas Creative Tracker", date: "1 Mar 2026 · 11:00", duration: "2m 41s", status: "success", concepts: 5, conceptsRunId: "ai-image-studio-1", thumbnails: [], setup: ["Adidas Meta ads · All new since last run", "2 products", "5 concepts generated"] },
 ];
-
-const manualAgents = [
-  { id: "manual-image-input", name: "Manual Image Input", description: "Upload your own images at run time and generate ad variations from them. Cannot be scheduled.", icon: ImagePlus },
-];
-
-const adAccountAgents = [
-  { id: "ad-visual-variations", name: "Visual Variations", description: "Takes top-performing ads from your ad account and rebuilds them with fresh creative variations.", icon: Eye },
-  { id: "ad-strategy-variations", name: "Strategy Variations", description: "Creates new visuals using a similar marketing message and angle from your own ads.", icon: Lightbulb },
-];
-
-const redditAgents = [
-  { id: "reddit-ad-workflow", name: "Reddit Ad Workflow", description: "Scrape trending Reddit posts from relevant subreddits and generate ad creatives inspired by real conversations.", icon: MessageSquare },
-];
-
-/* ── Component ── */
 
 export default function Workflows() {
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
   const navigate = useNavigate();
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [editTarget, setEditTarget] = useState<Agent | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [workflowToggles, setWorkflowToggles] = useState<Record<string, boolean>>({ "competitor-1": true, "competitor-2": true });
+  const [activeSearch, setActiveSearch] = useState("");
+  const [nameOverrides, setNameOverrides] = useState<Record<string, string>>({});
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState("");
 
-  const openCreate = () => {
-    setShowCreateModal(true);
+  const commitName = (id: string) => {
+    const trimmed = draftName.trim();
+    if (trimmed) setNameOverrides((prev) => ({ ...prev, [id]: trimmed }));
+    setEditingNameId(null);
   };
 
-  const handleSelectAgent = (type: AgentType, name: string, description: string) => {
-    const newAgent: Agent = {
-      id: crypto.randomUUID(),
-      name,
-      type,
-      description,
-      concepts: 0,
-      enabled: type !== "manual",
-      nextRun: type === "manual" ? "Manual only" : "Pending",
-    };
-    setAgents((prev) => [newAgent, ...prev]);
-    setShowCreateModal(false);
-    toast.success(`Workflow "${name}" created!`);
-    if (type === "competitor") {
-      navigate(`/workflows/${newAgent.id}`, { state: { type: "competitor", isNew: true } });
-    } else if (type === "ad-account") {
-      navigate(`/workflows/${newAgent.id}`, { state: { type: "ad-account" } });
-    } else if (type === "reddit") {
-      navigate(`/workflows/${newAgent.id}`, { state: { type: "reddit" } });
-    }
-  };
+  const [historyWorkflowId, setHistoryWorkflowId] = useState<string | null>(null);
+  const [historyQuery, setHistoryQuery] = useState("");
+  const [historyVisibleCount, setHistoryVisibleCount] = useState(30);
+
+  const railRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => { setHistoryVisibleCount(30); setHistoryQuery(""); }, [historyWorkflowId]);
+  useEffect(() => { setHistoryVisibleCount(30); }, [historyQuery]);
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
@@ -131,309 +114,242 @@ export default function Workflows() {
     setDeleteTarget(null);
   };
 
-  const toggleAgent = (id: string) => {
-    setAgents((prev) =>
-      prev.map((a) =>
-        a.id === id ? { ...a, enabled: !a.enabled, nextRun: !a.enabled ? "Pending" : "Not scheduled" } : a
-      )
-    );
+  const activeWorkflow = activeWorkflows.find((w) => w.id === historyWorkflowId) ?? null;
+
+  const workflowRuns = useMemo(() => {
+    if (!historyWorkflowId) return [];
+    return runHistory.filter((r) => r.workflowId === historyWorkflowId).filter((r) => {
+      const q = historyQuery.trim().toLowerCase();
+      if (!q) return true;
+      return r.date.toLowerCase().includes(q) || r.status.toLowerCase().includes(q) || r.duration.toLowerCase().includes(q);
+    });
+  }, [historyWorkflowId, historyQuery]);
+
+  const visibleHistoryRuns = workflowRuns.slice(0, historyVisibleCount);
+
+  const scrollRail = (dir: "left" | "right") => {
+    const el = railRef.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.8;
+    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   };
 
-  return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Workflows</h1>
-          <p className="text-muted-foreground text-sm">Manage and customize your creative workflows.</p>
+  const templatesRail = (
+    <div className="relative group">
+      <div ref={railRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scroll-smooth" style={{ scrollbarWidth: "thin" }}>
+        {sourceTemplates.map((t) => (
+          <div
+            key={t.id}
+            onClick={() => { if (t.comingSoon) return; navigate(`/workflows/${t.id}`, { state: { type: t.type, isNew: true } }); }}
+            style={{ border: BORDER, borderRadius: CARD_RADIUS, background: "#fff" }}
+            className={`snap-start shrink-0 w-[280px] md:w-[360px] overflow-hidden group/card transition-shadow ${t.comingSoon ? "cursor-not-allowed" : "cursor-pointer hover:shadow-md"}`}
+          >
+            <div className="relative aspect-video w-full overflow-hidden bg-muted">
+              {t.thumbnailImg ? (
+                <img src={t.thumbnailImg} alt={t.title} className={`w-full h-full object-cover ${t.comingSoon ? "blur-md scale-110" : ""}`} />
+              ) : (
+                <div className={`w-full h-full ${t.comingSoon ? "blur-md scale-110" : ""}`}>
+                  <WorkflowTemplateThumbnail variant={t.variant} />
+                </div>
+              )}
+              {t.comingSoon && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/30">
+                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-background/90 text-foreground shadow-sm border border-border">Coming soon</span>
+                </div>
+              )}
+              {!t.comingSoon && (
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#D4537E" }} className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-white/95 shadow-sm border border-border opacity-0 group-hover/card:opacity-100 transition-opacity">
+                  Use template →
+                </span>
+              )}
+            </div>
+            <div style={{ padding: "12px 14px 14px" }}>
+              <div className="flex items-center justify-between gap-2">
+                <p style={{ fontSize: 13, fontWeight: 600 }} className="truncate">{t.title}</p>
+              </div>
+              <p style={{ fontSize: 11, lineHeight: 1.35 }} className="text-muted-foreground mt-0.5 line-clamp-1">{t.subtitle}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="pointer-events-none absolute top-0 right-0 h-full w-12" style={{ background: "linear-gradient(to left, #fff, transparent)" }} />
+      <Button variant="outline" size="icon" onClick={() => scrollRail("left")} className="hidden md:inline-flex absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Scroll templates left">
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <Button variant="outline" size="icon" onClick={() => scrollRail("right")} className="hidden md:inline-flex absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Scroll templates right">
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
+  const renderActiveCard = (wf: typeof activeWorkflows[number]) => (
+    <div
+      key={wf.id}
+      onClick={() => navigate(`/workflows/${wf.id}`, { state: { type: wf.type } })}
+      style={{ border: BORDER, borderRadius: CARD_RADIUS, overflow: "hidden", background: "#fff", cursor: "pointer" }}
+      className="hover:shadow-md transition-shadow"
+    >
+      <div className="grid grid-cols-4 gap-[2px] bg-muted">
+        {wf.thumbnails.slice(0, 4).map((src, i) => (
+          <div key={i} className="aspect-square overflow-hidden bg-muted">
+            <img src={src} alt="" className="w-full h-full object-cover" />
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: "12px 14px" }}>
+        <div className="flex items-center justify-between gap-2">
+          {editingNameId === wf.id ? (
+            <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 min-w-0 flex-1">
+              <Input autoFocus value={draftName} onChange={(e) => setDraftName(e.target.value)} onBlur={() => commitName(wf.id)} onKeyDown={(e) => { if (e.key === "Enter") commitName(wf.id); if (e.key === "Escape") setEditingNameId(null); }} className="h-7 text-[13px] font-medium px-2" />
+              <button type="button" onMouseDown={(e) => { e.preventDefault(); commitName(wf.id); }} className="text-muted-foreground hover:text-foreground shrink-0">
+                <Check className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button type="button" onClick={(e) => { e.stopPropagation(); setEditingNameId(wf.id); setDraftName(nameOverrides[wf.id] ?? wf.name); }} className="group flex items-center gap-1.5 min-w-0 flex-1 text-left">
+              <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">{nameOverrides[wf.id] ?? wf.name}</span>
+              <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+            </button>
+          )}
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+            <Switch checked={workflowToggles[wf.id] ?? false} onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))} className="data-[state=checked]:bg-[#D4537E]" />
+          </div>
         </div>
-        <Button variant="outline" onClick={openCreate}>Create workflow</Button>
+        <div className="flex items-center gap-3 mt-2">
+          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
+          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
+        </div>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <span onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }} style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }} className="truncate hover:underline">
+            View latest concepts →
+          </span>
+          <button type="button" onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors shrink-0" style={{ fontSize: 11, fontWeight: 500 }}>
+            <History className="h-3 w-3" />
+            Run history
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const filteredActiveWorkflows = activeWorkflows.filter((wf) => {
+    const q = activeSearch.trim().toLowerCase();
+    if (!q) return true;
+    const name = (nameOverrides[wf.id] ?? wf.name).toLowerCase();
+    return name.includes(q);
+  });
+
+  return (
+    <div style={{ padding: "2.5rem", maxWidth: 1240, margin: "0 auto" }}>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 500 }} className="tracking-tight">Workflows</h1>
+          <p style={{ fontSize: 14 }} className="text-muted-foreground mt-1">Always-on pipelines that surface ad concepts while you sleep.</p>
+        </div>
       </div>
 
-      {/* Your agents */}
-      <Card className="border border-border/60">
-        <CardContent className="p-6">
-          <h2 className="text-base font-semibold mb-4">Your workflows</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {agents.map((agent) => (
-              <Card key={agent.id} className="border border-border/60 cursor-pointer hover:shadow-md transition-shadow overflow-hidden" onClick={() => navigate(`/workflows/${agent.id}`, { state: { type: agent.type } })}>
-                <div className={`h-1 w-full ${agent.type === "holiday" ? "bg-pink-400" : agent.type === "manual" ? "bg-amber-400" : agent.type === "ad-account" ? "bg-teal-400" : agent.type === "reddit" ? "bg-orange-400" : "bg-violet-400"}`} /> 
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <p className="font-semibold text-sm">{agent.name}</p>
-                      <Badge variant="outline" className={`text-[10px] ${agent.type === "holiday" ? "border-pink-200 text-pink-700 bg-pink-50" : agent.type === "manual" ? "border-amber-200 text-amber-700 bg-amber-50" : agent.type === "ad-account" ? "border-teal-200 text-teal-700 bg-teal-50" : agent.type === "reddit" ? "border-orange-200 text-orange-700 bg-orange-50" : "border-violet-200 text-violet-700 bg-violet-50"}`}>
-                        {agent.type === "holiday" ? "SEASONAL" : agent.type === "manual" ? "MANUAL" : agent.type === "ad-account" ? "AD ACCOUNT" : agent.type === "reddit" ? "REDDIT" : "COMPETITOR"}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Switch checked={agent.enabled} onCheckedChange={() => toggleAgent(agent.id)} onClick={(e) => e.stopPropagation()} />
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={(e) => e.stopPropagation()}>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditTarget(agent); setEditName(agent.name); setEditDescription(agent.description); }}>
-                            <Pencil className="h-3.5 w-3.5 mr-2" /> Edit title
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteTarget(agent.id); }}>
-                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">{agent.description}</p>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="mt-3 rounded-md bg-muted/50 px-2.5 py-1.5 flex items-center gap-1.5 cursor-default">
-                        <div className="relative shrink-0">
-                          <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                        </div>
-                        <span className="text-xs text-muted-foreground">{agent.nextRun}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>Next scheduled run for this workflow</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </CardContent>
-              </Card>
-            ))}
+      <div className="space-y-8">
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-muted-foreground uppercase">What's possible</p>
           </div>
-        </CardContent>
-      </Card>
+          {templatesRail}
+        </section>
 
-      {/* Run History */}
-      <Card className="border border-border/60">
-        <CardContent className="p-6">
-          <h2 className="text-base font-semibold mb-4">Run History</h2>
-          <div className="divide-y divide-border/50">
-            {[
-              { id: "run-1", workflow: "Nike Ad Monitor", type: "competitor" as const, status: "completed" as const, concepts: 9, date: "12 Mar 2026", time: "14:32", duration: "3m 12s" },
-              { id: "run-2", workflow: "Manual Image Pipeline", type: "manual" as const, status: "completed" as const, concepts: 4, date: "10 Mar 2026", time: "09:15", duration: "2m 05s" },
-              { id: "run-3", workflow: "Adidas Creative Tracker", type: "competitor" as const, status: "failed" as const, concepts: 0, date: "8 Mar 2026", time: "11:05", duration: "1m 03s" },
-            ].map((run) => (
-              <div key={run.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0 group cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${run.status === "completed" ? "bg-emerald-500" : "bg-red-500"}`} />
-                  <span className="text-sm font-medium">{run.workflow}</span>
-                  <span className="text-xs text-muted-foreground">{run.date} · {run.time}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">{run.duration}</span>
-                  {run.status === "completed" ? (
-                    <span className="text-xs font-medium text-emerald-600">{run.concepts} concepts</span>
-                  ) : (
-                    <span className="text-xs font-medium text-red-600">Failed</span>
-                  )}
-                  <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* ── Create Agent Modal ── */}
-      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
-          <div className="px-6 pt-6 pb-4">
-             <h2 className="text-lg font-semibold">Create workflow</h2>
-            <p className="text-sm text-muted-foreground mt-1">Choose a workflow type to get started.</p>
-          </div>
-
-          <Tabs defaultValue="competitor" className="px-6 pb-6" orientation="vertical">
-            <div className="flex gap-5">
-              <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 shrink-0">
-                <TabsTrigger value="competitor" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Competitor</TabsTrigger>
-                <TabsTrigger value="events" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md gap-2">Seasonal <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pink-100 text-pink-600 font-medium leading-none">Soon</span></TabsTrigger>
-                <TabsTrigger value="manual" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Manual</TabsTrigger>
-                <TabsTrigger value="ad-account" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">My Ad Account</TabsTrigger>
-                <TabsTrigger value="reddit" className="justify-start w-full px-4 py-2 data-[state=active]:bg-muted data-[state=active]:shadow-none rounded-md">Reddit</TabsTrigger>
-              </TabsList>
-
-              <div className="flex-1 min-w-0">
-                <TabsContent value="competitor" className="mt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {competitorAgents.map((agent) => {
-                      const Icon = agent.icon;
-                      return (
-                        <Card
-                          key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("competitor", agent.name, agent.description)}
-                        >
-                          <CardContent className="p-4 space-y-3">
-                            <div className="h-10 w-10 rounded-lg bg-violet-50 border border-violet-200 flex items-center justify-center">
-                              <Icon className="h-5 w-5 text-violet-600" />
-                            </div>
-                            <div className="space-y-1">
-                              <p className="font-semibold text-sm">{agent.name}</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="events" className="mt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {eventAgents.map((agent) => {
-                      const Icon = agent.icon;
-                      const colorParts = agent.color.split(" ");
-                      const textColor = colorParts[0];
-                      const bgColor = colorParts[1];
-                      const borderColor = colorParts[2];
-                      return (
-                        <Card
-                          key={agent.id}
-                          className="relative border border-border/60 opacity-75 cursor-default select-none overflow-hidden"
-                        >
-                          {/* Coming Soon ribbon */}
-                          <div className="absolute top-5 -right-9 rotate-45 bg-pink-500 text-white text-[8px] font-bold tracking-wider uppercase px-10 py-0.5 pointer-events-none shadow-sm">
-                            Coming Soon
-                          </div>
-                          <CardContent className="p-4 space-y-3">
-                            <div className={`h-10 w-10 rounded-lg ${bgColor} border ${borderColor} flex items-center justify-center`}>
-                              <Icon className={`h-5 w-5 ${textColor}`} />
-                            </div>
-                            <div className="space-y-1">
-                              <p className="font-semibold text-sm">{agent.name}</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="manual" className="mt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {manualAgents.map((agent) => {
-                      const Icon = agent.icon;
-                      return (
-                        <Card
-                          key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("manual", agent.name, agent.description)}
-                        >
-                          <CardContent className="p-4 space-y-3">
-                            <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
-                              <Icon className="h-5 w-5 text-amber-600" />
-                            </div>
-                            <div className="space-y-1">
-                              <p className="font-semibold text-sm">{agent.name}</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="ad-account" className="mt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {adAccountAgents.map((agent) => {
-                      const Icon = agent.icon;
-                      return (
-                        <Card
-                          key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("ad-account", agent.name, agent.description)}
-                        >
-                          <CardContent className="p-4 space-y-3">
-                            <div className="h-10 w-10 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center">
-                              <Icon className="h-5 w-5 text-teal-600" />
-                            </div>
-                            <div className="space-y-1">
-                              <p className="font-semibold text-sm">{agent.name}</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="reddit" className="mt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {redditAgents.map((agent) => {
-                      const Icon = agent.icon;
-                      return (
-                        <Card
-                          key={agent.id}
-                          className="border border-border/60 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all"
-                          onClick={() => handleSelectAgent("reddit", agent.name, agent.description)}
-                        >
-                          <CardContent className="p-4 space-y-3">
-                            <div className="h-10 w-10 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
-                              <Icon className="h-5 w-5 text-orange-600" />
-                            </div>
-                            <div className="space-y-1">
-                              <p className="font-semibold text-sm">{agent.name}</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">{agent.description}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
-              </div>
+        <section>
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-muted-foreground uppercase">
+              Active workflows · {filteredActiveWorkflows.length}
+            </p>
+            <div className="relative w-full max-w-[260px]">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input value={activeSearch} onChange={(e) => setActiveSearch(e.target.value)} placeholder="Search workflows" className="h-8 pl-8 text-xs" />
             </div>
-          </Tabs>
-        </DialogContent>
-      </Dialog>
+          </div>
+          {filteredActiveWorkflows.length === 0 ? (
+            <div style={{ border: BORDER, borderRadius: CARD_RADIUS, background: "#fff", padding: "2.5rem 1rem" }} className="text-center">
+              <p style={{ fontSize: 13, fontWeight: 500 }}>{activeSearch ? "No workflows match your search" : "No active workflows yet"}</p>
+              <p style={{ fontSize: 12 }} className="text-muted-foreground mt-1 mb-4">{activeSearch ? "Try a different keyword." : "Start from a template to create your first workflow."}</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {filteredActiveWorkflows.map(renderActiveCard)}
+            </div>
+          )}
+        </section>
+      </div>
 
-      {/* Delete Confirmation */}
-      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <Sheet open={!!historyWorkflowId} onOpenChange={(o) => { if (!o) setHistoryWorkflowId(null); }}>
+        <SheetContent side="right" className="w-[480px] sm:max-w-[480px] p-0 flex flex-col">
+          <SheetHeader className="px-5 py-4 border-b space-y-2">
+            <SheetTitle className="text-base font-semibold">{activeWorkflow?.name ?? "Run history"}</SheetTitle>
+            <p style={{ fontSize: 11 }} className="text-muted-foreground uppercase tracking-wider">Run history · {workflowRuns.length}</p>
+          </SheetHeader>
+          <div className="flex-1 overflow-hidden">
+            {workflowRuns.length === 0 ? (
+              <p style={{ fontSize: 12, padding: "32px 20px" }} className="text-muted-foreground text-center">No runs yet for this workflow.</p>
+            ) : (
+              <ScrollArea className="h-[calc(100vh-220px)]">
+                <div>
+                  {visibleHistoryRuns.map((run, idx) => (
+                    <div key={run.id} style={{ padding: "12px 20px", borderBottom: idx < visibleHistoryRuns.length - 1 ? BORDER : "none" }} className="hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => { if (run.status === "success" && run.conceptsRunId) navigate(`/concepts/${run.conceptsRunId}`); }}>
+                      <div className="flex items-center gap-2">
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: run.status === "success" ? "#639922" : "#E24B4A", flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 500 }} className="flex-1">Run #{runHistory.length - runHistory.indexOf(run)}</span>
+                        {run.status === "success" && run.conceptsRunId ? (
+                          <span style={{ fontSize: 11, fontWeight: 500, color: "#D4537E" }}>View {run.concepts} concepts →</span>
+                        ) : (
+                          <span style={{ fontSize: 11, fontWeight: 500, color: "#E24B4A" }}>Failed</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 ml-4">
+                        <span style={{ fontSize: 11 }} className="text-muted-foreground">{run.date}</span>
+                      </div>
+                    </div>
+                  ))}
+                  {historyVisibleCount < workflowRuns.length && (
+                    <div className="p-3 flex justify-center">
+                      <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={() => setHistoryVisibleCount((c) => c + 30)}>Show more</Button>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Delete workflow</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this workflow? This action cannot be undone.
-            </DialogDescription>
+            <DialogDescription>This will permanently remove this workflow and its history.</DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
             <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Title/Description */}
-      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+      <Dialog open={!!editTarget} onOpenChange={() => setEditTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Edit workflow</DialogTitle>
-            <DialogDescription>Update the title and description of this workflow.</DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <div className="space-y-1.5">
-              <Label>Title</Label>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            <div>
+              <Label className="text-xs">Name</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="mt-1" />
             </div>
-            <div className="space-y-1.5">
-              <Label>Description</Label>
-              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={2} />
+            <div>
+              <Label className="text-xs">Description</Label>
+              <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} className="mt-1" rows={2} />
             </div>
           </div>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="ghost" onClick={() => setEditTarget(null)}>Cancel</Button>
-            <Button onClick={() => {
-              if (!editTarget) return;
-              setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a));
-              toast.success("Workflow updated");
-              setEditTarget(null);
-            }}>Save</Button>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditTarget(null)}>Cancel</Button>
+            <Button onClick={() => { if (editTarget) { setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a)); toast.success("Workflow updated"); setEditTarget(null); } }}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
