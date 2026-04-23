@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -234,9 +234,9 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
     return getNextRuns(recurrenceType, interval, weekDays, me.ordinal, me.dayType, ye.month);
   }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
 
-  useMemo(() => {
+  useEffect(() => {
     onScheduleChange?.(summary, nextRuns[0] ?? null, nextRuns);
-    return null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [summary, nextRuns]);
 
   const updateMonthEntry = (index: number, field: "ordinal" | "dayType", value: string) => {
