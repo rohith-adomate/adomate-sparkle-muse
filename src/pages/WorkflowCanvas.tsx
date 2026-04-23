@@ -1511,7 +1511,7 @@ export default function WorkflowCanvas() {
                                     : "—")}
                                   {node.type === "dataset" && "641 ads"}
                                   {node.type === "top-select" && (isAllNew ? "All new" : "Top 5")}
-                                  {node.type === "product-data" && productCount}
+                                  {node.type === "product-data" && (selectedProductCount > 0 ? selectedProductCount : "—")}
                                   {node.type === "generate-concepts" && "~75 concepts"}
                                 </span>
                               </div>
