@@ -244,7 +244,10 @@ export default function WorkflowCanvas() {
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
-  const [selectedProductCount, setSelectedProductCount] = useState(0);
+  // For non-new (already-active) workflows, assume product-data is configured
+  // so the celebration effect doesn't see a false→true transition once the
+  // ProductDataDrawer reports its actual selection on mount.
+  const [selectedProductCount, setSelectedProductCount] = useState(isAnyNew ? 0 : 1);
   const [datasetEmpty, setDatasetEmpty] = useState(isNewCompetitor);
   const [generateConceptsDrawerOpen, setGenerateConceptsDrawerOpen] = useState(false);
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false);
