@@ -86,13 +86,11 @@ interface ProductDataDrawerProps {
 }
 
 export default function ProductDataDrawer({ open, onOpenChange, onSelectionChange, onContinue, continueLabel, initialEmpty }: ProductDataDrawerProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _unused = { initialEmpty };
-  const [selectedProducts, setSelectedProducts] = useState<string[]>(["prod-1"]);
-  const [selectedImages, setSelectedImages] = useState<Record<string, string[]>>({
-    "prod-1": ["img-1-1"],
-  });
-  const [expandedProducts, setExpandedProducts] = useState<string[]>(["prod-1"]);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>(initialEmpty ? [] : ["prod-1"]);
+  const [selectedImages, setSelectedImages] = useState<Record<string, string[]>>(
+    initialEmpty ? {} : { "prod-1": ["img-1-1"] }
+  );
+  const [expandedProducts, setExpandedProducts] = useState<string[]>(initialEmpty ? [] : ["prod-1"]);
 
   useEffect(() => {
     onSelectionChange?.(selectedProducts.length);

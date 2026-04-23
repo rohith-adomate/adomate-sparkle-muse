@@ -1715,6 +1715,7 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
         onSelectionChange={setSelectedProductCount}
+        initialEmpty={isAnyNew}
         onContinue={continueHandlerFor("product-data", () => setProductDataDrawerOpen(false))}
         continueLabel={continueLabelFor("product-data")}
       />
