@@ -233,8 +233,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             </div>
           </div>
 
-          {/* No-brands-tracked empty state */}
-          {sources.length === 0 && (
+          {/* No-brands-tracked empty state — only when table is empty AND no brands available to add */}
+          {sources.length === 0 && DATA_ROOM_COMPETITORS.length === 0 && (
             <div className="border-b border-border bg-muted/40 px-5 py-3 flex items-start gap-3 shrink-0">
               <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
