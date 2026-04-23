@@ -482,6 +482,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange, o
             )}
           </div>
         </div>
+        <DrawerContinueFooter onContinue={onContinue} label={continueLabel} />
       </SheetContent>
     </Sheet>
   );
