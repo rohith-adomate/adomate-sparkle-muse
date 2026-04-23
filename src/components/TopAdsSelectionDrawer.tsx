@@ -43,6 +43,8 @@ export default function TopAdsSelectionDrawer({
   onOpenChange,
   config: initialConfig,
   onConfigChange,
+  onContinue,
+  continueLabel,
 }: TopAdsSelectionDrawerProps) {
   const defaultConfig: SelectConfig = {
     mode: "top-n",
