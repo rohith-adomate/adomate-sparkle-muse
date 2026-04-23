@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Info, MoreHorizontal, Plus, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 type RecurrenceType = "days" | "weeks" | "months" | "years";
 
