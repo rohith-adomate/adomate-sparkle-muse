@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";

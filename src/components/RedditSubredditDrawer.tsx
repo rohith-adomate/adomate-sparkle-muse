@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import {
   Info, Plus, X, Search, ChevronDown, ArrowUp, MessageSquare, Clock,
 } from "lucide-react";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 interface RedditSubredditDrawerProps {
   open: boolean;
@@ -52,7 +53,7 @@ function formatNumber(n: number): string {
   return String(n);
 }
 
-export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubredditDrawerProps) {
+export default function RedditSubredditDrawer({ open, onOpenChange, onContinue, continueLabel }: RedditSubredditDrawerProps) {
   const [subreddits, setSubreddits] = useState(ALL_SUBREDDITS);
   const [subredditPopoverOpen, setSubredditPopoverOpen] = useState(false);
   const [subredditSearch, setSubredditSearch] = useState("");
@@ -396,6 +397,9 @@ export default function RedditSubredditDrawer({ open, onOpenChange }: RedditSubr
               </TableBody>
             </Table>
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} />
         </div>
       </div>
     </TooltipProvider>
