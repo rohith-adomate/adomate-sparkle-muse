@@ -456,7 +456,7 @@ export default function Workflows() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-primary uppercase">
-              Create new workflow
+              Start with a template
             </p>
           </div>
           {templatesRail}
