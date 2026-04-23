@@ -322,7 +322,13 @@ export default function WorkflowCanvas() {
   }, [pipeline]);
 
   const continueHandlerFor = useCallback(
-    (type: string) => (showContinueFor.has(type) ? () => openNextDrawerFor(type) : undefined),
+    (type: string, closeDrawer?: () => void) =>
+      showContinueFor.has(type)
+        ? () => {
+            closeDrawer?.();
+            openNextDrawerFor(type);
+          }
+        : undefined,
     [showContinueFor, openNextDrawerFor],
   );
 
