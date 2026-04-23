@@ -7,7 +7,7 @@ import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink }
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
-import DatasetBuilderLeftPanel from "./DatasetBuilderLeftPanel";
+import DatasetBuilderLeftPanel, { DATA_ROOM_COMPETITORS } from "./DatasetBuilderLeftPanel";
 import DatasetBuilderTable from "./DatasetBuilderTable";
 import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
