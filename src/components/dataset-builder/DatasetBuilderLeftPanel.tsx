@@ -10,7 +10,7 @@ import {
 import TableFilterPopover from "./TableFilterPopover";
 
 // These represent the competitors available in the Data Room
-const DATA_ROOM_COMPETITORS = [
+export const DATA_ROOM_COMPETITORS = [
   { id: "1", name: "Canva Ads", avatar: "https://logo.clearbit.com/canva.com", url: "https://www.facebook.com/ads/library/?q=canva" },
   { id: "2", name: "Smartly.io", avatar: "https://logo.clearbit.com/smartly.io", url: "https://www.facebook.com/ads/library/?q=smartly" },
   { id: "3", name: "AdCreative.ai", avatar: "https://logo.clearbit.com/adcreative.ai", url: "https://www.facebook.com/ads/library/?q=adcreative" },

@@ -7,7 +7,7 @@ import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink }
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
-import DatasetBuilderLeftPanel from "./DatasetBuilderLeftPanel";
+import DatasetBuilderLeftPanel, { DATA_ROOM_COMPETITORS } from "./DatasetBuilderLeftPanel";
 import DatasetBuilderTable from "./DatasetBuilderTable";
 import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
@@ -233,8 +233,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             </div>
           </div>
 
-          {/* No-brands-tracked empty state */}
-          {sources.length === 0 && (
+          {/* No-brands-tracked empty state — only when table is empty AND no brands available to add */}
+          {sources.length === 0 && DATA_ROOM_COMPETITORS.length === 0 && (
             <div className="border-b border-border bg-muted/40 px-5 py-3 flex items-start gap-3 shrink-0">
               <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
