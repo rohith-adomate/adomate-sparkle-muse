@@ -1248,26 +1248,26 @@ export default function WorkflowCanvas() {
                       }
                     } else {
                       if (node.type === "dataset") {
-                        setDatasetDrawerOpen(true);
+                        openDrawerFor("dataset");
                       } else if (node.type === "product-data") {
-                        setProductDataDrawerOpen(true);
+                        openDrawerFor("product-data");
                       } else if (node.type === "generate-concepts") {
-                        setGenerateConceptsDrawerOpen(true);
+                        openDrawerFor("generate-concepts");
                         markConfigured("generate-concepts");
                       } else if (node.type === "schedule") {
-                        setScheduleDrawerOpen(true);
+                        openDrawerFor("schedule");
                         markConfigured("schedule");
                       } else if (node.type === "top-select") {
-                        setTopSelectDrawerOpen(true);
+                        openDrawerFor("top-select");
                         markConfigured("top-select");
                       } else if (node.type === "manual-image-input") {
                         // Don't open drawer on click — interaction is inline now
                       } else if (node.type === "ad-account") {
-                        setAdAccountDrawerOpen(true);
+                        openDrawerFor("ad-account");
                       } else if (node.type === "reddit-subreddit") {
-                        setRedditSubredditDrawerOpen(true);
+                        openDrawerFor("reddit-subreddit");
                       } else if (node.type === "reddit-ad-generator") {
-                        setRedditAdGeneratorDrawerOpen(true);
+                        openDrawerFor("reddit-ad-generator");
                       }
                     }
                   }}
