@@ -277,7 +277,19 @@ export default function WorkflowCanvas() {
     return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
   }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow]);
 
+  // Tracks which node-type drawers should currently show the Continue CTA.
+  // We snapshot this at the moment a drawer opens so clicking the node
+  // (which also calls markConfigured) doesn't immediately hide the CTA.
+  const [showContinueFor, setShowContinueFor] = useState<Set<string>>(new Set());
+
   const openDrawerFor = useCallback((type: string) => {
+    setShowContinueFor((prev) => {
+      if (configuredTypes.has(type)) return prev;
+      if (prev.has(type)) return prev;
+      const next = new Set(prev);
+      next.add(type);
+      return next;
+    });
     if (type === "schedule") setScheduleDrawerOpen(true);
     else if (type === "dataset") setDatasetDrawerOpen(true);
     else if (type === "ad-account") setAdAccountDrawerOpen(true);
@@ -287,10 +299,16 @@ export default function WorkflowCanvas() {
     else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
     else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
     else if (type === "manual-image-input") setManualImageDrawerOpen(true);
-  }, []);
+  }, [configuredTypes]);
 
   const openNextDrawerFor = useCallback((currentType: string) => {
     markConfigured(currentType);
+    setShowContinueFor((prev) => {
+      if (!prev.has(currentType)) return prev;
+      const next = new Set(prev);
+      next.delete(currentType);
+      return next;
+    });
     const idx = pipeline.indexOf(currentType);
     if (idx === -1 || idx === pipeline.length - 1) return;
     const next = pipeline[idx + 1];
@@ -302,6 +320,11 @@ export default function WorkflowCanvas() {
     const idx = pipeline.indexOf(currentType);
     return idx === pipeline.length - 1 ? "Finish" : "Continue";
   }, [pipeline]);
+
+  const continueHandlerFor = useCallback(
+    (type: string) => (showContinueFor.has(type) ? () => openNextDrawerFor(type) : undefined),
+    [showContinueFor, openNextDrawerFor],
+  );
 
   // Briefly flash unconfigured-node pulsing dots when user tries to Run
   const [flashUnconfigured, setFlashUnconfigured] = useState(false);
