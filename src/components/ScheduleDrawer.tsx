@@ -213,7 +213,7 @@ function buildSummary(
     : `Every ${interval} years on the ${joined}`;
 }
 
-export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }: ScheduleDrawerProps) {
+export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange, onContinue, continueLabel }: ScheduleDrawerProps) {
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
   const [interval, setInterval] = useState(1);
   const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
