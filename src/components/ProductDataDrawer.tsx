@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Package, Image, ChevronDown, ChevronRight } from "lucide-react";
 import { getOyImage } from "@/data/oyImages";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 import oyProductScalpHairWash from "@/assets/oy/oy-product-scalp-hair-wash.png";
 import oyProductScalpHairWashDandruff from "@/assets/oy/oy-product-scalp-hair-wash-dandruff.png";
