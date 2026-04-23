@@ -1422,12 +1422,12 @@ export default function WorkflowCanvas() {
                                 )}
                                 {node.type === "top-select" && (
                                   isAllNew ? (
-                                    <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center gap-2">
+                                    <div className="h-12 rounded-md flex items-center justify-center gap-2">
                                       <span className="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-bold uppercase tracking-wide">New</span>
                                       <span className="text-[12px] font-semibold">Since last run</span>
                                     </div>
                                   ) : (
-                                    <div className="h-12 rounded-md bg-muted/50 flex items-center justify-center gap-1.5">
+                                    <div className="h-12 rounded-md flex items-center justify-center gap-1.5">
                                       {Array.from({ length: 5 }).map((_, i) => (
                                         <div key={i} className="h-7 w-5 rounded bg-primary/70" style={{ opacity: 1 - i * 0.15 }} />
                                       ))}
