@@ -1422,15 +1422,18 @@ export default function WorkflowCanvas() {
                                       });
                                   const label = scheduleSummary || node.description || "Every Monday";
                                   return (
-                                    <div className="rounded-md px-2 py-1.5 flex flex-col items-center gap-1">
-                                      <div className="flex items-center max-w-full">
-                                        <span className="text-[12px] font-semibold truncate">{label}</span>
-                                      </div>
+                                    <div className="rounded-md px-2 py-1 flex flex-col items-center gap-1.5">
+                                      <span className="text-[12px] font-semibold text-foreground truncate max-w-full">{label}</span>
                                       <div className="flex items-center gap-1">
                                         {runs.map((d, i) => (
                                           <span
                                             key={i}
-                                            className="px-1.5 py-0.5 rounded bg-background border border-border/60 text-[9px] font-medium text-muted-foreground tabular-nums"
+                                            className={cn(
+                                              "px-1.5 py-0.5 rounded text-[9px] font-medium tabular-nums border",
+                                              i === 0
+                                                ? "bg-primary/10 border-primary/30 text-primary"
+                                                : "bg-background border-border/60 text-muted-foreground"
+                                            )}
                                           >
                                             {d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                                           </span>
