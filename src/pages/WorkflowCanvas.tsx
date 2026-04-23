@@ -277,7 +277,19 @@ export default function WorkflowCanvas() {
     return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
   }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow]);
 
+  // Tracks which node-type drawers should currently show the Continue CTA.
+  // We snapshot this at the moment a drawer opens so clicking the node
+  // (which also calls markConfigured) doesn't immediately hide the CTA.
+  const [showContinueFor, setShowContinueFor] = useState<Set<string>>(new Set());
+
   const openDrawerFor = useCallback((type: string) => {
+    setShowContinueFor((prev) => {
+      if (configuredTypes.has(type)) return prev;
+      if (prev.has(type)) return prev;
+      const next = new Set(prev);
+      next.add(type);
+      return next;
+    });
     if (type === "schedule") setScheduleDrawerOpen(true);
     else if (type === "dataset") setDatasetDrawerOpen(true);
     else if (type === "ad-account") setAdAccountDrawerOpen(true);
@@ -287,10 +299,16 @@ export default function WorkflowCanvas() {
     else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
     else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
     else if (type === "manual-image-input") setManualImageDrawerOpen(true);
-  }, []);
+  }, [configuredTypes]);
 
   const openNextDrawerFor = useCallback((currentType: string) => {
     markConfigured(currentType);
+    setShowContinueFor((prev) => {
+      if (!prev.has(currentType)) return prev;
+      const next = new Set(prev);
+      next.delete(currentType);
+      return next;
+    });
     const idx = pipeline.indexOf(currentType);
     if (idx === -1 || idx === pipeline.length - 1) return;
     const next = pipeline[idx + 1];
@@ -302,6 +320,11 @@ export default function WorkflowCanvas() {
     const idx = pipeline.indexOf(currentType);
     return idx === pipeline.length - 1 ? "Finish" : "Continue";
   }, [pipeline]);
+
+  const continueHandlerFor = useCallback(
+    (type: string) => (showContinueFor.has(type) ? () => openNextDrawerFor(type) : undefined),
+    [showContinueFor, openNextDrawerFor],
+  );
 
   // Briefly flash unconfigured-node pulsing dots when user tries to Run
   const [flashUnconfigured, setFlashUnconfigured] = useState(false);
@@ -1225,26 +1248,26 @@ export default function WorkflowCanvas() {
                       }
                     } else {
                       if (node.type === "dataset") {
-                        setDatasetDrawerOpen(true);
+                        openDrawerFor("dataset");
                       } else if (node.type === "product-data") {
-                        setProductDataDrawerOpen(true);
+                        openDrawerFor("product-data");
                       } else if (node.type === "generate-concepts") {
-                        setGenerateConceptsDrawerOpen(true);
+                        openDrawerFor("generate-concepts");
                         markConfigured("generate-concepts");
                       } else if (node.type === "schedule") {
-                        setScheduleDrawerOpen(true);
+                        openDrawerFor("schedule");
                         markConfigured("schedule");
                       } else if (node.type === "top-select") {
-                        setTopSelectDrawerOpen(true);
+                        openDrawerFor("top-select");
                         markConfigured("top-select");
                       } else if (node.type === "manual-image-input") {
                         // Don't open drawer on click — interaction is inline now
                       } else if (node.type === "ad-account") {
-                        setAdAccountDrawerOpen(true);
+                        openDrawerFor("ad-account");
                       } else if (node.type === "reddit-subreddit") {
-                        setRedditSubredditDrawerOpen(true);
+                        openDrawerFor("reddit-subreddit");
                       } else if (node.type === "reddit-ad-generator") {
-                        setRedditAdGeneratorDrawerOpen(true);
+                        openDrawerFor("reddit-ad-generator");
                       }
                     }
                   }}
@@ -1669,7 +1692,7 @@ export default function WorkflowCanvas() {
         onClose={() => setDatasetDrawerOpen(false)}
         initialEmpty={isNewCompetitor}
         onSourcesChange={(count) => setDatasetEmpty(count === 0)}
-        onContinue={() => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); }}
+        onContinue={showContinueFor.has("dataset") ? () => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); } : undefined}
         continueLabel={continueLabelFor("dataset")}
       />
       <DatasetRunResultsDrawer
@@ -1680,13 +1703,13 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
         onSelectionChange={setSelectedProductCount}
-        onContinue={() => openNextDrawerFor("product-data")}
+        onContinue={continueHandlerFor("product-data")}
         continueLabel={continueLabelFor("product-data")}
       />
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
-        onContinue={() => openNextDrawerFor("generate-concepts")}
+        onContinue={continueHandlerFor("generate-concepts")}
         continueLabel={continueLabelFor("generate-concepts")}
       />
       <NodeOutputDrawer
@@ -1707,7 +1730,7 @@ export default function WorkflowCanvas() {
             )
           );
         }}
-        onContinue={() => openNextDrawerFor("schedule")}
+        onContinue={continueHandlerFor("schedule")}
         continueLabel={continueLabelFor("schedule")}
       />
       <TopAdsSelectionDrawer
@@ -1715,32 +1738,32 @@ export default function WorkflowCanvas() {
         onOpenChange={setTopSelectDrawerOpen}
         config={topSelectConfig}
         onConfigChange={handleTopSelectChange}
-        onContinue={() => openNextDrawerFor("top-select")}
+        onContinue={continueHandlerFor("top-select")}
         continueLabel={continueLabelFor("top-select")}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}
         onOpenChange={setManualImageDrawerOpen}
         uploadedImages={uploadedImages}
-        onContinue={() => openNextDrawerFor("manual-image-input")}
+        onContinue={continueHandlerFor("manual-image-input")}
         continueLabel={continueLabelFor("manual-image-input")}
       />
       <AdAccountDrawer
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
-        onContinue={() => openNextDrawerFor("ad-account")}
+        onContinue={continueHandlerFor("ad-account")}
         continueLabel={continueLabelFor("ad-account")}
       />
       <RedditSubredditDrawer
         open={redditSubredditDrawerOpen}
         onOpenChange={setRedditSubredditDrawerOpen}
-        onContinue={() => openNextDrawerFor("reddit-subreddit")}
+        onContinue={continueHandlerFor("reddit-subreddit")}
         continueLabel={continueLabelFor("reddit-subreddit")}
       />
       <RedditAdGeneratorDrawer
         open={redditAdGeneratorDrawerOpen}
         onOpenChange={setRedditAdGeneratorDrawerOpen}
-        onContinue={() => openNextDrawerFor("reddit-ad-generator")}
+        onContinue={continueHandlerFor("reddit-ad-generator")}
         continueLabel={continueLabelFor("reddit-ad-generator")}
       />
       <RunOutputPanel
