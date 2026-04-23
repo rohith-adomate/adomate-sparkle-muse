@@ -1463,11 +1463,18 @@ export default function WorkflowCanvas() {
                                   )
                                 )}
                                 {node.type === "product-data" && (
-                                  <div className="h-12 flex items-center justify-start -space-x-2">
-                                    {Array.from({ length: productDisplay }).map((_, i) => (
-                                      <img key={i} src={getOyImage(i)} alt="" className="h-9 w-9 aspect-square rounded-md object-cover ring-2 ring-card bg-muted" />
-                                    ))}
-                                  </div>
+                                  selectedProductCount === 0 ? (
+                                    <div className="h-12 rounded-lg border border-dashed border-border flex flex-col items-center justify-center gap-0.5">
+                                      <Package className="h-3 w-3 text-muted-foreground" />
+                                      <p className="text-[9px] text-muted-foreground">No products selected</p>
+                                    </div>
+                                  ) : (
+                                    <div className="h-12 flex items-center justify-start -space-x-2">
+                                      {Array.from({ length: productDisplay }).map((_, i) => (
+                                        <img key={i} src={getOyImage(i)} alt="" className="h-9 w-9 aspect-square rounded-md object-cover ring-2 ring-card bg-muted" />
+                                      ))}
+                                    </div>
+                                  )
                                 )}
                                 {node.type === "generate-concepts" && (
                                   <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center">
@@ -1504,7 +1511,7 @@ export default function WorkflowCanvas() {
                                     : "—")}
                                   {node.type === "dataset" && "641 ads"}
                                   {node.type === "top-select" && (isAllNew ? "All new" : "Top 5")}
-                                  {node.type === "product-data" && productCount}
+                                  {node.type === "product-data" && (selectedProductCount > 0 ? selectedProductCount : "—")}
                                   {node.type === "generate-concepts" && "~75 concepts"}
                                 </span>
                               </div>
