@@ -322,7 +322,13 @@ export default function WorkflowCanvas() {
   }, [pipeline]);
 
   const continueHandlerFor = useCallback(
-    (type: string) => (showContinueFor.has(type) ? () => openNextDrawerFor(type) : undefined),
+    (type: string, closeDrawer?: () => void) =>
+      showContinueFor.has(type)
+        ? () => {
+            closeDrawer?.();
+            openNextDrawerFor(type);
+          }
+        : undefined,
     [showContinueFor, openNextDrawerFor],
   );
 
@@ -1703,13 +1709,13 @@ export default function WorkflowCanvas() {
         open={productDataDrawerOpen}
         onOpenChange={setProductDataDrawerOpen}
         onSelectionChange={setSelectedProductCount}
-        onContinue={continueHandlerFor("product-data")}
+        onContinue={continueHandlerFor("product-data", () => setProductDataDrawerOpen(false))}
         continueLabel={continueLabelFor("product-data")}
       />
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
-        onContinue={continueHandlerFor("generate-concepts")}
+        onContinue={continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))}
         continueLabel={continueLabelFor("generate-concepts")}
       />
       <NodeOutputDrawer
@@ -1730,7 +1736,7 @@ export default function WorkflowCanvas() {
             )
           );
         }}
-        onContinue={continueHandlerFor("schedule")}
+        onContinue={continueHandlerFor("schedule", () => setScheduleDrawerOpen(false))}
         continueLabel={continueLabelFor("schedule")}
       />
       <TopAdsSelectionDrawer
@@ -1738,32 +1744,32 @@ export default function WorkflowCanvas() {
         onOpenChange={setTopSelectDrawerOpen}
         config={topSelectConfig}
         onConfigChange={handleTopSelectChange}
-        onContinue={continueHandlerFor("top-select")}
+        onContinue={continueHandlerFor("top-select", () => setTopSelectDrawerOpen(false))}
         continueLabel={continueLabelFor("top-select")}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}
         onOpenChange={setManualImageDrawerOpen}
         uploadedImages={uploadedImages}
-        onContinue={continueHandlerFor("manual-image-input")}
+        onContinue={continueHandlerFor("manual-image-input", () => setManualImageDrawerOpen(false))}
         continueLabel={continueLabelFor("manual-image-input")}
       />
       <AdAccountDrawer
         open={adAccountDrawerOpen}
         onOpenChange={setAdAccountDrawerOpen}
-        onContinue={continueHandlerFor("ad-account")}
+        onContinue={continueHandlerFor("ad-account", () => setAdAccountDrawerOpen(false))}
         continueLabel={continueLabelFor("ad-account")}
       />
       <RedditSubredditDrawer
         open={redditSubredditDrawerOpen}
         onOpenChange={setRedditSubredditDrawerOpen}
-        onContinue={continueHandlerFor("reddit-subreddit")}
+        onContinue={continueHandlerFor("reddit-subreddit", () => setRedditSubredditDrawerOpen(false))}
         continueLabel={continueLabelFor("reddit-subreddit")}
       />
       <RedditAdGeneratorDrawer
         open={redditAdGeneratorDrawerOpen}
         onOpenChange={setRedditAdGeneratorDrawerOpen}
-        onContinue={continueHandlerFor("reddit-ad-generator")}
+        onContinue={continueHandlerFor("reddit-ad-generator", () => setRedditAdGeneratorDrawerOpen(false))}
         continueLabel={continueLabelFor("reddit-ad-generator")}
       />
       <RunOutputPanel
