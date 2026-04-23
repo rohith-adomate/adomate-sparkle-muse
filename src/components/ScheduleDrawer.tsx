@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,7 @@ const MONTH_DAY_TYPE = [
 interface ScheduleDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onScheduleChange?: (summary: string, firstNextRun?: Date | null) => void;
+  onScheduleChange?: (summary: string, firstNextRun?: Date | null, nextRuns?: Date[]) => void;
   onContinue?: () => void;
   continueLabel?: string;
 }
@@ -164,6 +164,11 @@ function formatDate(d: Date): string {
   return `${weekday}, ${day} ${month} ${year}`;
 }
 
+const FULL_BY_SHORT: Record<string, string> = {
+  Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday",
+  Fri: "Friday", Sat: "Saturday", Sun: "Sunday",
+};
+
 function buildSummary(
   type: RecurrenceType,
   interval: number,
@@ -175,8 +180,14 @@ function buildSummary(
     return interval === 1 ? "Every day" : `Every ${interval} days`;
   }
   if (type === "weeks") {
-    const days = weekDays.length > 0 ? weekDays.join(", ") : "Mon";
-    return interval === 1 ? `Weekly on ${days}` : `Every ${interval} weeks on ${days}`;
+    const ordered = [...weekDays].sort(
+      (a, b) => DAYS_OF_WEEK.indexOf(a as any) - DAYS_OF_WEEK.indexOf(b as any),
+    );
+    if (interval === 1 && ordered.length === 1) {
+      return `Every ${FULL_BY_SHORT[ordered[0]] || ordered[0]}`;
+    }
+    const days = ordered.length > 0 ? ordered.join(", ") : "Mon";
+    return interval === 1 ? `Every week on ${days}` : `Every ${interval} weeks on ${days}`;
   }
   if (type === "months") {
     const parts = monthEntries.map((e) => {
@@ -186,7 +197,7 @@ function buildSummary(
     });
     const joined = parts.join(", ");
     return interval === 1
-      ? `Monthly on the ${joined}`
+      ? `Every month on the ${joined}`
       : `Every ${interval} months on the ${joined}`;
   }
   const parts = yearEntries.map((e) => {
@@ -197,7 +208,7 @@ function buildSummary(
   });
   const joined = parts.join(", ");
   return interval === 1
-    ? `Yearly on the ${joined}`
+    ? `Every year on the ${joined}`
     : `Every ${interval} years on the ${joined}`;
 }
 
@@ -212,17 +223,21 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
     { ordinal: "1", dayType: "day", month: "january" },
   ]);
 
-  const summary = useMemo(() => {
-    const s = buildSummary(recurrenceType, interval, weekDays, monthEntries, yearEntries);
-    onScheduleChange?.(s);
-    return s;
-  }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
+  const summary = useMemo(
+    () => buildSummary(recurrenceType, interval, weekDays, monthEntries, yearEntries),
+    [recurrenceType, interval, weekDays, monthEntries, yearEntries],
+  );
 
   const nextRuns = useMemo(() => {
     const me = monthEntries[0] || { ordinal: "1", dayType: "day" };
     const ye = yearEntries[0] || { ordinal: "1", dayType: "day", month: "january" };
     return getNextRuns(recurrenceType, interval, weekDays, me.ordinal, me.dayType, ye.month);
   }, [recurrenceType, interval, weekDays, monthEntries, yearEntries]);
+
+  useEffect(() => {
+    onScheduleChange?.(summary, nextRuns[0] ?? null, nextRuns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [summary, nextRuns]);
 
   const updateMonthEntry = (index: number, field: "ordinal" | "dayType", value: string) => {
     setMonthEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
