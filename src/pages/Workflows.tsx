@@ -7,13 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Search, ChevronLeft, ChevronRight, History, Pencil, Check } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, History, Pencil, Check, ArrowRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { WorkflowTemplateThumbnail, type WorkflowTemplateVariant } from "@/components/workflow-diagrams/WorkflowTemplateThumbnail";
 import trackBrandAdsThumbnail from "@/assets/competitor-template-thumbnail.png";
 import uploadYourOwnThumbnail from "@/assets/manual-template-thumbnail.png";
 import voiceOfCustomerThumbnail from "@/assets/voice-of-customer-thumbnail.png";
+import { UnfinishedWorkflowBanner, type DraftWorkflow } from "@/components/UnfinishedWorkflowBanner";
+
+const mockDrafts: DraftWorkflow[] = [
+  { id: "draft-hm", name: "H&M Competitor Tracker", currentStep: 2, totalSteps: 4, stepLabel: "Select ad formats", lastEditedLabel: "2 days ago" },
+];
 
 type AgentType = "holiday" | "competitor" | "manual" | "ad-account" | "reddit";
 
@@ -68,11 +73,50 @@ const activeWorkflows: {
   link: { text: string; color: string; href: string };
   thumbnails: string[];
 }[] = [
-  { id: "competitor-1", name: "Nike Ad Monitor", type: "competitor", badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100", enabled: true, schedule: "weekly", lastRun: "Last run: 12 Mar · 3m 12s", cadence: "Cadence: Weekly", link: { text: "→ View 9 new concepts", color: "#D4537E", href: "/concepts/ai-image-studio-1" }, thumbnails: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200","https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200","https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=200","https://images.unsplash.com/photo-1539185441755-769473a23570?w=200"] },
-  { id: "competitor-2", name: "Adidas Creative Tracker", type: "competitor", badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100", enabled: true, schedule: "weekly", lastRun: "Last run: 8 Mar · 1m 03s", cadence: "Cadence: Weekly", link: { text: "⚠ Last run failed — check settings", color: "#E24B4A", href: `/workflows/competitor-2` }, thumbnails: ["https://images.unsplash.com/photo-1539185441755-769473a23570?w=200","https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=200","https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200","https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"] },
+  {
+    id: "competitor-1",
+    name: "Nike Ad Monitor",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: true, schedule: "weekly",
+    lastRun: "Last run: 12 Mar · 3m 12s", cadence: "Cadence: Weekly",
+    link: { text: "→ View 9 new concepts", color: "#D4537E", href: "/concepts/ai-image-studio-1" },
+    thumbnails: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200",
+      "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=200",
+      "https://images.unsplash.com/photo-1539185441755-769473a23570?w=200",
+    ],
+  },
+  {
+    id: "competitor-2",
+    name: "Adidas Creative Tracker",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: true, schedule: "weekly",
+    lastRun: "Last run: 8 Mar · 1m 03s", cadence: "Cadence: Weekly",
+    link: { text: "⚠ Last run failed — check settings", color: "#E24B4A", href: `/workflows/competitor-2` },
+    thumbnails: [
+      "https://images.unsplash.com/photo-1539185441755-769473a23570?w=200",
+      "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=200",
+      "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200",
+    ],
+  },
 ];
 
-const runHistory: { id: string; workflowId: string; name: string; date: string; duration: string; status: "success" | "failed"; concepts: number; conceptsRunId?: string; thumbnails: string[]; setup: string[]; }[] = [
+const runHistory: {
+  id: string;
+  workflowId: string;
+  name: string;
+  date: string;
+  duration: string;
+  status: "success" | "failed";
+  concepts: number;
+  conceptsRunId?: string;
+  thumbnails: string[];
+  setup: string[];
+}[] = [
   { id: "r1", workflowId: "competitor-1", name: "Nike Ad Monitor", date: "12 Mar 2026 · 14:32", duration: "3m 12s", status: "success", concepts: 9, conceptsRunId: "ai-image-studio-1", thumbnails: [], setup: ["Nike Meta ads · Top 20 by days online", "4 products", "9 concepts generated"] },
   { id: "r2", workflowId: "competitor-1", name: "Nike Ad Monitor", date: "5 Mar 2026 · 14:30", duration: "2m 48s", status: "success", concepts: 7, conceptsRunId: "ai-image-studio-1", thumbnails: [], setup: ["Nike Meta ads · Top 20 by days online", "4 products", "7 concepts generated"] },
   { id: "r3", workflowId: "competitor-2", name: "Adidas Creative Tracker", date: "8 Mar 2026 · 11:05", duration: "1m 03s", status: "failed", concepts: 0, thumbnails: [], setup: ["Adidas Meta ads · All new since last run", "2 products", "Failed at Generate concepts"] },
@@ -86,15 +130,34 @@ export default function Workflows() {
   const [editTarget, setEditTarget] = useState<Agent | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [workflowToggles, setWorkflowToggles] = useState<Record<string, boolean>>({ "competitor-1": true, "competitor-2": true });
+  const [workflowToggles, setWorkflowToggles] = useState<Record<string, boolean>>({
+    "competitor-1": true,
+    "competitor-2": true,
+  });
+
   const [activeSearch, setActiveSearch] = useState("");
+
+  const [drafts] = useState<DraftWorkflow[]>(mockDrafts);
+  const [dismissedDraftIds, setDismissedDraftIds] = useState<string[]>([]);
+  const visibleDrafts = drafts.filter((d) => !dismissedDraftIds.includes(d.id));
+
+  const handleDismissDraft = (draftId: string) => {
+    setDismissedDraftIds((prev) => [...prev, draftId]);
+  };
+
+  const handleContinueDraft = (draftId: string) => {
+    navigate(`/workflows/${draftId}`, { state: { isNew: false, isDraft: true } });
+  };
+
   const [nameOverrides, setNameOverrides] = useState<Record<string, string>>({});
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
   const commitName = (id: string) => {
     const trimmed = draftName.trim();
-    if (trimmed) setNameOverrides((prev) => ({ ...prev, [id]: trimmed }));
+    if (trimmed) {
+      setNameOverrides((prev) => ({ ...prev, [id]: trimmed }));
+    }
     setEditingNameId(null);
   };
 
@@ -104,8 +167,14 @@ export default function Workflows() {
 
   const railRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => { setHistoryVisibleCount(30); setHistoryQuery(""); }, [historyWorkflowId]);
-  useEffect(() => { setHistoryVisibleCount(30); }, [historyQuery]);
+  useEffect(() => {
+    setHistoryVisibleCount(30);
+    setHistoryQuery("");
+  }, [historyWorkflowId]);
+
+  useEffect(() => {
+    setHistoryVisibleCount(30);
+  }, [historyQuery]);
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
@@ -118,11 +187,17 @@ export default function Workflows() {
 
   const workflowRuns = useMemo(() => {
     if (!historyWorkflowId) return [];
-    return runHistory.filter((r) => r.workflowId === historyWorkflowId).filter((r) => {
-      const q = historyQuery.trim().toLowerCase();
-      if (!q) return true;
-      return r.date.toLowerCase().includes(q) || r.status.toLowerCase().includes(q) || r.duration.toLowerCase().includes(q);
-    });
+    return runHistory
+      .filter((r) => r.workflowId === historyWorkflowId)
+      .filter((r) => {
+        const q = historyQuery.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          r.date.toLowerCase().includes(q) ||
+          r.status.toLowerCase().includes(q) ||
+          r.duration.toLowerCase().includes(q)
+        );
+      });
   }, [historyWorkflowId, historyQuery]);
 
   const visibleHistoryRuns = workflowRuns.slice(0, historyVisibleCount);
@@ -136,17 +211,30 @@ export default function Workflows() {
 
   const templatesRail = (
     <div className="relative group">
-      <div ref={railRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scroll-smooth" style={{ scrollbarWidth: "thin" }}>
+      <div
+        ref={railRef}
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scroll-smooth"
+        style={{ scrollbarWidth: "thin" }}
+      >
         {sourceTemplates.map((t) => (
           <div
             key={t.id}
-            onClick={() => { if (t.comingSoon) return; navigate(`/workflows/${t.id}`, { state: { type: t.type, isNew: true } }); }}
+            onClick={() => {
+              if (t.comingSoon) return;
+              navigate(`/workflows/${t.id}`, { state: { type: t.type, isNew: true } });
+            }}
             style={{ border: BORDER, borderRadius: CARD_RADIUS, background: "#fff" }}
-            className={`snap-start shrink-0 w-[280px] md:w-[360px] overflow-hidden group/card transition-shadow ${t.comingSoon ? "cursor-not-allowed" : "cursor-pointer hover:shadow-md"}`}
+            className={`snap-start shrink-0 w-[280px] md:w-[360px] overflow-hidden group/card transition-shadow ${
+              t.comingSoon ? "cursor-not-allowed" : "cursor-pointer hover:shadow-md"
+            }`}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
               {t.thumbnailImg ? (
-                <img src={t.thumbnailImg} alt={t.title} className={`w-full h-full object-cover ${t.comingSoon ? "blur-md scale-110" : ""}`} />
+                <img
+                  src={t.thumbnailImg}
+                  alt={t.title}
+                  className={`w-full h-full object-cover ${t.comingSoon ? "blur-md scale-110" : ""}`}
+                />
               ) : (
                 <div className={`w-full h-full ${t.comingSoon ? "blur-md scale-110" : ""}`}>
                   <WorkflowTemplateThumbnail variant={t.variant} />
@@ -154,13 +242,24 @@ export default function Workflows() {
               )}
               {t.comingSoon && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background/30">
-                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-background/90 text-foreground shadow-sm border border-border">Coming soon</span>
+                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-background/90 text-foreground shadow-sm border border-border">
+                    Coming soon
+                  </span>
                 </div>
               )}
               {!t.comingSoon && (
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#D4537E" }} className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-white/95 shadow-sm border border-border opacity-0 group-hover/card:opacity-100 transition-opacity">
-                  Use template →
-                </span>
+                <>
+                  <div className="absolute inset-0 bg-foreground/40 opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-all duration-200 scale-95 group-hover/card:scale-100">
+                    <span
+                      style={{ fontSize: 13, fontWeight: 600 }}
+                      className="px-4 py-2 rounded-full bg-primary text-primary-foreground shadow-lg inline-flex items-center gap-1.5"
+                    >
+                      Use template
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                </>
               )}
             </div>
             <div style={{ padding: "12px 14px 14px" }}>
@@ -172,11 +271,26 @@ export default function Workflows() {
           </div>
         ))}
       </div>
-      <div className="pointer-events-none absolute top-0 right-0 h-full w-12" style={{ background: "linear-gradient(to left, #fff, transparent)" }} />
-      <Button variant="outline" size="icon" onClick={() => scrollRail("left")} className="hidden md:inline-flex absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Scroll templates left">
+      <div
+        className="pointer-events-none absolute top-0 right-0 h-full w-12"
+        style={{ background: "linear-gradient(to left, #fff, transparent)" }}
+      />
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => scrollRail("left")}
+        className="hidden md:inline-flex absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+        aria-label="Scroll templates left"
+      >
         <ChevronLeft className="h-4 w-4" />
       </Button>
-      <Button variant="outline" size="icon" onClick={() => scrollRail("right")} className="hidden md:inline-flex absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Scroll templates right">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => scrollRail("right")}
+        className="hidden md:inline-flex absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+        aria-label="Scroll templates right"
+      >
         <ChevronRight className="h-4 w-4" />
       </Button>
     </div>
@@ -200,19 +314,47 @@ export default function Workflows() {
         <div className="flex items-center justify-between gap-2">
           {editingNameId === wf.id ? (
             <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 min-w-0 flex-1">
-              <Input autoFocus value={draftName} onChange={(e) => setDraftName(e.target.value)} onBlur={() => commitName(wf.id)} onKeyDown={(e) => { if (e.key === "Enter") commitName(wf.id); if (e.key === "Escape") setEditingNameId(null); }} className="h-7 text-[13px] font-medium px-2" />
-              <button type="button" onMouseDown={(e) => { e.preventDefault(); commitName(wf.id); }} className="text-muted-foreground hover:text-foreground shrink-0">
+              <Input
+                autoFocus
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                onBlur={() => commitName(wf.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitName(wf.id);
+                  if (e.key === "Escape") setEditingNameId(null);
+                }}
+                className="h-7 text-[13px] font-medium px-2"
+              />
+              <button
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); commitName(wf.id); }}
+                className="text-muted-foreground hover:text-foreground shrink-0"
+              >
                 <Check className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
-            <button type="button" onClick={(e) => { e.stopPropagation(); setEditingNameId(wf.id); setDraftName(nameOverrides[wf.id] ?? wf.name); }} className="group flex items-center gap-1.5 min-w-0 flex-1 text-left">
-              <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">{nameOverrides[wf.id] ?? wf.name}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setEditingNameId(wf.id);
+                setDraftName(nameOverrides[wf.id] ?? wf.name);
+              }}
+              className="group flex items-center gap-1.5 min-w-0 flex-1 text-left"
+            >
+              <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">
+                {nameOverrides[wf.id] ?? wf.name}
+              </span>
               <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
             </button>
           )}
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-            <Switch checked={workflowToggles[wf.id] ?? false} onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))} className="data-[state=checked]:bg-[#D4537E]" />
+            <Switch
+              checked={workflowToggles[wf.id] ?? false}
+              onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))}
+              className="data-[state=checked]:bg-[#D4537E]"
+            />
           </div>
         </div>
         <div className="flex items-center gap-3 mt-2">
@@ -220,10 +362,19 @@ export default function Workflows() {
           <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
         </div>
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }} style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }} className="truncate hover:underline">
+          <span
+            onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
+            style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
+            className="truncate hover:underline"
+          >
             View latest concepts →
           </span>
-          <button type="button" onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors shrink-0" style={{ fontSize: 11, fontWeight: 500 }}>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }}
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            style={{ fontSize: 11, fontWeight: 500 }}
+          >
             <History className="h-3 w-3" />
             Run history
           </button>
@@ -239,65 +390,131 @@ export default function Workflows() {
     return name.includes(q);
   });
 
+  const activeSection = (
+    <section>
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-primary uppercase">
+          Active workflows · {filteredActiveWorkflows.length}
+        </p>
+        <div className="relative w-full max-w-[260px]">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            value={activeSearch}
+            onChange={(e) => setActiveSearch(e.target.value)}
+            placeholder="Search workflows"
+            className="h-8 pl-8 text-xs"
+          />
+        </div>
+      </div>
+
+      {filteredActiveWorkflows.length === 0 ? (
+        <div
+          style={{ border: BORDER, borderRadius: CARD_RADIUS, background: "#fff", padding: "2.5rem 1rem" }}
+          className="text-center"
+        >
+          <p style={{ fontSize: 13, fontWeight: 500 }}>
+            {activeSearch ? "No workflows match your search" : "No active workflows yet"}
+          </p>
+          <p style={{ fontSize: 12 }} className="text-muted-foreground mt-1 mb-4">
+            {activeSearch ? "Try a different keyword." : "Start from a template to create your first workflow."}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {filteredActiveWorkflows.map(renderActiveCard)}
+        </div>
+      )}
+    </section>
+  );
+
   return (
     <div style={{ padding: "2.5rem", maxWidth: 1240, margin: "0 auto" }}>
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 500 }} className="tracking-tight">Workflows</h1>
-          <p style={{ fontSize: 14 }} className="text-muted-foreground mt-1">Always-on pipelines that surface ad concepts while you sleep.</p>
+          <p style={{ fontSize: 14 }} className="text-muted-foreground mt-1">
+            Always-on pipelines that surface ad concepts while you sleep.
+          </p>
         </div>
       </div>
 
       <div className="space-y-8">
+        {visibleDrafts.length > 0 && (
+          <section>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="uppercase text-primary mb-3">
+              Pick up where you left off
+            </p>
+            <UnfinishedWorkflowBanner
+              variant="primary"
+              drafts={visibleDrafts}
+              onContinue={handleContinueDraft}
+              onDismiss={handleDismissDraft}
+            />
+          </section>
+        )}
+
         <section>
           <div className="flex items-center justify-between mb-3">
-            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-muted-foreground uppercase">What's possible</p>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-primary uppercase">
+              Create new workflow
+            </p>
           </div>
           {templatesRail}
         </section>
 
-        <section>
-          <div className="flex items-center justify-between gap-3 mb-3">
-            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-muted-foreground uppercase">
-              Active workflows · {filteredActiveWorkflows.length}
-            </p>
-            <div className="relative w-full max-w-[260px]">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input value={activeSearch} onChange={(e) => setActiveSearch(e.target.value)} placeholder="Search workflows" className="h-8 pl-8 text-xs" />
-            </div>
-          </div>
-          {filteredActiveWorkflows.length === 0 ? (
-            <div style={{ border: BORDER, borderRadius: CARD_RADIUS, background: "#fff", padding: "2.5rem 1rem" }} className="text-center">
-              <p style={{ fontSize: 13, fontWeight: 500 }}>{activeSearch ? "No workflows match your search" : "No active workflows yet"}</p>
-              <p style={{ fontSize: 12 }} className="text-muted-foreground mt-1 mb-4">{activeSearch ? "Try a different keyword." : "Start from a template to create your first workflow."}</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {filteredActiveWorkflows.map(renderActiveCard)}
-            </div>
-          )}
-        </section>
+        {activeSection}
       </div>
 
       <Sheet open={!!historyWorkflowId} onOpenChange={(o) => { if (!o) setHistoryWorkflowId(null); }}>
         <SheetContent side="right" className="w-[480px] sm:max-w-[480px] p-0 flex flex-col">
           <SheetHeader className="px-5 py-4 border-b space-y-2">
-            <SheetTitle className="text-base font-semibold">{activeWorkflow?.name ?? "Run history"}</SheetTitle>
-            <p style={{ fontSize: 11 }} className="text-muted-foreground uppercase tracking-wider">Run history · {workflowRuns.length}</p>
+            <div className="flex items-center gap-2">
+              <SheetTitle className="text-base font-semibold">
+                {activeWorkflow?.name ?? "Run history"}
+              </SheetTitle>
+            </div>
+            <p style={{ fontSize: 11 }} className="text-muted-foreground uppercase tracking-wider">
+              Run history · {workflowRuns.length}
+            </p>
           </SheetHeader>
+
           <div className="flex-1 overflow-hidden">
             {workflowRuns.length === 0 ? (
-              <p style={{ fontSize: 12, padding: "32px 20px" }} className="text-muted-foreground text-center">No runs yet for this workflow.</p>
+              <p style={{ fontSize: 12, padding: "32px 20px" }} className="text-muted-foreground text-center">
+                No runs yet for this workflow.
+              </p>
             ) : (
               <ScrollArea className="h-[calc(100vh-220px)]">
                 <div>
                   {visibleHistoryRuns.map((run, idx) => (
-                    <div key={run.id} style={{ padding: "12px 20px", borderBottom: idx < visibleHistoryRuns.length - 1 ? BORDER : "none" }} className="hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => { if (run.status === "success" && run.conceptsRunId) navigate(`/concepts/${run.conceptsRunId}`); }}>
+                    <div
+                      key={run.id}
+                      style={{
+                        padding: "12px 20px",
+                        borderBottom: idx < visibleHistoryRuns.length - 1 ? BORDER : "none",
+                      }}
+                      className="hover:bg-muted/40 transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (run.status === "success" && run.conceptsRunId) {
+                          navigate(`/concepts/${run.conceptsRunId}`);
+                        }
+                      }}
+                    >
                       <div className="flex items-center gap-2">
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: run.status === "success" ? "#639922" : "#E24B4A", flexShrink: 0 }} />
-                        <span style={{ fontSize: 12, fontWeight: 500 }} className="flex-1">Run #{runHistory.length - runHistory.indexOf(run)}</span>
+                        <span
+                          style={{
+                            width: 6, height: 6, borderRadius: "50%",
+                            background: run.status === "success" ? "#639922" : "#E24B4A",
+                            flexShrink: 0,
+                          }}
+                        />
+                        <span style={{ fontSize: 12, fontWeight: 500 }} className="flex-1">
+                          Run #{runHistory.length - runHistory.indexOf(run)}
+                        </span>
                         {run.status === "success" && run.conceptsRunId ? (
-                          <span style={{ fontSize: 11, fontWeight: 500, color: "#D4537E" }}>View {run.concepts} concepts →</span>
+                          <span style={{ fontSize: 11, fontWeight: 500, color: "#D4537E" }}>
+                            View {run.concepts} concepts →
+                          </span>
                         ) : (
                           <span style={{ fontSize: 11, fontWeight: 500, color: "#E24B4A" }}>Failed</span>
                         )}
@@ -309,8 +526,20 @@ export default function Workflows() {
                   ))}
                   {historyVisibleCount < workflowRuns.length && (
                     <div className="p-3 flex justify-center">
-                      <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={() => setHistoryVisibleCount((c) => c + 30)}>Show more</Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-[11px]"
+                        onClick={() => setHistoryVisibleCount((c) => c + 30)}
+                      >
+                        Show more
+                      </Button>
                     </div>
+                  )}
+                  {workflowRuns.length > 0 && historyVisibleCount >= workflowRuns.length && workflowRuns.length > 5 && (
+                    <p style={{ fontSize: 11, padding: "12px 20px" }} className="text-muted-foreground text-center">
+                      Showing all {workflowRuns.length}
+                    </p>
                   )}
                 </div>
               </ScrollArea>
@@ -323,7 +552,7 @@ export default function Workflows() {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Delete workflow</DialogTitle>
-            <DialogDescription>This will permanently remove this workflow and its history.</DialogDescription>
+            <DialogDescription>This will permanently remove this workflow and its history. This action cannot be undone.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
@@ -349,7 +578,13 @@ export default function Workflows() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditTarget(null)}>Cancel</Button>
-            <Button onClick={() => { if (editTarget) { setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a)); toast.success("Workflow updated"); setEditTarget(null); } }}>Save</Button>
+            <Button onClick={() => {
+              if (editTarget) {
+                setAgents((prev) => prev.map((a) => a.id === editTarget.id ? { ...a, name: editName, description: editDescription } : a));
+                toast.success("Workflow updated");
+                setEditTarget(null);
+              }
+            }}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
