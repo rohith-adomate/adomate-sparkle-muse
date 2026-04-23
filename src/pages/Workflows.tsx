@@ -394,7 +394,7 @@ export default function Workflows() {
     <section>
       <div className="flex items-center justify-between gap-3 mb-3">
         <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }} className="text-primary uppercase">
-          {filteredActiveWorkflows.length} · Active workflows
+          {filteredActiveWorkflows.length} Active workflows
         </p>
         <div className="relative w-full max-w-[260px]">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
