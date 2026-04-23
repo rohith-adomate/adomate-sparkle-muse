@@ -1466,7 +1466,7 @@ export default function WorkflowCanvas() {
                                 <span className="text-[9px] uppercase tracking-wide text-muted-foreground font-medium">
                                   {node.type === "schedule" && "Next run"}
                                   {node.type === "dataset" && "Matched"}
-                                  {node.type === "top-select" && "Selected"}
+                                  {node.type === "top-select" && "Picking"}
                                   {node.type === "product-data" && "Selected"}
                                   {node.type === "generate-concepts" && "Per run"}
                                 </span>
