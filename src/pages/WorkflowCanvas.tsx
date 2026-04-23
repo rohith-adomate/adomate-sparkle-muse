@@ -1467,7 +1467,7 @@ export default function WorkflowCanvas() {
                                   {node.type === "schedule" && "Next run"}
                                   {node.type === "dataset" && "Matched"}
                                   {node.type === "top-select" && "Selected"}
-                                  {node.type === "product-data" && "Products"}
+                                  {node.type === "product-data" && "Catalog"}
                                   {node.type === "generate-concepts" && "Per run"}
                                 </span>
                                 <span className={cn("text-[11px] font-medium text-muted-foreground", node.type === "generate-concepts" && "font-semibold text-primary")}>
