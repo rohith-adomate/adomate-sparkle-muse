@@ -219,6 +219,7 @@ export default function WorkflowCanvas() {
   const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
   const [nextRunDate, setNextRunDate] = useState<Date | null>(null);
+  const [nextRuns, setNextRuns] = useState<Date[]>([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [agentEnabled, setAgentEnabled] = useState(!isManualWorkflow);
   const [scheduleSummary, setScheduleSummary] = useState<string>("");
@@ -1382,12 +1383,34 @@ export default function WorkflowCanvas() {
                           return (
                             <div className="mt-2 -mx-3.5 -mb-2.5">
                               <div className="px-3.5 pb-2">
-                                {node.type === "schedule" && (
-                                  <div className="h-12 rounded-md bg-muted/30 flex items-center justify-center gap-2">
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-[13px] font-semibold">Mondays</span>
-                                  </div>
-                                )}
+                                {node.type === "schedule" && (() => {
+                                  const runs = nextRuns.length > 0
+                                    ? nextRuns.slice(0, 3)
+                                    : Array.from({ length: 3 }, (_, i) => {
+                                        const d = new Date();
+                                        d.setDate(d.getDate() + 7 * (i + 1));
+                                        return d;
+                                      });
+                                  const label = scheduleSummary || node.description || "Every Monday";
+                                  return (
+                                    <div className="rounded-md bg-muted/30 px-2 py-1.5 flex flex-col items-center gap-1">
+                                      <div className="flex items-center gap-1.5 max-w-full">
+                                        <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                        <span className="text-[12px] font-semibold truncate">{label}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        {runs.map((d, i) => (
+                                          <span
+                                            key={i}
+                                            className="px-1.5 py-0.5 rounded bg-background border border-border/60 text-[9px] font-medium text-muted-foreground tabular-nums"
+                                          >
+                                            {d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
                                 {node.type === "dataset" && (
                                   <div className="h-12 flex items-center justify-start -space-x-2">
                                     {brands.map((b) => (
@@ -1441,14 +1464,16 @@ export default function WorkflowCanvas() {
                               </div>
                               <div className="px-3.5 py-1.5 border-t border-border/50 bg-muted/20 rounded-b-xl flex items-center justify-between">
                                 <span className="text-[9px] uppercase tracking-wide text-muted-foreground font-medium">
-                                  {node.type === "schedule" && "Cadence"}
+                                  {node.type === "schedule" && "Next run"}
                                   {node.type === "dataset" && "Matched"}
                                   {node.type === "top-select" && "Selected"}
                                   {node.type === "product-data" && "Products"}
                                   {node.type === "generate-concepts" && "Per run"}
                                 </span>
                                 <span className={cn("text-[11px] font-medium text-muted-foreground", node.type === "generate-concepts" && "font-semibold text-primary")}>
-                                  {node.type === "schedule" && "Weekly"}
+                                  {node.type === "schedule" && (nextRunDate
+                                    ? nextRunDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
+                                    : "—")}
                                   {node.type === "dataset" && "641 ads"}
                                   {node.type === "top-select" && (isAllNew ? "All new" : "Top 5")}
                                   {node.type === "product-data" && productCount}
@@ -1672,9 +1697,10 @@ export default function WorkflowCanvas() {
       <ScheduleDrawer
         open={scheduleDrawerOpen}
         onOpenChange={setScheduleDrawerOpen}
-        onScheduleChange={(summary, firstNextRun) => {
+        onScheduleChange={(summary, firstNextRun, runs) => {
           setScheduleSummary(summary);
-          setNextRunDate(firstNextRun);
+          setNextRunDate(firstNextRun ?? null);
+          setNextRuns(runs ?? []);
           setNodes((prev) =>
             prev.map((n) =>
               n.type === "schedule" ? { ...n, description: summary } : n
