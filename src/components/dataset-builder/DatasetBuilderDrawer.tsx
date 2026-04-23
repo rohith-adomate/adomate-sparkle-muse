@@ -235,16 +235,16 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
 
           {/* No-brands-tracked empty state */}
           {sources.length === 0 && (
-            <div className="border-b border-amber-500/30 bg-amber-50/60 px-5 py-3 flex items-start gap-3 shrink-0">
-              <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+            <div className="border-b border-border bg-muted/40 px-5 py-3 flex items-start gap-3 shrink-0">
+              <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-amber-900">No brands tracked yet</p>
-                <p className="text-[11px] text-amber-800/80 leading-relaxed mt-0.5">
+                <p className="text-xs font-semibold text-foreground">No brands tracked yet</p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
                   This dataset pulls from competitor brands you track in your Data Room.
                   Add at least one brand to start collecting ads, then come back here to configure your dataset.
                 </p>
               </div>
-              <Button asChild size="sm" variant="outline" className="h-7 text-[11px] gap-1.5 shrink-0 border-amber-500/40 bg-card hover:bg-amber-100/50">
+              <Button asChild size="sm" variant="outline" className="h-7 text-[11px] gap-1.5 shrink-0">
                 <Link to="/brand-data-room/competitors" onClick={onClose}>
                   Set up competitors
                   <ExternalLink className="h-3 w-3" />
