@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Info, MoreHorizontal, Plus, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 type RecurrenceType = "days" | "weeks" | "months" | "years";
 
@@ -212,7 +213,7 @@ function buildSummary(
     : `Every ${interval} years on the ${joined}`;
 }
 
-export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }: ScheduleDrawerProps) {
+export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange, onContinue, continueLabel }: ScheduleDrawerProps) {
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("weeks");
   const [interval, setInterval] = useState(1);
   const [weekDays, setWeekDays] = useState<string[]>(["Mon"]);
@@ -481,6 +482,7 @@ export default function ScheduleDrawer({ open, onOpenChange, onScheduleChange }:
             )}
           </div>
         </div>
+        <DrawerContinueFooter onContinue={onContinue} label={continueLabel} />
       </SheetContent>
     </Sheet>
   );

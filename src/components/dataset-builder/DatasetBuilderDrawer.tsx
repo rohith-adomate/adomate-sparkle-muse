@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
@@ -11,6 +12,7 @@ import DatasetBuilderTable from "./DatasetBuilderTable";
 import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
 import RowDetailDrawer from "./RowDetailDrawer";
+import DrawerContinueFooter from "../DrawerContinueFooter";
 
 interface Props {
   open: boolean;
@@ -22,9 +24,7 @@ interface Props {
 }
 
 export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSourcesChange, onContinue, continueLabel }: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _unused = { initialEmpty, onSourcesChange, onContinue, continueLabel };
-  const [sources, setSources] = useState<DatasetSource[]>(INITIAL_SOURCES);
+  const [sources, setSources] = useState<DatasetSource[]>(initialEmpty ? [] : INITIAL_SOURCES);
   const [columns, setColumns] = useState<DatasetColumn[]>([...FACTS_COLUMNS, DEFAULT_AI_COLUMN]);
   const [filters, setFilters] = useState<DatasetFilter[]>([]);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
@@ -34,7 +34,11 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
   const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
-  
+
+  useEffect(() => {
+    onSourcesChange?.(sources.length);
+  }, [sources, onSourcesChange]);
+
 
   const handleAddSource = useCallback((src: DatasetSource) => {
     setSources(prev => [...prev, src]);
@@ -229,6 +233,26 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             </div>
           </div>
 
+          {/* No-brands-tracked empty state */}
+          {sources.length === 0 && (
+            <div className="border-b border-border bg-muted/40 px-5 py-3 flex items-start gap-3 shrink-0">
+              <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-foreground">No brands tracked yet</p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+                  This dataset pulls from competitor brands you track in your Data Room.
+                  Add at least one brand to start collecting ads, then come back here to configure your dataset.
+                </p>
+              </div>
+              <Button asChild size="sm" variant="outline" className="h-7 text-[11px] gap-1.5 shrink-0">
+                <Link to="/brand-data-room/competitors" onClick={onClose}>
+                  Set up competitors
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </Button>
+            </div>
+          )}
+
           {/* Main content */}
           <div className="flex flex-1 overflow-hidden">
             <DatasetBuilderLeftPanel
@@ -271,6 +295,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               />
             )}
           </div>
+
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} disabled={sources.length === 0} />
         </div>
       </div>
 

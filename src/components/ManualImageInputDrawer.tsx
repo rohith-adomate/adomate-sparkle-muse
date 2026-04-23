@@ -1,6 +1,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ImagePlus, Info } from "lucide-react";
 import { HoverExplainer } from "./HoverExplainer";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 interface ManualImageInputDrawerProps {
   open: boolean;
@@ -10,7 +11,7 @@ interface ManualImageInputDrawerProps {
   continueLabel?: string;
 }
 
-export default function ManualImageInputDrawer({ open, onOpenChange, uploadedImages = [] }: ManualImageInputDrawerProps) {
+export default function ManualImageInputDrawer({ open, onOpenChange, uploadedImages = [], onContinue, continueLabel }: ManualImageInputDrawerProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[380px] sm:w-[420px] border-l border-border bg-card p-0 overflow-y-auto">
@@ -64,6 +65,7 @@ export default function ManualImageInputDrawer({ open, onOpenChange, uploadedIma
               Hover for backend details
             </p>
           </HoverExplainer>
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} sticky />
         </div>
       </SheetContent>
     </Sheet>

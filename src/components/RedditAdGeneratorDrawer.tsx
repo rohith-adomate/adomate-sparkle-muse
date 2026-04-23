@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -48,7 +49,7 @@ const INDEX_TO_MEME: MemeIntensity[] = ["none", "light", "medium"];
 
 const DIVERSITY_LABELS = ["Brand-close", "Balanced", "Exploratory"];
 
-export default function RedditAdGeneratorDrawer({ open, onOpenChange }: RedditAdGeneratorDrawerProps) {
+export default function RedditAdGeneratorDrawer({ open, onOpenChange, onContinue, continueLabel }: RedditAdGeneratorDrawerProps) {
   const [outputType, setOutputType] = useState<OutputType>("commercial");
   const [numConcepts, setNumConcepts] = useState("6");
   const [conceptDiversity, setConceptDiversity] = useState(1); // 0=Brand-close, 1=Balanced, 2=Exploratory
@@ -234,6 +235,7 @@ export default function RedditAdGeneratorDrawer({ open, onOpenChange }: RedditAd
               <Switch checked={includeRedditPhrasing} onCheckedChange={setIncludeRedditPhrasing} />
             </div>
           </div>
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} sticky />
         </SheetContent>
       </Sheet>
     </TooltipProvider>

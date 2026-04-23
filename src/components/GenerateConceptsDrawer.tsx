@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Info, Brain } from "lucide-react";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 interface GenerateConceptsDrawerProps {
   open: boolean;
@@ -27,8 +28,6 @@ interface GenerateConceptsDrawerProps {
 const SIMILARITY_LABELS = ["Low", "Medium", "High"];
 
 export default function GenerateConceptsDrawer({ open, onOpenChange, onContinue, continueLabel }: GenerateConceptsDrawerProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _unused = { onContinue, continueLabel };
   const [numConcepts, setNumConcepts] = useState("6");
   const [brandBrainActive, setBrandBrainActive] = useState(true);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
@@ -167,6 +166,7 @@ export default function GenerateConceptsDrawer({ open, onOpenChange, onContinue,
               className="h-9 text-sm"
             />
           </div>
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} sticky />
         </SheetContent>
       </Sheet>
 

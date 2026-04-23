@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -42,6 +43,8 @@ export default function TopAdsSelectionDrawer({
   onOpenChange,
   config: initialConfig,
   onConfigChange,
+  onContinue,
+  continueLabel,
 }: TopAdsSelectionDrawerProps) {
   const defaultConfig: SelectConfig = {
     mode: "top-n",
@@ -230,6 +233,7 @@ export default function TopAdsSelectionDrawer({
               </>
             )}
           </div>
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} sticky />
         </SheetContent>
       </Sheet>
     </TooltipProvider>

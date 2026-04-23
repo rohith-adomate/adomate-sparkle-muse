@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronDown, Info, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import DrawerContinueFooter from "./DrawerContinueFooter";
 
 interface AdAccountDrawerProps {
   open: boolean;
@@ -36,7 +37,7 @@ const MOCK_AD_SETS: Record<string, { id: string; name: string; status: string; a
   as10: { id: "as10", name: "Launch — Retarget", status: "Active", audience: "Website Visitors 14d" },
 };
 
-export default function AdAccountDrawer({ open, onOpenChange }: AdAccountDrawerProps) {
+export default function AdAccountDrawer({ open, onOpenChange, onContinue, continueLabel }: AdAccountDrawerProps) {
   const [allCampaigns, setAllCampaigns] = useState(true);
   const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
   const [allAdSets, setAllAdSets] = useState(true);
@@ -116,7 +117,7 @@ export default function AdAccountDrawer({ open, onOpenChange }: AdAccountDrawerP
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5" style={{ height: "calc(100% - 65px)" }}>
+        <div className="flex-1 overflow-y-auto p-5 space-y-5" style={{ height: "calc(100% - 130px)" }}>
           {/* Summary card */}
           <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Selection Summary</p>
@@ -255,6 +256,9 @@ export default function AdAccountDrawer({ open, onOpenChange }: AdAccountDrawerP
               </div>
             )}
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <DrawerContinueFooter onContinue={onContinue} label={continueLabel} />
         </div>
       </div>
     </TooltipProvider>
