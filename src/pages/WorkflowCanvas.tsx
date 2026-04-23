@@ -1023,7 +1023,7 @@ export default function WorkflowCanvas() {
           return (
             <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 text-[11px] text-success/90 animate-fade-in">
               <span className="h-1.5 w-1.5 rounded-full bg-success" />
-              Next concepts ready around {dateStr}
+              Next concepts ready {dateStr}
             </div>
           );
         })()}
