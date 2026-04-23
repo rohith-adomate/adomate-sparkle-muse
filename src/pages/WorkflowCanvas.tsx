@@ -1423,8 +1423,7 @@ export default function WorkflowCanvas() {
                                   const label = scheduleSummary || node.description || "Every Monday";
                                   return (
                                     <div className="rounded-md px-2 py-1.5 flex flex-col items-center gap-1">
-                                      <div className="flex items-center gap-1.5 max-w-full">
-                                        <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                      <div className="flex items-center max-w-full">
                                         <span className="text-[12px] font-semibold truncate">{label}</span>
                                       </div>
                                       <div className="flex items-center gap-1">
