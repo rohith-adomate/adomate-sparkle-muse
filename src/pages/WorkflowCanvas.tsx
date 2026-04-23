@@ -287,7 +287,13 @@ export default function WorkflowCanvas() {
 
   const openDrawerFor = useCallback((type: string) => {
     setShowContinueFor((prev) => {
-      if (configuredTypes.has(type)) return prev;
+      // Don't surface the Continue CTA for nodes that are already configured.
+      // For dataset/product-data, "configured" is derived from their own state.
+      const alreadyConfigured =
+        configuredTypes.has(type) ||
+        (type === "dataset" && !datasetEmpty) ||
+        (type === "product-data" && selectedProductCount > 0);
+      if (alreadyConfigured) return prev;
       if (prev.has(type)) return prev;
       const next = new Set(prev);
       next.add(type);
@@ -302,7 +308,7 @@ export default function WorkflowCanvas() {
     else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
     else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
     else if (type === "manual-image-input") setManualImageDrawerOpen(true);
-  }, [configuredTypes]);
+  }, [configuredTypes, datasetEmpty, selectedProductCount]);
 
   const openNextDrawerFor = useCallback((currentType: string) => {
     markConfigured(currentType);
