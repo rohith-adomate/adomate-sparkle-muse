@@ -316,6 +316,7 @@ export default function WorkflowCanvas() {
       const alreadyConfigured =
         configuredTypes.has(type) ||
         (type === "dataset" && !datasetEmpty) ||
+        (type === "review-dataset" && !reviewDatasetEmpty) ||
         (type === "product-data" && selectedProductCount > 0);
       if (alreadyConfigured) return prev;
       if (prev.has(type)) return prev;
@@ -325,6 +326,7 @@ export default function WorkflowCanvas() {
     });
     if (type === "schedule") setScheduleDrawerOpen(true);
     else if (type === "dataset") setDatasetDrawerOpen(true);
+    else if (type === "review-dataset") setReviewDatasetDrawerOpen(true);
     else if (type === "ad-account") setAdAccountDrawerOpen(true);
     else if (type === "reddit-subreddit") setRedditSubredditDrawerOpen(true);
     else if (type === "top-select") setTopSelectDrawerOpen(true);
@@ -332,7 +334,7 @@ export default function WorkflowCanvas() {
     else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
     else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
     else if (type === "manual-image-input") setManualImageDrawerOpen(true);
-  }, [configuredTypes, datasetEmpty, selectedProductCount]);
+  }, [configuredTypes, datasetEmpty, reviewDatasetEmpty, selectedProductCount]);
 
   const openNextDrawerFor = useCallback((currentType: string) => {
     markConfigured(currentType);
