@@ -218,11 +218,13 @@ export default function WorkflowCanvas() {
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
   const isRedditWorkflow = (location.state as any)?.type === "reddit";
+  const isReviewsWorkflow = (location.state as any)?.type === "reviews";
   const isFromTemplate = (location.state as any)?.isNew === true;
   const isNewCompetitor = isFromTemplate && (location.state as any)?.type === "competitor";
   const isNewAdAccount = isFromTemplate && isAdAccountWorkflow;
   const isNewReddit = isFromTemplate && isRedditWorkflow;
   const isNewManual = isFromTemplate && isManualWorkflow;
+  const isNewReviews = isFromTemplate && isReviewsWorkflow;
   const isAnyNew = isFromTemplate;
 
   // Derive agent name from id
@@ -235,8 +237,8 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : getDefaultNodes(agentName, isNewCompetitor));
-  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : isReviewsWorkflow ? getReviewsNodes(isNewReviews) : getDefaultNodes(agentName, isNewCompetitor));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : isReviewsWorkflow ? REVIEWS_EDGES : DEFAULT_EDGES);
   const [nextRunDate, setNextRunDate] = useState<Date | null>(null);
   const [nextRuns, setNextRuns] = useState<Date[]>([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -262,6 +264,8 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
+  const [reviewDatasetDrawerOpen, setReviewDatasetDrawerOpen] = useState(false);
+  const [reviewDatasetEmpty, setReviewDatasetEmpty] = useState(isNewReviews);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   // For non-new (already-active) workflows, assume product-data is configured
   // so the celebration effect doesn't see a false→true transition once the
@@ -296,8 +300,9 @@ export default function WorkflowCanvas() {
     if (isManualWorkflow) return ["manual-image-input", "product-data", "generate-concepts"];
     if (isAdAccountWorkflow) return ["schedule", "ad-account", "top-select", "product-data", "generate-concepts"];
     if (isRedditWorkflow) return ["schedule", "reddit-subreddit", "product-data", "reddit-ad-generator"];
+    if (isReviewsWorkflow) return ["schedule", "review-dataset", "top-select", "product-data", "generate-concepts"];
     return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
-  }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow]);
+  }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow, isReviewsWorkflow]);
 
   // Tracks which node-type drawers should currently show the Continue CTA.
   // We snapshot this at the moment a drawer opens so clicking the node
