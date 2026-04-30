@@ -33,7 +33,7 @@ type Row = {
 };
 
 type SourcePill = "all" | "trustpilot" | "amazon";
-type StatusPill = "all" | "ready" | "failed";
+
 
 const BRAND_NAME = "Oy Care";
 const TP_URL = "https://www.trustpilot.com/review/oycare.com";
@@ -132,7 +132,7 @@ function StatusBadge({ status }: { status: RowStatus }) {
 export default function Reviews() {
   const [brandSearch, setBrandSearch] = useState<string>("");
   const [sourcePill, setSourcePill] = useState<SourcePill>("all");
-  const [statusPill, setStatusPill] = useState<StatusPill>("all");
+  
   const [addOpen, setAddOpen] = useState(false);
   const [competitors, setCompetitors] = useState<BrandGroup[]>([]);
 
@@ -271,11 +271,9 @@ export default function Reviews() {
       if (q && !r.brandName.toLowerCase().includes(q)) return false;
       if (sourcePill === "trustpilot" && r.source !== "Trustpilot") return false;
       if (sourcePill === "amazon" && r.source !== "Amazon") return false;
-      if (statusPill === "ready" && r.status !== "ready") return false;
-      if (statusPill === "failed" && r.status !== "failed") return false;
       return true;
     });
-  }, [flatRows, brandSearch, sourcePill, statusPill]);
+  }, [flatRows, brandSearch, sourcePill]);
 
   const sortedRows = useMemo(() => {
     const copy = [...filteredRows];
@@ -348,28 +346,6 @@ export default function Reviews() {
             ))}
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">Status:</span>
-            {([
-              ["all", "All"],
-              ["ready", "Ready"],
-              ["failed", "Failed"],
-            ] as [StatusPill, string][]).map(([k, label]) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setStatusPill(k)}
-                className={cn(
-                  "rounded-full border px-2.5 py-0.5 transition-colors",
-                  statusPill === k
-                    ? "border-primary/40 bg-primary/[0.06] text-foreground"
-                    : "border-border bg-background text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="rounded-xl border bg-card">
