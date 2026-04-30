@@ -20,6 +20,7 @@ import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetBuilderDrawer from "@/components/dataset-builder/DatasetBuilderDrawer";
 import DatasetRunResultsDrawer from "@/components/dataset-builder/DatasetRunResultsDrawer";
+import ReviewDatasetDrawer from "@/components/dataset-builder/ReviewDatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
@@ -72,6 +73,7 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
+      { type: "review-dataset", label: "Review Dataset", description: "Brand & competitor reviews dataset.", icon: Database, inputs: ["Trigger"], outputs: ["Reviews Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
       { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: Database, inputs: ["Trigger"], outputs: ["Reddit Data"] },
