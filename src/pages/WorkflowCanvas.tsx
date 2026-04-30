@@ -1749,6 +1749,14 @@ export default function WorkflowCanvas() {
         onContinue={showContinueFor.has("dataset") ? () => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); } : undefined}
         continueLabel={continueLabelFor("dataset")}
       />
+      <ReviewDatasetDrawer
+        open={reviewDatasetDrawerOpen}
+        onClose={() => setReviewDatasetDrawerOpen(false)}
+        initialEmpty={isNewReviews}
+        onSourcesChange={(count) => setReviewDatasetEmpty(count === 0)}
+        onContinue={showContinueFor.has("review-dataset") ? () => { setReviewDatasetDrawerOpen(false); openNextDrawerFor("review-dataset"); } : undefined}
+        continueLabel={continueLabelFor("review-dataset")}
+      />
       <DatasetRunResultsDrawer
         open={datasetRunResultsOpen}
         onClose={() => setDatasetRunResultsOpen(false)}
