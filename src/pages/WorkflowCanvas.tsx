@@ -790,7 +790,7 @@ export default function WorkflowCanvas() {
   const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
     if (hasManualImageInput) return false;
-    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit" || n.type === "ad-account");
+    return nodes.some((n) => n.type === "dataset" || n.type === "review-dataset" || n.type === "reddit-subreddit" || n.type === "ad-account");
   }, [nodes, hasManualImageInput]);
 
   // Fully-configured = every configurable node in this workflow is configured.
