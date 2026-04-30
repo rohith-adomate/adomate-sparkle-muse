@@ -20,7 +20,7 @@ const mockDrafts: DraftWorkflow[] = [
   { id: "draft-hm", name: "H&M Competitor Tracker", currentStep: 2, totalSteps: 4, stepLabel: "Select ad formats", lastEditedLabel: "2 days ago" },
 ];
 
-type AgentType = "holiday" | "competitor" | "manual" | "ad-account" | "reddit";
+type AgentType = "holiday" | "competitor" | "manual" | "ad-account" | "reddit" | "reviews";
 
 interface Agent {
   id: string;
@@ -46,7 +46,7 @@ const sourceTemplates: {
 }[] = [
   { id: "src-competitor", title: "Ad library tracker", subtitle: "Track brands and generate ad variations", variant: "competitor", type: "competitor", badge: "", badgeBg: "transparent", badgeText: "transparent", thumbnailImg: trackBrandAdsThumbnail },
   { id: "src-manual", title: "Upload your own images", subtitle: "Generate ad variations from your images", variant: "manual", type: "manual", badge: "", badgeBg: "transparent", badgeText: "transparent", thumbnailImg: uploadYourOwnThumbnail },
-  { id: "src-reviews", title: "Voice of customer", subtitle: "Turn real customer reviews into high-converting ads", variant: "reviews", type: "manual", badge: "", badgeBg: "transparent", badgeText: "transparent", comingSoon: true, thumbnailImg: voiceOfCustomerThumbnail },
+  { id: "src-reviews", title: "Voice of customer", subtitle: "Turn real customer reviews into high-converting ads", variant: "reviews", type: "reviews", badge: "", badgeBg: "transparent", badgeText: "transparent", thumbnailImg: voiceOfCustomerThumbnail },
   { id: "src-reddit", title: "Listen on Reddit", subtitle: "Mine subreddit conversations for ad angles that hit", variant: "reddit", type: "reddit", badge: "", badgeBg: "transparent", badgeText: "transparent", comingSoon: true },
 ];
 

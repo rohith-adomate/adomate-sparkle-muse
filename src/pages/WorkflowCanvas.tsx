@@ -20,6 +20,7 @@ import GenerateConceptsDrawer from "@/components/GenerateConceptsDrawer";
 import NodeOutputDrawer from "@/components/NodeOutputDrawer";
 import DatasetBuilderDrawer from "@/components/dataset-builder/DatasetBuilderDrawer";
 import DatasetRunResultsDrawer from "@/components/dataset-builder/DatasetRunResultsDrawer";
+import ReviewDatasetDrawer from "@/components/dataset-builder/ReviewDatasetDrawer";
 import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
@@ -72,6 +73,7 @@ const NODE_CATALOG = [
     label: "DATA",
     items: [
       { type: "dataset", label: "Dataset", description: "Competitor ads dataset with filters.", icon: Database, inputs: ["Trigger"], outputs: ["Ads Data"] },
+      { type: "review-dataset", label: "Review Dataset", description: "Brand & competitor reviews dataset.", icon: Database, inputs: ["Trigger"], outputs: ["Reviews Data"] },
       { type: "ad-account", label: "Ad Account", description: "Pull ads from your own ad account.", icon: Megaphone, inputs: ["Trigger"], outputs: ["Ads Data"] },
       { type: "product-data", label: "Product Data", description: "Fetch product catalog.", icon: Package, inputs: [], outputs: ["Products"] },
       { type: "reddit-subreddit", label: "Subreddit Dataset", description: "Scrape subreddits for insights.", icon: Database, inputs: ["Trigger"], outputs: ["Reddit Data"] },
@@ -149,6 +151,16 @@ function getRedditNodes(isNew?: boolean): CanvasNode[] {
   ];
 }
 
+function getReviewsNodes(isNew?: boolean): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "review-dataset", category: "static-data", label: "Review Dataset", description: isNew ? "No reviews selected." : "Brand & competitor reviews dataset.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reviews Data"], status: isNew ? undefined : "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: isNew ? "No selection rule set." : "Top 10 reviews by relevance", x: 400, y: 200, inputs: ["Reviews Data"], outputs: ["Top Reviews"], status: isNew ? undefined : "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Reviews", "Products"], outputs: ["Variations"] },
+  ];
+}
+
 const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
@@ -172,6 +184,13 @@ const REDDIT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
+];
+
+const REVIEWS_EDGES: Edge[] = [
+  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
+  { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
+  { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
+  { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
 ];
 
 /* ── Helpers ── */
@@ -199,11 +218,13 @@ export default function WorkflowCanvas() {
   const isManualWorkflow = (location.state as any)?.type === "manual";
   const isAdAccountWorkflow = (location.state as any)?.type === "ad-account";
   const isRedditWorkflow = (location.state as any)?.type === "reddit";
+  const isReviewsWorkflow = (location.state as any)?.type === "reviews";
   const isFromTemplate = (location.state as any)?.isNew === true;
   const isNewCompetitor = isFromTemplate && (location.state as any)?.type === "competitor";
   const isNewAdAccount = isFromTemplate && isAdAccountWorkflow;
   const isNewReddit = isFromTemplate && isRedditWorkflow;
   const isNewManual = isFromTemplate && isManualWorkflow;
+  const isNewReviews = isFromTemplate && isReviewsWorkflow;
   const isAnyNew = isFromTemplate;
 
   // Derive agent name from id
@@ -216,8 +237,8 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : getDefaultNodes(agentName, isNewCompetitor));
-  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : DEFAULT_EDGES);
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : isReviewsWorkflow ? getReviewsNodes(isNewReviews) : getDefaultNodes(agentName, isNewCompetitor));
+  const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : isReviewsWorkflow ? REVIEWS_EDGES : DEFAULT_EDGES);
   const [nextRunDate, setNextRunDate] = useState<Date | null>(null);
   const [nextRuns, setNextRuns] = useState<Date[]>([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -243,6 +264,8 @@ export default function WorkflowCanvas() {
   const [searchQuery, setSearchQuery] = useState("");
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
+  const [reviewDatasetDrawerOpen, setReviewDatasetDrawerOpen] = useState(false);
+  const [reviewDatasetEmpty, setReviewDatasetEmpty] = useState(isNewReviews);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   // For non-new (already-active) workflows, assume product-data is configured
   // so the celebration effect doesn't see a false→true transition once the
@@ -277,8 +300,9 @@ export default function WorkflowCanvas() {
     if (isManualWorkflow) return ["manual-image-input", "product-data", "generate-concepts"];
     if (isAdAccountWorkflow) return ["schedule", "ad-account", "top-select", "product-data", "generate-concepts"];
     if (isRedditWorkflow) return ["schedule", "reddit-subreddit", "product-data", "reddit-ad-generator"];
+    if (isReviewsWorkflow) return ["schedule", "review-dataset", "top-select", "product-data", "generate-concepts"];
     return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
-  }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow]);
+  }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow, isReviewsWorkflow]);
 
   // Tracks which node-type drawers should currently show the Continue CTA.
   // We snapshot this at the moment a drawer opens so clicking the node
@@ -292,6 +316,7 @@ export default function WorkflowCanvas() {
       const alreadyConfigured =
         configuredTypes.has(type) ||
         (type === "dataset" && !datasetEmpty) ||
+        (type === "review-dataset" && !reviewDatasetEmpty) ||
         (type === "product-data" && selectedProductCount > 0);
       if (alreadyConfigured) return prev;
       if (prev.has(type)) return prev;
@@ -301,6 +326,7 @@ export default function WorkflowCanvas() {
     });
     if (type === "schedule") setScheduleDrawerOpen(true);
     else if (type === "dataset") setDatasetDrawerOpen(true);
+    else if (type === "review-dataset") setReviewDatasetDrawerOpen(true);
     else if (type === "ad-account") setAdAccountDrawerOpen(true);
     else if (type === "reddit-subreddit") setRedditSubredditDrawerOpen(true);
     else if (type === "top-select") setTopSelectDrawerOpen(true);
@@ -308,7 +334,7 @@ export default function WorkflowCanvas() {
     else if (type === "generate-concepts") setGenerateConceptsDrawerOpen(true);
     else if (type === "reddit-ad-generator") setRedditAdGeneratorDrawerOpen(true);
     else if (type === "manual-image-input") setManualImageDrawerOpen(true);
-  }, [configuredTypes, datasetEmpty, selectedProductCount]);
+  }, [configuredTypes, datasetEmpty, reviewDatasetEmpty, selectedProductCount]);
 
   const openNextDrawerFor = useCallback((currentType: string) => {
     markConfigured(currentType);
@@ -376,10 +402,11 @@ export default function WorkflowCanvas() {
 
   // Execute the workflow run simulation (extracted so the celebration banner can reuse it)
   const runWorkflow = useCallback(() => {
-    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
       if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
@@ -476,13 +503,14 @@ export default function WorkflowCanvas() {
         },
       });
     }, totalDurationMs);
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages, navigate, id, baseRuns, localRuns.length]);
+  }, [nodes, datasetEmpty, reviewDatasetEmpty, selectedProductCount, configuredTypes, nodeImages, navigate, id, baseRuns, localRuns.length]);
   useEffect(() => {
     if (activeTab !== "editor") return;
-    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
       if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
@@ -513,7 +541,7 @@ export default function WorkflowCanvas() {
       wasFullyConfiguredRef.current = false;
       setCelebrationBannerOpen(false);
     }
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, activeTab, fireConfetti]);
+  }, [nodes, datasetEmpty, reviewDatasetEmpty, selectedProductCount, configuredTypes, activeTab, fireConfetti]);
 
   const getNodeHeight = useCallback((node: CanvasNode) => {
     if (node.type === "manual-image-input") {
@@ -762,7 +790,7 @@ export default function WorkflowCanvas() {
   const hasManualImageInput = useMemo(() => nodes.some((n) => n.type === "manual-image-input"), [nodes]);
   const canActivate = useMemo(() => {
     if (hasManualImageInput) return false;
-    return nodes.some((n) => n.type === "dataset" || n.type === "reddit-subreddit" || n.type === "ad-account");
+    return nodes.some((n) => n.type === "dataset" || n.type === "review-dataset" || n.type === "reddit-subreddit" || n.type === "ad-account");
   }, [nodes, hasManualImageInput]);
 
   // Fully-configured = every configurable node in this workflow is configured.
@@ -1024,11 +1052,12 @@ export default function WorkflowCanvas() {
             );
           }
           if (activeTab !== "editor") return null;
-          const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+          const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
           const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
           const total = tracked.length;
           const remaining = tracked.filter((n) => {
             if (n.type === "dataset") return datasetEmpty;
+            if (n.type === "review-dataset") return reviewDatasetEmpty;
             if (n.type === "product-data") return selectedProductCount === 0;
             return !configuredTypes.has(n.type);
           }).length;
@@ -1105,11 +1134,12 @@ export default function WorkflowCanvas() {
                 </marker>
               </defs>
               {(() => {
-                const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+                const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
                 const isNodeUnconfigured = (n: CanvasNode) => {
                   if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
                   if (activeTab !== "editor") return false;
                   if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "review-dataset") return reviewDatasetEmpty;
                   if (n.type === "product-data") return selectedProductCount === 0;
                   return !configuredTypes.has(n.type);
                 };
@@ -1176,12 +1206,13 @@ export default function WorkflowCanvas() {
 
             {/* Nodes */}
             {(() => {
-              const UNCONFIGURED_TYPES_FOR_FIRST = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+              const UNCONFIGURED_TYPES_FOR_FIRST = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
               const unconfiguredOrdered = [...nodes]
                 .filter((n) => {
                   if (!UNCONFIGURED_TYPES_FOR_FIRST.includes(n.type)) return false;
                   if (activeTab !== "editor") return false;
                   if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "review-dataset") return reviewDatasetEmpty;
                   if (n.type === "product-data") return selectedProductCount === 0;
                   return !configuredTypes.has(n.type);
                 })
@@ -1199,9 +1230,11 @@ export default function WorkflowCanvas() {
               const currentNodeH = getNodeHeight(node);
 
               // Orange warning border for unconfigured nodes (existing data-driven warnings)
-              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
+              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "review-dataset" && reviewDatasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
               const warningTooltip = node.type === "dataset" && datasetEmpty
                 ? "The dataset table is currently empty. Click to add competitor sources."
+                : node.type === "review-dataset" && reviewDatasetEmpty
+                ? "The reviews dataset is currently empty. Click to add brand reviews."
                 : node.type === "product-data" && selectedProductCount === 0
                 ? "No products are selected yet. Click to choose products for this workflow."
                 : null;
@@ -1210,6 +1243,7 @@ export default function WorkflowCanvas() {
               const UNCONFIGURED_HELPER: Record<string, string> = {
                 "schedule": "Define when this workflow runs",
                 "dataset": "Build a custom ad dataset from any brands",
+                "review-dataset": "Add brand reviews from Trustpilot or Amazon",
                 "top-select": "Set your ad selection filters",
                 "product-data": "Choose your products",
                 "generate-concepts": "Configure your variation output",
@@ -1221,8 +1255,9 @@ export default function WorkflowCanvas() {
                 activeTab === "editor" &&
                 (
                   (node.type === "dataset" && datasetEmpty) ||
+                  (node.type === "review-dataset" && reviewDatasetEmpty) ||
                   (node.type === "product-data" && selectedProductCount === 0) ||
-                  (node.type !== "dataset" && node.type !== "product-data" && !configuredTypes.has(node.type))
+                  (node.type !== "dataset" && node.type !== "review-dataset" && node.type !== "product-data" && !configuredTypes.has(node.type))
                 );
 
               const isConfiguredNode = isConfigurable && !isUnconfigured;
@@ -1713,6 +1748,14 @@ export default function WorkflowCanvas() {
         onSourcesChange={(count) => setDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("dataset") ? () => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); } : undefined}
         continueLabel={continueLabelFor("dataset")}
+      />
+      <ReviewDatasetDrawer
+        open={reviewDatasetDrawerOpen}
+        onClose={() => setReviewDatasetDrawerOpen(false)}
+        initialEmpty={isNewReviews}
+        onSourcesChange={(count) => setReviewDatasetEmpty(count === 0)}
+        onContinue={showContinueFor.has("review-dataset") ? () => { setReviewDatasetDrawerOpen(false); openNextDrawerFor("review-dataset"); } : undefined}
+        continueLabel={continueLabelFor("review-dataset")}
       />
       <DatasetRunResultsDrawer
         open={datasetRunResultsOpen}
