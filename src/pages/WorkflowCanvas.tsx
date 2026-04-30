@@ -151,7 +151,16 @@ function getRedditNodes(isNew?: boolean): CanvasNode[] {
   ];
 }
 
-const DEFAULT_EDGES: Edge[] = [
+function getReviewsNodes(isNew?: boolean): CanvasNode[] {
+  return [
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "review-dataset", category: "static-data", label: "Review Dataset", description: isNew ? "No reviews selected." : "Brand & competitor reviews dataset.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reviews Data"], status: isNew ? undefined : "success" },
+    { id: "n3", type: "top-select", category: "ai", label: "Select", description: isNew ? "No selection rule set." : "Top 10 reviews by relevance", x: 400, y: 200, inputs: ["Reviews Data"], outputs: ["Top Reviews"], status: isNew ? undefined : "success" },
+    { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
+    { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Reviews", "Products"], outputs: ["Variations"] },
+  ];
+}
+
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
