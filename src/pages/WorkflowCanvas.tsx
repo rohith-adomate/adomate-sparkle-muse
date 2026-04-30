@@ -161,6 +161,7 @@ function getReviewsNodes(isNew?: boolean): CanvasNode[] {
   ];
 }
 
+const DEFAULT_EDGES: Edge[] = [
   { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
