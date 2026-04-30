@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Home, Database, Lightbulb,
-  Workflow, BookOpen, Package, Link2, Swords,
+  Workflow, BookOpen, Package, Link2, Swords, Star,
   ChevronRight, CreditCard, Crown, Settings, LogOut,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -30,6 +30,7 @@ const dataRoomSubs = [
   { title: "Products", url: "/brand-data-room/products", icon: Package },
   
   { title: "Competitors", url: "/brand-data-room/competitors", icon: Swords },
+  { title: "Reviews", url: "/brand-data-room/reviews", icon: Star },
   { title: "Meta Integration", url: "/brand-data-room/meta", icon: Link2 },
 ];
 
