@@ -402,10 +402,11 @@ export default function WorkflowCanvas() {
 
   // Execute the workflow run simulation (extracted so the celebration banner can reuse it)
   const runWorkflow = useCallback(() => {
-    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
       if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
@@ -502,13 +503,14 @@ export default function WorkflowCanvas() {
         },
       });
     }, totalDurationMs);
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages, navigate, id, baseRuns, localRuns.length]);
+  }, [nodes, datasetEmpty, reviewDatasetEmpty, selectedProductCount, configuredTypes, nodeImages, navigate, id, baseRuns, localRuns.length]);
   useEffect(() => {
     if (activeTab !== "editor") return;
-    const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
       if (n.type === "dataset") return datasetEmpty;
+      if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
@@ -539,7 +541,7 @@ export default function WorkflowCanvas() {
       wasFullyConfiguredRef.current = false;
       setCelebrationBannerOpen(false);
     }
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, activeTab, fireConfetti]);
+  }, [nodes, datasetEmpty, reviewDatasetEmpty, selectedProductCount, configuredTypes, activeTab, fireConfetti]);
 
   const getNodeHeight = useCallback((node: CanvasNode) => {
     if (node.type === "manual-image-input") {
@@ -1050,11 +1052,12 @@ export default function WorkflowCanvas() {
             );
           }
           if (activeTab !== "editor") return null;
-          const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+          const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
           const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
           const total = tracked.length;
           const remaining = tracked.filter((n) => {
             if (n.type === "dataset") return datasetEmpty;
+            if (n.type === "review-dataset") return reviewDatasetEmpty;
             if (n.type === "product-data") return selectedProductCount === 0;
             return !configuredTypes.has(n.type);
           }).length;
@@ -1131,11 +1134,12 @@ export default function WorkflowCanvas() {
                 </marker>
               </defs>
               {(() => {
-                const UNCONFIGURED_TYPES = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+                const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
                 const isNodeUnconfigured = (n: CanvasNode) => {
                   if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
                   if (activeTab !== "editor") return false;
                   if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "review-dataset") return reviewDatasetEmpty;
                   if (n.type === "product-data") return selectedProductCount === 0;
                   return !configuredTypes.has(n.type);
                 };
@@ -1202,12 +1206,13 @@ export default function WorkflowCanvas() {
 
             {/* Nodes */}
             {(() => {
-              const UNCONFIGURED_TYPES_FOR_FIRST = ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+              const UNCONFIGURED_TYPES_FOR_FIRST = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
               const unconfiguredOrdered = [...nodes]
                 .filter((n) => {
                   if (!UNCONFIGURED_TYPES_FOR_FIRST.includes(n.type)) return false;
                   if (activeTab !== "editor") return false;
                   if (n.type === "dataset") return datasetEmpty;
+                  if (n.type === "review-dataset") return reviewDatasetEmpty;
                   if (n.type === "product-data") return selectedProductCount === 0;
                   return !configuredTypes.has(n.type);
                 })
@@ -1225,9 +1230,11 @@ export default function WorkflowCanvas() {
               const currentNodeH = getNodeHeight(node);
 
               // Orange warning border for unconfigured nodes (existing data-driven warnings)
-              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
+              const needsConfig = (node.type === "dataset" && datasetEmpty) || (node.type === "review-dataset" && reviewDatasetEmpty) || (node.type === "product-data" && selectedProductCount === 0);
               const warningTooltip = node.type === "dataset" && datasetEmpty
                 ? "The dataset table is currently empty. Click to add competitor sources."
+                : node.type === "review-dataset" && reviewDatasetEmpty
+                ? "The reviews dataset is currently empty. Click to add brand reviews."
                 : node.type === "product-data" && selectedProductCount === 0
                 ? "No products are selected yet. Click to choose products for this workflow."
                 : null;
@@ -1236,6 +1243,7 @@ export default function WorkflowCanvas() {
               const UNCONFIGURED_HELPER: Record<string, string> = {
                 "schedule": "Define when this workflow runs",
                 "dataset": "Build a custom ad dataset from any brands",
+                "review-dataset": "Add brand reviews from Trustpilot or Amazon",
                 "top-select": "Set your ad selection filters",
                 "product-data": "Choose your products",
                 "generate-concepts": "Configure your variation output",
@@ -1247,8 +1255,9 @@ export default function WorkflowCanvas() {
                 activeTab === "editor" &&
                 (
                   (node.type === "dataset" && datasetEmpty) ||
+                  (node.type === "review-dataset" && reviewDatasetEmpty) ||
                   (node.type === "product-data" && selectedProductCount === 0) ||
-                  (node.type !== "dataset" && node.type !== "product-data" && !configuredTypes.has(node.type))
+                  (node.type !== "dataset" && node.type !== "review-dataset" && node.type !== "product-data" && !configuredTypes.has(node.type))
                 );
 
               const isConfiguredNode = isConfigurable && !isUnconfigured;
