@@ -237,7 +237,7 @@ export default function WorkflowCanvas() {
     return names[id || ""] || "Workflow";
   }, [id]);
 
-  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : isReviewsWorkflow ? getReviewsNodes(isNewReviews) : getDefaultNodes(agentName, isNewCompetitor));
+  const [nodes, setNodes] = useState<CanvasNode[]>(() => isManualWorkflow ? getManualNodes(isNewManual) : isAdAccountWorkflow ? getAdAccountNodes(isNewAdAccount) : isRedditWorkflow ? getRedditNodes(isNewReddit) : isReviewsWorkflow ? getReviewsNodes(true) : getDefaultNodes(agentName, isNewCompetitor));
   const [edges, setEdges] = useState<Edge[]>(isManualWorkflow ? MANUAL_EDGES : isAdAccountWorkflow ? AD_ACCOUNT_EDGES : isRedditWorkflow ? REDDIT_EDGES : isReviewsWorkflow ? REVIEWS_EDGES : DEFAULT_EDGES);
   const [nextRunDate, setNextRunDate] = useState<Date | null>(null);
   const [nextRuns, setNextRuns] = useState<Date[]>([]);
@@ -265,7 +265,7 @@ export default function WorkflowCanvas() {
   const [datasetDrawerOpen, setDatasetDrawerOpen] = useState(false);
   const [datasetRunResultsOpen, setDatasetRunResultsOpen] = useState(false);
   const [reviewDatasetDrawerOpen, setReviewDatasetDrawerOpen] = useState(false);
-  const [reviewDatasetEmpty, setReviewDatasetEmpty] = useState(isNewReviews);
+  const [reviewDatasetEmpty, setReviewDatasetEmpty] = useState(isReviewsWorkflow);
   const [productDataDrawerOpen, setProductDataDrawerOpen] = useState(false);
   // For non-new (already-active) workflows, assume product-data is configured
   // so the celebration effect doesn't see a false→true transition once the
@@ -284,7 +284,7 @@ export default function WorkflowCanvas() {
   const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
   // Tracks node types the user has configured (for visual unconfigured state)
   const [configuredTypes, setConfiguredTypes] = useState<Set<string>>(
-    () => new Set(isAnyNew ? [] : ["schedule", "top-select", "generate-concepts", "ad-account", "reddit-subreddit", "reddit-ad-generator", "manual-image-input"])
+    () => new Set(isAnyNew || isReviewsWorkflow ? [] : ["schedule", "top-select", "generate-concepts", "ad-account", "reddit-subreddit", "reddit-ad-generator", "manual-image-input"])
   );
   const markConfigured = useCallback((type: string) => {
     setConfiguredTypes((prev) => {
@@ -1752,7 +1752,7 @@ export default function WorkflowCanvas() {
       <ReviewDatasetDrawer
         open={reviewDatasetDrawerOpen}
         onClose={() => setReviewDatasetDrawerOpen(false)}
-        initialEmpty={isNewReviews}
+        initialEmpty={isReviewsWorkflow}
         onSourcesChange={(count) => setReviewDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("review-dataset") ? () => { setReviewDatasetDrawerOpen(false); openNextDrawerFor("review-dataset"); } : undefined}
         continueLabel={continueLabelFor("review-dataset")}
