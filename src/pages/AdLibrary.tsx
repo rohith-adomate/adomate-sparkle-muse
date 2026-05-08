@@ -154,9 +154,18 @@ export default function AdLibrary() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Ad Library</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Browse every ad in this library — {ALL_ADS.length} ads tracked.
+            Browse every ad in this library — {ALL_ADS.length} ads tracked across{" "}
+            <Link to="/brand-data-room/competitors" className="text-primary hover:underline">
+              {BRANDS.length} brands
+            </Link>.
           </p>
         </div>
+        <Button asChild variant="outline" size="sm" className="gap-1.5">
+          <Link to="/brand-data-room/competitors">
+            <ExternalLink className="h-3.5 w-3.5" />
+            Manage tracked brands
+          </Link>
+        </Button>
       </div>
 
       <Tabs value={tab} onValueChange={(v) => { setTab(v as AdType); setVisible(PAGE_SIZE); }}>
