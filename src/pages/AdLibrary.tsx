@@ -361,8 +361,8 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
         aria-describedby={undefined}
       >
         <div className="flex h-full relative">
-          {/* Media area */}
-          <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
+          {/* Media area — dark canvas with native social-post card */}
+          <div className={`relative bg-neutral-900 flex items-start justify-center overflow-y-auto transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
             {/* Top overlay actions */}
             <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
               <Tooltip>
@@ -382,19 +382,48 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
               </Tooltip>
             </div>
 
-            {/* Platform badge */}
-            <Badge
-              variant="secondary"
-              className="absolute top-4 left-4 z-20 h-6 px-2 text-[11px] bg-black/40 text-white border-0 backdrop-blur"
-            >
-              {ad.platform}
-            </Badge>
+            {/* Native ad post card — preserves original aspect ratio */}
+            <div className="my-8 w-full max-w-[440px] mx-6 bg-background rounded-xl shadow-2xl overflow-hidden flex flex-col">
+              {/* Post header */}
+              <div className="flex items-center gap-2.5 px-3.5 py-3">
+                <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-semibold shrink-0">
+                  {initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold leading-tight truncate">{ad.advertiser}</p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                    <span>Sponsored · {ad.platform}</span>
+                    <span className="h-0.5 w-0.5 rounded-full bg-muted-foreground" />
+                    <span>{format(ad.date, "MMM d")}</span>
+                  </p>
+                </div>
+              </div>
 
-            {ad.type === "image" ? (
-              <img src={ad.src} alt={ad.copy} className="w-full h-full object-contain" />
-            ) : (
-              <video src={ad.src} controls autoPlay loop className="w-full h-full object-contain" />
-            )}
+              {/* Copy */}
+              {ad.copy && (
+                <p className="px-3.5 pb-3 text-[13px] leading-relaxed whitespace-pre-wrap">
+                  {ad.copy}
+                </p>
+              )}
+
+              {/* Media in original ratio */}
+              <div className="w-full bg-muted" style={{ aspectRatio: ad.aspect }}>
+                {ad.type === "image" ? (
+                  <img src={ad.src} alt={ad.copy} className="w-full h-full object-cover block" />
+                ) : (
+                  <video src={ad.src} controls autoPlay loop playsInline className="w-full h-full object-cover block" />
+                )}
+              </div>
+
+              {/* CTA strip */}
+              <div className="flex items-center justify-between px-3.5 py-2.5 bg-muted/40 border-t border-border/60">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{meta.domain}</p>
+                  <p className="text-[12px] font-semibold truncate">Shop now</p>
+                </div>
+                <Button size="sm" variant="secondary" className="h-7 text-xs">Learn more</Button>
+              </div>
+            </div>
           </div>
 
           {/* Sliding details panel */}
