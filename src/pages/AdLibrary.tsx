@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter } from "lucide-react";
+import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Bookmark, Link2, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import type { DateRange } from "react-day-picker";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Link } from "react-router-dom";
 
 type AdType = "image" | "video";
 type Platform = "Meta" | "TikTok" | "YouTube" | "Reddit";
