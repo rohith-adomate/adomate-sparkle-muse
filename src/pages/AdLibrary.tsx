@@ -326,8 +326,7 @@ function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
           </>
         )}
         <Badge
-          variant="secondary"
-          className="absolute top-2 left-2 h-5 px-1.5 text-[10px] bg-background/90 backdrop-blur"
+          className="absolute top-2 left-2 h-5 px-1.5 text-[10px] bg-primary/90 text-primary-foreground hover:bg-primary backdrop-blur border-0"
         >
           {ad.platform}
         </Badge>
