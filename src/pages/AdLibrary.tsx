@@ -347,125 +347,185 @@ function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
 }
 
 function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void }) {
+  const [showInfoPanel, setShowInfoPanel] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+
   if (!ad) return null;
   const meta = BRAND_META[ad.brand] ?? { industry: "—", domain: "example.com" };
   const daysActive = Math.max(1, Math.floor((Date.now() - ad.date.getTime()) / 86400000));
   const initials = ad.brand.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <Dialog open={!!ad} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden rounded-2xl gap-0 max-h-[90vh]">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] max-h-[90vh]">
-          {/* LEFT — preview */}
-          <div className="bg-muted/30 p-6 overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="font-semibold">Ad details</span>
-                <span className="text-muted-foreground">·</span>
-                <span className="text-muted-foreground font-mono text-xs">{ad.id}</span>
-              </div>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                <Link2 className="h-3.5 w-3.5" /> Copy link
-              </Button>
+    <Dialog open={!!ad} onOpenChange={(o) => { if (!o) { setShowInfoPanel(false); onClose(); } }}>
+      <DialogContent
+        className="max-w-5xl w-[calc(100vw-8rem)] h-[90vh] max-h-[90vh] p-0 overflow-hidden rounded-xl border-0 gap-0 [&>button]:hidden"
+        aria-label={ad.copy}
+        aria-describedby={undefined}
+      >
+        <div className="flex h-full relative">
+          {/* Media area */}
+          <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
+            {/* Top overlay actions */}
+            <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setBookmarked((b) => !b)}
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+                      bookmarked
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                    }`}
+                  >
+                    <Bookmark className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">{bookmarked ? "Saved" : "Add to board"}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/brand-data-room/ad-library?ad=${ad.id}`);
+                      toast.success("Link copied");
+                    }}
+                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                  >
+                    <Link2 className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Copy link</TooltipContent>
+              </Tooltip>
+              <div className="w-px h-5 bg-white/20" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      const id = toast("Downloading asset…", {
+                        icon: <Loader2 className="h-4 w-4 animate-spin" />,
+                        duration: Infinity,
+                      });
+                      setTimeout(() => {
+                        toast.success("Download successful", {
+                          id,
+                          icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+                          duration: 3000,
+                        });
+                      }, 2500);
+                    }}
+                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                  >
+                    <Download className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Download asset</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowInfoPanel((v) => !v)}
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
+                      showInfoPanel
+                        ? "bg-white text-neutral-900"
+                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
+                    }`}
+                  >
+                    <Info className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Ad details</TooltipContent>
+              </Tooltip>
             </div>
 
-            <Card className="overflow-hidden border-border/60 shadow-sm bg-background">
-              <div className="p-4 flex items-center gap-2.5 border-b border-border/60">
-                <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
-                  {initials}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold leading-tight">{ad.advertiser}</p>
-                  <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    Active for {daysActive}d
-                  </p>
-                </div>
-              </div>
-              <div className="px-4 py-3">
-                <p className="text-sm leading-snug">{ad.copy}</p>
-              </div>
-              <div className="bg-muted" style={{ aspectRatio: ad.aspect }}>
-                {ad.type === "image" ? (
-                  <img src={ad.src} alt={ad.copy} className="w-full h-full object-cover" />
-                ) : (
-                  <video src={ad.src} controls className="w-full h-full object-cover" />
-                )}
-              </div>
-              <div className="p-4 flex items-center justify-between gap-3 border-t border-border/60">
-                <div className="min-w-0">
-                  <p className="text-[11px] text-muted-foreground truncate">{meta.domain}</p>
-                  <p className="text-sm font-medium truncate">{ad.copy.split(".")[0]}</p>
-                </div>
-                <Button size="sm" variant="secondary" className="shrink-0">Shop now</Button>
-              </div>
-            </Card>
+            {/* Platform badge */}
+            <Badge
+              variant="secondary"
+              className="absolute top-4 left-4 z-20 h-6 px-2 text-[11px] bg-black/40 text-white border-0 backdrop-blur"
+            >
+              {ad.platform}
+            </Badge>
+
+            {ad.type === "image" ? (
+              <img src={ad.src} alt={ad.copy} className="w-full h-full object-contain" />
+            ) : (
+              <video src={ad.src} controls autoPlay loop className="w-full h-full object-contain" />
+            )}
           </div>
 
-          {/* RIGHT — details panel */}
-          <div className="border-l border-border bg-background overflow-y-auto">
-            <div className="px-5 pt-5 pb-3 border-b border-border flex items-center justify-between">
-              <h3 className="text-base font-semibold border-b-2 border-foreground pb-2 -mb-2">
-                Details
-              </h3>
-              <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="p-5 space-y-5">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2">
-                <Bookmark className="h-3.5 w-3.5" />
-                Add to board
-              </Button>
-
-              <div className="space-y-3 text-sm">
-                <DetailRow label="Brand" value={
-                  <Link to="/brand-data-room/competitors" className="flex items-center gap-2 hover:underline">
-                    <span className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-semibold">{initials}</span>
-                    {ad.brand}
-                  </Link>
-                } />
-                <DetailRow label="Industry" value={<span>{meta.industry}</span>} />
-                <DetailRow label="Status" value={
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    Active for {daysActive}d
-                  </span>
-                } />
-                <DetailRow label="Landing page" value={
-                  <a href={`https://${meta.domain}`} target="_blank" rel="noreferrer" className="text-primary hover:underline truncate inline-block max-w-[180px]">
-                    https://{meta.domain}/prod...
-                  </a>
-                } />
-                <DetailRow label="Platforms" value={
-                  <span className="flex items-center gap-1.5">
-                    <Facebook className="h-4 w-4 text-[#1877F2]" />
-                    <Instagram className="h-4 w-4 text-[#E4405F]" />
-                    <span className="text-xs text-muted-foreground">+{ad.platform}</span>
-                  </span>
-                } />
-                <DetailRow label="Visual Format" value={
-                  <span className="flex items-center gap-1.5">
-                    {ad.type === "image" ? <ImageIcon className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-pink-100 text-pink-700 hover:bg-pink-100">
-                      {ad.type === "image" ? "Image" : "Video"}
-                    </Badge>
-                  </span>
-                } />
+          {/* Sliding details panel */}
+          <div className={`flex flex-col bg-background overflow-y-auto transition-all duration-300 ${showInfoPanel ? "w-[40%]" : "w-0 overflow-hidden"}`}>
+            <div className="min-w-[320px]">
+              <div className="px-5 py-4 flex items-center justify-between border-b border-border/50">
+                <h3 className="text-sm font-medium text-foreground">Details</h3>
+                <button
+                  onClick={() => setShowInfoPanel(false)}
+                  className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
 
-              <div className="pt-2 border-t border-border space-y-2">
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-sm font-semibold">Thought starters</h4>
-                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-purple-100 text-purple-700 hover:bg-purple-100">
-                    <Sparkles className="h-2.5 w-2.5 mr-1" />AI
-                  </Badge>
+              <div className="px-5 py-4 space-y-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold leading-tight truncate">{ad.advertiser}</p>
+                    <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      Active for {daysActive}d
+                    </p>
+                  </div>
                 </div>
-                <ThoughtItem icon={Search} label="Break down what makes this ad work" />
-                <ThoughtItem icon={Target} label="Who is this ad speaking to?" />
-                <ThoughtItem icon={Compass} label="Create testable variations" />
-                <ThoughtItem icon={MessageCircle} label="Ask me anything" />
+
+                <p className="text-[12px] text-muted-foreground leading-relaxed bg-muted/50 rounded-lg p-3 border border-border/50">
+                  {ad.copy}
+                </p>
+
+                <div className="space-y-3">
+                  <DetailRow label="Brand" value={
+                    <Link to="/brand-data-room/competitors" className="flex items-center gap-2 hover:underline">
+                      <span className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-semibold">{initials}</span>
+                      {ad.brand}
+                    </Link>
+                  } />
+                  <DetailRow label="Industry" value={<span>{meta.industry}</span>} />
+                  <DetailRow label="Date seen" value={<span>{format(ad.date, "MMM d, yyyy")}</span>} />
+                  <DetailRow label="Landing page" value={
+                    <a href={`https://${meta.domain}`} target="_blank" rel="noreferrer" className="text-primary hover:underline truncate inline-block max-w-[180px]">
+                      {meta.domain}
+                    </a>
+                  } />
+                  <DetailRow label="Platforms" value={
+                    <span className="flex items-center gap-1.5">
+                      <Facebook className="h-4 w-4 text-[#1877F2]" />
+                      <Instagram className="h-4 w-4 text-[#E4405F]" />
+                      <span className="text-xs text-muted-foreground">+{ad.platform}</span>
+                    </span>
+                  } />
+                  <DetailRow label="Visual format" value={
+                    <span className="flex items-center gap-1.5">
+                      {ad.type === "image" ? <ImageIcon className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                      <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-pink-100 text-pink-700 hover:bg-pink-100">
+                        {ad.type === "image" ? "Image" : "Video"}
+                      </Badge>
+                    </span>
+                  } />
+                </div>
+
+                <div className="pt-3 border-t border-border space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-sm font-semibold">Thought starters</h4>
+                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-purple-100 text-purple-700 hover:bg-purple-100">
+                      <Sparkles className="h-2.5 w-2.5 mr-1" />AI
+                    </Badge>
+                  </div>
+                  <ThoughtItem icon={Search} label="Break down what makes this ad work" />
+                  <ThoughtItem icon={Target} label="Who is this ad speaking to?" />
+                  <ThoughtItem icon={Compass} label="Create testable variations" />
+                  <ThoughtItem icon={MessageCircle} label="Ask me anything" />
+                </div>
               </div>
             </div>
           </div>
