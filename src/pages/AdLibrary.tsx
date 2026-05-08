@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Bookmark, Link2, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info, Download, Loader2, CheckCircle2 } from "lucide-react";
+import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
@@ -348,7 +347,6 @@ function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
 
 function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void }) {
   const [showInfoPanel, setShowInfoPanel] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
 
   if (!ad) return null;
   const meta = BRAND_META[ad.brand] ?? { industry: "—", domain: "example.com" };
@@ -367,59 +365,6 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
           <div className={`relative bg-neutral-900 flex items-center justify-center overflow-hidden transition-all duration-300 ${showInfoPanel ? "w-[60%]" : "w-full"}`}>
             {/* Top overlay actions */}
             <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setBookmarked((b) => !b)}
-                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
-                      bookmarked
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                    }`}
-                  >
-                    <Bookmark className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">{bookmarked ? "Saved" : "Add to board"}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/brand-data-room/ad-library?ad=${ad.id}`);
-                      toast.success("Link copied");
-                    }}
-                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                  >
-                    <Link2 className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Copy link</TooltipContent>
-              </Tooltip>
-              <div className="w-px h-5 bg-white/20" />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => {
-                      const id = toast("Downloading asset…", {
-                        icon: <Loader2 className="h-4 w-4 animate-spin" />,
-                        duration: Infinity,
-                      });
-                      setTimeout(() => {
-                        toast.success("Download successful", {
-                          id,
-                          icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
-                          duration: 3000,
-                        });
-                      }, 2500);
-                    }}
-                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                  >
-                    <Download className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Download asset</TooltipContent>
-              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
