@@ -368,59 +368,6 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => setBookmarked((b) => !b)}
-                    className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
-                      bookmarked
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                    }`}
-                  >
-                    <Bookmark className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">{bookmarked ? "Saved" : "Add to board"}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/brand-data-room/ad-library?ad=${ad.id}`);
-                      toast.success("Link copied");
-                    }}
-                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                  >
-                    <Link2 className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Copy link</TooltipContent>
-              </Tooltip>
-              <div className="w-px h-5 bg-white/20" />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => {
-                      const id = toast("Downloading asset…", {
-                        icon: <Loader2 className="h-4 w-4 animate-spin" />,
-                        duration: Infinity,
-                      });
-                      setTimeout(() => {
-                        toast.success("Download successful", {
-                          id,
-                          icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
-                          duration: 3000,
-                        });
-                      }, 2500);
-                    }}
-                    className="h-9 w-9 rounded-full flex items-center justify-center transition-all bg-black/30 backdrop-blur-sm text-white/80 hover:bg-black/50 hover:text-white"
-                  >
-                    <Download className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Download asset</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
                     onClick={() => setShowInfoPanel((v) => !v)}
                     className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
                       showInfoPanel
