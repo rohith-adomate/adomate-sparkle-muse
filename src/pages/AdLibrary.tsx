@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Bookmark, Link2, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info, Download, Loader2, CheckCircle2 } from "lucide-react";
+import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { format } from "date-fns";
