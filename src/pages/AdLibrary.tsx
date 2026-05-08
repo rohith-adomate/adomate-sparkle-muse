@@ -347,7 +347,6 @@ function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
 
 function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void }) {
   const [showInfoPanel, setShowInfoPanel] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
 
   if (!ad) return null;
   const meta = BRAND_META[ad.brand] ?? { industry: "—", domain: "example.com" };
