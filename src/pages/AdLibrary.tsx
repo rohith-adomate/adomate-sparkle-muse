@@ -247,12 +247,14 @@ export default function AdLibrary() {
         </div>
 
         <TabsContent value="image" className="mt-6">
-          <AdGrid ads={shown} />
+          <AdGrid ads={shown} onSelect={setSelectedAd} />
         </TabsContent>
         <TabsContent value="video" className="mt-6">
-          <AdGrid ads={shown} />
+          <AdGrid ads={shown} onSelect={setSelectedAd} />
         </TabsContent>
       </Tabs>
+
+      <AdDetailDialog ad={selectedAd} onClose={() => setSelectedAd(null)} />
 
       {filtered.length === 0 && (
         <div className="text-center py-16 border border-dashed rounded-lg">
