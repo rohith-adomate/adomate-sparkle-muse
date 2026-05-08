@@ -99,6 +99,13 @@ function seedAds(): Ad[] {
 const ALL_ADS = seedAds();
 const PAGE_SIZE = 12;
 
+const BRAND_META: Record<string, { industry: string; domain: string }> = {
+  "Oy Care": { industry: "Baby & Family", domain: "oycare.com" },
+  "Wellow": { industry: "Wellness", domain: "wellow.com" },
+  "Bloom Naturals": { industry: "Beauty", domain: "bloomnaturals.com" },
+  "Pure Co.": { industry: "Skincare", domain: "pureco.com" },
+};
+
 export default function AdLibrary() {
   const [tab, setTab] = useState<AdType>("image");
   const [brand, setBrand] = useState<string>("all");
@@ -106,6 +113,7 @@ export default function AdLibrary() {
   const [range, setRange] = useState<DateRange | undefined>();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
 
   const filtered = useMemo(() => {
     return ALL_ADS.filter((a) => a.type === tab)
