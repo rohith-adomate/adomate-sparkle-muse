@@ -16,6 +16,7 @@ import ProductDetail from "./pages/ProductDetail";
 import MetaIntegration from "./pages/MetaIntegration";
 import Competitors from "./pages/Competitors";
 import Reviews from "./pages/Reviews";
+import AdLibrary from "./pages/AdLibrary";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import Concepts from "./pages/Concepts";
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
             <Route path="/brand-data-room/competitors" element={<Competitors />} />
             <Route path="/brand-data-room/reviews" element={<Reviews />} />
+            <Route path="/brand-data-room/ad-library" element={<AdLibrary />} />
             <Route path="/campaigns" element={<Workflows />} />
             <Route path="/campaigns/:id" element={<Workflows />} />
             <Route path="/concepts" element={<Concepts />} />
