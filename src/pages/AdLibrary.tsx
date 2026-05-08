@@ -281,19 +281,22 @@ export default function AdLibrary() {
   );
 }
 
-function AdGrid({ ads }: { ads: Ad[] }) {
+function AdGrid({ ads, onSelect }: { ads: Ad[]; onSelect: (ad: Ad) => void }) {
   return (
     <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
       {ads.map((ad) => (
-        <AdCard key={ad.id} ad={ad} />
+        <AdCard key={ad.id} ad={ad} onSelect={onSelect} />
       ))}
     </div>
   );
 }
 
-function AdCard({ ad }: { ad: Ad }) {
+function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
   return (
-    <Card className="mb-4 break-inside-avoid overflow-hidden border-border/60 hover:shadow-lg transition-shadow group cursor-pointer">
+    <Card
+      onClick={() => onSelect(ad)}
+      className="mb-4 break-inside-avoid overflow-hidden border-border/60 hover:shadow-lg transition-shadow group cursor-pointer"
+    >
       <div className="relative bg-muted" style={{ aspectRatio: ad.aspect }}>
         {ad.type === "image" ? (
           <img
@@ -338,5 +341,152 @@ function AdCard({ ad }: { ad: Ad }) {
         <p className="text-xs text-muted-foreground line-clamp-2 leading-snug">{ad.copy}</p>
       </div>
     </Card>
+  );
+}
+
+function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void }) {
+  if (!ad) return null;
+  const meta = BRAND_META[ad.brand] ?? { industry: "—", domain: "example.com" };
+  const daysActive = Math.max(1, Math.floor((Date.now() - ad.date.getTime()) / 86400000));
+  const initials = ad.brand.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  return (
+    <Dialog open={!!ad} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-5xl p-0 overflow-hidden rounded-2xl gap-0 max-h-[90vh]">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] max-h-[90vh]">
+          {/* LEFT — preview */}
+          <div className="bg-muted/30 p-6 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="font-semibold">Ad details</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground font-mono text-xs">{ad.id}</span>
+              </div>
+              <Button variant="outline" size="sm" className="h-8 gap-1.5">
+                <Link2 className="h-3.5 w-3.5" /> Copy link
+              </Button>
+            </div>
+
+            <Card className="overflow-hidden border-border/60 shadow-sm bg-background">
+              <div className="p-4 flex items-center gap-2.5 border-b border-border/60">
+                <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                  {initials}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold leading-tight">{ad.advertiser}</p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    Active for {daysActive}d
+                  </p>
+                </div>
+              </div>
+              <div className="px-4 py-3">
+                <p className="text-sm leading-snug">{ad.copy}</p>
+              </div>
+              <div className="bg-muted" style={{ aspectRatio: ad.aspect }}>
+                {ad.type === "image" ? (
+                  <img src={ad.src} alt={ad.copy} className="w-full h-full object-cover" />
+                ) : (
+                  <video src={ad.src} controls className="w-full h-full object-cover" />
+                )}
+              </div>
+              <div className="p-4 flex items-center justify-between gap-3 border-t border-border/60">
+                <div className="min-w-0">
+                  <p className="text-[11px] text-muted-foreground truncate">{meta.domain}</p>
+                  <p className="text-sm font-medium truncate">{ad.copy.split(".")[0]}</p>
+                </div>
+                <Button size="sm" variant="secondary" className="shrink-0">Shop now</Button>
+              </div>
+            </Card>
+          </div>
+
+          {/* RIGHT — details panel */}
+          <div className="border-l border-border bg-background overflow-y-auto">
+            <div className="px-5 pt-5 pb-3 border-b border-border flex items-center justify-between">
+              <h3 className="text-base font-semibold border-b-2 border-foreground pb-2 -mb-2">
+                Details
+              </h3>
+              <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-5">
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2">
+                <Bookmark className="h-3.5 w-3.5" />
+                Add to board
+              </Button>
+
+              <div className="space-y-3 text-sm">
+                <DetailRow label="Brand" value={
+                  <Link to="/brand-data-room/competitors" className="flex items-center gap-2 hover:underline">
+                    <span className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-semibold">{initials}</span>
+                    {ad.brand}
+                  </Link>
+                } />
+                <DetailRow label="Industry" value={<span>{meta.industry}</span>} />
+                <DetailRow label="Status" value={
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    Active for {daysActive}d
+                  </span>
+                } />
+                <DetailRow label="Landing page" value={
+                  <a href={`https://${meta.domain}`} target="_blank" rel="noreferrer" className="text-primary hover:underline truncate inline-block max-w-[180px]">
+                    https://{meta.domain}/prod...
+                  </a>
+                } />
+                <DetailRow label="Platforms" value={
+                  <span className="flex items-center gap-1.5">
+                    <Facebook className="h-4 w-4 text-[#1877F2]" />
+                    <Instagram className="h-4 w-4 text-[#E4405F]" />
+                    <span className="text-xs text-muted-foreground">+{ad.platform}</span>
+                  </span>
+                } />
+                <DetailRow label="Visual Format" value={
+                  <span className="flex items-center gap-1.5">
+                    {ad.type === "image" ? <ImageIcon className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-pink-100 text-pink-700 hover:bg-pink-100">
+                      {ad.type === "image" ? "Image" : "Video"}
+                    </Badge>
+                  </span>
+                } />
+              </div>
+
+              <div className="pt-2 border-t border-border space-y-2">
+                <div className="flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold">Thought starters</h4>
+                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-purple-100 text-purple-700 hover:bg-purple-100">
+                    <Sparkles className="h-2.5 w-2.5 mr-1" />AI
+                  </Badge>
+                </div>
+                <ThoughtItem icon={Search} label="Break down what makes this ad work" />
+                <ThoughtItem icon={Target} label="Who is this ad speaking to?" />
+                <ThoughtItem icon={Compass} label="Create testable variations" />
+                <ThoughtItem icon={MessageCircle} label="Ask me anything" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-[110px_1fr] items-center gap-3">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <div className="text-sm">{value}</div>
+    </div>
+  );
+}
+
+function ThoughtItem({ icon: Icon, label }: { icon: typeof Search; label: string }) {
+  return (
+    <button className="w-full flex items-center gap-2.5 px-2 py-2 rounded-md hover:bg-muted text-left text-sm">
+      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+      <span>{label}</span>
+    </button>
   );
 }
