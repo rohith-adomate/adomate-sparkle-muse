@@ -391,8 +391,7 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold leading-tight truncate">{ad.advertiser}</p>
                   <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
-                    <span>Sponsored · </span>
-                    <span className="text-primary font-medium">{ad.platform}</span>
+                    <span>Sponsored</span>
                     <span className="h-0.5 w-0.5 rounded-full bg-muted-foreground" />
                     <span>{format(ad.date, "MMM d")}</span>
                   </p>
@@ -401,9 +400,14 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
 
               {/* Copy */}
               {ad.copy && (
-                <p className="px-3.5 pb-3 text-[13px] leading-relaxed whitespace-pre-wrap">
-                  {ad.copy}
-                </p>
+                <div className="px-3.5 pb-3 space-y-1.5">
+                  <p className="text-[13px] leading-relaxed whitespace-pre-wrap">
+                    {ad.copy}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {ad.platform}
+                  </p>
+                </div>
               )}
 
               {/* Media in original ratio */}
