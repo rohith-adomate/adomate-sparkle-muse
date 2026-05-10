@@ -191,12 +191,6 @@ function BrandAdsView({ brandParam }: { brandParam: string }) {
             )}
           </p>
         </div>
-        <Button asChild variant="outline" size="sm" className="gap-1.5">
-          <Link to="/brand-data-room/competitors">
-            <ExternalLink className="h-3.5 w-3.5" />
-            {brandParam ? "Back to brands" : "Manage tracked brands"}
-          </Link>
-        </Button>
       </div>
 
       <Tabs value={tab} onValueChange={(v) => { setTab(v as TabValue); setVisible(PAGE_SIZE); }}>
