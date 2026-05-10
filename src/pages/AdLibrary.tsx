@@ -162,7 +162,7 @@ function BrandAdsView({ brandParam }: { brandParam: string }) {
           brandParam
             ? [
                 { label: "Data Room", href: "/brand-data-room" },
-                { label: "Competitors", href: "/brand-data-room/competitors" },
+                { label: "Ad Library", href: "/brand-data-room/ad-library" },
                 { label: brandParam },
               ]
             : [
