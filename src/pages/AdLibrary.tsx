@@ -22,6 +22,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
 type AdType = "image" | "video";
+type TabValue = "all" | AdType;
 type Platform = "Meta" | "TikTok" | "YouTube" | "Reddit";
 
 interface Ad {
