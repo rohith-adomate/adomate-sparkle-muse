@@ -293,10 +293,10 @@ export default function Competitors() {
                       </div>
                     ) : c.adsTracked}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
                     <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
                   </TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     {c.scrapingStatus !== "scraping" && (
                       <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                         <Trash2 className="h-4 w-4" />
