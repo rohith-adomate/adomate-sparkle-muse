@@ -200,21 +200,7 @@ export default function AdLibrary() {
               />
             </div>
 
-            <Select value={brand} onValueChange={(v) => { setBrand(v); setVisible(PAGE_SIZE); }}>
-              <SelectTrigger className="h-9 w-[140px]"><SelectValue placeholder="Brand" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All brands</SelectItem>
-                {BRANDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
-              </SelectContent>
-            </Select>
 
-            <Select value={platform} onValueChange={(v) => { setPlatform(v); setVisible(PAGE_SIZE); }}>
-              <SelectTrigger className="h-9 w-[130px]"><SelectValue placeholder="Platform" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All platforms</SelectItem>
-                {PLATFORMS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-              </SelectContent>
-            </Select>
 
             <Popover>
               <PopoverTrigger asChild>
