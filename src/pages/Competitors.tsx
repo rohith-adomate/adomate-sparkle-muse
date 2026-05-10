@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,6 +92,7 @@ const mockSearch = (query: string): Promise<SearchResult[]> =>
   );
 
 export default function Competitors() {
+  const navigate = useNavigate();
   const [competitors, setCompetitors] = useState<Competitor[]>(initialCompetitors);
 
   const simulateScraping = useCallback((comp: Competitor) => {
@@ -249,7 +251,11 @@ export default function Competitors() {
               </TableRow>
             ) : (
               filtered.map((c) => (
-                <TableRow key={c.id}>
+                <TableRow
+                  key={c.id}
+                  onClick={() => c.scrapingStatus === "ready" && navigate(`/brand-data-room/ad-library?brand=${encodeURIComponent(c.name)}`)}
+                  className={c.scrapingStatus === "ready" ? "cursor-pointer hover:bg-muted/40" : ""}
+                >
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <img src={c.avatarUrl} alt="" className="h-8 w-8 rounded-full bg-muted object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }} />
@@ -271,7 +277,7 @@ export default function Competitors() {
                     )}
                   </TableCell>
                   <TableCell className="text-sm font-mono">
-                    <a href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
+                    <a onClick={(e) => e.stopPropagation()} href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
                       {c.pageId.slice(0, 8)}…
                       <ExternalLink className="h-3 w-3" />
                     </a>
@@ -287,10 +293,10 @@ export default function Competitors() {
                       </div>
                     ) : c.adsTracked}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
                     <StatusChip status={c.scrapingStatus} onRetry={() => handleRetry(c.id)} />
                   </TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     {c.scrapingStatus !== "scraping" && (
                       <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                         <Trash2 className="h-4 w-4" />
