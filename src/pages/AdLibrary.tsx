@@ -110,7 +110,12 @@ const BRAND_META: Record<string, { industry: string; domain: string }> = {
 
 export default function AdLibrary() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const brandParam = searchParams.get("brand") ?? undefined;
+
+  if (!brandParam) {
+    return <BrandsListView onSelect={(b) => navigate(`/brand-data-room/ad-library?brand=${encodeURIComponent(b)}`)} />;
+  }
 
   const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
