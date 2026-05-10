@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import type { DateRange } from "react-day-picker";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 type AdType = "image" | "video";
 type TabValue = "all" | AdType;
