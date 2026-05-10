@@ -163,9 +163,15 @@ export default function AdLibrary() {
         </Button>
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => { setTab(v as AdType); setVisible(PAGE_SIZE); }}>
+      <Tabs value={tab} onValueChange={(v) => { setTab(v as TabValue); setVisible(PAGE_SIZE); }}>
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <TabsList>
+            <TabsTrigger value="all" className="gap-1.5">
+              All
+              <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
+                {ALL_ADS.length}
+              </Badge>
+            </TabsTrigger>
             <TabsTrigger value="image" className="gap-1.5">
               <ImageIcon className="h-3.5 w-3.5" />
               Image ads
