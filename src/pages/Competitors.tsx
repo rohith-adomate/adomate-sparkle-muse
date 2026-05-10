@@ -277,7 +277,7 @@ export default function Competitors() {
                     )}
                   </TableCell>
                   <TableCell className="text-sm font-mono">
-                    <a href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
+                    <a onClick={(e) => e.stopPropagation()} href={`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${c.pageId}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1">
                       {c.pageId.slice(0, 8)}…
                       <ExternalLink className="h-3 w-3" />
                     </a>
