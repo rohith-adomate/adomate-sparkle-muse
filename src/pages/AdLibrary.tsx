@@ -5,9 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -22,6 +19,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
 type AdType = "image" | "video";
+type TabValue = "all" | AdType;
 type Platform = "Meta" | "TikTok" | "YouTube" | "Reddit";
 
 interface Ad {
@@ -108,39 +106,32 @@ const BRAND_META: Record<string, { industry: string; domain: string }> = {
 };
 
 export default function AdLibrary() {
-  const [tab, setTab] = useState<AdType>("image");
-  const [brand, setBrand] = useState<string>("all");
-  const [platform, setPlatform] = useState<string>("all");
+  const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
 
   const filtered = useMemo(() => {
-    return ALL_ADS.filter((a) => a.type === tab)
-      .filter((a) => (brand === "all" ? true : a.brand === brand))
-      .filter((a) => (platform === "all" ? true : a.platform === platform))
+    return ALL_ADS.filter((a) => (tab === "all" ? true : a.type === tab))
       .filter((a) => {
         if (!range?.from) return true;
         const to = range.to ?? range.from;
         return a.date >= range.from && a.date <= to;
       })
       .filter((a) => (query ? a.copy.toLowerCase().includes(query.toLowerCase()) : true));
-  }, [tab, brand, platform, range, query]);
+  }, [tab, range, query]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
 
   const resetFilters = () => {
-    setBrand("all");
-    setPlatform("all");
     setRange(undefined);
     setQuery("");
     setVisible(PAGE_SIZE);
   };
 
-  const activeFilterCount =
-    (brand !== "all" ? 1 : 0) + (platform !== "all" ? 1 : 0) + (range?.from ? 1 : 0);
+  const activeFilterCount = (range?.from ? 1 : 0);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -169,9 +160,15 @@ export default function AdLibrary() {
         </Button>
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => { setTab(v as AdType); setVisible(PAGE_SIZE); }}>
+      <Tabs value={tab} onValueChange={(v) => { setTab(v as TabValue); setVisible(PAGE_SIZE); }}>
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <TabsList>
+            <TabsTrigger value="all" className="gap-1.5">
+              All
+              <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
+                {ALL_ADS.length}
+              </Badge>
+            </TabsTrigger>
             <TabsTrigger value="image" className="gap-1.5">
               <ImageIcon className="h-3.5 w-3.5" />
               Image ads
@@ -200,21 +197,7 @@ export default function AdLibrary() {
               />
             </div>
 
-            <Select value={brand} onValueChange={(v) => { setBrand(v); setVisible(PAGE_SIZE); }}>
-              <SelectTrigger className="h-9 w-[140px]"><SelectValue placeholder="Brand" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All brands</SelectItem>
-                {BRANDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
-              </SelectContent>
-            </Select>
 
-            <Select value={platform} onValueChange={(v) => { setPlatform(v); setVisible(PAGE_SIZE); }}>
-              <SelectTrigger className="h-9 w-[130px]"><SelectValue placeholder="Platform" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All platforms</SelectItem>
-                {PLATFORMS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-              </SelectContent>
-            </Select>
 
             <Popover>
               <PopoverTrigger asChild>
@@ -247,6 +230,9 @@ export default function AdLibrary() {
           </div>
         </div>
 
+        <TabsContent value="all" className="mt-6">
+          <AdGrid ads={shown} onSelect={setSelectedAd} />
+        </TabsContent>
         <TabsContent value="image" className="mt-6">
           <AdGrid ads={shown} onSelect={setSelectedAd} />
         </TabsContent>
