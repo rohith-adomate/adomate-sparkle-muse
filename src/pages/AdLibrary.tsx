@@ -117,6 +117,10 @@ export default function AdLibrary() {
     return <BrandsListView onSelect={(b) => navigate(`/brand-data-room/ad-library?brand=${encodeURIComponent(b)}`)} />;
   }
 
+  return <BrandAdsView brandParam={brandParam} />;
+}
+
+function BrandAdsView({ brandParam }: { brandParam: string }) {
   const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
   const [query, setQuery] = useState("");
