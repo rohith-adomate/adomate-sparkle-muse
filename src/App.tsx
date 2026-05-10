@@ -14,7 +14,7 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 
 import MetaIntegration from "./pages/MetaIntegration";
-import Competitors from "./pages/Competitors";
+
 import Reviews from "./pages/Reviews";
 import AdLibrary from "./pages/AdLibrary";
 import Campaigns from "./pages/Campaigns";
