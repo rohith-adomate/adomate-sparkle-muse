@@ -729,18 +729,6 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
                   } />
                 </div>
 
-                <div className="pt-3 border-t border-border space-y-2">
-                  <div className="flex items-center gap-1.5">
-                    <h4 className="text-sm font-semibold">Thought starters</h4>
-                    <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-purple-100 text-purple-700 hover:bg-purple-100">
-                      <Sparkles className="h-2.5 w-2.5 mr-1" />AI
-                    </Badge>
-                  </div>
-                  <ThoughtItem icon={Search} label="Break down what makes this ad work" />
-                  <ThoughtItem icon={Target} label="Who is this ad speaking to?" />
-                  <ThoughtItem icon={Compass} label="Create testable variations" />
-                  <ThoughtItem icon={MessageCircle} label="Ask me anything" />
-                </div>
               </div>
             </div>
           </div>
