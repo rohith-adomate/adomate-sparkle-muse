@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SaveIndicatorProvider } from "@/contexts/SaveIndicatorContext";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import Home from "./pages/Home";
@@ -14,7 +14,7 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 
 import MetaIntegration from "./pages/MetaIntegration";
-import Competitors from "./pages/Competitors";
+
 import Reviews from "./pages/Reviews";
 import AdLibrary from "./pages/AdLibrary";
 import Campaigns from "./pages/Campaigns";
@@ -69,7 +69,7 @@ const App = () => (
             <Route path="/brand-data-room/products/:id" element={<ProductDetail />} />
             
             <Route path="/brand-data-room/meta" element={<MetaIntegration />} />
-            <Route path="/brand-data-room/competitors" element={<Competitors />} />
+            <Route path="/brand-data-room/competitors" element={<Navigate to="/brand-data-room/ad-library" replace />} />
             <Route path="/brand-data-room/reviews" element={<Reviews />} />
             <Route path="/brand-data-room/ad-library" element={<AdLibrary />} />
             <Route path="/campaigns" element={<Workflows />} />
