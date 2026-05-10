@@ -662,8 +662,11 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
           {/* Sliding details panel */}
           <div className={`flex flex-col bg-background overflow-y-auto transition-all duration-300 ${showInfoPanel ? "w-[40%]" : "w-0 overflow-hidden"}`}>
             <div className="min-w-[320px]">
-              <div className="px-5 py-4 flex items-center justify-between border-b border-border/50">
-                <h3 className="text-sm font-medium text-foreground">Details</h3>
+              <div className="px-5 py-4 flex items-start justify-between border-b border-border/50">
+                <div>
+                  <h3 className="text-sm font-medium text-foreground">Details</h3>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Ad information</p>
+                </div>
                 <button
                   onClick={() => setShowInfoPanel(false)}
                   className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -681,7 +684,7 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
                     <p className="text-sm font-semibold leading-tight truncate">{ad.advertiser}</p>
                     <p className="text-[11px] text-muted-foreground flex items-center gap-1">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                      Active for {daysActive}d
+                      Seen {format(ad.date, "d MMM yyyy")}
                     </p>
                   </div>
                 </div>
@@ -692,30 +695,35 @@ function AdDetailDialog({ ad, onClose }: { ad: Ad | null; onClose: () => void })
 
                 <div className="space-y-3">
                   <DetailRow label="Brand" value={
-                    <Link to="/brand-data-room/competitors" className="flex items-center gap-2 hover:underline">
+                    <Link to="/brand-data-room/ad-library" className="flex items-center gap-2 hover:underline">
                       <span className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-semibold">{initials}</span>
                       {ad.brand}
                     </Link>
                   } />
-                  <DetailRow label="Industry" value={<span>{meta.industry}</span>} />
-                  <DetailRow label="Date seen" value={<span>{format(ad.date, "MMM d, yyyy")}</span>} />
-                  <DetailRow label="Landing page" value={
-                    <a href={`https://${meta.domain}`} target="_blank" rel="noreferrer" className="text-primary hover:underline truncate inline-block max-w-[180px]">
-                      {meta.domain}
-                    </a>
+                  <DetailRow label="Socials" value={
+                    <div className="flex flex-col gap-1">
+                      <span className="inline-flex items-center gap-1.5 text-xs">
+                        <Facebook className="h-3.5 w-3.5 text-[#1877F2]" />
+                        @{ad.brand.toLowerCase().replace(/\s+/g, "")}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs">
+                        <Instagram className="h-3.5 w-3.5 text-[#E4405F]" />
+                        @{ad.brand.toLowerCase().replace(/\s+/g, "")}
+                      </span>
+                    </div>
                   } />
-                  <DetailRow label="Platforms" value={
-                    <span className="flex items-center gap-1.5">
-                      <Facebook className="h-4 w-4 text-[#1877F2]" />
-                      <Instagram className="h-4 w-4 text-[#E4405F]" />
-                      <span className="text-xs text-muted-foreground">+{ad.platform}</span>
-                    </span>
+                  <DetailRow label="Created at" value={<span>{format(ad.date, "d MMM yyyy")}</span>} />
+                  <DetailRow label="Last seen at" value={<span className="text-muted-foreground">—</span>} />
+                  <DetailRow label="Meta Library" value={
+                    <a href={`https://www.facebook.com/ads/library/?id=${ad.id}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
+                      Open ad <ExternalLink className="h-3 w-3" />
+                    </a>
                   } />
                   <DetailRow label="Visual format" value={
                     <span className="flex items-center gap-1.5">
                       {ad.type === "image" ? <ImageIcon className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                       <Badge variant="secondary" className="h-5 px-1.5 text-[10px] bg-pink-100 text-pink-700 hover:bg-pink-100">
-                        {ad.type === "image" ? "Image" : "Video"}
+                        {ad.type === "image" ? "IMAGE" : "VIDEO"}
                       </Badge>
                     </span>
                   } />
