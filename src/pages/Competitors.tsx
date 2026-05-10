@@ -92,6 +92,7 @@ const mockSearch = (query: string): Promise<SearchResult[]> =>
   );
 
 export default function Competitors() {
+  const navigate = useNavigate();
   const [competitors, setCompetitors] = useState<Competitor[]>(initialCompetitors);
 
   const simulateScraping = useCallback((comp: Competitor) => {
