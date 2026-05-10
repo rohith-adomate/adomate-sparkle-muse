@@ -106,21 +106,31 @@ const BRAND_META: Record<string, { industry: string; domain: string }> = {
 };
 
 export default function AdLibrary() {
+  const [searchParams] = useSearchParams();
+  const brandParam = searchParams.get("brand") ?? undefined;
+
   const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
 
+  // When viewing a single brand, override advertiser/brand on the mock ads
+  // so the page looks populated for any tracked brand.
+  const sourceAds = useMemo(() => {
+    if (!brandParam) return ALL_ADS;
+    return ALL_ADS.map((a) => ({ ...a, brand: brandParam, advertiser: brandParam }));
+  }, [brandParam]);
+
   const filtered = useMemo(() => {
-    return ALL_ADS.filter((a) => (tab === "all" ? true : a.type === tab))
+    return sourceAds.filter((a) => (tab === "all" ? true : a.type === tab))
       .filter((a) => {
         if (!range?.from) return true;
         const to = range.to ?? range.from;
         return a.date >= range.from && a.date <= to;
       })
       .filter((a) => (query ? a.copy.toLowerCase().includes(query.toLowerCase()) : true));
-  }, [tab, range, query]);
+  }, [sourceAds, tab, range, query]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
@@ -136,26 +146,42 @@ export default function AdLibrary() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <Breadcrumbs
-        items={[
-          { label: "Data Room", href: "/brand-data-room" },
-          { label: "Ad Library" },
-        ]}
+        items={
+          brandParam
+            ? [
+                { label: "Data Room", href: "/brand-data-room" },
+                { label: "Competitors", href: "/brand-data-room/competitors" },
+                { label: brandParam },
+              ]
+            : [
+                { label: "Data Room", href: "/brand-data-room" },
+                { label: "Ad Library" },
+              ]
+        }
       />
 
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Ad Library</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {brandParam ? `${brandParam} — Ads` : "Ad Library"}
+          </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Browse every ad in this library — {ALL_ADS.length} ads tracked across{" "}
-            <Link to="/brand-data-room/competitors" className="text-primary hover:underline">
-              {BRANDS.length} brands
-            </Link>.
+            {brandParam ? (
+              <>Browsing {sourceAds.length} ads tracked for <span className="text-foreground font-medium">{brandParam}</span>.</>
+            ) : (
+              <>
+                Browse every ad in this library — {ALL_ADS.length} ads tracked across{" "}
+                <Link to="/brand-data-room/competitors" className="text-primary hover:underline">
+                  {BRANDS.length} brands
+                </Link>.
+              </>
+            )}
           </p>
         </div>
         <Button asChild variant="outline" size="sm" className="gap-1.5">
           <Link to="/brand-data-room/competitors">
             <ExternalLink className="h-3.5 w-3.5" />
-            Manage tracked brands
+            {brandParam ? "Back to brands" : "Manage tracked brands"}
           </Link>
         </Button>
       </div>
