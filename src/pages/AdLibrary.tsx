@@ -270,7 +270,7 @@ export default function AdLibrary() {
 
 function AdGrid({ ads, onSelect }: { ads: Ad[]; onSelect: (ad: Ad) => void }) {
   return (
-    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {ads.map((ad) => (
         <AdCard key={ad.id} ad={ad} onSelect={onSelect} />
       ))}
@@ -282,9 +282,9 @@ function AdCard({ ad, onSelect }: { ad: Ad; onSelect: (ad: Ad) => void }) {
   return (
     <Card
       onClick={() => onSelect(ad)}
-      className="mb-4 break-inside-avoid overflow-hidden border-border/60 hover:shadow-lg transition-shadow group cursor-pointer"
+      className="overflow-hidden border-border/60 hover:shadow-lg transition-shadow group cursor-pointer flex flex-col h-full"
     >
-      <div className="relative bg-muted" style={{ aspectRatio: ad.aspect }}>
+      <div className="relative bg-muted aspect-square">
         {ad.type === "image" ? (
           <img
             src={ad.src}
