@@ -109,39 +109,32 @@ const BRAND_META: Record<string, { industry: string; domain: string }> = {
 };
 
 export default function AdLibrary() {
-  const [tab, setTab] = useState<AdType>("image");
-  const [brand, setBrand] = useState<string>("all");
-  const [platform, setPlatform] = useState<string>("all");
+  const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
 
   const filtered = useMemo(() => {
-    return ALL_ADS.filter((a) => a.type === tab)
-      .filter((a) => (brand === "all" ? true : a.brand === brand))
-      .filter((a) => (platform === "all" ? true : a.platform === platform))
+    return ALL_ADS.filter((a) => (tab === "all" ? true : a.type === tab))
       .filter((a) => {
         if (!range?.from) return true;
         const to = range.to ?? range.from;
         return a.date >= range.from && a.date <= to;
       })
       .filter((a) => (query ? a.copy.toLowerCase().includes(query.toLowerCase()) : true));
-  }, [tab, brand, platform, range, query]);
+  }, [tab, range, query]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
 
   const resetFilters = () => {
-    setBrand("all");
-    setPlatform("all");
     setRange(undefined);
     setQuery("");
     setVisible(PAGE_SIZE);
   };
 
-  const activeFilterCount =
-    (brand !== "all" ? 1 : 0) + (platform !== "all" ? 1 : 0) + (range?.from ? 1 : 0);
+  const activeFilterCount = (range?.from ? 1 : 0);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
