@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,14 +9,15 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info } from "lucide-react";
+import { Search, CalendarIcon, Image as ImageIcon, Play, X, Filter, Sparkles, MessageCircle, Target, Compass, ExternalLink, Facebook, Instagram, Info, Loader2, Check, RefreshCw, Plus, Trash2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import type { DateRange } from "react-day-picker";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
