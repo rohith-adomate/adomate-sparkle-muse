@@ -16,7 +16,10 @@ import { cn } from "@/lib/utils";
 import { oyAdImages } from "@/data/oyImages";
 import type { DateRange } from "react-day-picker";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
 
 type AdType = "image" | "video";
 type TabValue = "all" | AdType;
@@ -107,7 +110,12 @@ const BRAND_META: Record<string, { industry: string; domain: string }> = {
 
 export default function AdLibrary() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const brandParam = searchParams.get("brand") ?? undefined;
+
+  if (!brandParam) {
+    return <BrandsListView onSelect={(b) => navigate(`/brand-data-room/ad-library?brand=${encodeURIComponent(b)}`)} />;
+  }
 
   const [tab, setTab] = useState<TabValue>("all");
   const [range, setRange] = useState<DateRange | undefined>();
@@ -290,6 +298,113 @@ export default function AdLibrary() {
           You've reached the end — {filtered.length} ads shown.
         </p>
       )}
+    </div>
+  );
+}
+
+function BrandsListView({ onSelect }: { onSelect: (brand: string) => void }) {
+  const [query, setQuery] = useState("");
+  const rows = BRANDS.map((b) => {
+    const ads = ALL_ADS.filter((a) => a.brand === b);
+    const lastDate = ads.reduce<Date | null>((acc, a) => (!acc || a.date > acc ? a.date : acc), null);
+    return {
+      name: b,
+      domain: BRAND_META[b]?.domain ?? "—",
+      industry: BRAND_META[b]?.industry ?? "—",
+      total: ads.length,
+      images: ads.filter((a) => a.type === "image").length,
+      videos: ads.filter((a) => a.type === "video").length,
+      lastDate,
+    };
+  }).filter((r) => r.name.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <Breadcrumbs
+        items={[
+          { label: "Data Room", href: "/brand-data-room" },
+          { label: "Ad Library" },
+        ]}
+      />
+
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Ad Library</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            {ALL_ADS.length} ads tracked across {BRANDS.length} brands. Select a brand to view its ads.
+          </p>
+        </div>
+        <Button asChild variant="outline" size="sm" className="gap-1.5">
+          <Link to="/brand-data-room/competitors">
+            <ExternalLink className="h-3.5 w-3.5" />
+            Manage tracked brands
+          </Link>
+        </Button>
+      </div>
+
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search brands..."
+          className="pl-8 h-9"
+        />
+      </div>
+
+      <div className="rounded-xl border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Brand</TableHead>
+              <TableHead>Industry</TableHead>
+              <TableHead className="text-center">Image ads</TableHead>
+              <TableHead className="text-center">Video ads</TableHead>
+              <TableHead className="text-center">Total</TableHead>
+              <TableHead>Last activity</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
+                  No brands match your search.
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((r) => {
+                const initials = r.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+                return (
+                  <TableRow
+                    key={r.name}
+                    onClick={() => onSelect(r.name)}
+                    className="cursor-pointer hover:bg-muted/40"
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-[11px] font-semibold">
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm leading-tight">{r.name}</p>
+                          <p className="text-[11px] text-muted-foreground">{r.domain}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{r.industry}</TableCell>
+                    <TableCell className="text-sm text-center">{r.images}</TableCell>
+                    <TableCell className="text-sm text-center">{r.videos}</TableCell>
+                    <TableCell className="text-sm text-center font-medium">{r.total}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {r.lastDate ? format(r.lastDate, "MMM d, yyyy") : "—"}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

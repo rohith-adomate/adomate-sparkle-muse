@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,7 +91,6 @@ const mockSearch = (query: string): Promise<SearchResult[]> =>
   );
 
 export default function Competitors() {
-  const navigate = useNavigate();
   const [competitors, setCompetitors] = useState<Competitor[]>(initialCompetitors);
 
   const simulateScraping = useCallback((comp: Competitor) => {
@@ -251,11 +249,7 @@ export default function Competitors() {
               </TableRow>
             ) : (
               filtered.map((c) => (
-                <TableRow
-                  key={c.id}
-                  onClick={() => c.scrapingStatus === "ready" && navigate(`/brand-data-room/ad-library?brand=${encodeURIComponent(c.name)}`)}
-                  className={c.scrapingStatus === "ready" ? "cursor-pointer hover:bg-muted/40" : ""}
-                >
+                <TableRow key={c.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <img src={c.avatarUrl} alt="" className="h-8 w-8 rounded-full bg-muted object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }} />
