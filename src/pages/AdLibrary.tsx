@@ -233,6 +233,9 @@ export default function AdLibrary() {
           </div>
         </div>
 
+        <TabsContent value="all" className="mt-6">
+          <AdGrid ads={shown} onSelect={setSelectedAd} />
+        </TabsContent>
         <TabsContent value="image" className="mt-6">
           <AdGrid ads={shown} onSelect={setSelectedAd} />
         </TabsContent>
