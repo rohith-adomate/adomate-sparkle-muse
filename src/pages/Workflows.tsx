@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Search, ChevronLeft, ChevronRight, History, Pencil, Check, ArrowRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, History, Pencil, Check, ArrowRight, Play, Clock, AlertCircle, Sparkles, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { WorkflowTemplateThumbnail, type WorkflowTemplateVariant } from "@/components/workflow-diagrams/WorkflowTemplateThumbnail";
