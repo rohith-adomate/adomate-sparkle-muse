@@ -59,6 +59,17 @@ const defaultAgents: Agent[] = [
 const BORDER = "0.5px solid rgba(0,0,0,0.12)";
 const CARD_RADIUS = "12px";
 
+type FirstRunMode = "scheduled" | "manual" | "blocked";
+
+interface FirstRunSpec {
+  mode: FirstRunMode;
+  nextRunLabel?: string;
+  scheduleSummary?: string;
+  productCount?: number;
+  variationsPerProduct?: number;
+  missing?: string[];
+}
+
 const activeWorkflows: {
   id: string;
   name: string;
@@ -72,6 +83,7 @@ const activeWorkflows: {
   cadence: string;
   link: { text: string; color: string; href: string };
   thumbnails: string[];
+  firstRun?: FirstRunSpec;
 }[] = [
   {
     id: "competitor-1",
@@ -102,6 +114,53 @@ const activeWorkflows: {
       "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200",
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200",
     ],
+  },
+  // ── First-run prototype demo cards ──
+  {
+    id: "demo-firstrun-scheduled",
+    name: "Lululemon Ad Monitor",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: true, schedule: "weekly",
+    lastRun: "", cadence: "Cadence: Weekly",
+    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-scheduled" },
+    thumbnails: [],
+    firstRun: {
+      mode: "scheduled",
+      nextRunLabel: "Mon, 16 Mar · 9:00",
+      scheduleSummary: "Weekly · Mondays 9:00",
+      productCount: 4,
+      variationsPerProduct: 8,
+    },
+  },
+  {
+    id: "demo-firstrun-manual",
+    name: "Spring Drop Concepts",
+    type: "manual",
+    badge: "Manual", badgeBg: "#FCE4EC", badgeText: "#AD1457",
+    enabled: false, schedule: "manual",
+    lastRun: "", cadence: "Manual only",
+    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-manual" },
+    thumbnails: [],
+    firstRun: {
+      mode: "manual",
+      productCount: 3,
+      variationsPerProduct: 8,
+    },
+  },
+  {
+    id: "demo-firstrun-blocked",
+    name: "Glossier Tracker (incomplete)",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: false, schedule: "manual",
+    lastRun: "", cadence: "",
+    link: { text: "", color: "#E24B4A", href: "/workflows/demo-firstrun-blocked" },
+    thumbnails: [],
+    firstRun: {
+      mode: "blocked",
+      missing: ["Schedule", "Products"],
+    },
   },
 ];
 
