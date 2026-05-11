@@ -1883,7 +1883,7 @@ export default function WorkflowCanvas() {
             label: "Schedule",
             value: scheduleSummary || "Not set — workflow will be manual",
             isMissing: !configuredTypes.has("schedule"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setScheduleDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("schedule", () => setScheduleDrawerOpen(true)),
           },
           {
             key: "source",
@@ -1891,7 +1891,7 @@ export default function WorkflowCanvas() {
             label: "Source · Ad library",
             value: datasetEmpty ? "No competitor brands selected" : "Nike Meta ads · 4 brands",
             isMissing: datasetEmpty,
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setDatasetDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("dataset", () => setDatasetDrawerOpen(true)),
           },
           {
             key: "selection",
@@ -1901,7 +1901,7 @@ export default function WorkflowCanvas() {
               ? `Top ${topSelectConfig.count} ads by new reach`
               : "All new ads since last run",
             isMissing: !configuredTypes.has("top-select"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setTopSelectDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("top-select", () => setTopSelectDrawerOpen(true)),
           },
           {
             key: "products",
@@ -1911,7 +1911,7 @@ export default function WorkflowCanvas() {
               ? `${selectedProductCount} product${selectedProductCount > 1 ? "s" : ""} selected`
               : "No products selected",
             isMissing: selectedProductCount === 0,
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setProductDataDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("product-data", () => setProductDataDrawerOpen(true)),
           },
           {
             key: "generate",
@@ -1921,7 +1921,7 @@ export default function WorkflowCanvas() {
               ? "8 variations per product · on-brand"
               : "Not configured",
             isMissing: !configuredTypes.has("generate-concepts"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setGenerateConceptsDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("generate-concepts", () => setGenerateConceptsDrawerOpen(true)),
           },
         ]}
         variationsPerProduct={8}
