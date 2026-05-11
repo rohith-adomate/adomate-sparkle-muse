@@ -321,19 +321,38 @@ export default function Workflows() {
   const activeWorkflow = activeWorkflows.find((w) => w.id === historyWorkflowId) ?? null;
 
   const workflowRuns = useMemo(() => {
-    if (!historyWorkflowId) return [];
-    return runHistory
-      .filter((r) => r.workflowId === historyWorkflowId)
-      .filter((r) => {
-        const q = historyQuery.trim().toLowerCase();
-        if (!q) return true;
-        return (
-          r.date.toLowerCase().includes(q) ||
-          r.status.toLowerCase().includes(q) ||
-          r.duration.toLowerCase().includes(q)
-        );
-      });
-  }, [historyWorkflowId, historyQuery]);
+    if (!historyWorkflowId) return [] as (typeof runHistory[number] & { isLocal?: boolean })[];
+    const locals = (localRunsByWf[historyWorkflowId] || []).map((lr, i) => ({
+      id: lr.id,
+      workflowId: historyWorkflowId,
+      name: nameOverrides[historyWorkflowId] || activeWorkflows.find((w) => w.id === historyWorkflowId)?.name || "Workflow",
+      date: lr.status === "running"
+        ? `Just now · ${lr.startedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+        : `Today · ${lr.startedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+      duration: lr.status === "running" ? "Running…" : "0m 12s",
+      status: (lr.status === "running" ? "success" : "success") as "success" | "failed",
+      concepts: lr.concepts ?? 0,
+      conceptsRunId: lr.status === "success" ? "ai-image-studio-1" : undefined,
+      thumbnails: [] as string[],
+      setup: ["First run after setup"],
+      isLocal: true,
+      _runStatus: lr.status,
+    }));
+    return [
+      ...locals,
+      ...runHistory
+        .filter((r) => r.workflowId === historyWorkflowId)
+        .filter((r) => {
+          const q = historyQuery.trim().toLowerCase();
+          if (!q) return true;
+          return (
+            r.date.toLowerCase().includes(q) ||
+            r.status.toLowerCase().includes(q) ||
+            r.duration.toLowerCase().includes(q)
+          );
+        }),
+    ] as any;
+  }, [historyWorkflowId, historyQuery, localRunsByWf, nameOverrides]);
 
   const visibleHistoryRuns = workflowRuns.slice(0, historyVisibleCount);
 
