@@ -640,32 +640,43 @@ export default function Workflows() {
             ) : (
               <ScrollArea className="h-[calc(100vh-220px)]">
                 <div>
-                  {visibleHistoryRuns.map((run, idx) => (
+                  {visibleHistoryRuns.map((run: any, idx) => {
+                    const isRunning = run._runStatus === "running";
+                    const isLocalSuccess = run._runStatus === "success";
+                    const totalRuns = workflowRuns.length;
+                    const runNumber = totalRuns - idx;
+                    return (
                     <div
                       key={run.id}
                       style={{
                         padding: "12px 20px",
                         borderBottom: idx < visibleHistoryRuns.length - 1 ? BORDER : "none",
                       }}
-                      className="hover:bg-muted/40 transition-colors cursor-pointer"
+                      className={`transition-colors ${isRunning ? "bg-primary/5" : "hover:bg-muted/40 cursor-pointer"}`}
                       onClick={() => {
-                        if (run.status === "success" && run.conceptsRunId) {
+                        if (!isRunning && run.status === "success" && run.conceptsRunId) {
                           navigate(`/concepts/${run.conceptsRunId}`);
                         }
                       }}
                     >
                       <div className="flex items-center gap-2">
-                        <span
-                          style={{
-                            width: 6, height: 6, borderRadius: "50%",
-                            background: run.status === "success" ? "#639922" : "#E24B4A",
-                            flexShrink: 0,
-                          }}
-                        />
+                        {isRunning ? (
+                          <Loader2 className="h-3 w-3 text-primary animate-spin shrink-0" />
+                        ) : (
+                          <span
+                            style={{
+                              width: 6, height: 6, borderRadius: "50%",
+                              background: run.status === "success" ? "#639922" : "#E24B4A",
+                              flexShrink: 0,
+                            }}
+                          />
+                        )}
                         <span style={{ fontSize: 12, fontWeight: 500 }} className="flex-1">
-                          Run #{runHistory.length - runHistory.indexOf(run)}
+                          Run #{runNumber}{isLocalSuccess && " (first run)"}
                         </span>
-                        {run.status === "success" && run.conceptsRunId ? (
+                        {isRunning ? (
+                          <span style={{ fontSize: 11, fontWeight: 500 }} className="text-primary">Running…</span>
+                        ) : run.status === "success" && run.conceptsRunId ? (
                           <span style={{ fontSize: 11, fontWeight: 500, color: "#D4537E" }}>
                             View {run.concepts} concepts →
                           </span>
@@ -677,7 +688,8 @@ export default function Workflows() {
                         <span style={{ fontSize: 11 }} className="text-muted-foreground">{run.date}</span>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                   {historyVisibleCount < workflowRuns.length && (
                     <div className="p-3 flex justify-center">
                       <Button
