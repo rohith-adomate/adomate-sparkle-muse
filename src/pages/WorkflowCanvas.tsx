@@ -25,6 +25,7 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import AdAccountDrawer from "@/components/AdAccountDrawer";
+import SetupSummaryDrawer from "@/components/SetupSummaryDrawer";
 
 import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
 import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
