@@ -281,6 +281,7 @@ export default function WorkflowCanvas() {
   const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [setupSummaryOpen, setSetupSummaryOpen] = useState(false);
+  const [editingFromSummary, setEditingFromSummary] = useState<string | null>(null);
   const [workflowNameOverride, setWorkflowNameOverride] = useState<string | null>(null);
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
