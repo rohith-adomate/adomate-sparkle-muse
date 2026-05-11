@@ -1793,18 +1793,22 @@ export default function WorkflowCanvas() {
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
         onContinue={
-          showContinueFor.has("generate-concepts") && isNewCompetitor
-            ? () => {
-                markConfigured("generate-concepts");
-                setGenerateConceptsDrawerOpen(false);
-                setTimeout(() => setSetupSummaryOpen(true), 200);
-              }
-            : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
+          editingFromSummary === "generate-concepts"
+            ? () => { setGenerateConceptsDrawerOpen(false); returnToSummary(); }
+            : showContinueFor.has("generate-concepts") && isNewCompetitor
+              ? () => {
+                  markConfigured("generate-concepts");
+                  setGenerateConceptsDrawerOpen(false);
+                  setTimeout(() => setSetupSummaryOpen(true), 200);
+                }
+              : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
         }
         continueLabel={
-          showContinueFor.has("generate-concepts") && isNewCompetitor
-            ? "Review setup"
-            : continueLabelFor("generate-concepts")
+          editingFromSummary === "generate-concepts"
+            ? "Back to summary"
+            : showContinueFor.has("generate-concepts") && isNewCompetitor
+              ? "Review setup"
+              : continueLabelFor("generate-concepts")
         }
       />
       <NodeOutputDrawer
