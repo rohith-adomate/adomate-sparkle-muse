@@ -224,6 +224,82 @@ export default function Workflows() {
   const [historyQuery, setHistoryQuery] = useState("");
   const [historyVisibleCount, setHistoryVisibleCount] = useState(30);
 
+  // First-run overrides — workflows in their post-setup, pre-first-run state.
+  // Cleared once the first run completes.
+  const location = useLocation();
+  const [firstRunOverrides, setFirstRunOverrides] = useState<Record<string, FirstRunSpec>>(() => {
+    const seed: Record<string, FirstRunSpec> = {};
+    for (const wf of activeWorkflows) {
+      if (wf.firstRun) seed[wf.id] = wf.firstRun;
+    }
+    return seed;
+  });
+  // Synthetic local runs (only the in-progress / just-finished first run) per workflow id.
+  type LocalRun = {
+    id: string;
+    status: "running" | "success";
+    startedAt: Date;
+    concepts?: number;
+  };
+  const [localRunsByWf, setLocalRunsByWf] = useState<Record<string, LocalRun[]>>({});
+  const [runningFirstWfId, setRunningFirstWfId] = useState<string | null>(null);
+
+  // Inject just-set-up workflow from canvas navigation
+  useEffect(() => {
+    const justSetup = (location.state as any)?.justSetup;
+    if (!justSetup) return;
+    const id = justSetup.id;
+    setNameOverrides((prev) => ({ ...prev, [id]: justSetup.name }));
+    setFirstRunOverrides((prev) => ({
+      ...prev,
+      [id]: {
+        mode: justSetup.mode,
+        nextRunLabel: justSetup.nextRunLabel,
+        scheduleSummary: justSetup.scheduleSummary,
+        productCount: justSetup.productCount,
+        variationsPerProduct: justSetup.variationsPerProduct,
+      },
+    }));
+    if (justSetup.runNow) {
+      setTimeout(() => handleRunFirstBatch(id), 400);
+    }
+    // Clear the state so it doesn't re-fire
+    window.history.replaceState({}, "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleRunFirstBatch = (wfId: string) => {
+    const spec = firstRunOverrides[wfId];
+    if (!spec || spec.mode === "blocked") return;
+    const localRun: LocalRun = {
+      id: `local-${Date.now()}`,
+      status: "running",
+      startedAt: new Date(),
+    };
+    setLocalRunsByWf((prev) => ({ ...prev, [wfId]: [localRun, ...(prev[wfId] || [])] }));
+    setRunningFirstWfId(wfId);
+    setHistoryWorkflowId(wfId);
+    toast.loading("First run kicked off — generating concepts…", { id: `firstrun-${wfId}` });
+    setTimeout(() => {
+      const concepts = (spec.productCount ?? 4) * (spec.variationsPerProduct ?? 8);
+      setLocalRunsByWf((prev) => ({
+        ...prev,
+        [wfId]: (prev[wfId] || []).map((r) =>
+          r.id === localRun.id ? { ...r, status: "success", concepts } : r
+        ),
+      }));
+      setFirstRunOverrides((prev) => {
+        const { [wfId]: _, ...rest } = prev;
+        return rest;
+      });
+      setRunningFirstWfId(null);
+      toast.success(`First run complete — ${concepts} concepts ready`, {
+        id: `firstrun-${wfId}`,
+        action: { label: "View concepts →", onClick: () => navigate("/concepts/ai-image-studio-1") },
+      });
+    }, 3200);
+  };
+
   const railRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
