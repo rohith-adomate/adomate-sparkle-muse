@@ -235,7 +235,9 @@ export default function SetupSummaryDrawer({
                 <p className="text-[14px] font-semibold mt-0.5">
                   ~{totalVariations} variations
                   <span className="text-muted-foreground font-normal text-[12px]">
-                    {" "}({variationsPerProduct} per product × {productCount} products)
+                    {selectionCount != null
+                      ? ` (${safeSelection} ads × ${variationsPerProduct} variations × ${safeProducts} product${safeProducts > 1 ? "s" : ""})`
+                      : ` (${variationsPerProduct} per product × ${safeProducts} products)`}
                   </span>
                 </p>
               </div>
