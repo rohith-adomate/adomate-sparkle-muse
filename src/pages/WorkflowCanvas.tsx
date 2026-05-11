@@ -25,6 +25,7 @@ import ScheduleDrawer from "@/components/ScheduleDrawer";
 import TopAdsSelectionDrawer from "@/components/TopAdsSelectionDrawer";
 import ManualImageInputDrawer from "@/components/ManualImageInputDrawer";
 import AdAccountDrawer from "@/components/AdAccountDrawer";
+import SetupSummaryDrawer from "@/components/SetupSummaryDrawer";
 
 import RedditSubredditDrawer from "@/components/RedditSubredditDrawer";
 import RedditAdGeneratorDrawer from "@/components/RedditAdGeneratorDrawer";
@@ -279,6 +280,8 @@ export default function WorkflowCanvas() {
   const [adAccountDrawerOpen, setAdAccountDrawerOpen] = useState(false);
   const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
+  const [setupSummaryOpen, setSetupSummaryOpen] = useState(false);
+  const [workflowNameOverride, setWorkflowNameOverride] = useState<string | null>(null);
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
@@ -1772,8 +1775,20 @@ export default function WorkflowCanvas() {
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
-        onContinue={continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))}
-        continueLabel={continueLabelFor("generate-concepts")}
+        onContinue={
+          showContinueFor.has("generate-concepts") && isNewCompetitor
+            ? () => {
+                markConfigured("generate-concepts");
+                setGenerateConceptsDrawerOpen(false);
+                setTimeout(() => setSetupSummaryOpen(true), 200);
+              }
+            : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
+        }
+        continueLabel={
+          showContinueFor.has("generate-concepts") && isNewCompetitor
+            ? "Review setup"
+            : continueLabelFor("generate-concepts")
+        }
       />
       <NodeOutputDrawer
         open={outputDrawerOpen}
@@ -1834,6 +1849,108 @@ export default function WorkflowCanvas() {
         onClose={() => setRunPanelOpen(false)}
         node={runOutputNode}
         runNumber={selectedRun?.number}
+      />
+      <SetupSummaryDrawer
+        open={setupSummaryOpen}
+        onOpenChange={setSetupSummaryOpen}
+        workflowName={workflowNameOverride ?? agentName}
+        onWorkflowNameChange={(n) => setWorkflowNameOverride(n)}
+        rows={[
+          {
+            key: "schedule",
+            icon: "schedule",
+            label: "Schedule",
+            value: scheduleSummary || "Not set — workflow will be manual",
+            isMissing: !configuredTypes.has("schedule"),
+            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setScheduleDrawerOpen(true), 100); },
+          },
+          {
+            key: "source",
+            icon: "source",
+            label: "Source · Ad library",
+            value: datasetEmpty ? "No competitor brands selected" : "Nike Meta ads · 4 brands",
+            isMissing: datasetEmpty,
+            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setDatasetDrawerOpen(true), 100); },
+          },
+          {
+            key: "selection",
+            icon: "selection",
+            label: "Selection rule",
+            value: topSelectConfig.mode === "top-n"
+              ? `Top ${topSelectConfig.count} ads by new reach`
+              : "All new ads since last run",
+            isMissing: !configuredTypes.has("top-select"),
+            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setTopSelectDrawerOpen(true), 100); },
+          },
+          {
+            key: "products",
+            icon: "products",
+            label: "Products",
+            value: selectedProductCount > 0
+              ? `${selectedProductCount} product${selectedProductCount > 1 ? "s" : ""} selected`
+              : "No products selected",
+            isMissing: selectedProductCount === 0,
+            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setProductDataDrawerOpen(true), 100); },
+          },
+          {
+            key: "generate",
+            icon: "generate",
+            label: "Variations",
+            value: configuredTypes.has("generate-concepts")
+              ? "8 variations per product · on-brand"
+              : "Not configured",
+            isMissing: !configuredTypes.has("generate-concepts"),
+            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setGenerateConceptsDrawerOpen(true), 100); },
+          },
+        ]}
+        variationsPerProduct={8}
+        productCount={Math.max(selectedProductCount, 1)}
+        outputDestination={`Concepts gallery → "${workflowNameOverride ?? agentName}"`}
+        mode={configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual"}
+        scheduleSummary={scheduleSummary}
+        nextRunLabel={nextRunDate ? nextRunDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) : undefined}
+        estimatedCredits={120}
+        onSaveDraft={() => {
+          setSetupSummaryOpen(false);
+          toast.success("Saved as draft", { description: "You can finish this workflow later from the Workflows hub." });
+          navigate("/workflows");
+        }}
+        onActivate={() => {
+          setSetupSummaryOpen(false);
+          fireConfetti();
+          const mode = configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual";
+          navigate("/workflows", {
+            state: {
+              justSetup: {
+                id: id || "new-workflow",
+                name: workflowNameOverride ?? agentName,
+                mode,
+                scheduleSummary,
+                nextRunLabel: nextRunDate
+                  ? nextRunDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
+                  : null,
+                productCount: selectedProductCount,
+                variationsPerProduct: 8,
+              },
+            },
+          });
+        }}
+        onRunNow={() => {
+          setSetupSummaryOpen(false);
+          fireConfetti();
+          navigate("/workflows", {
+            state: {
+              justSetup: {
+                id: id || "new-workflow",
+                name: workflowNameOverride ?? agentName,
+                mode: "manual",
+                productCount: selectedProductCount,
+                variationsPerProduct: 8,
+                runNow: true,
+              },
+            },
+          });
+        }}
       />
     </div>
   );

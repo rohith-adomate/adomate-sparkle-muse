@@ -1,13 +1,13 @@
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Search, ChevronLeft, ChevronRight, History, Pencil, Check, ArrowRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, History, Pencil, Check, ArrowRight, Play, Clock, AlertCircle, Sparkles, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { WorkflowTemplateThumbnail, type WorkflowTemplateVariant } from "@/components/workflow-diagrams/WorkflowTemplateThumbnail";
@@ -59,6 +59,17 @@ const defaultAgents: Agent[] = [
 const BORDER = "0.5px solid rgba(0,0,0,0.12)";
 const CARD_RADIUS = "12px";
 
+type FirstRunMode = "scheduled" | "manual" | "blocked";
+
+interface FirstRunSpec {
+  mode: FirstRunMode;
+  nextRunLabel?: string;
+  scheduleSummary?: string;
+  productCount?: number;
+  variationsPerProduct?: number;
+  missing?: string[];
+}
+
 const activeWorkflows: {
   id: string;
   name: string;
@@ -72,6 +83,7 @@ const activeWorkflows: {
   cadence: string;
   link: { text: string; color: string; href: string };
   thumbnails: string[];
+  firstRun?: FirstRunSpec;
 }[] = [
   {
     id: "competitor-1",
@@ -102,6 +114,53 @@ const activeWorkflows: {
       "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200",
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200",
     ],
+  },
+  // ── First-run prototype demo cards ──
+  {
+    id: "demo-firstrun-scheduled",
+    name: "Lululemon Ad Monitor",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: true, schedule: "weekly",
+    lastRun: "", cadence: "Cadence: Weekly",
+    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-scheduled" },
+    thumbnails: [],
+    firstRun: {
+      mode: "scheduled",
+      nextRunLabel: "Mon, 16 Mar · 9:00",
+      scheduleSummary: "Weekly · Mondays 9:00",
+      productCount: 4,
+      variationsPerProduct: 8,
+    },
+  },
+  {
+    id: "demo-firstrun-manual",
+    name: "Spring Drop Concepts",
+    type: "manual",
+    badge: "Manual", badgeBg: "#FCE4EC", badgeText: "#AD1457",
+    enabled: false, schedule: "manual",
+    lastRun: "", cadence: "Manual only",
+    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-manual" },
+    thumbnails: [],
+    firstRun: {
+      mode: "manual",
+      productCount: 3,
+      variationsPerProduct: 8,
+    },
+  },
+  {
+    id: "demo-firstrun-blocked",
+    name: "Glossier Tracker (incomplete)",
+    type: "competitor",
+    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
+    enabled: false, schedule: "manual",
+    lastRun: "", cadence: "",
+    link: { text: "", color: "#E24B4A", href: "/workflows/demo-firstrun-blocked" },
+    thumbnails: [],
+    firstRun: {
+      mode: "blocked",
+      missing: ["Schedule", "Products"],
+    },
   },
 ];
 
@@ -165,6 +224,82 @@ export default function Workflows() {
   const [historyQuery, setHistoryQuery] = useState("");
   const [historyVisibleCount, setHistoryVisibleCount] = useState(30);
 
+  // First-run overrides — workflows in their post-setup, pre-first-run state.
+  // Cleared once the first run completes.
+  const location = useLocation();
+  const [firstRunOverrides, setFirstRunOverrides] = useState<Record<string, FirstRunSpec>>(() => {
+    const seed: Record<string, FirstRunSpec> = {};
+    for (const wf of activeWorkflows) {
+      if (wf.firstRun) seed[wf.id] = wf.firstRun;
+    }
+    return seed;
+  });
+  // Synthetic local runs (only the in-progress / just-finished first run) per workflow id.
+  type LocalRun = {
+    id: string;
+    status: "running" | "success";
+    startedAt: Date;
+    concepts?: number;
+  };
+  const [localRunsByWf, setLocalRunsByWf] = useState<Record<string, LocalRun[]>>({});
+  const [runningFirstWfId, setRunningFirstWfId] = useState<string | null>(null);
+
+  // Inject just-set-up workflow from canvas navigation
+  useEffect(() => {
+    const justSetup = (location.state as any)?.justSetup;
+    if (!justSetup) return;
+    const id = justSetup.id;
+    setNameOverrides((prev) => ({ ...prev, [id]: justSetup.name }));
+    setFirstRunOverrides((prev) => ({
+      ...prev,
+      [id]: {
+        mode: justSetup.mode,
+        nextRunLabel: justSetup.nextRunLabel,
+        scheduleSummary: justSetup.scheduleSummary,
+        productCount: justSetup.productCount,
+        variationsPerProduct: justSetup.variationsPerProduct,
+      },
+    }));
+    if (justSetup.runNow) {
+      setTimeout(() => handleRunFirstBatch(id), 400);
+    }
+    // Clear the state so it doesn't re-fire
+    window.history.replaceState({}, "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleRunFirstBatch = (wfId: string) => {
+    const spec = firstRunOverrides[wfId];
+    if (!spec || spec.mode === "blocked") return;
+    const localRun: LocalRun = {
+      id: `local-${Date.now()}`,
+      status: "running",
+      startedAt: new Date(),
+    };
+    setLocalRunsByWf((prev) => ({ ...prev, [wfId]: [localRun, ...(prev[wfId] || [])] }));
+    setRunningFirstWfId(wfId);
+    setHistoryWorkflowId(wfId);
+    toast.loading("First run kicked off — generating concepts…", { id: `firstrun-${wfId}` });
+    setTimeout(() => {
+      const concepts = (spec.productCount ?? 4) * (spec.variationsPerProduct ?? 8);
+      setLocalRunsByWf((prev) => ({
+        ...prev,
+        [wfId]: (prev[wfId] || []).map((r) =>
+          r.id === localRun.id ? { ...r, status: "success", concepts } : r
+        ),
+      }));
+      setFirstRunOverrides((prev) => {
+        const { [wfId]: _, ...rest } = prev;
+        return rest;
+      });
+      setRunningFirstWfId(null);
+      toast.success(`First run complete — ${concepts} concepts ready`, {
+        id: `firstrun-${wfId}`,
+        action: { label: "View concepts →", onClick: () => navigate("/concepts/ai-image-studio-1") },
+      });
+    }, 3200);
+  };
+
   const railRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -186,19 +321,38 @@ export default function Workflows() {
   const activeWorkflow = activeWorkflows.find((w) => w.id === historyWorkflowId) ?? null;
 
   const workflowRuns = useMemo(() => {
-    if (!historyWorkflowId) return [];
-    return runHistory
-      .filter((r) => r.workflowId === historyWorkflowId)
-      .filter((r) => {
-        const q = historyQuery.trim().toLowerCase();
-        if (!q) return true;
-        return (
-          r.date.toLowerCase().includes(q) ||
-          r.status.toLowerCase().includes(q) ||
-          r.duration.toLowerCase().includes(q)
-        );
-      });
-  }, [historyWorkflowId, historyQuery]);
+    if (!historyWorkflowId) return [] as (typeof runHistory[number] & { isLocal?: boolean })[];
+    const locals = (localRunsByWf[historyWorkflowId] || []).map((lr, i) => ({
+      id: lr.id,
+      workflowId: historyWorkflowId,
+      name: nameOverrides[historyWorkflowId] || activeWorkflows.find((w) => w.id === historyWorkflowId)?.name || "Workflow",
+      date: lr.status === "running"
+        ? `Just now · ${lr.startedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+        : `Today · ${lr.startedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+      duration: lr.status === "running" ? "Running…" : "0m 12s",
+      status: (lr.status === "running" ? "success" : "success") as "success" | "failed",
+      concepts: lr.concepts ?? 0,
+      conceptsRunId: lr.status === "success" ? "ai-image-studio-1" : undefined,
+      thumbnails: [] as string[],
+      setup: ["First run after setup"],
+      isLocal: true,
+      _runStatus: lr.status,
+    }));
+    return [
+      ...locals,
+      ...runHistory
+        .filter((r) => r.workflowId === historyWorkflowId)
+        .filter((r) => {
+          const q = historyQuery.trim().toLowerCase();
+          if (!q) return true;
+          return (
+            r.date.toLowerCase().includes(q) ||
+            r.status.toLowerCase().includes(q) ||
+            r.duration.toLowerCase().includes(q)
+          );
+        }),
+    ] as any;
+  }, [historyWorkflowId, historyQuery, localRunsByWf, nameOverrides]);
 
   const visibleHistoryRuns = workflowRuns.slice(0, historyVisibleCount);
 
@@ -296,20 +450,58 @@ export default function Workflows() {
     </div>
   );
 
-  const renderActiveCard = (wf: typeof activeWorkflows[number]) => (
+  const renderActiveCard = (wf: typeof activeWorkflows[number]) => {
+    const firstRun = firstRunOverrides[wf.id];
+    const isRunning = runningFirstWfId === wf.id;
+    const isFirstRun = !!firstRun || isRunning;
+    const blocked = firstRun?.mode === "blocked";
+
+    return (
     <div
       key={wf.id}
       onClick={() => navigate(`/workflows/${wf.id}`, { state: { type: wf.type } })}
-      style={{ border: BORDER, borderRadius: CARD_RADIUS, overflow: "hidden", background: "#fff", cursor: "pointer" }}
+      style={{
+        border: blocked ? "1px solid hsl(var(--destructive) / 0.35)" : isFirstRun ? "1px solid hsl(var(--primary) / 0.4)" : BORDER,
+        borderRadius: CARD_RADIUS,
+        overflow: "hidden",
+        background: "#fff",
+        cursor: "pointer",
+        boxShadow: isFirstRun ? "0 0 0 3px hsl(var(--primary) / 0.06)" : undefined,
+      }}
       className="hover:shadow-md transition-shadow"
     >
-      <div className="grid grid-cols-4 gap-[2px] bg-muted">
-        {wf.thumbnails.slice(0, 4).map((src, i) => (
-          <div key={i} className="aspect-square overflow-hidden bg-muted">
-            <img src={src} alt="" className="w-full h-full object-cover" />
-          </div>
-        ))}
-      </div>
+      {/* Thumbnail row */}
+      {isFirstRun ? (
+        <div
+          className="relative aspect-[4/1] flex items-center justify-center bg-gradient-to-br from-primary/5 via-muted/40 to-background border-b border-border/40"
+        >
+          {isRunning ? (
+            <div className="flex items-center gap-2 text-primary">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Generating first batch…</span>
+            </div>
+          ) : blocked ? (
+            <div className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Setup incomplete</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Awaiting first run</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-[2px] bg-muted">
+          {wf.thumbnails.slice(0, 4).map((src, i) => (
+            <div key={i} className="aspect-square overflow-hidden bg-muted">
+              <img src={src} alt="" className="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+      )}
+
       <div style={{ padding: "12px 14px" }}>
         <div className="flex items-center justify-between gap-2">
           {editingNameId === wf.id ? (
@@ -346,29 +538,100 @@ export default function Workflows() {
               <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">
                 {nameOverrides[wf.id] ?? wf.name}
               </span>
+              {isFirstRun && !isRunning && (
+                <span
+                  className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary"
+                >
+                  Just set up
+                </span>
+              )}
               <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
             </button>
           )}
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
             <Switch
-              checked={workflowToggles[wf.id] ?? false}
+              checked={blocked ? false : (workflowToggles[wf.id] ?? wf.enabled ?? false)}
+              disabled={blocked}
               onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))}
               className="data-[state=checked]:bg-[#D4537E]"
             />
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-2">
-          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
-          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
-        </div>
+
+        {/* Status row */}
+        {isFirstRun ? (
+          <div className="mt-2 flex items-center gap-2">
+            {firstRun?.mode === "scheduled" && (
+              <>
+                <Clock className="h-3 w-3 text-emerald-600 shrink-0" />
+                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
+                  Scheduled · {firstRun.scheduleSummary || "Weekly"} · First run {firstRun.nextRunLabel || "soon"}
+                </span>
+              </>
+            )}
+            {firstRun?.mode === "manual" && (
+              <>
+                <Play className="h-3 w-3 text-amber-600 shrink-0" />
+                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
+                  Manual · No runs yet · {firstRun.productCount ?? "—"} products × {firstRun.variationsPerProduct ?? 8} variations
+                </span>
+              </>
+            )}
+            {blocked && (
+              <span style={{ fontSize: 11 }} className="text-destructive truncate">
+                Missing: {(firstRun?.missing || []).join(", ")} — finish setup to activate.
+              </span>
+            )}
+            {isRunning && (
+              <span style={{ fontSize: 11 }} className="text-primary truncate">
+                First run in progress — results will land in run history.
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 mt-2">
+            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
+            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
+          </div>
+        )}
+
+        {/* CTA row */}
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span
-            onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
-            style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
-            className="truncate hover:underline"
-          >
-            View latest concepts →
-          </span>
+          {isFirstRun ? (
+            blocked ? (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${wf.id}`, { state: { type: wf.type } }); }}
+                style={{ fontSize: 12, fontWeight: 600 }}
+                className="inline-flex items-center gap-1 text-destructive hover:underline"
+              >
+                <AlertCircle className="h-3.5 w-3.5" />
+                Finish setup →
+              </button>
+            ) : isRunning ? (
+              <span style={{ fontSize: 12, fontWeight: 500 }} className="text-muted-foreground">
+                Watch progress in run history →
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleRunFirstBatch(wf.id); }}
+                style={{ fontSize: 12, fontWeight: 600 }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 -ml-1 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                <Play className="h-3 w-3" fill="currentColor" />
+                Run first batch
+              </button>
+            )
+          ) : (
+            <span
+              onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
+              style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
+              className="truncate hover:underline"
+            >
+              View latest concepts →
+            </span>
+          )}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }}
@@ -381,7 +644,8 @@ export default function Workflows() {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   const filteredActiveWorkflows = activeWorkflows.filter((wf) => {
     const q = activeSearch.trim().toLowerCase();
@@ -486,32 +750,43 @@ export default function Workflows() {
             ) : (
               <ScrollArea className="h-[calc(100vh-220px)]">
                 <div>
-                  {visibleHistoryRuns.map((run, idx) => (
+                  {visibleHistoryRuns.map((run: any, idx) => {
+                    const isRunning = run._runStatus === "running";
+                    const isLocalSuccess = run._runStatus === "success";
+                    const totalRuns = workflowRuns.length;
+                    const runNumber = totalRuns - idx;
+                    return (
                     <div
                       key={run.id}
                       style={{
                         padding: "12px 20px",
                         borderBottom: idx < visibleHistoryRuns.length - 1 ? BORDER : "none",
                       }}
-                      className="hover:bg-muted/40 transition-colors cursor-pointer"
+                      className={`transition-colors ${isRunning ? "bg-primary/5" : "hover:bg-muted/40 cursor-pointer"}`}
                       onClick={() => {
-                        if (run.status === "success" && run.conceptsRunId) {
+                        if (!isRunning && run.status === "success" && run.conceptsRunId) {
                           navigate(`/concepts/${run.conceptsRunId}`);
                         }
                       }}
                     >
                       <div className="flex items-center gap-2">
-                        <span
-                          style={{
-                            width: 6, height: 6, borderRadius: "50%",
-                            background: run.status === "success" ? "#639922" : "#E24B4A",
-                            flexShrink: 0,
-                          }}
-                        />
+                        {isRunning ? (
+                          <Loader2 className="h-3 w-3 text-primary animate-spin shrink-0" />
+                        ) : (
+                          <span
+                            style={{
+                              width: 6, height: 6, borderRadius: "50%",
+                              background: run.status === "success" ? "#639922" : "#E24B4A",
+                              flexShrink: 0,
+                            }}
+                          />
+                        )}
                         <span style={{ fontSize: 12, fontWeight: 500 }} className="flex-1">
-                          Run #{runHistory.length - runHistory.indexOf(run)}
+                          Run #{runNumber}{isLocalSuccess && " (first run)"}
                         </span>
-                        {run.status === "success" && run.conceptsRunId ? (
+                        {isRunning ? (
+                          <span style={{ fontSize: 11, fontWeight: 500 }} className="text-primary">Running…</span>
+                        ) : run.status === "success" && run.conceptsRunId ? (
                           <span style={{ fontSize: 11, fontWeight: 500, color: "#D4537E" }}>
                             View {run.concepts} concepts →
                           </span>
@@ -523,7 +798,8 @@ export default function Workflows() {
                         <span style={{ fontSize: 11 }} className="text-muted-foreground">{run.date}</span>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                   {historyVisibleCount < workflowRuns.length && (
                     <div className="p-3 flex justify-center">
                       <Button
