@@ -25,6 +25,7 @@ interface SetupSummaryDrawerProps {
   rows: SummaryRow[];
   variationsPerProduct: number;
   productCount: number;
+  selectionCount?: number;
   outputDestination: string;
   mode: "scheduled" | "manual";
   scheduleSummary?: string;
