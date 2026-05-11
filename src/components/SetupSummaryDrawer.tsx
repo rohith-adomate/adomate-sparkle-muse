@@ -52,6 +52,7 @@ export default function SetupSummaryDrawer({
   rows,
   variationsPerProduct,
   productCount,
+  selectionCount,
   outputDestination,
   mode,
   scheduleSummary,
@@ -70,7 +71,9 @@ export default function SetupSummaryDrawer({
 
   const missing = rows.filter((r) => r.isMissing);
   const blocked = missing.length > 0;
-  const totalVariations = variationsPerProduct * Math.max(productCount, 1);
+  const safeProducts = Math.max(productCount, 1);
+  const safeSelection = Math.max(selectionCount ?? 1, 1);
+  const totalVariations = safeSelection * variationsPerProduct * safeProducts;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
