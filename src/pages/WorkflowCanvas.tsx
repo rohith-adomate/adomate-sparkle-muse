@@ -356,20 +356,36 @@ export default function WorkflowCanvas() {
   }, [pipeline, openDrawerFor, markConfigured]);
 
   const continueLabelFor = useCallback((currentType: string) => {
+    if (editingFromSummary === currentType) return "Back to summary";
     const idx = pipeline.indexOf(currentType);
     return idx === pipeline.length - 1 ? "Finish" : "Continue";
-  }, [pipeline]);
+  }, [pipeline, editingFromSummary]);
+
+  const returnToSummary = useCallback(() => {
+    setEditingFromSummary(null);
+    setTimeout(() => setSetupSummaryOpen(true), 150);
+  }, []);
 
   const continueHandlerFor = useCallback(
-    (type: string, closeDrawer?: () => void) =>
-      showContinueFor.has(type)
+    (type: string, closeDrawer?: () => void) => {
+      if (editingFromSummary === type) {
+        return () => { closeDrawer?.(); returnToSummary(); };
+      }
+      return showContinueFor.has(type)
         ? () => {
             closeDrawer?.();
             openNextDrawerFor(type);
           }
-        : undefined,
-    [showContinueFor, openNextDrawerFor],
+        : undefined;
+    },
+    [showContinueFor, openNextDrawerFor, editingFromSummary, returnToSummary],
   );
+
+  const editFromSummary = useCallback((type: string, openDrawer: () => void) => {
+    setEditingFromSummary(type);
+    setSetupSummaryOpen(false);
+    setTimeout(openDrawer, 100);
+  }, []);
 
   // Briefly flash unconfigured-node pulsing dots when user tries to Run
   const [flashUnconfigured, setFlashUnconfigured] = useState(false);
