@@ -1775,8 +1775,20 @@ export default function WorkflowCanvas() {
       <GenerateConceptsDrawer
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
-        onContinue={continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))}
-        continueLabel={continueLabelFor("generate-concepts")}
+        onContinue={
+          showContinueFor.has("generate-concepts") && isNewCompetitor
+            ? () => {
+                markConfigured("generate-concepts");
+                setGenerateConceptsDrawerOpen(false);
+                setTimeout(() => setSetupSummaryOpen(true), 200);
+              }
+            : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
+        }
+        continueLabel={
+          showContinueFor.has("generate-concepts") && isNewCompetitor
+            ? "Review setup"
+            : continueLabelFor("generate-concepts")
+        }
       />
       <NodeOutputDrawer
         open={outputDrawerOpen}
