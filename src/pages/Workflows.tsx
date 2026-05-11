@@ -450,20 +450,58 @@ export default function Workflows() {
     </div>
   );
 
-  const renderActiveCard = (wf: typeof activeWorkflows[number]) => (
+  const renderActiveCard = (wf: typeof activeWorkflows[number]) => {
+    const firstRun = firstRunOverrides[wf.id];
+    const isRunning = runningFirstWfId === wf.id;
+    const isFirstRun = !!firstRun || isRunning;
+    const blocked = firstRun?.mode === "blocked";
+
+    return (
     <div
       key={wf.id}
       onClick={() => navigate(`/workflows/${wf.id}`, { state: { type: wf.type } })}
-      style={{ border: BORDER, borderRadius: CARD_RADIUS, overflow: "hidden", background: "#fff", cursor: "pointer" }}
+      style={{
+        border: blocked ? "1px solid hsl(var(--destructive) / 0.35)" : isFirstRun ? "1px solid hsl(var(--primary) / 0.4)" : BORDER,
+        borderRadius: CARD_RADIUS,
+        overflow: "hidden",
+        background: "#fff",
+        cursor: "pointer",
+        boxShadow: isFirstRun ? "0 0 0 3px hsl(var(--primary) / 0.06)" : undefined,
+      }}
       className="hover:shadow-md transition-shadow"
     >
-      <div className="grid grid-cols-4 gap-[2px] bg-muted">
-        {wf.thumbnails.slice(0, 4).map((src, i) => (
-          <div key={i} className="aspect-square overflow-hidden bg-muted">
-            <img src={src} alt="" className="w-full h-full object-cover" />
-          </div>
-        ))}
-      </div>
+      {/* Thumbnail row */}
+      {isFirstRun ? (
+        <div
+          className="relative aspect-[4/1] flex items-center justify-center bg-gradient-to-br from-primary/5 via-muted/40 to-background border-b border-border/40"
+        >
+          {isRunning ? (
+            <div className="flex items-center gap-2 text-primary">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Generating first batch…</span>
+            </div>
+          ) : blocked ? (
+            <div className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Setup incomplete</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Awaiting first run</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-[2px] bg-muted">
+          {wf.thumbnails.slice(0, 4).map((src, i) => (
+            <div key={i} className="aspect-square overflow-hidden bg-muted">
+              <img src={src} alt="" className="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+      )}
+
       <div style={{ padding: "12px 14px" }}>
         <div className="flex items-center justify-between gap-2">
           {editingNameId === wf.id ? (
@@ -500,29 +538,100 @@ export default function Workflows() {
               <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">
                 {nameOverrides[wf.id] ?? wf.name}
               </span>
+              {isFirstRun && !isRunning && (
+                <span
+                  className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary"
+                >
+                  Just set up
+                </span>
+              )}
               <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
             </button>
           )}
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
             <Switch
-              checked={workflowToggles[wf.id] ?? false}
+              checked={blocked ? false : (workflowToggles[wf.id] ?? wf.enabled ?? false)}
+              disabled={blocked}
               onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))}
               className="data-[state=checked]:bg-[#D4537E]"
             />
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-2">
-          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
-          <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
-        </div>
+
+        {/* Status row */}
+        {isFirstRun ? (
+          <div className="mt-2 flex items-center gap-2">
+            {firstRun?.mode === "scheduled" && (
+              <>
+                <Clock className="h-3 w-3 text-emerald-600 shrink-0" />
+                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
+                  Scheduled · {firstRun.scheduleSummary || "Weekly"} · First run {firstRun.nextRunLabel || "soon"}
+                </span>
+              </>
+            )}
+            {firstRun?.mode === "manual" && (
+              <>
+                <Play className="h-3 w-3 text-amber-600 shrink-0" />
+                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
+                  Manual · No runs yet · {firstRun.productCount ?? "—"} products × {firstRun.variationsPerProduct ?? 8} variations
+                </span>
+              </>
+            )}
+            {blocked && (
+              <span style={{ fontSize: 11 }} className="text-destructive truncate">
+                Missing: {(firstRun?.missing || []).join(", ")} — finish setup to activate.
+              </span>
+            )}
+            {isRunning && (
+              <span style={{ fontSize: 11 }} className="text-primary truncate">
+                First run in progress — results will land in run history.
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 mt-2">
+            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
+            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
+          </div>
+        )}
+
+        {/* CTA row */}
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span
-            onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
-            style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
-            className="truncate hover:underline"
-          >
-            View latest concepts →
-          </span>
+          {isFirstRun ? (
+            blocked ? (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${wf.id}`, { state: { type: wf.type } }); }}
+                style={{ fontSize: 12, fontWeight: 600 }}
+                className="inline-flex items-center gap-1 text-destructive hover:underline"
+              >
+                <AlertCircle className="h-3.5 w-3.5" />
+                Finish setup →
+              </button>
+            ) : isRunning ? (
+              <span style={{ fontSize: 12, fontWeight: 500 }} className="text-muted-foreground">
+                Watch progress in run history →
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleRunFirstBatch(wf.id); }}
+                style={{ fontSize: 12, fontWeight: 600 }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 -ml-1 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                <Play className="h-3 w-3" fill="currentColor" />
+                Run first batch
+              </button>
+            )
+          ) : (
+            <span
+              onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
+              style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
+              className="truncate hover:underline"
+            >
+              View latest concepts →
+            </span>
+          )}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }}
@@ -535,7 +644,8 @@ export default function Workflows() {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   const filteredActiveWorkflows = activeWorkflows.filter((wf) => {
     const q = activeSearch.trim().toLowerCase();
