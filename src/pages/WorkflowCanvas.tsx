@@ -1926,6 +1926,7 @@ export default function WorkflowCanvas() {
         ]}
         variationsPerProduct={8}
         productCount={Math.max(selectedProductCount, 1)}
+        selectionCount={topSelectConfig.mode === "top-n" ? topSelectConfig.count : undefined}
         outputDestination={`Concepts gallery → "${workflowNameOverride ?? agentName}"`}
         mode={configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual"}
         scheduleSummary={scheduleSummary}
