@@ -281,6 +281,7 @@ export default function WorkflowCanvas() {
   const [redditSubredditDrawerOpen, setRedditSubredditDrawerOpen] = useState(false);
   const [redditAdGeneratorDrawerOpen, setRedditAdGeneratorDrawerOpen] = useState(false);
   const [setupSummaryOpen, setSetupSummaryOpen] = useState(false);
+  const [editingFromSummary, setEditingFromSummary] = useState<string | null>(null);
   const [workflowNameOverride, setWorkflowNameOverride] = useState<string | null>(null);
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -355,20 +356,36 @@ export default function WorkflowCanvas() {
   }, [pipeline, openDrawerFor, markConfigured]);
 
   const continueLabelFor = useCallback((currentType: string) => {
+    if (editingFromSummary === currentType) return "Back to summary";
     const idx = pipeline.indexOf(currentType);
     return idx === pipeline.length - 1 ? "Finish" : "Continue";
-  }, [pipeline]);
+  }, [pipeline, editingFromSummary]);
+
+  const returnToSummary = useCallback(() => {
+    setEditingFromSummary(null);
+    setTimeout(() => setSetupSummaryOpen(true), 150);
+  }, []);
 
   const continueHandlerFor = useCallback(
-    (type: string, closeDrawer?: () => void) =>
-      showContinueFor.has(type)
+    (type: string, closeDrawer?: () => void) => {
+      if (editingFromSummary === type) {
+        return () => { closeDrawer?.(); returnToSummary(); };
+      }
+      return showContinueFor.has(type)
         ? () => {
             closeDrawer?.();
             openNextDrawerFor(type);
           }
-        : undefined,
-    [showContinueFor, openNextDrawerFor],
+        : undefined;
+    },
+    [showContinueFor, openNextDrawerFor, editingFromSummary, returnToSummary],
   );
+
+  const editFromSummary = useCallback((type: string, openDrawer: () => void) => {
+    setEditingFromSummary(type);
+    setSetupSummaryOpen(false);
+    setTimeout(openDrawer, 100);
+  }, []);
 
   // Briefly flash unconfigured-node pulsing dots when user tries to Run
   const [flashUnconfigured, setFlashUnconfigured] = useState(false);
@@ -1776,18 +1793,22 @@ export default function WorkflowCanvas() {
         open={generateConceptsDrawerOpen}
         onOpenChange={setGenerateConceptsDrawerOpen}
         onContinue={
-          showContinueFor.has("generate-concepts") && isNewCompetitor
-            ? () => {
-                markConfigured("generate-concepts");
-                setGenerateConceptsDrawerOpen(false);
-                setTimeout(() => setSetupSummaryOpen(true), 200);
-              }
-            : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
+          editingFromSummary === "generate-concepts"
+            ? () => { setGenerateConceptsDrawerOpen(false); returnToSummary(); }
+            : showContinueFor.has("generate-concepts") && isNewCompetitor
+              ? () => {
+                  markConfigured("generate-concepts");
+                  setGenerateConceptsDrawerOpen(false);
+                  setTimeout(() => setSetupSummaryOpen(true), 200);
+                }
+              : continueHandlerFor("generate-concepts", () => setGenerateConceptsDrawerOpen(false))
         }
         continueLabel={
-          showContinueFor.has("generate-concepts") && isNewCompetitor
-            ? "Review setup"
-            : continueLabelFor("generate-concepts")
+          editingFromSummary === "generate-concepts"
+            ? "Back to summary"
+            : showContinueFor.has("generate-concepts") && isNewCompetitor
+              ? "Review setup"
+              : continueLabelFor("generate-concepts")
         }
       />
       <NodeOutputDrawer
@@ -1862,7 +1883,7 @@ export default function WorkflowCanvas() {
             label: "Schedule",
             value: scheduleSummary || "Not set — workflow will be manual",
             isMissing: !configuredTypes.has("schedule"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setScheduleDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("schedule", () => setScheduleDrawerOpen(true)),
           },
           {
             key: "source",
@@ -1870,7 +1891,7 @@ export default function WorkflowCanvas() {
             label: "Source · Ad library",
             value: datasetEmpty ? "No competitor brands selected" : "Nike Meta ads · 4 brands",
             isMissing: datasetEmpty,
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setDatasetDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("dataset", () => setDatasetDrawerOpen(true)),
           },
           {
             key: "selection",
@@ -1880,7 +1901,7 @@ export default function WorkflowCanvas() {
               ? `Top ${topSelectConfig.count} ads by new reach`
               : "All new ads since last run",
             isMissing: !configuredTypes.has("top-select"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setTopSelectDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("top-select", () => setTopSelectDrawerOpen(true)),
           },
           {
             key: "products",
@@ -1890,7 +1911,7 @@ export default function WorkflowCanvas() {
               ? `${selectedProductCount} product${selectedProductCount > 1 ? "s" : ""} selected`
               : "No products selected",
             isMissing: selectedProductCount === 0,
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setProductDataDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("product-data", () => setProductDataDrawerOpen(true)),
           },
           {
             key: "generate",
@@ -1900,11 +1921,12 @@ export default function WorkflowCanvas() {
               ? "8 variations per product · on-brand"
               : "Not configured",
             isMissing: !configuredTypes.has("generate-concepts"),
-            onEdit: () => { setSetupSummaryOpen(false); setTimeout(() => setGenerateConceptsDrawerOpen(true), 100); },
+            onEdit: () => editFromSummary("generate-concepts", () => setGenerateConceptsDrawerOpen(true)),
           },
         ]}
         variationsPerProduct={8}
         productCount={Math.max(selectedProductCount, 1)}
+        selectionCount={topSelectConfig.mode === "top-n" ? topSelectConfig.count : undefined}
         outputDestination={`Concepts gallery → "${workflowNameOverride ?? agentName}"`}
         mode={configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual"}
         scheduleSummary={scheduleSummary}

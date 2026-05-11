@@ -25,6 +25,7 @@ interface SetupSummaryDrawerProps {
   rows: SummaryRow[];
   variationsPerProduct: number;
   productCount: number;
+  selectionCount?: number;
   outputDestination: string;
   mode: "scheduled" | "manual";
   scheduleSummary?: string;
@@ -51,6 +52,7 @@ export default function SetupSummaryDrawer({
   rows,
   variationsPerProduct,
   productCount,
+  selectionCount,
   outputDestination,
   mode,
   scheduleSummary,
@@ -69,7 +71,9 @@ export default function SetupSummaryDrawer({
 
   const missing = rows.filter((r) => r.isMissing);
   const blocked = missing.length > 0;
-  const totalVariations = variationsPerProduct * Math.max(productCount, 1);
+  const safeProducts = Math.max(productCount, 1);
+  const safeSelection = Math.max(selectionCount ?? 1, 1);
+  const totalVariations = safeSelection * variationsPerProduct * safeProducts;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -231,7 +235,9 @@ export default function SetupSummaryDrawer({
                 <p className="text-[14px] font-semibold mt-0.5">
                   ~{totalVariations} variations
                   <span className="text-muted-foreground font-normal text-[12px]">
-                    {" "}({variationsPerProduct} per product × {productCount} products)
+                    {selectionCount != null
+                      ? ` (${safeSelection} ads × ${variationsPerProduct} variations × ${safeProducts} product${safeProducts > 1 ? "s" : ""})`
+                      : ` (${variationsPerProduct} per product × ${safeProducts} products)`}
                   </span>
                 </p>
               </div>
