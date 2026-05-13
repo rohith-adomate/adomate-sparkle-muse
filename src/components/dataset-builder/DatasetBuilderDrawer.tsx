@@ -373,6 +373,13 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
         onClose={() => setDetailRow(null)}
         onRunRow={(id) => handleRunRows([id])}
       />
+
+      <EnrichDataModal
+        open={enrichOpen}
+        onOpenChange={setEnrichOpen}
+        totalRows={rows.length}
+        onRun={handleEnrichRun}
+      />
     </TooltipProvider>
   );
 }
