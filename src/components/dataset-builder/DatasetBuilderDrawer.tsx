@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
