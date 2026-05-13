@@ -143,6 +143,45 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
     setActiveFilters([]);
   }, []);
 
+  const runEnrichRows = useCallback((columnId: string, rowIds: string[]) => {
+    setRows(prev => prev.map(r => rowIds.includes(r.id) ? { ...r, isRunning: true } : r));
+    setTimeout(() => {
+      setRows(prev => prev.map(r => {
+        if (!rowIds.includes(r.id)) return r;
+        const value = ["Yes", "No", "Maybe"][Math.floor(Math.random() * 3)];
+        return { ...r, isRunning: false, aiValues: { ...r.aiValues, [columnId]: value } };
+      }));
+    }, 1500);
+  }, []);
+
+  const handleEnrichRun = useCallback(({ columnName, prompt, scope }: { columnName: string; prompt: string; scope: "test" | "all" }) => {
+    const id = `ai-enrich-${Date.now()}`;
+    const newCol: DatasetColumn = {
+      id,
+      name: columnName,
+      type: "ai",
+      columnKind: "extraction",
+      aiPrompt: prompt,
+    };
+    setColumns(prev => [...prev, newCol]);
+    const targetIds = scope === "test" ? rows.slice(0, 10).map(r => r.id) : rows.map(r => r.id);
+    runEnrichRows(id, targetIds);
+    if (scope === "test" && rows.length > targetIds.length) {
+      setEnrichBanner({ columnId: id, columnName, processed: targetIds.length, remaining: rows.length - targetIds.length });
+    } else {
+      setEnrichBanner(null);
+      toast.success(`Column "${columnName}" added to ${targetIds.length} rows`);
+    }
+  }, [rows, runEnrichRows]);
+
+  const handleApplyRemaining = useCallback(() => {
+    if (!enrichBanner) return;
+    const processedSet = new Set(rows.slice(0, enrichBanner.processed).map(r => r.id));
+    const remainingIds = rows.filter(r => !processedSet.has(r.id)).map(r => r.id);
+    runEnrichRows(enrichBanner.columnId, remainingIds);
+    setEnrichBanner(null);
+  }, [enrichBanner, rows, runEnrichRows]);
+
   if (!open) return null;
 
   // Apply active filters to rows
