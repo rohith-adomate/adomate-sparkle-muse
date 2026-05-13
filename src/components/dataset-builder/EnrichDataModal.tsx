@@ -119,6 +119,9 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [confirmAll, setConfirmAll] = useState(false);
   const [valuesExpanded, setValuesExpanded] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [newValue, setNewValue] = useState("");
+  const newValueRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setPrompt("");
@@ -126,6 +129,8 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
     setSelectedChip(null);
     setConfirmAll(false);
     setValuesExpanded(false);
+    setAdding(false);
+    setNewValue("");
   };
 
   const handleClose = (v: boolean) => {
