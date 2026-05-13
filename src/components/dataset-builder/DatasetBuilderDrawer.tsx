@@ -298,6 +298,22 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             </div>
           )}
 
+          {enrichBanner && (
+            <div className="border-b border-border bg-[#FBEAF0] px-5 py-2.5 flex items-center justify-between gap-3 shrink-0">
+              <p className="text-[12px] text-foreground/85">
+                Column <span className="font-semibold">{enrichBanner.columnName}</span> added to {enrichBanner.processed} rows. Apply to remaining {enrichBanner.remaining} rows?
+              </p>
+              <div className="flex items-center gap-3 shrink-0">
+                <button type="button" onClick={handleApplyRemaining} className="text-[11px] font-medium text-primary hover:underline">
+                  Apply to all remaining →
+                </button>
+                <button type="button" onClick={() => setEnrichBanner(null)} className="text-[11px] text-muted-foreground hover:text-foreground">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Main content */}
           <div className="flex flex-1 overflow-hidden">
             <DatasetBuilderLeftPanel
