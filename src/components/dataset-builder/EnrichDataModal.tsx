@@ -203,11 +203,6 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
   const clearAllValues = () => updateValues([]);
 
   const startAddFresh = () => {
-    if (!allowedValues) {
-      // seed an empty Allowed values: line so the section appears
-      setPrompt((p) => writeAllowedValues(p, ["__seed__"]).replace(/__seed__/, ""));
-      setSelectedChip(null);
-    }
     setAdding(true);
     setValuesExpanded(true);
     setTimeout(() => newValueRef.current?.focus(), 0);
