@@ -343,7 +343,7 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
                   className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Plus className="h-3 w-3" />
-                  Add allowed values to constrain answers
+                  Add values to constrain answers
                 </button>
               </div>
             )}
