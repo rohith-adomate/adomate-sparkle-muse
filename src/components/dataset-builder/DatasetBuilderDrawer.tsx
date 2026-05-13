@@ -13,6 +13,7 @@ import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
 import RowDetailDrawer from "./RowDetailDrawer";
 import DrawerContinueFooter from "../DrawerContinueFooter";
+import EnrichDataModal from "./EnrichDataModal";
 
 interface Props {
   open: boolean;
