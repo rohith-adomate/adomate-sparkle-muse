@@ -257,6 +257,9 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
+                <Sparkles className="h-3.5 w-3.5" /> Enrich data
+              </Button>
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => {
                 const toastId = toast("Exporting to CSV…", {
                   icon: <Loader2 className="h-4 w-4 animate-spin" />,
