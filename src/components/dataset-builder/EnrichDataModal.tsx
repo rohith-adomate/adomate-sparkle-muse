@@ -336,18 +336,16 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
                 )}
               </div>
             ) : (
-              prompt.trim().length > 0 && (
-                <div className="px-1 pt-1">
-                  <button
-                    type="button"
-                    onClick={startAddFresh}
-                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <Plus className="h-3 w-3" />
-                    Add allowed values to constrain answers
-                  </button>
-                </div>
-              )
+              <div className="px-1 pt-1">
+                <button
+                  type="button"
+                  onClick={startAddFresh}
+                  className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Plus className="h-3 w-3" />
+                  Add allowed values to constrain answers
+                </button>
+              </div>
             )}
           </div>
 
