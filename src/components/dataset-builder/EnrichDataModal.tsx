@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, KeyboardEvent } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ChevronDown } from "lucide-react";
+import { Sparkles, ChevronDown, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SUGGESTIONS: { label: string; prompt: string; column: string; allowedValues: string[] }[] = [
@@ -83,9 +83,11 @@ interface Props {
   onRun: (args: { columnName: string; prompt: string; scope: "test" | "all" }) => void;
 }
 
-// Parse "Allowed values: a, b, c" from any prompt (last occurrence wins).
+const ALLOWED_LINE_RE = /Allowed values:\s*([^\n]*)/i;
+
+// Parse "Allowed values: a, b, c" from any prompt (first occurrence wins).
 function parseAllowedValues(text: string): string[] | null {
-  const match = text.match(/Allowed values:\s*([^\n]+)/i);
+  const match = text.match(ALLOWED_LINE_RE);
   if (!match) return null;
   const list = match[1]
     .split(/,\s*/)
@@ -94,12 +96,32 @@ function parseAllowedValues(text: string): string[] | null {
   return list.length > 0 ? list : null;
 }
 
+// Write a values array back into a prompt's "Allowed values:" line.
+// - If the line exists: replace it (or remove the whole line when values is empty).
+// - If missing and values is non-empty: append on a new line.
+function writeAllowedValues(text: string, values: string[]): string {
+  const line = `Allowed values: ${values.join(", ")}`;
+  if (ALLOWED_LINE_RE.test(text)) {
+    if (values.length === 0) {
+      // Remove the line entirely (and a trailing blank line above it if present).
+      return text.replace(/\n?\n?Allowed values:\s*[^\n]*/i, "").trimEnd();
+    }
+    return text.replace(ALLOWED_LINE_RE, line);
+  }
+  if (values.length === 0) return text;
+  const sep = text.trim().length === 0 ? "" : "\n\n";
+  return `${text.trimEnd()}${sep}${line}`;
+}
+
 export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }: Props) {
   const [prompt, setPrompt] = useState("");
   const [columnName, setColumnName] = useState("");
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [confirmAll, setConfirmAll] = useState(false);
   const [valuesExpanded, setValuesExpanded] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [newValue, setNewValue] = useState("");
+  const newValueRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setPrompt("");
@@ -107,6 +129,8 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
     setSelectedChip(null);
     setConfirmAll(false);
     setValuesExpanded(false);
+    setAdding(false);
+    setNewValue("");
   };
 
   const handleClose = (v: boolean) => {
@@ -135,6 +159,54 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
   const isExpanded = !shouldCollapse || valuesExpanded;
 
   const canRun = prompt.trim().length > 0 && columnName.trim().length > 0;
+
+  const updateValues = (next: string[]) => {
+    setPrompt((p) => writeAllowedValues(p, next));
+    setSelectedChip(null); // any edit unlinks the preset
+  };
+
+  const removeValue = (v: string) => {
+    if (!allowedValues) return;
+    updateValues(allowedValues.filter((x) => x !== v));
+  };
+
+  const commitNewValue = () => {
+    const trimmed = newValue.trim().replace(/,$/, "").trim();
+    if (!trimmed) {
+      setAdding(false);
+      setNewValue("");
+      return;
+    }
+    const current = allowedValues ?? [];
+    if (current.some((v) => v.toLowerCase() === trimmed.toLowerCase())) {
+      setNewValue("");
+      return;
+    }
+    updateValues([...current, trimmed]);
+    setNewValue("");
+  };
+
+  const handleNewValueKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      commitNewValue();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setAdding(false);
+      setNewValue("");
+    } else if (e.key === "Backspace" && newValue === "" && allowedValues && allowedValues.length > 0) {
+      e.preventDefault();
+      removeValue(allowedValues[allowedValues.length - 1]);
+    }
+  };
+
+  const clearAllValues = () => updateValues([]);
+
+  const startAddFresh = () => {
+    setAdding(true);
+    setValuesExpanded(true);
+    setTimeout(() => newValueRef.current?.focus(), 0);
+  };
 
   const runScope = (scope: "test" | "all") => {
     if (!canRun) return;
@@ -182,44 +254,100 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
               </div>
             </div>
 
-            {showValues && (
+            {(showValues || adding) ? (
               <div className="px-1 pt-1">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <span className="text-[10.5px] uppercase tracking-wider text-muted-foreground/70 font-medium">
                     Will output one of
                   </span>
                   <span className="text-[10.5px] text-muted-foreground/50">
-                    · {allowedValues!.length}
+                    · {allowedValues?.length ?? 0}
                   </span>
-                  {shouldCollapse && (
-                    <button
-                      type="button"
-                      onClick={() => setValuesExpanded((v) => !v)}
-                      className="ml-auto text-[10.5px] text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5 transition-colors"
-                    >
-                      {isExpanded ? "Hide" : "Show all"}
-                      <ChevronDown
-                        className={cn(
-                          "h-3 w-3 transition-transform",
-                          isExpanded && "rotate-180"
-                        )}
-                      />
-                    </button>
-                  )}
+                  <div className="ml-auto flex items-center gap-2">
+                    {shouldCollapse && (
+                      <button
+                        type="button"
+                        onClick={() => setValuesExpanded((v) => !v)}
+                        className="text-[10.5px] text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5 transition-colors"
+                      >
+                        {isExpanded ? "Hide" : "Show all"}
+                        <ChevronDown
+                          className={cn(
+                            "h-3 w-3 transition-transform",
+                            isExpanded && "rotate-180"
+                          )}
+                        />
+                      </button>
+                    )}
+                    {showValues && (
+                      <button
+                        type="button"
+                        onClick={clearAllValues}
+                        className="text-[10.5px] text-muted-foreground hover:text-destructive transition-colors"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {isExpanded && (
-                  <div className="flex flex-wrap gap-1">
-                    {allowedValues!.map((v) => (
+                  <div className="flex flex-wrap gap-1 items-center">
+                    {(allowedValues ?? []).map((v) => (
                       <span
                         key={v}
-                        className="text-[11px] leading-none px-2 py-1 rounded-full border border-border bg-muted/50 text-foreground/75"
+                        className="group inline-flex items-center gap-1 text-[11px] leading-none pl-2 pr-1 py-1 rounded-full border border-border bg-muted/50 text-foreground/75 hover:border-foreground/30 transition-colors"
                       >
                         {v}
+                        <button
+                          type="button"
+                          onClick={() => removeValue(v)}
+                          aria-label={`Remove ${v}`}
+                          className="rounded-full p-0.5 text-muted-foreground/60 hover:text-foreground hover:bg-foreground/10 transition-colors"
+                        >
+                          <X className="h-2.5 w-2.5" />
+                        </button>
                       </span>
                     ))}
+                    {adding ? (
+                      <input
+                        ref={newValueRef}
+                        value={newValue}
+                        onChange={(e) => setNewValue(e.target.value)}
+                        onKeyDown={handleNewValueKey}
+                        onBlur={commitNewValue}
+                        placeholder="Add value…"
+                        className="text-[11px] leading-none px-2 py-1 rounded-full border border-dashed border-primary/50 bg-primary/5 text-foreground/80 placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary min-w-[90px]"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAdding(true);
+                          setValuesExpanded(true);
+                          setTimeout(() => newValueRef.current?.focus(), 0);
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] leading-none px-2 py-1 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+                      >
+                        <Plus className="h-2.5 w-2.5" />
+                        Add
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
+            ) : (
+              prompt.trim().length > 0 && (
+                <div className="px-1 pt-1">
+                  <button
+                    type="button"
+                    onClick={startAddFresh}
+                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Add allowed values to constrain answers
+                  </button>
+                </div>
+              )
             )}
           </div>
 
