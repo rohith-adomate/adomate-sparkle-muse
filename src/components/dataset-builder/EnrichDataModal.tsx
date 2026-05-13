@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const SUGGESTIONS: { label: string; prompt: string; column: string }[] = [
+const SUGGESTIONS: { label: string; prompt: string; column: string; allowedValues: string[] }[] = [
   {
     label: "Ad Objective",
     column: "Ad Objective",
+    allowedValues: ["Awareness", "Consideration", "Conversion", "Retargeting", "Retention"],
     prompt: `You are an expert Meta media buyer. Based on this ad's format, days online, active status, landing page, headline, and visual — classify its campaign objective.
 
 Use these definitions:
@@ -25,6 +26,9 @@ Allowed values: Awareness, Consideration, Conversion, Retargeting, Retention`,
   {
     label: "Creative Category",
     column: "Creative Category",
+    allowedValues: [
+      "Product Showcase","Comparison","Problem-Solution","Social Proof","Educational","Offer-Led","Typographic","Native Mimicry","Lifestyle","Narrative","Curiosity","Cultural","Structured","Tactical",
+    ],
     prompt: `You are an expert Meta creative strategist. Based on this ad's format, headline, visual, and landing page — classify its creative category.
 
 Use these definitions:
@@ -50,6 +54,9 @@ Allowed values: Product Showcase, Comparison, Problem-Solution, Social Proof, Ed
   {
     label: "Offer Type",
     column: "Offer Type",
+    allowedValues: [
+      "Discount","Free Shipping","Free Gift","Bundle Deal","Limited Time Sale","Promo Code","Trial Offer","Loyalty / Member Offer","No Offer",
+    ],
     prompt: `Look at this ad's headline, visual, and landing page. Identify if it contains a promotional offer and classify it.
 
 Use these definitions:
@@ -76,17 +83,30 @@ interface Props {
   onRun: (args: { columnName: string; prompt: string; scope: "test" | "all" }) => void;
 }
 
+// Parse "Allowed values: a, b, c" from any prompt (last occurrence wins).
+function parseAllowedValues(text: string): string[] | null {
+  const match = text.match(/Allowed values:\s*([^\n]+)/i);
+  if (!match) return null;
+  const list = match[1]
+    .split(/,\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return list.length > 0 ? list : null;
+}
+
 export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }: Props) {
   const [prompt, setPrompt] = useState("");
   const [columnName, setColumnName] = useState("");
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [confirmAll, setConfirmAll] = useState(false);
+  const [valuesExpanded, setValuesExpanded] = useState(false);
 
   const reset = () => {
     setPrompt("");
     setColumnName("");
     setSelectedChip(null);
     setConfirmAll(false);
+    setValuesExpanded(false);
   };
 
   const handleClose = (v: boolean) => {
@@ -99,12 +119,20 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
       setSelectedChip(null);
       setPrompt("");
       setColumnName("");
+      setValuesExpanded(false);
       return;
     }
     setSelectedChip(s.prompt);
     setPrompt(s.prompt);
     setColumnName(s.column);
+    setValuesExpanded(false);
   };
+
+  const allowedValues = useMemo(() => parseAllowedValues(prompt), [prompt]);
+  const COLLAPSE_THRESHOLD = 8;
+  const shouldCollapse = (allowedValues?.length ?? 0) > COLLAPSE_THRESHOLD;
+  const showValues = !!allowedValues;
+  const isExpanded = !shouldCollapse || valuesExpanded;
 
   const canRun = prompt.trim().length > 0 && columnName.trim().length > 0;
 
@@ -135,22 +163,64 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
             />
           </div>
 
-          <div className="rounded-xl border border-border bg-background shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 transition-all">
-            <div className="flex items-start gap-2 px-3 py-3">
-              <Sparkles className="h-4 w-4 text-primary shrink-0 mt-1" />
-              <textarea
-                value={prompt}
-                onChange={(e) => {
-                  setPrompt(e.target.value);
-                  const el = e.currentTarget;
-                  el.style.height = "auto";
-                  el.style.height = Math.min(el.scrollHeight, 480) + "px";
-                }}
-                placeholder="Ask anything about each row…"
-                rows={5}
-                className="flex-1 resize-none bg-transparent text-sm placeholder:text-muted-foreground/70 focus:outline-none min-h-[7rem] max-h-[30rem] overflow-y-auto leading-relaxed"
-              />
+          <div className="space-y-2">
+            <div className="rounded-xl border border-border bg-background shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 transition-all">
+              <div className="flex items-start gap-2 px-3 py-3">
+                <Sparkles className="h-4 w-4 text-primary shrink-0 mt-1" />
+                <textarea
+                  value={prompt}
+                  onChange={(e) => {
+                    setPrompt(e.target.value);
+                    const el = e.currentTarget;
+                    el.style.height = "auto";
+                    el.style.height = Math.min(el.scrollHeight, 480) + "px";
+                  }}
+                  placeholder="Ask anything about each row…"
+                  rows={5}
+                  className="flex-1 resize-none bg-transparent text-sm placeholder:text-muted-foreground/70 focus:outline-none min-h-[7rem] max-h-[30rem] overflow-y-auto leading-relaxed"
+                />
+              </div>
             </div>
+
+            {showValues && (
+              <div className="px-1 pt-1">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="text-[10.5px] uppercase tracking-wider text-muted-foreground/70 font-medium">
+                    Will output one of
+                  </span>
+                  <span className="text-[10.5px] text-muted-foreground/50">
+                    · {allowedValues!.length}
+                  </span>
+                  {shouldCollapse && (
+                    <button
+                      type="button"
+                      onClick={() => setValuesExpanded((v) => !v)}
+                      className="ml-auto text-[10.5px] text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5 transition-colors"
+                    >
+                      {isExpanded ? "Hide" : "Show all"}
+                      <ChevronDown
+                        className={cn(
+                          "h-3 w-3 transition-transform",
+                          isExpanded && "rotate-180"
+                        )}
+                      />
+                    </button>
+                  )}
+                </div>
+                {isExpanded && (
+                  <div className="flex flex-wrap gap-1">
+                    {allowedValues!.map((v) => (
+                      <span
+                        key={v}
+                        className="text-[11px] leading-none px-2 py-1 rounded-full border border-border bg-muted/50 text-foreground/75"
+                      >
+                        {v}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2">
