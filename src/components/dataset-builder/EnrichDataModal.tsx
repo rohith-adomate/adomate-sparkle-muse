@@ -7,28 +7,65 @@ import { cn } from "@/lib/utils";
 
 const SUGGESTIONS: { label: string; prompt: string; column: string }[] = [
   {
-    label: "Offer present",
-    prompt:
-      "Does this ad contain a promotional offer? Includes discounts, free trials, limited-time deals, BOGO, bundles, coupons, or gift-with-purchase. Answer only: yes or no.",
-    column: "Offer present",
+    label: "Ad Objective",
+    column: "Ad Objective",
+    prompt: `You are an expert Meta media buyer. Based on this ad's format, days online, active status, landing page, headline, and visual — classify its campaign objective.
+
+Use these definitions:
+- Awareness: broad reach, brand storytelling, no strong CTA, lifestyle visuals
+- Consideration: drives traffic, engagement or interest — product education, "learn more", blog or collection pages
+- Conversion: direct purchase or sign-up push — "shop now", "get X", product or checkout landing page
+- Retargeting: re-engages past visitors — urgency, reminders, specific product the user likely already saw
+- Retention: targets existing customers — loyalty, repurchase, upsell, "welcome back" tone
+
+If the ad could fit multiple categories, pick the most dominant one. Return only one of the five values.
+
+Allowed values: Awareness, Consideration, Conversion, Retargeting, Retention`,
   },
   {
-    label: "CTA text",
-    prompt:
-      "What is the primary call-to-action in this ad? Extract exact CTA text if visible. If not, infer the intended action in 1–4 words. If none, return: none.",
-    column: "CTA text",
+    label: "Creative Category",
+    column: "Creative Category",
+    prompt: `You are an expert Meta creative strategist. Based on this ad's format, headline, visual, and landing page — classify its creative category.
+
+Use these definitions:
+- Product Showcase: hero shot of the product, clean background, features front and center
+- Comparison: before/after, side-by-side, or explicit contrast between two states or products
+- Problem-Solution: opens with a pain point or frustration, resolves it with the product
+- Social Proof: reviews, ratings, UGC, testimonials, influencer endorsement, or "X people love this"
+- Educational: teaches something — how-to, ingredient breakdown, tutorial, tips
+- Offer-Led: discount, bundle, free gift, limited time deal is the hero of the ad
+- Typographic: copy-driven creative, text is the main visual element, minimal imagery
+- Native Mimicry: designed to look like organic content — selfie style, TikTok-like, lo-fi, no brand polish
+- Lifestyle: aspirational scene, product in context of a desirable life, emotion over information
+- Narrative: storytelling arc — character, tension, resolution; mini film or series feel
+- Curiosity: withholds information to drive clicks — teaser, open loop, unexpected hook
+- Cultural: taps into a trend, meme, moment, holiday, or community reference
+- Structured: grid layout, checklist, bullet points, infographic — information-dense and organized
+- Tactical: urgency or scarcity mechanics — countdown, "last chance", stock warnings, deadlines
+
+If the ad could fit multiple categories, pick the most dominant one. If unclear, pick the category that best describes the primary creative mechanic. Return only one of the fourteen values.
+
+Allowed values: Product Showcase, Comparison, Problem-Solution, Social Proof, Educational, Offer-Led, Typographic, Native Mimicry, Lifestyle, Narrative, Curiosity, Cultural, Structured, Tactical`,
   },
   {
-    label: "Ad objective",
-    prompt:
-      "What is this ad's most likely marketing objective? Choose one from: Awareness, Consideration, Conversion, Retargeting, Retention. Return only the single best match.",
-    column: "Ad objective",
-  },
-  {
-    label: "Creative category",
-    prompt:
-      "Classify this ad into up to 2 creative categories from: Product Showcase, Comparison, Problem–Solution, Social Proof, Educational, Offer-Led, Typographic, Native Mimicry, Lifestyle, Narrative, Curiosity, Cultural, Structured, Tactical. Return as a comma-separated list.",
-    column: "Creative category",
+    label: "Offer Type",
+    column: "Offer Type",
+    prompt: `Look at this ad's headline, visual, and landing page. Identify if it contains a promotional offer and classify it.
+
+Use these definitions:
+- Discount: percentage or dollar amount off ("20% off", "$10 off", "half price")
+- Free Shipping: shipping cost removed as the main incentive
+- Free Gift: bonus product or sample included with purchase ("free mini with every order")
+- Bundle Deal: multiple products explicitly sold together at a better price than buying separately — must include a clear saving or quantity mechanic ("buy 2 get 1", "save when you bundle", "kit for $X"). Do NOT classify as Bundle Deal if the ad simply features a set or collection that is a standard product with no stated saving
+- Limited Time Sale: time-bound or seasonal promotion ("Black Friday", "sale ends Sunday", "today only")
+- Promo Code: a code or voucher is featured ("use code X", "enter at checkout")
+- Trial Offer: low-risk entry ("try free", "first month free", "sample for $1")
+- Loyalty / Member Offer: exclusive deal for existing customers or members
+- No Offer: no promotional mechanic present
+
+If multiple offers are present, return the most prominent one. When in doubt, prefer No Offer over Bundle Deal. Return only one of the values above.
+
+Allowed values: Discount, Free Shipping, Free Gift, Bundle Deal, Limited Time Sale, Promo Code, Trial Offer, Loyalty / Member Offer, No Offer`,
   },
 ];
 
@@ -58,6 +95,12 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
   };
 
   const pickChip = (s: { prompt: string; column: string }) => {
+    if (selectedChip === s.prompt) {
+      setSelectedChip(null);
+      setPrompt("");
+      setColumnName("");
+      return;
+    }
     setSelectedChip(s.prompt);
     setPrompt(s.prompt);
     setColumnName(s.column);
