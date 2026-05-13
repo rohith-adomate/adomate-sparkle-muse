@@ -1,29 +1,46 @@
+## Goal
 
+When a suggestion chip is selected (Ad Objective, Creative Category, Offer Type), surface the **allowed values** as a separate, scannable element below the prompt box — so users immediately see this list controls what gets written into each cell, without having to read to the bottom of the long prompt.
 
-## Problem Analysis
+## Where
 
-The top-right `X` button (closes the entire dataset drawer) is positioned directly above the inspector panel's `>>` close button. When the inspector is open, users instinctively click the more prominent `X` thinking it will close the inspector, but it closes everything instead.
+`src/components/dataset-builder/EnrichDataModal.tsx`
 
-## Recommended Solution: Remove the top-right X entirely
+Add a small `allowedValues: string[]` field to each entry in `SUGGESTIONS`. Render the values just under the prompt textarea, only when a chip is active (or when the prompt contains an `Allowed values:` line — parsed automatically).
 
-The simplest and most effective fix. Here's the reasoning:
+## Three design directions to choose from
 
-1. **The X is redundant** — the `← Arrow` button on the left already closes the drawer with a "Back to canvas" tooltip. The 5% backdrop click also closes it. Three close mechanisms is excessive.
+**Option A — Pill row (recommended)**
+A muted label "Will output one of:" followed by small rounded outline pills, one per value. Pills wrap to multiple lines. Same accent color family as the active chip but lower contrast (border + tinted bg).
 
-2. **Removing it eliminates confusion entirely** — no ambiguous close button near the inspector panel.
+```text
+Will output one of
+[ Awareness ] [ Consideration ] [ Conversion ] [ Retargeting ] [ Retention ]
+```
 
-3. **It follows established patterns** — most full-screen/near-full-screen panels (Google Sheets sidebars, Figma panels, Notion databases) use a single back/close affordance on the left side, not a competing X on the right.
+Pros: very scannable, feels like "tags" → matches what cells will display.
+Cons: takes 1–2 lines vertical space for long lists (Creative Category = 14 values).
 
-### Alternative considered but not recommended
+**Option B — Inline comma list with leading icon**
+A single line under the prompt: a small `ListChecks` icon + "Outputs: Awareness · Consideration · Conversion · Retargeting · Retention". Truncates with `+N more` when >6 values; click to expand.
 
-- *Hide the X only when inspector is open* — creates inconsistency; users would notice the button appearing/disappearing.
-- *Move the X further left away from the inspector* — still two close buttons competing for attention.
-- *Add a visual separator between top bar and inspector* — adds complexity without solving the root cause.
+Pros: minimal footprint, stays out of the way.
+Cons: less obvious these are the *only* allowed answers.
 
-### Implementation
+**Option C — Collapsible "Allowed values (5)" caption**
+A subtle text button under the prompt: `Allowed values (5) ▾`. Expands to a soft-bg rounded box containing the pill row. Collapsed by default for long lists, expanded by default for ≤5.
 
-**Single file change:** `src/components/dataset-builder/DatasetBuilderDrawer.tsx`
-- Remove the absolute-positioned `X` button (line 208-210)
-- Remove the `mr-10` spacing on the Export CSV container (was only there to make room for the X)
-- The `← Back` button and backdrop click remain as the two ways to close the drawer
+Pros: handles 14-value Creative Category cleanly without dominating the modal.
+Cons: one extra click for users who want to see the list.
 
+## Behavior (all options)
+
+- Visible only when `selectedChip` is set, OR when the user's custom prompt contains an `Allowed values: ...` line (parsed with a regex). This keeps the affordance useful even for hand-written prompts.
+- If shown, also strip the trailing `Allowed values: ...` line from the visible textarea so it isn't duplicated. (Keep it in the prompt sent to `onRun`.)
+- Style: `text-[11px]` muted label + pills using `border-border bg-muted/40 text-foreground/80`, no pink accent so it doesn't compete with the active chip.
+
+## Recommendation
+
+Go with **Option A** as the default, and auto-switch to **Option C** (collapsed) when the list has more than 8 values — so Creative Category stays tidy while Ad Objective and Offer Type stay fully visible.
+
+Pick one (A / B / C / hybrid) and I'll implement.
