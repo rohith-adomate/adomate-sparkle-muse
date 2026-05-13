@@ -83,15 +83,34 @@ interface Props {
   onRun: (args: { columnName: string; prompt: string; scope: "test" | "all" }) => void;
 }
 
-// Parse "Allowed values: a, b, c" from any prompt (last occurrence wins).
+const ALLOWED_LINE_RE = /Allowed values:\s*([^\n]*)/i;
+
+// Parse "Allowed values: a, b, c" from any prompt (first occurrence wins).
 function parseAllowedValues(text: string): string[] | null {
-  const match = text.match(/Allowed values:\s*([^\n]+)/i);
+  const match = text.match(ALLOWED_LINE_RE);
   if (!match) return null;
   const list = match[1]
     .split(/,\s*/)
     .map((s) => s.trim())
     .filter(Boolean);
   return list.length > 0 ? list : null;
+}
+
+// Write a values array back into a prompt's "Allowed values:" line.
+// - If the line exists: replace it (or remove the whole line when values is empty).
+// - If missing and values is non-empty: append on a new line.
+function writeAllowedValues(text: string, values: string[]): string {
+  const line = `Allowed values: ${values.join(", ")}`;
+  if (ALLOWED_LINE_RE.test(text)) {
+    if (values.length === 0) {
+      // Remove the line entirely (and a trailing blank line above it if present).
+      return text.replace(/\n?\n?Allowed values:\s*[^\n]*/i, "").trimEnd();
+    }
+    return text.replace(ALLOWED_LINE_RE, line);
+  }
+  if (values.length === 0) return text;
+  const sep = text.trim().length === 0 ? "" : "\n\n";
+  return `${text.trimEnd()}${sep}${line}`;
 }
 
 export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }: Props) {
