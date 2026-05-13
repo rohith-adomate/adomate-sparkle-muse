@@ -160,6 +160,59 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
 
   const canRun = prompt.trim().length > 0 && columnName.trim().length > 0;
 
+  const updateValues = (next: string[]) => {
+    setPrompt((p) => writeAllowedValues(p, next));
+    setSelectedChip(null); // any edit unlinks the preset
+  };
+
+  const removeValue = (v: string) => {
+    if (!allowedValues) return;
+    updateValues(allowedValues.filter((x) => x !== v));
+  };
+
+  const commitNewValue = () => {
+    const trimmed = newValue.trim().replace(/,$/, "").trim();
+    if (!trimmed) {
+      setAdding(false);
+      setNewValue("");
+      return;
+    }
+    const current = allowedValues ?? [];
+    if (current.some((v) => v.toLowerCase() === trimmed.toLowerCase())) {
+      setNewValue("");
+      return;
+    }
+    updateValues([...current, trimmed]);
+    setNewValue("");
+  };
+
+  const handleNewValueKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      commitNewValue();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setAdding(false);
+      setNewValue("");
+    } else if (e.key === "Backspace" && newValue === "" && allowedValues && allowedValues.length > 0) {
+      e.preventDefault();
+      removeValue(allowedValues[allowedValues.length - 1]);
+    }
+  };
+
+  const clearAllValues = () => updateValues([]);
+
+  const startAddFresh = () => {
+    if (!allowedValues) {
+      // seed an empty Allowed values: line so the section appears
+      setPrompt((p) => writeAllowedValues(p, ["__seed__"]).replace(/__seed__/, ""));
+      setSelectedChip(null);
+    }
+    setAdding(true);
+    setValuesExpanded(true);
+    setTimeout(() => newValueRef.current?.focus(), 0);
+  };
+
   const runScope = (scope: "test" | "all") => {
     if (!canRun) return;
     onRun({ columnName: columnName.trim(), prompt: prompt.trim(), scope });
