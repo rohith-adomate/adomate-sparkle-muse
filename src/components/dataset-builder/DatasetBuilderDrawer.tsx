@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
@@ -13,6 +13,7 @@ import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
 import RowDetailDrawer from "./RowDetailDrawer";
 import DrawerContinueFooter from "../DrawerContinueFooter";
+import EnrichDataModal from "./EnrichDataModal";
 
 interface Props {
   open: boolean;
@@ -34,6 +35,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
   const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
+  const [enrichOpen, setEnrichOpen] = useState(false);
+  const [enrichBanner, setEnrichBanner] = useState<{ columnId: string; columnName: string; processed: number; remaining: number } | null>(null);
 
   useEffect(() => {
     onSourcesChange?.(sources.length);
@@ -140,6 +143,45 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
     setActiveFilters([]);
   }, []);
 
+  const runEnrichRows = useCallback((columnId: string, rowIds: string[]) => {
+    setRows(prev => prev.map(r => rowIds.includes(r.id) ? { ...r, isRunning: true } : r));
+    setTimeout(() => {
+      setRows(prev => prev.map(r => {
+        if (!rowIds.includes(r.id)) return r;
+        const value = ["Yes", "No", "Maybe"][Math.floor(Math.random() * 3)];
+        return { ...r, isRunning: false, aiValues: { ...r.aiValues, [columnId]: value } };
+      }));
+    }, 1500);
+  }, []);
+
+  const handleEnrichRun = useCallback(({ columnName, prompt, scope }: { columnName: string; prompt: string; scope: "test" | "all" }) => {
+    const id = `ai-enrich-${Date.now()}`;
+    const newCol: DatasetColumn = {
+      id,
+      name: columnName,
+      type: "ai",
+      columnKind: "extraction",
+      aiPrompt: prompt,
+    };
+    setColumns(prev => [...prev, newCol]);
+    const targetIds = scope === "test" ? rows.slice(0, 10).map(r => r.id) : rows.map(r => r.id);
+    runEnrichRows(id, targetIds);
+    if (scope === "test" && rows.length > targetIds.length) {
+      setEnrichBanner({ columnId: id, columnName, processed: targetIds.length, remaining: rows.length - targetIds.length });
+    } else {
+      setEnrichBanner(null);
+      toast.success(`Column "${columnName}" added to ${targetIds.length} rows`);
+    }
+  }, [rows, runEnrichRows]);
+
+  const handleApplyRemaining = useCallback(() => {
+    if (!enrichBanner) return;
+    const processedSet = new Set(rows.slice(0, enrichBanner.processed).map(r => r.id));
+    const remainingIds = rows.filter(r => !processedSet.has(r.id)).map(r => r.id);
+    runEnrichRows(enrichBanner.columnId, remainingIds);
+    setEnrichBanner(null);
+  }, [enrichBanner, rows, runEnrichRows]);
+
   if (!open) return null;
 
   // Apply active filters to rows
@@ -215,6 +257,9 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
+                <Sparkles className="h-3.5 w-3.5" /> Enrich data
+              </Button>
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" onClick={() => {
                 const toastId = toast("Exporting to CSV…", {
                   icon: <Loader2 className="h-4 w-4 animate-spin" />,
@@ -250,6 +295,22 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               </Button>
+            </div>
+          )}
+
+          {enrichBanner && (
+            <div className="border-b border-border bg-[#FBEAF0] px-5 py-2.5 flex items-center justify-between gap-3 shrink-0">
+              <p className="text-[12px] text-foreground/85">
+                Column <span className="font-semibold">{enrichBanner.columnName}</span> added to {enrichBanner.processed} rows. Apply to remaining {enrichBanner.remaining} rows?
+              </p>
+              <div className="flex items-center gap-3 shrink-0">
+                <button type="button" onClick={handleApplyRemaining} className="text-[11px] font-medium text-primary hover:underline">
+                  Apply to all remaining →
+                </button>
+                <button type="button" onClick={() => setEnrichBanner(null)} className="text-[11px] text-muted-foreground hover:text-foreground">
+                  Dismiss
+                </button>
+              </div>
             </div>
           )}
 
@@ -311,6 +372,13 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
         row={detailRow}
         onClose={() => setDetailRow(null)}
         onRunRow={(id) => handleRunRows([id])}
+      />
+
+      <EnrichDataModal
+        open={enrichOpen}
+        onOpenChange={setEnrichOpen}
+        totalRows={rows.length}
+        onRun={handleEnrichRun}
       />
     </TooltipProvider>
   );
