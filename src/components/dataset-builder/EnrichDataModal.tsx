@@ -95,6 +95,12 @@ export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }
   };
 
   const pickChip = (s: { prompt: string; column: string }) => {
+    if (selectedChip === s.prompt) {
+      setSelectedChip(null);
+      setPrompt("");
+      setColumnName("");
+      return;
+    }
     setSelectedChip(s.prompt);
     setPrompt(s.prompt);
     setColumnName(s.column);
