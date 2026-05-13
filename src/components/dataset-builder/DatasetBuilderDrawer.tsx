@@ -35,6 +35,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
   const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
+  const [enrichOpen, setEnrichOpen] = useState(false);
+  const [enrichBanner, setEnrichBanner] = useState<{ columnId: string; columnName: string; processed: number; remaining: number } | null>(null);
 
   useEffect(() => {
     onSourcesChange?.(sources.length);
