@@ -1319,6 +1319,8 @@ export default function WorkflowCanvas() {
                     } else {
                       if (node.type === "dataset") {
                         openDrawerFor("dataset");
+                      } else if (node.type === "review-dataset") {
+                        openDrawerFor("review-dataset");
                       } else if (node.type === "product-data") {
                         openDrawerFor("product-data");
                       } else if (node.type === "generate-concepts") {
