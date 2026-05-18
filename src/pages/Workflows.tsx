@@ -60,6 +60,23 @@ const defaultAgents: Agent[] = [
 const BORDER = "0.5px solid rgba(0,0,0,0.12)";
 const CARD_RADIUS = "12px";
 
+function BrandAvatar({ brand, index }: { brand: { name: string; logoUrl?: string }; index: number }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div
+      className="w-7 h-7 rounded-full bg-white border-2 border-white shadow-sm overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0"
+      style={{ marginLeft: index === 0 ? 0 : -8, zIndex: 10 - index, boxShadow: "inset 0 0 0 1px hsl(var(--border))" }}
+      title={brand.name}
+    >
+      {brand.logoUrl && !failed ? (
+        <img src={brand.logoUrl} alt={brand.name} className="w-full h-full object-cover" onError={() => setFailed(true)} />
+      ) : (
+        <span className="text-[10px] font-medium text-muted-foreground">{brand.name.charAt(0).toUpperCase()}</span>
+      )}
+    </div>
+  );
+}
+
 type FirstRunMode = "scheduled" | "manual" | "blocked";
 
 interface FirstRunSpec {
@@ -69,6 +86,13 @@ interface FirstRunSpec {
   productCount?: number;
   variationsPerProduct?: number;
   missing?: string[];
+}
+
+type CardState = "active" | "paused" | "error" | "never-run" | "running";
+
+interface WorkflowBrand {
+  name: string;
+  logoUrl?: string;
 }
 
 const activeWorkflows: {
@@ -85,6 +109,11 @@ const activeWorkflows: {
   link: { text: string; color: string; href: string };
   thumbnails: string[];
   firstRun?: FirstRunSpec;
+  state: CardState;
+  brands: WorkflowBrand[];
+  errorMessage?: string;
+  nextRunLabel?: string;
+  runStartedAt?: number;
 }[] = [
   {
     id: "competitor-1",
@@ -92,13 +121,45 @@ const activeWorkflows: {
     type: "competitor",
     badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
     enabled: true, schedule: "weekly",
-    lastRun: "Last run: 12 Mar · 3m 12s", cadence: "Cadence: Weekly",
+    lastRun: "Last run: 12 May · 3m 12s", cadence: "Cadence: Weekly",
     link: { text: "→ View 9 new concepts", color: "#D4537E", href: "/concepts/ai-image-studio-1" },
     thumbnails: [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200",
       "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200",
       "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=200",
       "https://images.unsplash.com/photo-1539185441755-769473a23570?w=200",
+      "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=200",
+    ],
+    state: "active",
+    nextRunLabel: "Mon, 19 May · 9:00",
+    brands: [
+      { name: "Nike", logoUrl: "https://logo.clearbit.com/nike.com" },
+      { name: "Adidas", logoUrl: "https://logo.clearbit.com/adidas.com" },
+      { name: "Puma", logoUrl: "https://logo.clearbit.com/puma.com" },
+      { name: "Under Armour", logoUrl: "https://logo.clearbit.com/underarmour.com" },
+      { name: "New Balance", logoUrl: "https://logo.clearbit.com/newbalance.com" },
+      { name: "Asics", logoUrl: "https://logo.clearbit.com/asics.com" },
+    ],
+  },
+  {
+    id: "reviews-1",
+    name: "Glossier Voice of Customer",
+    type: "reviews",
+    badge: "Reviews", badgeBg: "#E8F5E9", badgeText: "#2E7D32",
+    enabled: false, schedule: "weekly",
+    lastRun: "Last run: 9 May · 2m 04s", cadence: "Cadence: Weekly",
+    link: { text: "", color: "#D4537E", href: "/concepts/ai-image-studio-1" },
+    thumbnails: [
+      "https://images.unsplash.com/photo-1522335789203-aaa67d1c4e0a?w=200",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200",
+      "https://images.unsplash.com/photo-1599733589046-d4a282bd47bf?w=200",
+    ],
+    state: "paused",
+    nextRunLabel: "Paused — resume to schedule",
+    brands: [
+      { name: "Glossier", logoUrl: "https://logo.clearbit.com/glossier.com" },
+      { name: "Rare Beauty", logoUrl: "https://logo.clearbit.com/rarebeauty.com" },
     ],
   },
   {
@@ -107,61 +168,50 @@ const activeWorkflows: {
     type: "competitor",
     badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
     enabled: true, schedule: "weekly",
-    lastRun: "Last run: 8 Mar · 1m 03s", cadence: "Cadence: Weekly",
-    link: { text: "⚠ Last run failed — check settings", color: "#E24B4A", href: `/workflows/competitor-2` },
-    thumbnails: [
-      "https://images.unsplash.com/photo-1539185441755-769473a23570?w=200",
-      "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=200",
-      "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200",
+    lastRun: "Last run failed · 11 May", cadence: "Cadence: Weekly",
+    link: { text: "View error", color: "#E24B4A", href: `/workflows/competitor-2` },
+    thumbnails: [],
+    state: "error",
+    errorMessage: "Last run failed · May 11",
+    brands: [
+      { name: "Adidas", logoUrl: "https://logo.clearbit.com/adidas.com" },
+      { name: "Reebok", logoUrl: "https://logo.clearbit.com/reebok.com" },
     ],
   },
-  // ── First-run prototype demo cards ──
   {
-    id: "demo-firstrun-scheduled",
-    name: "Lululemon Ad Monitor",
+    id: "competitor-running",
+    name: "Lululemon Live Sweep",
     type: "competitor",
     badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
     enabled: true, schedule: "weekly",
-    lastRun: "", cadence: "Cadence: Weekly",
-    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-scheduled" },
-    thumbnails: [],
-    firstRun: {
-      mode: "scheduled",
-      nextRunLabel: "Mon, 16 Mar · 9:00",
-      scheduleSummary: "Weekly · Mondays 9:00",
-      productCount: 4,
-      variationsPerProduct: 8,
-    },
+    lastRun: "Last run: 13 May · 2m 47s", cadence: "Cadence: Weekly",
+    link: { text: "→ View previous concepts", color: "#D4537E", href: "/concepts/ai-image-studio-1" },
+    thumbnails: [
+      "https://images.unsplash.com/photo-1483721310020-03333e577078?w=200",
+      "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=200",
+      "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=200",
+      "https://images.unsplash.com/photo-1530143584546-02191bc84eb5?w=200",
+    ],
+    state: "running",
+    runStartedAt: Date.now() - 83_000,
+    brands: [
+      { name: "Lululemon", logoUrl: "https://logo.clearbit.com/lululemon.com" },
+      { name: "Alo Yoga", logoUrl: "https://logo.clearbit.com/aloyoga.com" },
+      { name: "Vuori", logoUrl: "https://logo.clearbit.com/vuoriclothing.com" },
+    ],
   },
   {
-    id: "demo-firstrun-manual",
+    id: "manual-never",
     name: "Spring Drop Concepts",
     type: "manual",
     badge: "Manual", badgeBg: "#FCE4EC", badgeText: "#AD1457",
     enabled: false, schedule: "manual",
-    lastRun: "", cadence: "Manual only",
-    link: { text: "", color: "#D4537E", href: "/workflows/demo-firstrun-manual" },
+    lastRun: "Never run", cadence: "Cadence: Manual only",
+    link: { text: "", color: "#D4537E", href: "/workflows/manual-never" },
     thumbnails: [],
-    firstRun: {
-      mode: "manual",
-      productCount: 3,
-      variationsPerProduct: 8,
-    },
-  },
-  {
-    id: "demo-firstrun-blocked",
-    name: "Glossier Tracker (incomplete)",
-    type: "competitor",
-    badge: "Competitor", badgeBg: "#FFF3E0", badgeText: "#E65100",
-    enabled: false, schedule: "manual",
-    lastRun: "", cadence: "",
-    link: { text: "", color: "#E24B4A", href: "/workflows/demo-firstrun-blocked" },
-    thumbnails: [],
-    firstRun: {
-      mode: "blocked",
-      missing: ["Schedule", "Products"],
-    },
+    state: "never-run",
+    nextRunLabel: "Run this workflow to generate your first concepts.",
+    brands: [],
   },
 ];
 
