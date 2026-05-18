@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ChevronDown, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const SUGGESTIONS: { label: string; prompt: string; column: string; allowedValues: string[] }[] = [
+export type EnrichSuggestion = { label: string; prompt: string; column: string; allowedValues: string[] };
+
+const DEFAULT_SUGGESTIONS: EnrichSuggestion[] = [
   {
     label: "Ad Objective",
     column: "Ad Objective",
@@ -81,6 +83,7 @@ interface Props {
   onOpenChange: (v: boolean) => void;
   totalRows: number;
   onRun: (args: { columnName: string; prompt: string; scope: "test" | "all" }) => void;
+  suggestions?: EnrichSuggestion[];
 }
 
 const ALLOWED_LINE_RE = /Allowed values:\s*([^\n]*)/i;
@@ -113,7 +116,8 @@ function writeAllowedValues(text: string, values: string[]): string {
   return `${text.trimEnd()}${sep}${line}`;
 }
 
-export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun }: Props) {
+export default function EnrichDataModal({ open, onOpenChange, totalRows, onRun, suggestions }: Props) {
+  const SUGGESTIONS = suggestions ?? DEFAULT_SUGGESTIONS;
   const [prompt, setPrompt] = useState("");
   const [columnName, setColumnName] = useState("");
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
