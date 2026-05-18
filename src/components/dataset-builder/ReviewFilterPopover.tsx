@@ -39,7 +39,6 @@ export const REVIEW_FILTER_COLUMNS: ReviewFilterColumn[] = [
   { id: "reviewer", name: "Reviewer", mode: "text" },
   { id: "region", name: "Region", mode: "select" },
   { id: "language", name: "Language", mode: "select" },
-  { id: "sentiment", name: "✦ Sentiment", mode: "select" },
 ];
 
 interface FilterableRow {
