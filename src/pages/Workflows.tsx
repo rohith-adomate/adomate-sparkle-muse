@@ -502,199 +502,238 @@ export default function Workflows() {
   );
 
   const renderActiveCard = (wf: typeof activeWorkflows[number]) => {
-    const firstRun = firstRunOverrides[wf.id];
-    const isRunning = runningFirstWfId === wf.id;
-    const isFirstRun = !!firstRun || isRunning;
-    const blocked = firstRun?.mode === "blocked";
+    const state: CardState = wf.state;
+    const isPaused = state === "paused";
+    const isError = state === "error";
+    const isNeverRun = state === "never-run";
+    const isRunning = state === "running";
+    const hasConcepts = (state === "active" || state === "paused" || state === "running") && wf.thumbnails.length > 0;
+
+    const sourceLogo = (() => {
+      if (wf.type === "competitor") {
+        return (
+          <img
+            src="https://logo.clearbit.com/meta.com"
+            alt="Meta"
+            className="w-5 h-5 rounded-full object-cover bg-white"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
+        );
+      }
+      if (wf.type === "reviews") {
+        return (
+          <img
+            src="https://logo.clearbit.com/trustpilot.com"
+            alt="Trustpilot"
+            className="w-5 h-5 rounded-full object-cover bg-white"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
+        );
+      }
+      return (
+        <div className="w-5 h-5 rounded-full bg-muted flex items-center justify-center">
+          <Camera className="h-3 w-3 text-muted-foreground" />
+        </div>
+      );
+    })();
+
+    const visibleBrands = wf.brands.slice(0, 4);
+    const extraBrands = Math.max(0, wf.brands.length - 4);
+
+    const nextRunPill = (() => {
+      if (isRunning) {
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium whitespace-nowrap bg-primary/10 text-primary">
+            <Loader2 className="h-2.5 w-2.5 animate-spin" />
+            Running
+          </span>
+        );
+      }
+      if (isError || isNeverRun) return null;
+      if (!wf.nextRunLabel) return null;
+      const isPausedPill = isPaused;
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium whitespace-nowrap ${
+            isPausedPill ? "bg-muted text-muted-foreground" : "bg-emerald-50 text-emerald-700"
+          }`}
+        >
+          <Clock className="h-2.5 w-2.5" />
+          {isPausedPill ? wf.nextRunLabel : `Next: ${wf.nextRunLabel}`}
+        </span>
+      );
+    })();
+
+    const handleCardClick = () => {
+      if (isNeverRun) return;
+      if (isError) {
+        navigate(`/workflows/${wf.id}`, { state: { type: wf.type } });
+        return;
+      }
+      navigate(wf.link.href);
+    };
+
+    const isClickable = !isNeverRun;
 
     return (
-    <div
-      key={wf.id}
-      onClick={() => navigate(`/workflows/${wf.id}`, { state: { type: wf.type } })}
-      style={{
-        border: blocked ? "1px solid hsl(var(--destructive) / 0.35)" : isFirstRun ? "1px solid hsl(var(--primary) / 0.4)" : BORDER,
-        borderRadius: CARD_RADIUS,
-        overflow: "hidden",
-        background: "#fff",
-        cursor: "pointer",
-        boxShadow: isFirstRun ? "0 0 0 3px hsl(var(--primary) / 0.06)" : undefined,
-      }}
-      className="hover:shadow-md transition-shadow"
-    >
-      {/* Thumbnail row */}
-      {isFirstRun ? (
-        <div
-          className="relative aspect-[4/1] flex items-center justify-center bg-gradient-to-br from-primary/5 via-muted/40 to-background border-b border-border/40"
-        >
-          {isRunning ? (
-            <div className="flex items-center gap-2 text-primary">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span style={{ fontSize: 12, fontWeight: 500 }}>Generating first batch…</span>
-            </div>
-          ) : blocked ? (
-            <div className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-4 w-4" />
-              <span style={{ fontSize: 12, fontWeight: 500 }}>Setup incomplete</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span style={{ fontSize: 12, fontWeight: 500 }}>Awaiting first run</span>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-4 gap-[2px] bg-muted">
-          {wf.thumbnails.slice(0, 4).map((src, i) => (
-            <div key={i} className="aspect-square overflow-hidden bg-muted">
-              <img src={src} alt="" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div style={{ padding: "12px 14px" }}>
-        <div className="flex items-center justify-between gap-2">
-          {editingNameId === wf.id ? (
-            <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 min-w-0 flex-1">
-              <Input
-                autoFocus
-                value={draftName}
-                onChange={(e) => setDraftName(e.target.value)}
-                onBlur={() => commitName(wf.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") commitName(wf.id);
-                  if (e.key === "Escape") setEditingNameId(null);
-                }}
-                className="h-7 text-[13px] font-medium px-2"
-              />
-              <button
-                type="button"
-                onMouseDown={(e) => { e.preventDefault(); commitName(wf.id); }}
-                className="text-muted-foreground hover:text-foreground shrink-0"
-              >
-                <Check className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditingNameId(wf.id);
-                setDraftName(nameOverrides[wf.id] ?? wf.name);
-              }}
-              className="group flex items-center gap-1.5 min-w-0 flex-1 text-left"
-            >
-              <span style={{ fontSize: 13, fontWeight: 500 }} className="truncate min-w-0">
-                {nameOverrides[wf.id] ?? wf.name}
-              </span>
-              {isFirstRun && !isRunning && (
-                <span
-                  className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary"
+      <div
+        key={wf.id}
+        onClick={handleCardClick}
+        className={`group relative bg-white overflow-hidden transition-all duration-200 ${
+          isClickable ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md" : "hover:shadow-sm"
+        }`}
+        style={{ border: BORDER, borderRadius: CARD_RADIUS }}
+      >
+        {/* Overflow menu — hidden during a run */}
+        {!isRunning && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="h-7 w-7 rounded-md bg-white/95 border border-border shadow-sm flex items-center justify-center hover:bg-muted"
+                  aria-label="Workflow actions"
                 >
-                  Just set up
-                </span>
-              )}
-              <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-            </button>
-          )}
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-            <Switch
-              checked={blocked ? false : (workflowToggles[wf.id] ?? wf.enabled ?? false)}
-              disabled={blocked}
-              onCheckedChange={(checked) => setWorkflowToggles((prev) => ({ ...prev, [wf.id]: checked }))}
-              className="data-[state=checked]:bg-[#D4537E]"
-            />
-          </div>
-        </div>
-
-        {/* Status row */}
-        {isFirstRun ? (
-          <div className="mt-2 flex items-center gap-2">
-            {firstRun?.mode === "scheduled" && (
-              <>
-                <Clock className="h-3 w-3 text-emerald-600 shrink-0" />
-                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
-                  Scheduled · {firstRun.scheduleSummary || "Weekly"} · First run {firstRun.nextRunLabel || "soon"}
-                </span>
-              </>
-            )}
-            {firstRun?.mode === "manual" && (
-              <>
-                <Play className="h-3 w-3 text-amber-600 shrink-0" />
-                <span style={{ fontSize: 11 }} className="text-muted-foreground truncate">
-                  Manual · No runs yet · {firstRun.productCount ?? "—"} products × {firstRun.variationsPerProduct ?? 8} variations
-                </span>
-              </>
-            )}
-            {blocked && (
-              <span style={{ fontSize: 11 }} className="text-destructive truncate">
-                Missing: {(firstRun?.missing || []).join(", ")} — finish setup to activate.
-              </span>
-            )}
-            {isRunning && (
-              <span style={{ fontSize: 11 }} className="text-primary truncate">
-                First run in progress — results will land in run history.
-              </span>
-            )}
-          </div>
-        ) : (
-          <div className="flex items-center gap-3 mt-2">
-            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.lastRun}</span>
-            <span style={{ fontSize: 11 }} className="text-muted-foreground">{wf.cadence}</span>
+                  <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => navigate(`/workflows/${wf.id}`, { state: { type: wf.type } })}>
+                  <Edit3 className="h-3.5 w-3.5 mr-2" /> Edit workflow
+                </DropdownMenuItem>
+                {wf.type !== "manual" && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setWorkflowToggles((prev) => ({ ...prev, [wf.id]: !(prev[wf.id] ?? wf.enabled) }))
+                    }
+                  >
+                    {(workflowToggles[wf.id] ?? wf.enabled) ? (
+                      <><Pause className="h-3.5 w-3.5 mr-2" /> Pause workflow</>
+                    ) : (
+                      <><Play className="h-3.5 w-3.5 mr-2" /> Resume workflow</>
+                    )}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={() => setDeleteTarget(wf.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete workflow
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
 
-        {/* CTA row */}
-        <div className="mt-2 flex items-center justify-between gap-2">
-          {isFirstRun ? (
-            blocked ? (
+        {/* Visual zone — top */}
+        <div className="relative">
+          {hasConcepts ? (
+            <>
+              <div className="grid grid-cols-4 gap-[2px] bg-muted">
+                {wf.thumbnails.slice(0, 4).map((src, i) => (
+                  <div key={i} className="aspect-square overflow-hidden bg-muted">
+                    <img src={src} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <span className={`text-[13px] font-medium ${isRunning ? "text-white/75" : "text-white"}`}>
+                  {isRunning ? "View previous concepts →" : "View latest concepts →"}
+                </span>
+              </div>
+            </>
+          ) : isError ? (
+            <div className="relative aspect-[4/1] bg-destructive/5 border-b border-destructive/20 flex items-center justify-center gap-2 text-destructive overflow-hidden">
+              <div className="flex items-center gap-2 transition-opacity group-hover:opacity-0">
+                <AlertTriangle className="h-4 w-4" />
+                <span style={{ fontSize: 12, fontWeight: 500 }}>{wf.errorMessage ?? "Last run failed"}</span>
+              </div>
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${wf.id}`, { state: { type: wf.type } }); }}
-                style={{ fontSize: 12, fontWeight: 600 }}
-                className="inline-flex items-center gap-1 text-destructive hover:underline"
+                onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${wf.id}`, { state: { type: wf.type, retry: true } }); }}
+                className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <AlertCircle className="h-3.5 w-3.5" />
-                Finish setup →
+                <span className="px-3 py-1.5 rounded-full bg-destructive text-white text-[12px] font-medium shadow-sm inline-flex items-center gap-1.5">
+                  Retry now →
+                </span>
               </button>
-            ) : isRunning ? (
-              <span style={{ fontSize: 12, fontWeight: 500 }} className="text-muted-foreground">
-                Watch progress in run history →
-              </span>
-            ) : (
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); handleRunFirstBatch(wf.id); }}
-                style={{ fontSize: 12, fontWeight: 600 }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 -ml-1 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-              >
-                <Play className="h-3 w-3" fill="currentColor" />
-                Run first batch
-              </button>
-            )
+            </div>
           ) : (
-            <span
-              onClick={(e) => { e.stopPropagation(); navigate(wf.link.href); }}
-              style={{ fontSize: 12, fontWeight: 500, color: "#D4537E", cursor: "pointer" }}
-              className="truncate hover:underline"
-            >
-              View latest concepts →
-            </span>
+            <div className="relative aspect-[4/1] bg-muted/30 border-b border-dashed border-border flex items-center justify-center gap-2 px-4 text-center overflow-hidden">
+              <div className="flex items-center gap-2 transition-opacity group-hover:opacity-0">
+                <ImageOff className="h-4 w-4 text-muted-foreground/70 shrink-0" />
+                <span className="text-[11px] text-muted-foreground">
+                  {isRunning
+                    ? "Generating your first concepts…"
+                    : (wf.nextRunLabel ?? "No concepts yet — run this workflow to generate your first.")}
+                </span>
+              </div>
+              {!isRunning && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${wf.id}`, { state: { type: wf.type, runNow: true } }); }}
+                  className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <span className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-[12px] font-medium shadow-sm inline-flex items-center gap-1.5">
+                    <Play className="h-3 w-3" fill="currentColor" />
+                    Open workflow
+                  </span>
+                </button>
+              )}
+            </div>
           )}
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setHistoryWorkflowId(wf.id); }}
-            className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            style={{ fontSize: 11, fontWeight: 500 }}
-          >
-            <History className="h-3 w-3" />
-            Run history
-          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-4 py-3">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="truncate min-w-0 flex-1" style={{ fontSize: 13, fontWeight: 600 }}>
+              {nameOverrides[wf.id] ?? wf.name}
+            </h3>
+            {nextRunPill}
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              {wf.type !== "manual" && wf.brands.length > 0 && (
+                <>
+                  <div className="flex items-center -ml-0.5">
+                    {visibleBrands.map((b, i) => (
+                      <BrandAvatar key={b.name + i} brand={b} index={i} />
+                    ))}
+                    {extraBrands > 0 && (
+                      <span
+                        className="inline-flex items-center justify-center px-1.5 h-5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground border-2 border-white"
+                        style={{ marginLeft: -6 }}
+                      >
+                        +{extraBrands}
+                      </span>
+                    )}
+                  </div>
+                  <span className="w-1" />
+                </>
+              )}
+              {sourceLogo}
+            </div>
+            <div className="flex items-center gap-3 text-[11px] text-muted-foreground shrink-0">
+              {isRunning && wf.runStartedAt ? (
+                <RunningTimer startedAt={wf.runStartedAt} />
+              ) : isError ? (
+                <span className="text-destructive font-medium">{wf.lastRun}</span>
+              ) : (
+                <>
+                  <span>{wf.lastRun}</span>
+                  {wf.schedule !== "manual" && (
+                    <span className="capitalize">{wf.schedule}</span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
     );
   };
 
