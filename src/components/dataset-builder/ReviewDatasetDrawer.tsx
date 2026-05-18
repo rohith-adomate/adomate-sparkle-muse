@@ -68,53 +68,95 @@ const REVIEW_ENRICH_SUGGESTIONS: EnrichSuggestion[] = [
     label: "Quotable lines",
     column: "Quotable line",
     allowedValues: [],
-    prompt: `You are an expert copywriter mining customer reviews for ad-ready quotes.
+    prompt: `You identify quotable lines in customer reviews — phrases so creatively worded that a brand could use them verbatim as ad copy, social proof headlines, or campaign slogans.
 
-Extract the single most quotable line from this review — a short, vivid, emotionally resonant sentence that could be lifted verbatim into an ad creative. It should sound like a real person, not marketing copy.
+A quotable line is NOT just vivid language. It must be a phrase that SELLS the product to a stranger. The critical test: if you showed ONLY this phrase to someone who has never heard of the product, would they want to buy it?
 
-Return only the quote itself, no quotation marks, no commentary.`,
+What qualifies as a quotable line:
+* A phrase that packages the product's benefit into the customer's own creative language
+* It must work AS an endorsement on its own — not just describe a problem or situation
+* The customer has accidentally written better ad copy than a marketing team could
+* Examples: "No freight train at night anymore" (earplugs) — 6 words that sell the benefit through a metaphor. "My bathroom shelf went from a pharmacy to just this one bottle" — makes you want the product instantly.
+
+What does NOT qualify (return None):
+* Descriptions of problems or pain points, however vivid ("the sound wave pushed over us so hard", "drying my hair used to trigger it") — these describe suffering, not the product's value
+* Backstory or narrative context that sets the scene but doesn't land a punchline
+* Common superlatives: "best ever", "life-changing", "game changer", "can't live without it"
+* Factual outcomes: "cleared my acne in a week", "lost 10 pounds"
+* Standard recommendation phrases: "worth every penny", "highly recommend"
+* Generic praise: "I'm obsessed", "love it", "amazing quality"
+* Anything that describes the problem WITHOUT simultaneously delivering the payoff
+
+The difference:
+* "the sound wave pushed over us so hard on my ears" → None (just describes pain)
+* "They dampen the sound, but the music comes thru clear" → None (factual benefit, not creative)
+* "No freight train at night anymore" → QUOTABLE LINE (problem + benefit in one punchy image)
+* "my cat doesn't hide under the bed when I vacuum anymore" → QUOTABLE LINE (specific, sells the product, makes you curious)
+
+Rules:
+* Extract VERBATIM from the review (title or body). Do not rephrase.
+* Keep original language if non-English.
+* The phrase must make a stranger WANT the product, not just understand a problem.
+* If nothing sells the product in a memorable way, return exactly: None
+* Be ruthless. Most reviews have no quotable line. That's expected.
+
+Return structured JSON only via the schema. Every input externalReviewId must appear exactly once in results.`,
   },
   {
-    label: "Key benefit mentioned",
+    label: "Key benefit",
     column: "Key benefit",
-    allowedValues: ["Hydration", "Soothing / Calming", "Brightening", "Anti-aging", "Texture / Smoothing", "Gentle / Sensitive skin", "Value for money", "Ease of use", "Other"],
-    prompt: `You are an expert customer-insights analyst. Identify the single most prominent benefit the reviewer is praising.
+    allowedValues: [],
+    prompt: `You distill the single most specific benefit from a customer review into one punchy, quotable insight — written so a copywriter could use it as an ad angle or product claim.
 
-Use these definitions:
-- Hydration: moisturizes, fixes dryness, plumps the skin
-- Soothing / Calming: reduces redness, irritation, sensitivity
-- Brightening: evens skin tone, glow, dark spots
-- Anti-aging: wrinkles, firmness, fine lines, mature skin
-- Texture / Smoothing: smoothness, pore appearance, bumps
-- Gentle / Sensitive skin: non-irritating, fragrance-free, suitable for reactive skin
-- Value for money: affordable, lasts long, great price
-- Ease of use: absorbs fast, layers well, fits routine
-- Other: any benefit not covered above
+You're looking for the outcome or improvement the reviewer experienced. It doesn't have to be dramatic — even a small but specific win is useful if it's concrete.
 
-If no benefit is mentioned, return Other. Return only one of the values.
+What qualifies:
+- A specific outcome the reviewer experienced after using the product
+- A before/after contrast that shows the product working
+- A capability or feature that genuinely impressed or surprised them
+- Functional wins: time saved, money saved, problem solved, improvement noticed
+- Even modest benefits count if they're specific ("lasts twice as long as my previous one")
 
-Allowed values: Hydration, Soothing / Calming, Brightening, Anti-aging, Texture / Smoothing, Gentle / Sensitive skin, Value for money, Ease of use, Other`,
+What does NOT qualify (return None):
+- Pure vagueness with zero specifics: "works great", "love it", "amazing", "best ever"
+- Emotional reactions without any concrete cause
+- Restating the product's basic expected function with no personal outcome
+
+Output format:
+- One sentence, max 15 words
+- Write as a concrete benefit claim: "Clears breakouts within 10 days" / "Lasts four times longer than previous solution" / "Pairs two devices simultaneously without reconnecting"
+- Present tense where possible — it should feel like an active product truth, not a past anecdote
+- No fluff, no "the customer said..."
+- If truly nothing specific can be extracted, return exactly: None
+
+Return structured JSON only via the schema. Every input externalReviewId must appear exactly once in results.`,
   },
   {
-    label: "Key pain point mentioned",
+    label: "Key pain point",
     column: "Pain point",
-    allowedValues: ["Dryness", "Breakouts", "Redness / Irritation", "Greasy / Heavy feel", "Slow results", "Price", "Packaging", "Scent", "None"],
-    prompt: `You are an expert customer-insights analyst. Identify the single most prominent pain point or complaint mentioned in this review.
+    allowedValues: [],
+    prompt: `You distill the single sharpest pain point from a customer review into one punchy, quotable insight — written so a copywriter could use it as an ad angle.
 
-Use these definitions:
-- Dryness: skin feels tight, dehydrated, flaky
-- Breakouts: pimples, clogged pores, acne after use
-- Redness / Irritation: stinging, burning, reactive skin
-- Greasy / Heavy feel: too rich, doesn't absorb, oily finish
-- Slow results: did not see expected change in reasonable time
-- Price: too expensive for what you get
-- Packaging: bottle, pump, leakage, size
-- Scent: strong, unpleasant, or unwanted fragrance
-- None: no pain point mentioned (positive review with no complaint)
+You're looking for the frustration that makes someone think "that's exactly my problem." It doesn't have to be universal — even a specific pain is useful if it's vivid and relatable to the target buyer.
 
-Return only one of the values.
+What qualifies:
+- A frustration the reviewer lived with before finding the product
+- A problem vivid enough that the target buyer would recognize themselves in it
+- Product shortcomings that reveal an unmet expectation (even minor ones)
+- Emotional or functional pain: embarrassment, exhaustion, wasted money, repeated failure, inconvenience
 
-Allowed values: Dryness, Breakouts, Redness / Irritation, Greasy / Heavy feel, Slow results, Price, Packaging, Scent, None`,
+What does NOT qualify (return None):
+- Pure vagueness with zero specifics: "doesn't work", "disappointed", "waste of money"
+- Shipping, packaging, or customer service complaints unrelated to the product itself
+
+Output format:
+- One sentence, max 15 words
+- Write in the language of the sufferer: "Wakes up to new breakouts despite trying everything" / "Battery dies permanently after a few months" / "Lid leaks every time it goes in a bag"
+- Present tense where possible — it should feel like a living problem, not a past complaint
+- No fluff, no "the customer said..."
+- If truly nothing specific can be extracted, return exactly: None
+
+Return structured JSON only via the schema. Every input externalReviewId must appear exactly once in results.`,
   },
 ];
 
