@@ -77,6 +77,22 @@ function BrandAvatar({ brand, index }: { brand: { name: string; logoUrl?: string
   );
 }
 
+function RunningTimer({ startedAt }: { startedAt: number }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const elapsed = Math.max(0, Math.floor((now - startedAt) / 1000));
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  return (
+    <span className="text-primary font-medium">
+      Running · {m}m {String(s).padStart(2, "0")}s
+    </span>
+  );
+}
+
 type FirstRunMode = "scheduled" | "manual" | "blocked";
 
 interface FirstRunSpec {
