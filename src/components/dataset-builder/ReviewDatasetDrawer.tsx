@@ -487,14 +487,44 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                     >
                       Clear
                     </button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10"
-                      onClick={() => { setEnrichOpen(true); }}
-                    >
-                      <Wand2 className="h-3 w-3" /> Run AI analysis
-                    </Button>
+                    {(() => {
+                      const runnableCount = aiColumns.length === 0
+                        ? selectedRows.size
+                        : [...selectedRows].filter(rid =>
+                            aiColumns.some(c => {
+                              const v = aiValues[c.id]?.[rid];
+                              return !v || v === "—";
+                            })
+                          ).length;
+                      const canRun = aiColumns.length === 0 || runnableCount > 0;
+                      return (
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <span>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={!canRun}
+                                className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={() => { setEnrichOpen(true); }}
+                              >
+                                <Wand2 className="h-3 w-3" /> Run AI analysis
+                                {aiColumns.length > 0 && canRun && runnableCount !== selectedRows.size && (
+                                  <span className="text-muted-foreground">({runnableCount})</span>
+                                )}
+                              </Button>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent className="text-xs max-w-[220px]">
+                            {canRun
+                              ? (aiColumns.length === 0
+                                  ? "Add an AI column to enrich the selected rows"
+                                  : `Runs on ${runnableCount} row${runnableCount === 1 ? "" : "s"} with empty AI cells`)
+                              : "All selected rows already have AI values — nothing to run"}
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })()}
                   </div>
                   <div className="flex items-center gap-2">
                     <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
