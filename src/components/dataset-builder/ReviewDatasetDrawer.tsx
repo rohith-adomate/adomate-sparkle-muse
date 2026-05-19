@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowLeft, Download, Loader2, CheckCircle2, X, Plus, Database, Star, ArrowUp, MessageSquare, Filter, Sparkles, Wand2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -213,6 +214,7 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
   const [detailRow, setDetailRow] = useState<ReviewRow | null>(null);
   const [activeFilters, setActiveFilters] = useState<ReviewActiveFilter[]>([]);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const [adGenOn, setAdGenOn] = useState(false);
   const [aiColumns, setAiColumns] = useState<AiColumn[]>([]);
   const [aiValues, setAiValues] = useState<Record<string, Record<string, string>>>({}); // colId -> rowId -> value
   const [runningRows, setRunningRows] = useState<Set<string>>(new Set());
