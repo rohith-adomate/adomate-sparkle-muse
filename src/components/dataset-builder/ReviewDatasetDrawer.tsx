@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2, X, Plus, Database, Star, ArrowUp, MessageSquare, Filter, Sparkles } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, X, Plus, Database, Star, ArrowUp, MessageSquare, Filter, Sparkles, Wand2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import ReviewFilterPopover, { type ReviewActiveFilter } from "./ReviewFilterPopover";
@@ -471,6 +471,31 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                 <span>Showing {filteredRows.length} / {totalRowsForAddedBrands} rows</span>
                 {hasSelected && <span className="text-primary font-medium">{selectedRows.size} selected</span>}
               </div>
+              {hasSelected && (
+                <div className="mx-4 my-2 flex items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 shadow-sm shrink-0">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[11px] font-semibold text-primary">
+                      {selectedRows.size} row{selectedRows.size === 1 ? "" : "s"} selected
+                    </span>
+                    <span className="text-muted-foreground/40">·</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRows(new Set())}
+                      className="text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+                    >
+                      Clear
+                    </button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10"
+                      onClick={() => { setEnrichOpen(true); }}
+                    >
+                      <Wand2 className="h-3 w-3" /> Run AI analysis
+                    </Button>
+                  </div>
+                </div>
+              )}
               <div className="flex-1 overflow-auto">
                 <table className="text-xs border-collapse min-w-max w-full">
                   <thead className="sticky top-0 z-20">

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { Play, Download, Trash2, Sparkles, ArrowUp } from "lucide-react";
+import { Play, Download, Trash2, Sparkles, ArrowUp, Wand2 } from "lucide-react";
 
 const AI_STYLED_COLS = new Set(["col-alignment"]);
 
@@ -107,16 +107,56 @@ export default function DatasetBuilderTable({
     setDragOverColId(null);
   }, [dragColId, allColumns, factsColumns, aiColumns, onReorderColumns]);
 
+  const selectionCount = selectedRows.size;
+
+  const handleClearSelection = useCallback(() => {
+    rows.forEach(r => { if (selectedRows.has(r.id)) onToggleRow(r.id); });
+  }, [rows, selectedRows, onToggleRow]);
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0">
-        Showing {rows.length} / {totalRowCount ?? rows.length} rows
+      <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0 flex items-center justify-between">
+        <span>Showing {rows.length} / {totalRowCount ?? rows.length} rows</span>
+        {selectionCount > 0 && <span className="text-primary font-medium">{selectionCount} selected</span>}
       </div>
+
+      {selectionCount > 0 && (
+        <div className="mx-4 my-2 flex items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 shadow-sm shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-semibold text-primary">
+              {selectionCount} row{selectionCount === 1 ? "" : "s"} selected
+            </span>
+            <span className="text-muted-foreground/40">·</span>
+            <button
+              type="button"
+              onClick={handleClearSelection}
+              className="text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+            >
+              Clear
+            </button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10"
+              onClick={() => onRunRows([...selectedRows])}
+            >
+              <Wand2 className="h-3 w-3" /> Run AI analysis
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 overflow-auto">
         <table className="w-full text-xs border-collapse">
           <thead className="sticky top-0 z-10">
             <tr className="bg-muted/50 border-b border-border">
+              <th className="w-8 px-2 py-2.5">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={onToggleAll}
+                  aria-label="Select all rows"
+                />
+              </th>
               <th className="w-8 px-2 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
               {allColumns.map(col => {
                 const isAiStyled = col.type === "ai" || AI_STYLED_COLS.has(col.id);
@@ -150,6 +190,13 @@ export default function DatasetBuilderTable({
               return (
                 <tr key={row.id} className={cn("border-b border-border/50 transition-colors cursor-pointer", isSelected ? "bg-primary/5" : "hover:bg-muted/30", row.isRunning && "animate-pulse bg-pink-50/30")}
                   onMouseEnter={() => setHoveredRow(row.id)} onMouseLeave={() => setHoveredRow(null)} onClick={() => onRowClick(row)}>
+                  <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={() => onToggleRow(row.id)}
+                      aria-label={`Select row ${idx + 1}`}
+                    />
+                  </td>
                   <td className="px-2 py-1.5 text-[10px] text-muted-foreground font-mono">{idx + 1}</td>
                   {allColumns.map(col => {
                     const val = getCellValue(row, col);
