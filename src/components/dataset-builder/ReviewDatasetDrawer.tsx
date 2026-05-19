@@ -496,6 +496,20 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                       <Wand2 className="h-3 w-3" /> Run AI analysis
                     </Button>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
+                      Use for ad generation
+                    </label>
+                    <Switch
+                      id="review-ad-gen-toggle"
+                      checked={adGenOn}
+                      onCheckedChange={(v) => {
+                        setAdGenOn(!!v);
+                        if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                      }}
+                      className="data-[state=checked]:bg-primary"
+                    />
+                  </div>
                 </div>
               )}
               <div className="flex-1 overflow-auto">
