@@ -146,6 +146,17 @@ export default function DatasetBuilderTable({
               <Wand2 className="h-3 w-3" /> Run AI analysis
             </Button>
           </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
+              Use for ad generation
+            </label>
+            <Switch
+              id="ad-gen-toggle"
+              checked={!!adGenOn}
+              onCheckedChange={(v) => onAdGenToggle?.(!!v)}
+              className="data-[state=checked]:bg-primary"
+            />
+          </div>
         </div>
       )}
 
