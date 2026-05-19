@@ -118,9 +118,8 @@ export default function DatasetBuilderTable({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0 flex items-center justify-between">
+      <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0">
         <span>Showing {rows.length} / {totalRowCount ?? rows.length} rows</span>
-        {selectionCount > 0 && <span className="text-primary font-medium">{selectionCount} selected</span>}
       </div>
 
       {selectionCount > 0 && (
