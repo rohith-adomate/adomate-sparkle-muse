@@ -116,6 +116,23 @@ export default function DatasetBuilderTable({
     rows.forEach(r => { if (selectedRows.has(r.id)) onToggleRow(r.id); });
   }, [rows, selectedRows, onToggleRow]);
 
+  const rowHasEmptyAi = useCallback((row: DatasetRow) => {
+    if (aiColumns.length === 0) return false;
+    return aiColumns.some(col => {
+      const tplId = col.templateId || col.id;
+      const v = row.aiValues[tplId];
+      return !v || v === "—";
+    });
+  }, [aiColumns]);
+
+  const runnableRowIds = rows
+    .filter(r => selectedRows.has(r.id) && rowHasEmptyAi(r))
+    .map(r => r.id);
+  const canRunAi = runnableRowIds.length > 0;
+  const runDisabledReason = aiColumns.length === 0
+    ? "Add an AI column first"
+    : "All selected rows already have AI values — nothing to run";
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0">
@@ -136,14 +153,29 @@ export default function DatasetBuilderTable({
             >
               Clear
             </button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10"
-              onClick={() => onRunRows([...selectedRows])}
-            >
-              <Wand2 className="h-3 w-3" /> Run AI analysis
-            </Button>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={!canRunAi}
+                    className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => onRunRows(runnableRowIds)}
+                  >
+                    <Wand2 className="h-3 w-3" /> Run AI analysis
+                    {canRunAi && runnableRowIds.length !== selectionCount && (
+                      <span className="text-muted-foreground">({runnableRowIds.length})</span>
+                    )}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="text-xs max-w-[220px]">
+                {canRunAi
+                  ? `Runs on ${runnableRowIds.length} row${runnableRowIds.length === 1 ? "" : "s"} with empty AI cells`
+                  : runDisabledReason}
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="flex items-center gap-2">
             <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
