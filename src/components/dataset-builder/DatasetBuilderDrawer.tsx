@@ -344,6 +344,11 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               totalRowCount={rows.length}
               launchedSortAsc={launchedSortAsc}
               onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
+              adGenOn={adGenOn}
+              onAdGenToggle={(on) => {
+                setAdGenOn(on);
+                if (on) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+              }}
             />
 
             {inspectorColumn && (
