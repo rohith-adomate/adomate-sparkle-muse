@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { Play, Download, Trash2, Sparkles, ArrowUp, Wand2 } from "lucide-react";
@@ -40,10 +41,12 @@ interface Props {
   totalRowCount?: number;
   launchedSortAsc?: boolean;
   onToggleLaunchedSort?: () => void;
+  adGenOn?: boolean;
+  onAdGenToggle?: (on: boolean) => void;
 }
 
 export default function DatasetBuilderTable({
-  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount, launchedSortAsc = true, onToggleLaunchedSort,
+  columns, rows, selectedRows, onToggleRow, onToggleAll, onColumnClick, onRunRows, onRowClick, activeColumnId, onReorderColumns, activeFilters, onApplyFilter, totalRowCount, launchedSortAsc = true, onToggleLaunchedSort, adGenOn, onAdGenToggle,
 }: Props) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [dragColId, setDragColId] = useState<string | null>(null);
@@ -142,6 +145,17 @@ export default function DatasetBuilderTable({
             >
               <Wand2 className="h-3 w-3" /> Run AI analysis
             </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
+              Use for ad generation
+            </label>
+            <Switch
+              id="ad-gen-toggle"
+              checked={!!adGenOn}
+              onCheckedChange={(v) => onAdGenToggle?.(!!v)}
+              className="data-[state=checked]:bg-primary"
+            />
           </div>
         </div>
       )}

@@ -31,6 +31,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const [rows, setRows] = useState<DatasetRow[]>(INITIAL_ROWS);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const [adGenOn, setAdGenOn] = useState(false);
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
@@ -344,6 +345,11 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               totalRowCount={rows.length}
               launchedSortAsc={launchedSortAsc}
               onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
+              adGenOn={adGenOn}
+              onAdGenToggle={(on) => {
+                setAdGenOn(on);
+                if (on) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+              }}
             />
 
             {inspectorColumn && (
