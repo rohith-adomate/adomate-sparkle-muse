@@ -34,50 +34,6 @@ export default function DatasetBuilderGallery({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-muted/20">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between px-5 py-2.5 border-b border-border bg-card shrink-0">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onToggleAll}
-            className="flex items-center gap-2 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Checkbox
-              checked={allSelected ? true : someSelected ? "indeterminate" : false}
-              className="h-3.5 w-3.5"
-            />
-            <span>
-              {selectedRows.size > 0
-                ? `${selectedRows.size} of ${rows.length} selected`
-                : `${rows.length}${totalRowCount && totalRowCount !== rows.length ? ` of ${totalRowCount}` : ""} ads`}
-            </span>
-          </button>
-        </div>
-
-        {onAdGenToggle && (
-          <Tooltip delayDuration={200}>
-            <TooltipTrigger asChild>
-              <label className={cn(
-                "flex items-center gap-2 h-7 px-2.5 rounded-md border cursor-pointer transition-colors",
-                adGenOn ? "border-primary/40 bg-primary/5" : "border-border bg-card hover:bg-muted/50",
-                selectedRows.size === 0 && "opacity-50 cursor-not-allowed",
-              )}>
-                <Wand2 className={cn("h-3.5 w-3.5", adGenOn ? "text-primary" : "text-muted-foreground")} />
-                <span className="text-[11px] font-medium">Use selected for ad generation</span>
-                <Switch
-                  checked={!!adGenOn}
-                  onCheckedChange={onAdGenToggle}
-                  disabled={selectedRows.size === 0}
-                  className="scale-75"
-                />
-              </label>
-            </TooltipTrigger>
-            <TooltipContent className="text-xs max-w-[220px]">
-              Selected ads become the input rows for the ad generation step in this workflow.
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </div>
 
       {/* Gallery grid */}
       <div className="flex-1 overflow-auto p-5">
