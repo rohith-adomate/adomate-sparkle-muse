@@ -284,18 +284,19 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                   : "All selected rows already have AI values";
                 return (
                   <>
-                    <div className="flex items-center gap-1.5 h-8 pl-2.5 pr-1 rounded-full border border-primary/30 bg-primary/5">
+                    <div className="relative flex items-center gap-1.5 h-8 pl-3 pr-1.5 rounded-md bg-primary/8 border border-primary/20 shadow-[inset_3px_0_0_0_hsl(var(--primary))]">
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-primary/70">Selection</span>
                       <span className="text-[11px] font-semibold text-primary">
-                        {selectedRows.size} of {filteredRows.length} selected
+                        {selectedRows.size} / {filteredRows.length}
                       </span>
                       <button
                         type="button"
                         onClick={() => setSelectedRows(new Set())}
-                        className="inline-flex items-center gap-0.5 text-[11px] text-primary/70 hover:text-primary px-1.5 py-0.5 rounded-full hover:bg-primary/10 transition-colors"
+                        className="inline-flex items-center gap-0.5 text-[11px] text-primary/70 hover:text-primary px-1.5 py-0.5 rounded hover:bg-primary/10 transition-colors"
                       >
                         <X className="h-3 w-3" /> Clear
                       </button>
-                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
+                      <span className="mx-0.5 h-4 w-px bg-primary/25" />
                       <Tooltip delayDuration={200}>
                         <TooltipTrigger asChild>
                           <span>
@@ -303,7 +304,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                               size="sm"
                               variant="ghost"
                               disabled={!canRun}
-                              className="h-7 text-[11px] gap-1.5 text-primary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-2.5"
+                              className="h-7 text-[11px] gap-1.5 text-primary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed rounded px-2.5"
                               onClick={() => handleRunRows(runnableIds)}
                             >
                               <Wand2 className="h-3 w-3" /> Run AI analysis
@@ -319,7 +320,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                             : reason}
                         </TooltipContent>
                       </Tooltip>
-                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
+                      <span className="mx-0.5 h-4 w-px bg-primary/25" />
                       <div className="flex items-center gap-1.5 pr-2 pl-1">
                         <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-primary cursor-pointer select-none">
                           Use for ad generation
