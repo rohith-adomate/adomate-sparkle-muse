@@ -1133,7 +1133,7 @@ export default function WorkflowCanvas() {
           }
           if (activeTab !== "editor") return null;
           const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
-          const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+          const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
           const total = tracked.length;
           const remaining = tracked.filter((n) => {
             if (n.type === "dataset") return datasetEmpty;
