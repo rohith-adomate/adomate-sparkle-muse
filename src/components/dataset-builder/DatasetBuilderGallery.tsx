@@ -160,7 +160,7 @@ export default function DatasetBuilderGallery({
                       </span>
                     </div>
                     <p className="text-[12px] leading-snug line-clamp-2 text-foreground">{row.headline}</p>
-                    <p className="text-[10px] text-muted-foreground">First launched {formatDate(row.firstLaunched)}</p>
+                    <p className="text-[10px] text-muted-foreground">{formatDate(row.firstLaunched)}</p>
                   </div>
 
                 </div>
