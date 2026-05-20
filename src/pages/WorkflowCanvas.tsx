@@ -1790,6 +1790,7 @@ export default function WorkflowCanvas() {
         onSourcesChange={(count) => setDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("dataset") ? () => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); } : undefined}
         continueLabel={continueLabelFor("dataset")}
+        onAdGenChange={handleAdGenChange}
       />
       <ReviewDatasetDrawer
         open={reviewDatasetDrawerOpen}
@@ -1798,6 +1799,7 @@ export default function WorkflowCanvas() {
         onSourcesChange={(count) => setReviewDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("review-dataset") ? () => { setReviewDatasetDrawerOpen(false); openNextDrawerFor("review-dataset"); } : undefined}
         continueLabel={continueLabelFor("review-dataset")}
+        onAdGenChange={handleAdGenChange}
       />
       <DatasetRunResultsDrawer
         open={datasetRunResultsOpen}
