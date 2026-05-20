@@ -1,46 +1,22 @@
-## Goal
+# Review Dataset node — configured visual
 
-When a suggestion chip is selected (Ad Objective, Creative Category, Offer Type), surface the **allowed values** as a separate, scannable element below the prompt box — so users immediately see this list controls what gets written into each cell, without having to read to the bottom of the long prompt.
+Bring the Review Dataset node visual in line with the Ad Library tracker (Dataset) node so it communicates its configured state at a glance.
 
-## Where
+## What changes
 
-`src/components/dataset-builder/EnrichDataModal.tsx`
+In `src/pages/WorkflowCanvas.tsx`, inside the node card body where each node type renders its mini-preview:
 
-Add a small `allowedValues: string[]` field to each entry in `SUGGESTIONS`. Render the values just under the prompt textarea, only when a chip is active (or when the prompt contains an `Allowed values:` line — parsed automatically).
+**Configured state (`review-dataset`)**
+- Reuse the same stacked brand-avatar row used by `dataset` (3 overlapping 36px circles, `ring-2 ring-card`, `-space-x-2`).
+- Overlay a small Trustpilot badge on the lead avatar: a white-ringed pill in the bottom-right corner containing a filled green star (Trustpilot green `#00B67A`) to signal the review source.
 
-## Three design directions to choose from
+**Unconfigured state (`review-dataset`)**
+- Mirror the dataset unconfigured placeholder: 3 dashed empty circles stacked, so the empty/filled transition reads the same as the Ad Library tracker.
 
-**Option A — Pill row (recommended)**
-A muted label "Will output one of:" followed by small rounded outline pills, one per value. Pills wrap to multiple lines. Same accent color family as the active chip but lower contrast (border + tinted bg).
+No other node types, drawers, or logic are touched.
 
-```text
-Will output one of
-[ Awareness ] [ Consideration ] [ Conversion ] [ Retargeting ] [ Retention ]
-```
+## Technical notes
 
-Pros: very scannable, feels like "tags" → matches what cells will display.
-Cons: takes 1–2 lines vertical space for long lists (Creative Category = 14 values).
-
-**Option B — Inline comma list with leading icon**
-A single line under the prompt: a small `ListChecks` icon + "Outputs: Awareness · Consideration · Conversion · Retargeting · Retention". Truncates with `+N more` when >6 values; click to expand.
-
-Pros: minimal footprint, stays out of the way.
-Cons: less obvious these are the *only* allowed answers.
-
-**Option C — Collapsible "Allowed values (5)" caption**
-A subtle text button under the prompt: `Allowed values (5) ▾`. Expands to a soft-bg rounded box containing the pill row. Collapsed by default for long lists, expanded by default for ≤5.
-
-Pros: handles 14-value Creative Category cleanly without dominating the modal.
-Cons: one extra click for users who want to see the list.
-
-## Behavior (all options)
-
-- Visible only when `selectedChip` is set, OR when the user's custom prompt contains an `Allowed values: ...` line (parsed with a regex). This keeps the affordance useful even for hand-written prompts.
-- If shown, also strip the trailing `Allowed values: ...` line from the visible textarea so it isn't duplicated. (Keep it in the prompt sent to `onRun`.)
-- Style: `text-[11px]` muted label + pills using `border-border bg-muted/40 text-foreground/80`, no pink accent so it doesn't compete with the active chip.
-
-## Recommendation
-
-Go with **Option A** as the default, and auto-switch to **Option C** (collapsed) when the list has more than 8 values — so Creative Category stays tidy while Ad Objective and Offer Type stay fully visible.
-
-Pick one (A / B / C / hybrid) and I'll implement.
+- Edit only the two render branches inside the node body (`isUnconfigured` and `isConfiguredNode`) around lines 1486 and 1572.
+- Use a small inline `Star` from `lucide-react` (already imported elsewhere) with `fill="#00B67A"` and `text-[#00B67A]`, wrapped in a `bg-card rounded-full p-0.5 ring-2 ring-card` badge anchored bottom-right of the first avatar.
+- Brand initials reuse the existing `brands` array already defined in the configured block.
