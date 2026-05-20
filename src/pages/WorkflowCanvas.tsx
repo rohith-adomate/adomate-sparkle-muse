@@ -593,17 +593,36 @@ export default function WorkflowCanvas() {
   }, []);
 
   // Update top-select node description when config changes
+  const buildSelectDesc = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig, itemLabel: string) => {
+    if (config.mode === "manual-selection") return `${config.manualCount ?? 0} manually selected ${itemLabel}`;
+    if (config.mode === "all-new") return `All new ${itemLabel} since last run`;
+    return `Top ${config.count} ${itemLabel} by days online${config.maxAgeEnabled ? ` (last ${config.maxAgeMonths}mo)` : ""}`;
+  }, []);
+
   const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
     setTopSelectConfig(config);
-    const desc = config.mode === "all-new"
-      ? "All new ads since last run"
-      : `Top ${config.count} by days online${config.maxAgeEnabled ? ` (last ${config.maxAgeMonths}mo)` : ""}`;
+    const itemLabel = isReviewsWorkflow ? "reviews" : "ads";
+    const desc = buildSelectDesc(config, itemLabel);
     setNodes((prev) =>
       prev.map((n) =>
         n.type === "top-select" ? { ...n, description: desc } : n
       )
     );
-  }, []);
+  }, [buildSelectDesc, isReviewsWorkflow]);
+
+  // React to manual ad-gen toggle from dataset drawers
+  const handleAdGenChange = useCallback((on: boolean, count: number) => {
+    setManualAdGen({ on, count });
+    setTopSelectConfig((prev) => {
+      const next = on
+        ? { ...prev, mode: "manual-selection" as const, manualCount: count }
+        : { ...prev, mode: prev.mode === "manual-selection" ? ("top-n" as const) : prev.mode, manualCount: 0 };
+      const itemLabel = isReviewsWorkflow ? "reviews" : "ads";
+      const desc = buildSelectDesc(next, itemLabel);
+      setNodes((curr) => curr.map((n) => n.type === "top-select" ? { ...n, description: desc } : n));
+      return next;
+    });
+  }, [buildSelectDesc, isReviewsWorkflow]);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
