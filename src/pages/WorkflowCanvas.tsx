@@ -2042,19 +2042,7 @@ export default function WorkflowCanvas() {
         }}
         onRunNow={() => {
           setSetupSummaryOpen(false);
-          fireConfetti();
-          navigate("/workflows", {
-            state: {
-              justSetup: {
-                id: id || "new-workflow",
-                name: workflowNameOverride ?? agentName,
-                mode: "manual",
-                productCount: selectedProductCount,
-                variationsPerProduct: 8,
-                runNow: true,
-              },
-            },
-          });
+          runWorkflow();
         }}
       />
     </div>
