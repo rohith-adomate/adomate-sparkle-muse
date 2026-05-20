@@ -259,6 +259,65 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
+              {selectedRows.size > 0 && (() => {
+                const aiCols = columns.filter(c => c.type === "ai");
+                const runnableIds = filteredRows
+                  .filter(r => selectedRows.has(r.id) && aiCols.some(col => {
+                    const tplId = col.templateId || col.id;
+                    const v = r.aiValues[tplId];
+                    return !v || v === "—";
+                  }))
+                  .map(r => r.id);
+                const canRun = aiCols.length > 0 && runnableIds.length > 0;
+                const reason = aiCols.length === 0
+                  ? "Add an AI column first"
+                  : "All selected rows already have AI values";
+                return (
+                  <>
+                    <span className="text-[11px] font-semibold text-primary px-1">
+                      {selectedRows.size} of {filteredRows.length} selected
+                    </span>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!canRun}
+                            className="h-8 text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handleRunRows(runnableIds)}
+                          >
+                            <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
+                            {canRun && runnableIds.length !== selectedRows.size && (
+                              <span className="text-muted-foreground">({runnableIds.length})</span>
+                            )}
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs max-w-[220px]">
+                        {canRun
+                          ? `Runs on ${runnableIds.length} row${runnableIds.length === 1 ? "" : "s"} with empty AI cells`
+                          : reason}
+                      </TooltipContent>
+                    </Tooltip>
+                    <div className="flex items-center gap-1.5 px-2 h-8 rounded-md border border-border">
+                      <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
+                        Use for ad generation
+                      </label>
+                      <Switch
+                        id="ad-gen-toggle"
+                        checked={adGenOn}
+                        onCheckedChange={(v) => {
+                          setAdGenOn(!!v);
+                          if (v) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                        }}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                    </div>
+                    <span className="mx-1 h-5 w-px bg-border" />
+                  </>
+                );
+              })()}
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
