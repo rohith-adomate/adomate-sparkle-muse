@@ -80,7 +80,7 @@ export default function DatasetBuilderGallery({
               return (
                 <div
                   key={row.id}
-                  onClick={() => onToggleRow(row.id)}
+                  onClick={() => setLightboxIndex(idx)}
                   className={cn(
                     "group relative rounded-lg overflow-hidden border bg-card cursor-pointer transition-all flex flex-col",
                     selected
@@ -97,8 +97,11 @@ export default function DatasetBuilderGallery({
                       className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
                     />
 
-                    {/* Top-left: selection */}
-                    <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                    {/* Top-left: selection (click toggles without opening lightbox) */}
+                    <div
+                      className="absolute top-2 left-2 flex items-center gap-1.5"
+                      onClick={(e) => { e.stopPropagation(); onToggleRow(row.id); }}
+                    >
                       <div
                         className={cn(
                           "h-6 w-6 rounded-md flex items-center justify-center transition-all",
@@ -116,6 +119,7 @@ export default function DatasetBuilderGallery({
                         />
                       </div>
                     </div>
+
 
                     {/* Top-right: format icon + info */}
                     <div className="absolute top-2 right-2 flex items-center gap-1.5">
