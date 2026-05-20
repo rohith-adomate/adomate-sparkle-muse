@@ -117,11 +117,11 @@ const PORT_R = 6;
 
 function getDefaultNodes(agentName: string, isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
-    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: isNew ? "No sources selected." : "Collect, enrich & filter competitor ads.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "dataset", category: "static-data", label: "Dataset", description: isNew ? "No sources selected." : "Collect, enrich & filter competitor ads.", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
     { id: "n3", type: "top-select", category: "ai", label: "Select", description: "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: isNew ? undefined : "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "Optional — runs once manually if unset." : "Weekly on Mon", x: 1000, y: 260, inputs: ["Run"], outputs: [], status: isNew ? undefined : "success" },
   ];
 }
 
@@ -135,38 +135,38 @@ function getManualNodes(isNew?: boolean): CanvasNode[] {
 
 function getAdAccountNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
-    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: isNew ? "No campaigns selected." : "All campaigns · All ad sets", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "ad-account", category: "static-data", label: "Ad Account", description: isNew ? "No campaigns selected." : "All campaigns · All ad sets", x: 100, y: 200, inputs: [], outputs: ["Ads Data"], status: isNew ? undefined : "success" },
     { id: "n3", type: "top-select", category: "ai", label: "Select", description: isNew ? "No selection rule set." : "Top 10 ads by new reach", x: 400, y: 200, inputs: ["Ads Data"], outputs: ["Top Ads"], status: isNew ? undefined : "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Ads", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "Optional — runs once manually if unset." : "Weekly on Mon", x: 1000, y: 260, inputs: ["Run"], outputs: [], status: isNew ? undefined : "success" },
   ];
 }
 
 function getRedditNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
-    { id: "n1", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: isNew ? "No subreddits selected." : "Scrape subreddits for insights.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reddit Data"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "reddit-subreddit", category: "static-data", label: "Subreddit Dataset", description: isNew ? "No subreddits selected." : "Scrape subreddits for insights.", x: 100, y: 200, inputs: [], outputs: ["Reddit Data"], status: isNew ? undefined : "success" },
     { id: "n2", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 100, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n3", type: "reddit-ad-generator", category: "ai", label: "Reddit Ad Generator", description: "Generate ads from Reddit insights.", x: 450, y: 270, inputs: ["Reddit Data", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "Optional — runs once manually if unset." : "Weekly on Mon", x: 750, y: 270, inputs: ["Run"], outputs: [], status: isNew ? undefined : "success" },
   ];
 }
 
 function getReviewsNodes(isNew?: boolean): CanvasNode[] {
   return [
-    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "No schedule set." : "Weekly on Mon", x: -200, y: 200, inputs: [], outputs: ["Trigger"], status: isNew ? undefined : "success" },
-    { id: "n1", type: "review-dataset", category: "static-data", label: "Review Dataset", description: isNew ? "No reviews selected." : "Brand & competitor reviews dataset.", x: 100, y: 200, inputs: ["Trigger"], outputs: ["Reviews Data"], status: isNew ? undefined : "success" },
+    { id: "n1", type: "review-dataset", category: "static-data", label: "Review Dataset", description: isNew ? "No reviews selected." : "Brand & competitor reviews dataset.", x: 100, y: 200, inputs: [], outputs: ["Reviews Data"], status: isNew ? undefined : "success" },
     { id: "n3", type: "top-select", category: "ai", label: "Select", description: isNew ? "No selection rule set." : "Top 10 reviews by relevance", x: 400, y: 200, inputs: ["Reviews Data"], outputs: ["Top Reviews"], status: isNew ? undefined : "success" },
     { id: "n2b", type: "product-data", category: "static-data", label: "Product Data", description: isNew ? "No products selected." : "Fetch product catalog.", x: 400, y: 340, inputs: [], outputs: ["Products"], status: isNew ? undefined : "success" },
     { id: "n5", type: "generate-concepts", category: "ai", label: "Ad Variations", description: "Generate ad variations with AI.", x: 700, y: 260, inputs: ["Top Reviews", "Products"], outputs: ["Variations"] },
+    { id: "n0", type: "schedule", category: "trigger", label: "Schedule", description: isNew ? "Optional — runs once manually if unset." : "Weekly on Mon", x: 1000, y: 260, inputs: ["Run"], outputs: [], status: isNew ? undefined : "success" },
   ];
 }
 
 const DEFAULT_EDGES: Edge[] = [
-  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+  { id: "e0", from: "n5", fromPort: 0, to: "n0", toPort: 0 },
 ];
 
 const MANUAL_EDGES: Edge[] = [
@@ -175,23 +175,23 @@ const MANUAL_EDGES: Edge[] = [
 ];
 
 const AD_ACCOUNT_EDGES: Edge[] = [
-  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+  { id: "e0", from: "n5", fromPort: 0, to: "n0", toPort: 0 },
 ];
 
 const REDDIT_EDGES: Edge[] = [
-  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n2", fromPort: 0, to: "n3", toPort: 1 },
+  { id: "e0", from: "n3", fromPort: 0, to: "n0", toPort: 0 },
 ];
 
 const REVIEWS_EDGES: Edge[] = [
-  { id: "e0", from: "n0", fromPort: 0, to: "n1", toPort: 0 },
   { id: "e1", from: "n1", fromPort: 0, to: "n3", toPort: 0 },
   { id: "e2", from: "n3", fromPort: 0, to: "n5", toPort: 0 },
   { id: "e6", from: "n2b", fromPort: 0, to: "n5", toPort: 1 },
+  { id: "e0", from: "n5", fromPort: 0, to: "n0", toPort: 0 },
 ];
 
 /* ── Helpers ── */
