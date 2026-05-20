@@ -876,7 +876,7 @@ export default function WorkflowCanvas() {
   // Fully-configured = every configurable node in this workflow is configured.
   const fullyConfigured = useMemo(() => {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "ad-account", "reddit-subreddit", "top-select", "product-data", "generate-concepts", "reddit-ad-generator", "manual-image-input"];
-    const configurableNodes = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+    const configurableNodes = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
     if (configurableNodes.length === 0) return false;
     return configurableNodes.every((n) => {
       if (n.type === "dataset") return !datasetEmpty;
