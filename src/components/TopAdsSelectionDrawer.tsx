@@ -52,6 +52,8 @@ export default function TopAdsSelectionDrawer({
   onConfigChange,
   onContinue,
   continueLabel,
+  itemLabel = "ads",
+  manualSelectionAvailable = false,
 }: TopAdsSelectionDrawerProps) {
   const defaultConfig: SelectConfig = {
     mode: "top-n",
@@ -60,6 +62,7 @@ export default function TopAdsSelectionDrawer({
     maxAgeMonths: 3,
   };
   const init = initialConfig ?? defaultConfig;
+  const manualCount = init.manualCount ?? 0;
 
   const [mode, setMode] = useState<SelectionMode>(init.mode);
   const [topCount, setTopCount] = useState(String(init.count));
