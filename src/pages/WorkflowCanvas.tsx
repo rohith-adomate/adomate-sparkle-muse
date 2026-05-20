@@ -1965,7 +1965,7 @@ export default function WorkflowCanvas() {
         onContinue={continueHandlerFor("top-select", () => setTopSelectDrawerOpen(false))}
         continueLabel={continueLabelFor("top-select")}
         itemLabel={isReviewsWorkflow ? "reviews" : "ads"}
-        manualSelectionAvailable={manualAdGen.on && manualAdGen.count > 0}
+        manualSelectionAvailable={true}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}
