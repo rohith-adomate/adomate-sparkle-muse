@@ -298,25 +298,27 @@ export default function SetupSummaryDrawer({
             Save as draft
           </Button>
           <div className="flex items-center gap-2">
-            {mode === "manual" && onRunNow && (
+            {mode === "manual" && onRunNow ? (
               <Button
-                variant="outline"
                 size="sm"
                 onClick={onRunNow}
                 disabled={blocked}
+                className="gap-1.5"
               >
-                Run now
+                Save & run
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={onActivate}
+                disabled={blocked}
+                className="gap-1.5"
+              >
+                {mode === "scheduled" ? "Activate workflow" : "Save & finish"}
+                <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             )}
-            <Button
-              size="sm"
-              onClick={onActivate}
-              disabled={blocked}
-              className="gap-1.5"
-            >
-              {mode === "scheduled" ? "Activate workflow" : "Save & finish"}
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
           </div>
         </div>
       </SheetContent>
