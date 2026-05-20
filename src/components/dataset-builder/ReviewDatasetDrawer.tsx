@@ -368,6 +368,64 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
               <h1 className="text-sm font-bold">Reviews Dataset — Voice of Customer</h1>
             </div>
             <div className="flex items-center gap-2">
+              {hasSelected && (() => {
+                const runnableCount = aiColumns.length === 0
+                  ? 0
+                  : [...selectedRows].filter(rid =>
+                      aiColumns.some(c => {
+                        const v = aiValues[c.id]?.[rid];
+                        return !v || v === "—";
+                      })
+                    ).length;
+                const canRun = aiColumns.length > 0 && runnableCount > 0;
+                return (
+                  <>
+                    <span className="text-[11px] font-semibold text-primary px-1">
+                      {selectedRows.size} of {filteredRows.length} selected
+                    </span>
+                    <Tooltip delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!canRun}
+                            className="h-8 text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => setEnrichOpen(true)}
+                          >
+                            <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
+                            {canRun && runnableCount !== selectedRows.size && (
+                              <span className="text-muted-foreground">({runnableCount})</span>
+                            )}
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs max-w-[220px]">
+                        {canRun
+                          ? `Runs on ${runnableCount} review${runnableCount === 1 ? "" : "s"} with empty AI cells`
+                          : aiColumns.length === 0
+                            ? "Add an AI column to enrich the selected reviews"
+                            : "All selected reviews already have AI values"}
+                      </TooltipContent>
+                    </Tooltip>
+                    <div className="flex items-center gap-1.5 px-2 h-8 rounded-md border border-border">
+                      <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
+                        Use for ad generation
+                      </label>
+                      <Switch
+                        id="review-ad-gen-toggle"
+                        checked={adGenOn}
+                        onCheckedChange={(v) => {
+                          setAdGenOn(!!v);
+                          if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                        }}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                    </div>
+                    <span className="mx-1 h-5 w-px bg-border" />
+                  </>
+                );
+              })()}
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
