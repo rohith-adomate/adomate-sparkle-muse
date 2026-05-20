@@ -394,9 +394,13 @@ export default function WorkflowCanvas() {
   const continueLabelFor = useCallback((currentType: string) => {
     if (editingFromSummary === currentType) return "Back to summary";
     const idx = pipeline.indexOf(currentType);
-    // Determine effective last step (skip schedule under manual mode)
+    // Determine effective last step (skip schedule + top-select under manual mode)
     let lastIdx = pipeline.length - 1;
-    while (lastIdx >= 0 && manualAdGen.on && pipeline[lastIdx] === "schedule") {
+    while (
+      lastIdx >= 0 &&
+      manualAdGen.on &&
+      (pipeline[lastIdx] === "schedule" || pipeline[lastIdx] === "top-select")
+    ) {
       lastIdx--;
     }
     return idx >= lastIdx ? "Finish" : "Continue";
