@@ -73,7 +73,7 @@ export default function TopAdsSelectionDrawer({
   const months = parseInt(maxAgeMonths) || 3;
 
   const emitChange = (m: SelectionMode, c: number, ageEnabled: boolean, ageMo: number) => {
-    onConfigChange?.({ mode: m, count: c, maxAgeEnabled: ageEnabled, maxAgeMonths: ageMo });
+    onConfigChange?.({ mode: m, count: c, maxAgeEnabled: ageEnabled, maxAgeMonths: ageMo, manualCount });
   };
 
   const handleModeChange = (m: SelectionMode) => {
