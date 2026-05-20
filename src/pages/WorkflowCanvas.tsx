@@ -1859,10 +1859,12 @@ export default function WorkflowCanvas() {
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
-        config={topSelectConfig}
+        config={{ ...topSelectConfig, manualCount: manualAdGen.count }}
         onConfigChange={handleTopSelectChange}
         onContinue={continueHandlerFor("top-select", () => setTopSelectDrawerOpen(false))}
         continueLabel={continueLabelFor("top-select")}
+        itemLabel={isReviewsWorkflow ? "reviews" : "ads"}
+        manualSelectionAvailable={manualAdGen.on && manualAdGen.count > 0}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}
