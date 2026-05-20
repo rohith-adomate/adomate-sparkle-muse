@@ -371,9 +371,14 @@ export default function WorkflowCanvas() {
     });
     const idx = pipeline.indexOf(currentType);
     if (idx === -1) return;
-    // Find next pipeline step, skipping Schedule when user has manually picked rows
+    // Find next pipeline step, skipping Schedule when user has manually picked
+    // rows, and skipping top-select since it's auto-configured to manual mode.
     let nextIdx = idx + 1;
-    while (nextIdx < pipeline.length && manualAdGen.on && pipeline[nextIdx] === "schedule") {
+    while (
+      nextIdx < pipeline.length &&
+      manualAdGen.on &&
+      (pipeline[nextIdx] === "schedule" || pipeline[nextIdx] === "top-select")
+    ) {
       nextIdx++;
     }
     if (nextIdx >= pipeline.length) {
@@ -389,9 +394,13 @@ export default function WorkflowCanvas() {
   const continueLabelFor = useCallback((currentType: string) => {
     if (editingFromSummary === currentType) return "Back to summary";
     const idx = pipeline.indexOf(currentType);
-    // Determine effective last step (skip schedule under manual mode)
+    // Determine effective last step (skip schedule + top-select under manual mode)
     let lastIdx = pipeline.length - 1;
-    while (lastIdx >= 0 && manualAdGen.on && pipeline[lastIdx] === "schedule") {
+    while (
+      lastIdx >= 0 &&
+      manualAdGen.on &&
+      (pipeline[lastIdx] === "schedule" || pipeline[lastIdx] === "top-select")
+    ) {
       lastIdx--;
     }
     return idx >= lastIdx ? "Finish" : "Continue";
@@ -671,7 +680,13 @@ export default function WorkflowCanvas() {
       setNodes((curr) => curr.map((n) => n.type === "top-select" ? { ...n, description: desc } : n));
       return next;
     });
-  }, [buildSelectDesc, isReviewsWorkflow]);
+    // When manual rows are picked, the Select node is implicitly configured
+    // (mode = manual-selection). Mark it so it doesn't show as missing and
+    // the next pipeline step jumps straight to product-data.
+    if (on && count > 0) {
+      markConfigured("top-select");
+    }
+  }, [buildSelectDesc, isReviewsWorkflow, markConfigured]);
 
   // Apply persisted Select node description on mount / when nodes load
   useEffect(() => {
