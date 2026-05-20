@@ -1301,6 +1301,8 @@ export default function WorkflowCanvas() {
               const trackedTotal = nodes.filter((n) => UNCONFIGURED_TYPES_FOR_FIRST.includes(n.type)).length;
               const noneConfiguredYet = unconfiguredOrdered.length === trackedTotal;
               return nodes.map((node) => {
+              // Hide schedule node when user has manually picked rows for ad gen
+              if (manualAdGen.on && node.type === "schedule") return null;
               const color = CATEGORY_COLORS[node.category];
               const isSelected = selectedNode === node.id;
               const catalogItem = NODE_CATALOG.flatMap((g) => g.items).find((i) => i.type === node.type);
