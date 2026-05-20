@@ -1483,7 +1483,7 @@ export default function WorkflowCanvas() {
                                 <span className="text-[11px] font-medium text-muted-foreground/70">Set cadence</span>
                               </div>
                             )}
-                            {node.type === "dataset" && (
+                            {(node.type === "dataset" || node.type === "review-dataset") && (
                               <div className="h-12 flex items-center justify-start -space-x-2">
                                 {Array.from({ length: 3 }).map((_, i) => (
                                   <div key={i} className="h-9 w-9 rounded-full border border-dashed border-muted-foreground/30 bg-muted/30 ring-2 ring-card" />
