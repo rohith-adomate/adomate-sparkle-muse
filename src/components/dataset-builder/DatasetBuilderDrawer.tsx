@@ -410,7 +410,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                 selectedRows={selectedRows}
                 onToggleRow={handleToggleRow}
                 onToggleAll={handleToggleAll}
-                onRowClick={setDetailRow}
+                onRowClick={(r) => { setDetailVariant("details"); setDetailRow(r); }}
                 totalRowCount={rows.length}
                 launchedSortAsc={launchedSortAsc}
                 onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
