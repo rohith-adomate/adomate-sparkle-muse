@@ -392,20 +392,19 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             return (
               <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-20 z-40 animate-fade-in">
                 <div className="pointer-events-auto flex items-center gap-1 h-12 pl-1.5 pr-1.5 rounded-2xl bg-card/95 backdrop-blur-sm text-foreground shadow-[0_10px_40px_-10px_rgba(0,0,0,0.18)] border border-border/60 ring-1 ring-black/[0.02]">
-                  <span className="inline-flex items-center gap-1.5 h-9 pl-2.5 pr-3 rounded-xl bg-primary/10 text-primary">
-                    <CheckSquare className="h-3.5 w-3.5" />
-                    <span className="text-[13px] font-semibold tabular-nums">{selectedRows.size}</span>
-                    <span className="text-[11px] font-medium text-primary/70">of {filteredRows.length}</span>
+                  <span className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-muted/60">
+                    <span className="text-[13px] font-semibold tabular-nums text-foreground">{selectedRows.size}</span>
+                    <span className="text-[11px] font-medium text-muted-foreground">of {filteredRows.length} selected</span>
                   </span>
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <button
                         type="button"
                         onClick={() => setSelectedRows(new Set())}
-                        className="group inline-flex items-center justify-center h-9 w-9 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground active:scale-95 transition-all"
+                        className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground active:scale-95 transition-all"
                         aria-label="Clear selection"
                       >
-                        <X className="h-4 w-4 transition-transform group-hover:rotate-90" />
+                        <X className="h-4 w-4" />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent className="text-xs">Clear selection</TooltipContent>
@@ -418,13 +417,12 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                           size="sm"
                           variant="ghost"
                           disabled={!canRun}
-                          className="group h-9 text-[12px] font-semibold gap-1.5 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-3 transition-colors"
+                          className="h-9 text-[12px] font-medium text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-3"
                           onClick={() => handleRunRows(runnableIds)}
                         >
-                          <Wand2 className="h-3.5 w-3.5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
                           Run AI analysis
                           {canRun && runnableIds.length !== selectedRows.size && (
-                            <span className="ml-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary/15 text-primary text-[10px] font-bold group-hover:bg-primary-foreground/20 group-hover:text-primary-foreground">
+                            <span className="ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-muted text-foreground text-[10px] font-bold">
                               {runnableIds.length}
                             </span>
                           )}
@@ -440,10 +438,9 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                     <TooltipTrigger asChild>
                       <label
                         htmlFor="ad-gen-toggle-floating"
-                        className="flex items-center gap-2 h-9 pl-2.5 pr-2 rounded-xl hover:bg-muted/70 cursor-pointer select-none transition-colors"
+                        className="flex items-center gap-2.5 h-9 pl-3 pr-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer select-none transition-colors shadow-sm"
                       >
-                        <Sparkles className={cn("h-3.5 w-3.5 transition-colors", adGenOn ? "text-primary" : "text-muted-foreground")} />
-                        <span className="text-[12px] font-medium text-foreground">Use for ad generation</span>
+                        <span className="text-[12px] font-semibold">Use for ad generation</span>
                         <Switch
                           id="ad-gen-toggle-floating"
                           checked={adGenOn}
@@ -454,7 +451,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                               toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
                             }
                           }}
-                          className="data-[state=checked]:bg-primary scale-90"
+                          className="data-[state=checked]:bg-primary-foreground data-[state=unchecked]:bg-primary-foreground/30 [&>span]:bg-primary scale-90"
                         />
                       </label>
                     </TooltipTrigger>
