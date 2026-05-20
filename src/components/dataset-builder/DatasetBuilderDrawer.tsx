@@ -451,7 +451,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                               toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
                             }
                           }}
-                          className="data-[state=checked]:bg-primary-foreground data-[state=unchecked]:bg-primary-foreground/30 [&>span]:bg-primary scale-90"
+                          className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary/25 [&>span]:bg-card scale-90"
                         />
                       </label>
                     </TooltipTrigger>
