@@ -410,6 +410,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                 onToggleAll={handleToggleAll}
                 onRowClick={setDetailRow}
                 totalRowCount={rows.length}
+                launchedSortAsc={launchedSortAsc}
+                onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
                 adGenOn={adGenOn}
                 onAdGenToggle={(on) => {
                   setAdGenOn(on);
@@ -419,6 +421,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                   }
                 }}
               />
+
             )}
 
             {inspectorColumn && (
