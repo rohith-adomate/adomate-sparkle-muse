@@ -1,14 +1,33 @@
-# Skip Schedule step when rows are manually selected
+# Always-available "Manually select" option in Select node
 
-When `manualAdGen.on` is true, the Schedule node is already hidden from the canvas and the catalog, but the **Continue chain** still walks into `ScheduleDrawer` after the user finishes the previous step (e.g. Select / Generate). It should instead jump straight to the final-step **SetupSummaryDrawer**, identical to the Ad Library tracker manual flow.
+Today, the Select node's "Manually selected" option is only enabled when users have already marked rows in the dataset (`manualSelectionAvailable = manualAdGen.on && manualAdGen.count > 0`). We want it to be **always available** so users can discover the manual flow from the Select drawer, and choosing it should bounce them back to the dataset panel to pick rows.
 
-## Changes (single file: `src/pages/WorkflowCanvas.tsx`)
+## Behavior
 
-1. **`openNextDrawerFor` (line 364)** — when the next pipeline step is `schedule` and `manualAdGen.on`, skip it: open `SetupSummaryDrawer` instead of `ScheduleDrawer`.
-2. **`continueLabelFor` (line 379)** — when the current step is the last *non-schedule* step under manual mode, return `"Finish"` so the previous drawer's CTA reads correctly.
-3. No changes to the summary drawer itself — its CTAs (`Save draft` / `Save & run`) already swap to "manual" mode via the existing `mode={manualAdGen.on ? "manual" : ...}` prop and `onRunNow` handler.
+1. The "Manually selected {items}" option in the Select drawer is always selectable (no greyed-out / tooltip-locked state).
+2. When the user picks `manual-selection`:
+   - The Select drawer closes.
+   - The **Dataset drawer** opens (`DatasetDrawer` for ad workflows, `ReviewDatasetDrawer` for review workflows) with an inline hint that they should mark rows with "Use for ad generation".
+   - `manualAdGen.on` is set to `true` so the rest of the canvas reacts (Schedule node hides, summary swaps to manual mode, etc. — existing behavior).
+3. When the user closes the dataset drawer with ≥1 row marked, the canvas continues into the existing manual flow (summary drawer with Save draft / Save & run).
+4. If they close the dataset drawer with 0 rows marked, `manualAdGen.on` flips back to `false` and the Select node reverts to its previous mode so the workflow doesn't end up in an inconsistent state.
+
+## Files to change
+
+- **`src/components/TopAdsSelectionDrawer.tsx`**
+  - Remove the `manualSelectionAvailable` gating on the option (or keep prop but treat it as always available). Show `(N)` count when there are existing marks; otherwise just the label.
+  - Drop the disabled styling + tooltip for that option.
+
+- **`src/pages/WorkflowCanvas.tsx`**
+  - In `handleTopSelectChange` (or a new handler on the drawer), when `config.mode === "manual-selection"`:
+    - `setManualAdGen({ on: true, count: prev.count })`
+    - Close the Select drawer.
+    - Open `DatasetDrawer` / `ReviewDatasetDrawer` (mirror the existing `openDrawerFor("dataset" | "review-dataset")` path).
+  - Pass `manualSelectionAvailable={true}` unconditionally (or remove the prop usage).
+  - When the dataset drawer closes, if `manualAdGen.count === 0` and mode is `manual-selection`, revert `topSelectConfig.mode` to `top-n` and `manualAdGen.on` to `false`.
 
 ## Technical notes
 
-- Use the existing `manualAdGen.on` flag (already in scope) inside both callbacks and add it to their dependency arrays.
-- Compute the "effective next" step by skipping any `schedule` entry in `pipeline` when manual mode is active. If skipping makes it the end of the pipeline, open `SetupSummaryDrawer`.
+- The `manualAdGen` state already drives every downstream behavior (hide Schedule, swap summary CTAs, badge labels). No new state is needed.
+- The dataset drawer already supports per-row "Use for ad generation" marking — no changes there.
+- No business-logic changes outside the Select node ↔ Dataset drawer hand-off.
