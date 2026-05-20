@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles, Wand2, X } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles, Wand2, X, CheckSquare } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
