@@ -377,6 +377,78 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             )}
           </div>
 
+          {/* Floating row-actions bar */}
+          {selectedRows.size > 0 && (() => {
+            const aiCols = columns.filter(c => c.type === "ai");
+            const runnableIds = filteredRows
+              .filter(r => selectedRows.has(r.id) && aiCols.some(col => {
+                const tplId = col.templateId || col.id;
+                const v = r.aiValues[tplId];
+                return !v || v === "—";
+              }))
+              .map(r => r.id);
+            const canRun = aiCols.length > 0 && runnableIds.length > 0;
+            const reason = aiCols.length === 0 ? "Add an AI column first" : "All selected rows already have AI values";
+            return (
+              <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-20 z-40 animate-fade-in">
+                <div className="pointer-events-auto flex items-center gap-2 h-12 pl-2 pr-2 rounded-xl bg-foreground text-background shadow-2xl border border-foreground/10">
+                  <span className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-background/10">
+                    <span className="text-[13px] font-semibold tabular-nums">{selectedRows.size}</span>
+                    <span className="text-[11px] text-background/70">of {filteredRows.length} selected</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRows(new Set())}
+                    className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-background/10 transition-colors"
+                    title="Clear selection"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <span className="h-6 w-px bg-background/15" />
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={!canRun}
+                          className="h-8 text-[12px] gap-1.5 text-background hover:bg-background/10 hover:text-background disabled:opacity-40 disabled:cursor-not-allowed rounded-lg px-3"
+                          onClick={() => handleRunRows(runnableIds)}
+                        >
+                          <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
+                          {canRun && runnableIds.length !== selectedRows.size && (
+                            <span className="opacity-60">({runnableIds.length})</span>
+                          )}
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[220px]">
+                      {canRun ? `Runs on ${runnableIds.length} row${runnableIds.length === 1 ? "" : "s"} with empty AI cells` : reason}
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="h-6 w-px bg-background/15" />
+                  <div className="flex items-center gap-2 pr-2 pl-1.5">
+                    <label htmlFor="ad-gen-toggle-floating" className="text-[12px] font-medium cursor-pointer select-none">
+                      Use for ad generation
+                    </label>
+                    <Switch
+                      id="ad-gen-toggle-floating"
+                      checked={adGenOn}
+                      onCheckedChange={(v) => {
+                        setAdGenOn(!!v);
+                        if (v) {
+                          setAdGenCount(selectedRows.size);
+                          toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                        }
+                      }}
+                      className="data-[state=checked]:bg-primary scale-90"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           <DrawerContinueFooter onContinue={onContinue} label={continueLabel} disabled={sources.length === 0} />
         </div>
       </div>
