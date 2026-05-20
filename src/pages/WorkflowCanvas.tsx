@@ -645,16 +645,18 @@ export default function WorkflowCanvas() {
         n.type === "top-select" ? { ...n, description: desc } : n
       )
     );
-    // If user picks manual selection, bounce them to the dataset drawer
-    // so they can mark rows with "Use for ad generation".
-    if (config.mode === "manual-selection") {
+    // If user picks manual selection AND hasn't marked any rows yet, bounce
+    // them to the dataset drawer so they can mark rows with "Use for ad
+    // generation". If they've already marked rows, keep them in the Select
+    // drawer so they can just continue configuring.
+    if (config.mode === "manual-selection" && (manualAdGen.count ?? 0) === 0) {
       setTopSelectDrawerOpen(false);
       setTimeout(() => {
         if (isReviewsWorkflow) setReviewDatasetDrawerOpen(true);
         else setDatasetDrawerOpen(true);
       }, 150);
     }
-  }, [buildSelectDesc, isReviewsWorkflow]);
+  }, [buildSelectDesc, isReviewsWorkflow, manualAdGen.count]);
 
   // React to manual ad-gen toggle from dataset drawers
   const handleAdGenChange = useCallback((on: boolean, count: number) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import DrawerContinueFooter from "./DrawerContinueFooter";
 import { Label } from "@/components/ui/label";
@@ -68,6 +68,18 @@ export default function TopAdsSelectionDrawer({
   const [topCount, setTopCount] = useState(String(init.count));
   const [maxAgeEnabled, setMaxAgeEnabled] = useState(init.maxAgeEnabled);
   const [maxAgeMonths, setMaxAgeMonths] = useState(String(init.maxAgeMonths));
+
+  // Sync local state when the drawer reopens or the persisted config changes
+  // externally (e.g. user marked rows in the dataset and the Select node was
+  // switched to "manual-selection" behind the scenes).
+  useEffect(() => {
+    if (!open) return;
+    setMode(init.mode);
+    setTopCount(String(init.count));
+    setMaxAgeEnabled(init.maxAgeEnabled);
+    setMaxAgeMonths(String(init.maxAgeMonths));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, init.mode, init.count, init.maxAgeEnabled, init.maxAgeMonths, manualCount]);
 
   const count = parseInt(topCount) || 10;
   const months = parseInt(maxAgeMonths) || 3;
