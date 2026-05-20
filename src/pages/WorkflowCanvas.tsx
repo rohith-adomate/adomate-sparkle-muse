@@ -1585,7 +1585,7 @@ export default function WorkflowCanvas() {
                                         <div className="h-9 w-9 rounded-full ring-2 ring-card flex items-center justify-center text-[11px] font-bold text-white" style={{ background: b.bg }}>
                                           {b.initials}
                                         </div>
-                                        {idx === 0 && (
+                                        {idx === brands.length - 1 && (
                                           <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-card ring-2 ring-card flex items-center justify-center">
                                             <Star className="h-2.5 w-2.5" fill="#00B67A" stroke="#00B67A" />
                                           </div>
