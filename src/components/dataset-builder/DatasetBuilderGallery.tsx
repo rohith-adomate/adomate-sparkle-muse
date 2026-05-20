@@ -169,6 +169,19 @@ export default function DatasetBuilderGallery({
           </div>
         )}
       </div>
+
+      {lightboxIndex !== null && rows[lightboxIndex] && (
+        <AdLightbox
+          rows={rows}
+          index={lightboxIndex}
+          selectedRows={selectedRows}
+          onChangeIndex={setLightboxIndex}
+          onToggleSelect={onToggleRow}
+          onOpenInfo={(r) => { setLightboxIndex(null); onRowClick(r); }}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }
+
