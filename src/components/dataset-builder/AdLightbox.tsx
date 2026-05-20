@@ -117,15 +117,15 @@ export default function AdLightbox({
             type="button"
             onClick={() => onToggleSelect(row.id)}
             className={cn(
-              "absolute top-4 left-4 h-10 w-10 rounded-full flex items-center justify-center shadow-lg transition-all border-2",
+              "absolute top-4 left-4 h-10 w-10 rounded-full flex items-center justify-center shadow-lg transition-all backdrop-blur",
               selected
-                ? "bg-primary border-primary text-primary-foreground"
-                : "bg-white/95 border-white hover:bg-white text-muted-foreground",
+                ? "bg-primary/90 text-primary-foreground hover:bg-primary"
+                : "bg-black/40 hover:bg-black/60 text-white border border-white/40",
             )}
             aria-label={selected ? "Deselect ad" : "Select ad"}
             aria-pressed={selected}
           >
-            {selected ? <Check className="h-5 w-5" strokeWidth={3} /> : <span className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />}
+            {selected && <Check className="h-5 w-5" strokeWidth={3} />}
           </button>
 
           {/* Top-right action cluster on the visual */}
@@ -134,10 +134,10 @@ export default function AdLightbox({
               type="button"
               onClick={() => setInfoOpen(v => !v)}
               className={cn(
-                "h-10 w-10 rounded-full flex items-center justify-center shadow-lg transition-all",
+                "h-10 w-10 rounded-full flex items-center justify-center shadow-lg transition-all backdrop-blur",
                 infoOpen
-                  ? "bg-foreground text-background"
-                  : "bg-white/95 hover:bg-white text-foreground",
+                  ? "bg-white/90 text-foreground"
+                  : "bg-black/40 hover:bg-black/60 text-white",
               )}
               aria-label="Toggle details"
               aria-pressed={infoOpen}
@@ -147,7 +147,7 @@ export default function AdLightbox({
             <button
               type="button"
               onClick={onClose}
-              className="h-10 w-10 rounded-full bg-foreground/80 hover:bg-foreground text-background flex items-center justify-center shadow-lg transition-all"
+              className="h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur text-white flex items-center justify-center shadow-lg transition-all"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
