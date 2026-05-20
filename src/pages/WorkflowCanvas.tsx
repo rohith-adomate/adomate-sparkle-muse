@@ -1578,6 +1578,22 @@ export default function WorkflowCanvas() {
                                     ))}
                                   </div>
                                 )}
+                                {node.type === "review-dataset" && (
+                                  <div className="h-12 flex items-center justify-start -space-x-2">
+                                    {brands.map((b, idx) => (
+                                      <div key={b.initials} className="relative">
+                                        <div className="h-9 w-9 rounded-full ring-2 ring-card flex items-center justify-center text-[11px] font-bold text-white" style={{ background: b.bg }}>
+                                          {b.initials}
+                                        </div>
+                                        {idx === 0 && (
+                                          <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-card ring-2 ring-card flex items-center justify-center">
+                                            <Star className="h-2.5 w-2.5" fill="#00B67A" stroke="#00B67A" />
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                                 {node.type === "top-select" && (
                                   topSelectConfig.mode === "manual-selection" ? (
                                     <div className="h-12 rounded-md border border-dashed border-primary/30 bg-primary/5 flex items-center justify-center gap-1.5">
