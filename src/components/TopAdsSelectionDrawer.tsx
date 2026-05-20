@@ -172,25 +172,33 @@ export default function TopAdsSelectionDrawer({
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Selection mode
               </Label>
-              <div className="flex items-center gap-1.5">
-                {(
-                  [
-                    { value: "all-new" as SelectionMode, label: "All new since last run" },
-                    { value: "top-n" as SelectionMode, label: "Top N by days online" },
-                  ] as const
-                ).map((opt) => (
-                  <div
-                    key={opt.value}
-                    className={cn(
-                      "flex-1 rounded-md border px-3 py-2 text-center cursor-pointer transition-colors text-[11px] font-medium",
-                      mode === opt.value
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:bg-muted/40"
+              <div className="flex flex-col gap-1.5">
+                {([
+                  { value: "all-new" as SelectionMode, label: "All new since last run", available: true },
+                  { value: "top-n" as SelectionMode, label: "Top N by days online", available: true },
+                  { value: "manual-selection" as SelectionMode, label: `Manually selected ${itemLabel}${manualSelectionAvailable ? ` (${manualCount})` : ""}`, available: manualSelectionAvailable },
+                ] as const).map((opt) => (
+                  <Tooltip key={opt.value} delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "rounded-md border px-3 py-2 text-center transition-colors text-[11px] font-medium",
+                          opt.available ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                          mode === opt.value
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:bg-muted/40",
+                        )}
+                        onClick={() => opt.available && handleModeChange(opt.value)}
+                      >
+                        {opt.label}
+                      </div>
+                    </TooltipTrigger>
+                    {!opt.available && opt.value === "manual-selection" && (
+                      <TooltipContent side="left" className="max-w-[240px] text-xs">
+                        Mark {itemLabel} with "Use for ad generation" in the dataset to enable this option.
+                      </TooltipContent>
                     )}
-                    onClick={() => handleModeChange(opt.value)}
-                  >
-                    {opt.label}
-                  </div>
+                  </Tooltip>
                 ))}
               </div>
             </div>
