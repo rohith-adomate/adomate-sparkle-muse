@@ -3,12 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { X, Play, Image as ImageIcon, Video, LayoutGrid, ExternalLink } from "lucide-react";
 import type { DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
+import { oyAdImages } from "@/data/oyImages";
 import { cn } from "@/lib/utils";
 
 interface Props {
   row: DatasetRow | null;
   onClose: () => void;
   onRunRow: (rowId: string) => void;
+  variant?: "preview" | "details";
 }
 
 const formatIcon: Record<string, typeof ImageIcon> = { Image: ImageIcon, Video, Carousel: LayoutGrid };
@@ -22,10 +24,12 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function RowDetailDrawer({ row, onClose, onRunRow }: Props) {
+export default function RowDetailDrawer({ row, onClose, onRunRow, variant = "details" }: Props) {
   if (!row) return null;
   const FormatIcon = formatIcon[row.format] || ImageIcon;
   const days = daysOnline(row.firstLaunched);
+  const img = oyAdImages[(parseInt(row.id, 10) || 0) % oyAdImages.length];
+
 
   return (
     <div className="fixed inset-0 z-[60] flex justify-end">
@@ -39,6 +43,12 @@ export default function RowDetailDrawer({ row, onClose, onRunRow }: Props) {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {variant === "preview" && (
+            <div className="w-full rounded-xl border border-border bg-muted/30 overflow-hidden" style={{ aspectRatio: "4/5" }}>
+              <img src={img} alt={row.headline} className="w-full h-full object-cover" />
+            </div>
+          )}
+
           {/* Brand header */}
           <div className="flex items-center gap-2.5">
             {row.brandAvatar && (

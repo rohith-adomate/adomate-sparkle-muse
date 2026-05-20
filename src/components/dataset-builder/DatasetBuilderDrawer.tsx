@@ -39,6 +39,8 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
+  const [detailVariant, setDetailVariant] = useState<"preview" | "details">("details");
+
   const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
   const [enrichOpen, setEnrichOpen] = useState(false);
   const [enrichBanner, setEnrichBanner] = useState<{ columnId: string; columnName: string; processed: number; remaining: number } | null>(null);
@@ -385,7 +387,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                 onToggleAll={handleToggleAll}
                 onColumnClick={setInspectorColumn}
                 onRunRows={handleRunRows}
-                onRowClick={setDetailRow}
+                onRowClick={(r) => { setDetailVariant("preview"); setDetailRow(r); }}
                 activeColumnId={inspectorColumn?.id}
                 onReorderColumns={setColumns}
                 activeFilters={activeFilters}
@@ -408,7 +410,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                 selectedRows={selectedRows}
                 onToggleRow={handleToggleRow}
                 onToggleAll={handleToggleAll}
-                onRowClick={setDetailRow}
+                onRowClick={(r) => { setDetailVariant("details"); setDetailRow(r); }}
                 totalRowCount={rows.length}
                 launchedSortAsc={launchedSortAsc}
                 onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
@@ -535,9 +537,11 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
 
       <RowDetailDrawer
         row={detailRow}
+        variant={detailVariant}
         onClose={() => setDetailRow(null)}
         onRunRow={(id) => handleRunRows([id])}
       />
+
 
       <EnrichDataModal
         open={enrichOpen}
