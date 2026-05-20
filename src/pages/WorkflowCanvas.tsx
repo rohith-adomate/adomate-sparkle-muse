@@ -1622,8 +1622,8 @@ export default function WorkflowCanvas() {
                               <div className="px-3.5 py-1.5 border-t border-border/50 bg-muted/20 rounded-b-xl flex items-center justify-between">
                                 <span className="text-[9px] uppercase tracking-wide text-muted-foreground font-medium">
                                   {node.type === "schedule" && "Next run"}
-                                  {node.type === "dataset" && "Matched"}
-                                  {node.type === "top-select" && "Picking"}
+                                  {node.type === "dataset" && (manualAdGen.on ? "Manual" : "Matched")}
+                                  {node.type === "top-select" && (topSelectConfig.mode === "manual-selection" ? "Manual" : "Picking")}
                                   {node.type === "product-data" && "Selected"}
                                   {node.type === "generate-concepts" && "Per run"}
                                 </span>
@@ -1631,8 +1631,10 @@ export default function WorkflowCanvas() {
                                   {node.type === "schedule" && (nextRunDate
                                     ? nextRunDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
                                     : "—")}
-                                  {node.type === "dataset" && "641 ads"}
-                                  {node.type === "top-select" && (isAllNew ? "All new" : "Top 5")}
+                                  {node.type === "dataset" && (manualAdGen.on ? `${manualAdGen.count} selected` : "641 ads")}
+                                  {node.type === "top-select" && (topSelectConfig.mode === "manual-selection"
+                                    ? `${topSelectConfig.manualCount ?? manualAdGen.count} selected`
+                                    : isAllNew ? "All new" : `Top ${topSelectConfig.count ?? 5}`)}
                                   {node.type === "product-data" && (selectedProductCount > 0 ? selectedProductCount : "—")}
                                   {node.type === "generate-concepts" && "~75 concepts"}
                                 </span>
