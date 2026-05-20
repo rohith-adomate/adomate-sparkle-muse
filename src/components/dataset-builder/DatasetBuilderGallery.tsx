@@ -67,24 +67,8 @@ export default function DatasetBuilderGallery({
                       className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
                     />
 
-                    {/* Top-left: format + platform */}
-                    <div className="absolute top-2 left-2 flex items-center gap-1">
-                      <Badge className="h-5 px-1.5 text-[10px] gap-1 bg-background/85 text-foreground hover:bg-background/85 backdrop-blur border-0">
-                        <FormatIcon format={row.format} />
-                        {row.format}
-                      </Badge>
-                    </div>
-
-                    {/* Top-right: select + info */}
-                    <div className="absolute top-2 right-2 flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); onRowClick(row); }}
-                        className="h-6 w-6 rounded-md bg-background/85 backdrop-blur flex items-center justify-center text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                        aria-label="View details"
-                      >
-                        <Info className="h-3.5 w-3.5" />
-                      </button>
+                    {/* Top-left: selection */}
+                    <div className="absolute top-2 left-2 flex items-center gap-1.5">
                       <div
                         className={cn(
                           "h-6 w-6 rounded-md flex items-center justify-center transition-all",
@@ -103,20 +87,22 @@ export default function DatasetBuilderGallery({
                       </div>
                     </div>
 
-                    {/* Bottom-left: status */}
-                    <div className="absolute bottom-2 left-2">
-                      <span className={cn(
-                        "inline-flex items-center gap-1 h-5 px-1.5 rounded text-[10px] font-medium backdrop-blur",
-                        row.status === "Active"
-                          ? "bg-emerald-500/90 text-white"
-                          : "bg-background/85 text-muted-foreground",
-                      )}>
-                        <span className={cn(
-                          "h-1.5 w-1.5 rounded-full",
-                          row.status === "Active" ? "bg-white" : "bg-muted-foreground",
-                        )} />
-                        {row.status}
-                      </span>
+                    {/* Top-right: format icon + info */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); onRowClick(row); }}
+                        className="h-6 w-6 rounded-md bg-background/85 backdrop-blur flex items-center justify-center text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="View details"
+                      >
+                        <Info className="h-3.5 w-3.5" />
+                      </button>
+                      <div
+                        className="h-6 w-6 rounded-md bg-background/85 backdrop-blur flex items-center justify-center text-foreground"
+                        aria-label={row.format}
+                      >
+                        <FormatIcon format={row.format} />
+                      </div>
                     </div>
                   </div>
 
@@ -132,11 +118,17 @@ export default function DatasetBuilderGallery({
                         />
                       )}
                       <span className="text-[11px] font-medium text-foreground/80 truncate">{row.brand}</span>
-                      <span className="text-[10px] text-muted-foreground shrink-0 ml-auto">{days}d</span>
+                      <span className="text-[10px] text-muted-foreground shrink-0 ml-auto inline-flex items-center gap-1">
+                        {row.status === "Active" && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-label="Active" />
+                        )}
+                        {days}d
+                      </span>
                     </div>
                     <p className="text-[12px] leading-snug line-clamp-2 text-foreground">{row.headline}</p>
                     <p className="text-[10px] text-muted-foreground">First launched {formatDate(row.firstLaunched)}</p>
                   </div>
+
                 </div>
               );
             })}
