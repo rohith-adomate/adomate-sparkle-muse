@@ -376,31 +376,50 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               onApplyFilter={handleApplyFilter}
             />
 
-            <DatasetBuilderTable
-              columns={columns}
-              rows={filteredRows}
-              selectedRows={selectedRows}
-              onToggleRow={handleToggleRow}
-              onToggleAll={handleToggleAll}
-              onColumnClick={setInspectorColumn}
-              onRunRows={handleRunRows}
-              onRowClick={setDetailRow}
-              activeColumnId={inspectorColumn?.id}
-              onReorderColumns={setColumns}
-              activeFilters={activeFilters}
-              onApplyFilter={handleApplyFilter}
-              totalRowCount={rows.length}
-              launchedSortAsc={launchedSortAsc}
-              onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
-              adGenOn={adGenOn}
-              onAdGenToggle={(on) => {
-                setAdGenOn(on);
-                if (on) {
-                  setAdGenCount(selectedRows.size);
-                  toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
-                }
-              }}
-            />
+            {view === "table" ? (
+              <DatasetBuilderTable
+                columns={columns}
+                rows={filteredRows}
+                selectedRows={selectedRows}
+                onToggleRow={handleToggleRow}
+                onToggleAll={handleToggleAll}
+                onColumnClick={setInspectorColumn}
+                onRunRows={handleRunRows}
+                onRowClick={setDetailRow}
+                activeColumnId={inspectorColumn?.id}
+                onReorderColumns={setColumns}
+                activeFilters={activeFilters}
+                onApplyFilter={handleApplyFilter}
+                totalRowCount={rows.length}
+                launchedSortAsc={launchedSortAsc}
+                onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
+                adGenOn={adGenOn}
+                onAdGenToggle={(on) => {
+                  setAdGenOn(on);
+                  if (on) {
+                    setAdGenCount(selectedRows.size);
+                    toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                  }
+                }}
+              />
+            ) : (
+              <DatasetBuilderGallery
+                rows={filteredRows}
+                selectedRows={selectedRows}
+                onToggleRow={handleToggleRow}
+                onToggleAll={handleToggleAll}
+                onRowClick={setDetailRow}
+                totalRowCount={rows.length}
+                adGenOn={adGenOn}
+                onAdGenToggle={(on) => {
+                  setAdGenOn(on);
+                  if (on) {
+                    setAdGenCount(selectedRows.size);
+                    toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                  }
+                }}
+              />
+            )}
 
             {inspectorColumn && (
               <ColumnInspectorPanel
