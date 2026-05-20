@@ -1,14 +1,12 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Info, Play, Image as ImageIcon, Layers, Wand2, ArrowUpDown } from "lucide-react";
+import { Info, Play, Image as ImageIcon, Layers, ArrowUpDown } from "lucide-react";
 import type { DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import { oyAdImages } from "@/data/oyImages";
+import AdLightbox from "./AdLightbox";
 
 interface Props {
   rows: DatasetRow[];
@@ -33,9 +31,9 @@ export default function DatasetBuilderGallery({
   rows, selectedRows, onToggleRow, onToggleAll, onRowClick, totalRowCount, adGenOn, onAdGenToggle,
   launchedSortAsc, onToggleLaunchedSort,
 }: Props) {
-  const allSelected = rows.length > 0 && rows.every(r => selectedRows.has(r.id));
-  const someSelected = selectedRows.size > 0 && !allSelected;
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sortValue = launchedSortAsc ? "longest" : "recent";
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-muted/20">
@@ -82,7 +80,7 @@ export default function DatasetBuilderGallery({
               return (
                 <div
                   key={row.id}
-                  onClick={() => onToggleRow(row.id)}
+                  onClick={() => setLightboxIndex(idx)}
                   className={cn(
                     "group relative rounded-lg overflow-hidden border bg-card cursor-pointer transition-all flex flex-col",
                     selected
@@ -99,8 +97,11 @@ export default function DatasetBuilderGallery({
                       className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
                     />
 
-                    {/* Top-left: selection */}
-                    <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                    {/* Top-left: selection (click toggles without opening lightbox) */}
+                    <div
+                      className="absolute top-2 left-2 flex items-center gap-1.5"
+                      onClick={(e) => { e.stopPropagation(); onToggleRow(row.id); }}
+                    >
                       <div
                         className={cn(
                           "h-6 w-6 rounded-md flex items-center justify-center transition-all",
@@ -118,6 +119,7 @@ export default function DatasetBuilderGallery({
                         />
                       </div>
                     </div>
+
 
                     {/* Top-right: format icon + info */}
                     <div className="absolute top-2 right-2 flex items-center gap-1.5">
@@ -167,6 +169,19 @@ export default function DatasetBuilderGallery({
           </div>
         )}
       </div>
+
+      {lightboxIndex !== null && rows[lightboxIndex] && (
+        <AdLightbox
+          rows={rows}
+          index={lightboxIndex}
+          selectedRows={selectedRows}
+          onChangeIndex={setLightboxIndex}
+          onToggleSelect={onToggleRow}
+          onOpenInfo={(r) => { setLightboxIndex(null); onRowClick(r); }}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }
+
