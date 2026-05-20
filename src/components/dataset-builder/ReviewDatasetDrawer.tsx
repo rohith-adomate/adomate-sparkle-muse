@@ -228,6 +228,10 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
   }, [addedBrands.length, onSourcesChange]);
 
   useEffect(() => {
+    if (adGenOn) setAdGenCount(selectedRows.size);
+  }, [adGenOn, selectedRows]);
+
+  useEffect(() => {
     onAdGenChange?.(adGenOn, adGenOn ? adGenCount : 0);
   }, [adGenOn, adGenCount, onAdGenChange]);
 
