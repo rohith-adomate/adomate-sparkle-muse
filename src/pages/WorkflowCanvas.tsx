@@ -371,9 +371,14 @@ export default function WorkflowCanvas() {
     });
     const idx = pipeline.indexOf(currentType);
     if (idx === -1) return;
-    // Find next pipeline step, skipping Schedule when user has manually picked rows
+    // Find next pipeline step, skipping Schedule when user has manually picked
+    // rows, and skipping top-select since it's auto-configured to manual mode.
     let nextIdx = idx + 1;
-    while (nextIdx < pipeline.length && manualAdGen.on && pipeline[nextIdx] === "schedule") {
+    while (
+      nextIdx < pipeline.length &&
+      manualAdGen.on &&
+      (pipeline[nextIdx] === "schedule" || pipeline[nextIdx] === "top-select")
+    ) {
       nextIdx++;
     }
     if (nextIdx >= pipeline.length) {
