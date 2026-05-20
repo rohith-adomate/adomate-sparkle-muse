@@ -254,7 +254,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
       {/* Backdrop */}
       <div className="fixed inset-0 z-50 flex">
         <div className="w-[5%] bg-black/20" onClick={onClose} />
-        <div className="w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
+        <div className="relative w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
           {/* Top bar */}
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
             <div className="flex items-center gap-3">
@@ -269,81 +269,6 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
-              {selectedRows.size > 0 && (() => {
-                const aiCols = columns.filter(c => c.type === "ai");
-                const runnableIds = filteredRows
-                  .filter(r => selectedRows.has(r.id) && aiCols.some(col => {
-                    const tplId = col.templateId || col.id;
-                    const v = r.aiValues[tplId];
-                    return !v || v === "—";
-                  }))
-                  .map(r => r.id);
-                const canRun = aiCols.length > 0 && runnableIds.length > 0;
-                const reason = aiCols.length === 0
-                  ? "Add an AI column first"
-                  : "All selected rows already have AI values";
-                return (
-                  <>
-                    <div className="flex items-center gap-1 h-8 pl-1 pr-1 rounded-md bg-primary text-primary-foreground">
-                      <span className="inline-flex items-center gap-1 h-6 px-2 rounded-[3px] bg-primary-foreground text-primary text-[11px] font-bold tabular-nums">
-                        {selectedRows.size}
-                        <span className="text-primary/60 font-medium">/ {filteredRows.length}</span>
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRows(new Set())}
-                        className="inline-flex items-center justify-center h-6 w-6 rounded hover:bg-primary-foreground/15 transition-colors"
-                        title="Clear selection"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                      <span className="mx-0.5 h-4 w-px bg-primary-foreground/25" />
-                      <Tooltip delayDuration={200}>
-                        <TooltipTrigger asChild>
-                          <span>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              disabled={!canRun}
-                              className="h-6 text-[11px] gap-1.5 text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed rounded px-2"
-                              onClick={() => handleRunRows(runnableIds)}
-                            >
-                              <Wand2 className="h-3 w-3" /> Run AI analysis
-                              {canRun && runnableIds.length !== selectedRows.size && (
-                                <span className="opacity-70">({runnableIds.length})</span>
-                              )}
-                            </Button>
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs max-w-[220px]">
-                          {canRun
-                            ? `Runs on ${runnableIds.length} row${runnableIds.length === 1 ? "" : "s"} with empty AI cells`
-                            : reason}
-                        </TooltipContent>
-                      </Tooltip>
-                      <span className="mx-0.5 h-4 w-px bg-primary-foreground/25" />
-                      <div className="flex items-center gap-1.5 pr-2 pl-1">
-                        <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-primary-foreground cursor-pointer select-none">
-                          Use for ad generation
-                        </label>
-                        <Switch
-                          id="ad-gen-toggle"
-                          checked={adGenOn}
-                          onCheckedChange={(v) => {
-                            setAdGenOn(!!v);
-                            if (v) {
-                              setAdGenCount(selectedRows.size);
-                              toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
-                            }
-                          }}
-                          className="data-[state=checked]:bg-primary-foreground data-[state=checked]:[&>span]:bg-primary scale-75"
-                        />
-                      </div>
-                    </div>
-                    <span className="mx-1 h-6 w-px bg-border" />
-                  </>
-                );
-              })()}
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
@@ -451,6 +376,78 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               />
             )}
           </div>
+
+          {/* Floating row-actions bar */}
+          {selectedRows.size > 0 && (() => {
+            const aiCols = columns.filter(c => c.type === "ai");
+            const runnableIds = filteredRows
+              .filter(r => selectedRows.has(r.id) && aiCols.some(col => {
+                const tplId = col.templateId || col.id;
+                const v = r.aiValues[tplId];
+                return !v || v === "—";
+              }))
+              .map(r => r.id);
+            const canRun = aiCols.length > 0 && runnableIds.length > 0;
+            const reason = aiCols.length === 0 ? "Add an AI column first" : "All selected rows already have AI values";
+            return (
+              <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-20 z-40 animate-fade-in">
+                <div className="pointer-events-auto flex items-center gap-2 h-12 pl-2 pr-2 rounded-xl bg-foreground text-background shadow-2xl border border-foreground/10">
+                  <span className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-background/10">
+                    <span className="text-[13px] font-semibold tabular-nums">{selectedRows.size}</span>
+                    <span className="text-[11px] text-background/70">of {filteredRows.length} selected</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRows(new Set())}
+                    className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-background/10 transition-colors"
+                    title="Clear selection"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <span className="h-6 w-px bg-background/15" />
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={!canRun}
+                          className="h-8 text-[12px] gap-1.5 text-background hover:bg-background/10 hover:text-background disabled:opacity-40 disabled:cursor-not-allowed rounded-lg px-3"
+                          onClick={() => handleRunRows(runnableIds)}
+                        >
+                          <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
+                          {canRun && runnableIds.length !== selectedRows.size && (
+                            <span className="opacity-60">({runnableIds.length})</span>
+                          )}
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[220px]">
+                      {canRun ? `Runs on ${runnableIds.length} row${runnableIds.length === 1 ? "" : "s"} with empty AI cells` : reason}
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="h-6 w-px bg-background/15" />
+                  <div className="flex items-center gap-2 pr-2 pl-1.5">
+                    <label htmlFor="ad-gen-toggle-floating" className="text-[12px] font-medium cursor-pointer select-none">
+                      Use for ad generation
+                    </label>
+                    <Switch
+                      id="ad-gen-toggle-floating"
+                      checked={adGenOn}
+                      onCheckedChange={(v) => {
+                        setAdGenOn(!!v);
+                        if (v) {
+                          setAdGenCount(selectedRows.size);
+                          toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                        }
+                      }}
+                      className="data-[state=checked]:bg-primary scale-90"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           <DrawerContinueFooter onContinue={onContinue} label={continueLabel} disabled={sources.length === 0} />
         </div>
