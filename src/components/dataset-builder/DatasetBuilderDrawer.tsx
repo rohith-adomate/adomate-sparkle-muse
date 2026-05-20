@@ -428,7 +428,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               adGenOn={adGenOn}
               onAdGenToggle={(on) => {
                 setAdGenOn(on);
-                if (on) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                if (on) {
+                  setAdGenCount(selectedRows.size);
+                  toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                }
               }}
             />
 
