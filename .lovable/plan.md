@@ -1,22 +1,14 @@
-# Review Dataset node — configured visual
+# Skip Schedule step when rows are manually selected
 
-Bring the Review Dataset node visual in line with the Ad Library tracker (Dataset) node so it communicates its configured state at a glance.
+When `manualAdGen.on` is true, the Schedule node is already hidden from the canvas and the catalog, but the **Continue chain** still walks into `ScheduleDrawer` after the user finishes the previous step (e.g. Select / Generate). It should instead jump straight to the final-step **SetupSummaryDrawer**, identical to the Ad Library tracker manual flow.
 
-## What changes
+## Changes (single file: `src/pages/WorkflowCanvas.tsx`)
 
-In `src/pages/WorkflowCanvas.tsx`, inside the node card body where each node type renders its mini-preview:
-
-**Configured state (`review-dataset`)**
-- Reuse the same stacked brand-avatar row used by `dataset` (3 overlapping 36px circles, `ring-2 ring-card`, `-space-x-2`).
-- Overlay a small Trustpilot badge on the lead avatar: a white-ringed pill in the bottom-right corner containing a filled green star (Trustpilot green `#00B67A`) to signal the review source.
-
-**Unconfigured state (`review-dataset`)**
-- Mirror the dataset unconfigured placeholder: 3 dashed empty circles stacked, so the empty/filled transition reads the same as the Ad Library tracker.
-
-No other node types, drawers, or logic are touched.
+1. **`openNextDrawerFor` (line 364)** — when the next pipeline step is `schedule` and `manualAdGen.on`, skip it: open `SetupSummaryDrawer` instead of `ScheduleDrawer`.
+2. **`continueLabelFor` (line 379)** — when the current step is the last *non-schedule* step under manual mode, return `"Finish"` so the previous drawer's CTA reads correctly.
+3. No changes to the summary drawer itself — its CTAs (`Save draft` / `Save & run`) already swap to "manual" mode via the existing `mode={manualAdGen.on ? "manual" : ...}` prop and `onRunNow` handler.
 
 ## Technical notes
 
-- Edit only the two render branches inside the node body (`isUnconfigured` and `isConfiguredNode`) around lines 1486 and 1572.
-- Use a small inline `Star` from `lucide-react` (already imported elsewhere) with `fill="#00B67A"` and `text-[#00B67A]`, wrapped in a `bg-card rounded-full p-0.5 ring-2 ring-card` badge anchored bottom-right of the first avatar.
-- Brand initials reuse the existing `brands` array already defined in the configured block.
+- Use the existing `manualAdGen.on` flag (already in scope) inside both callbacks and add it to their dependency arrays.
+- Compute the "effective next" step by skipping any `schedule` entry in `pipeline` when manual mode is active. If skipping makes it the end of the pipeline, open `SetupSummaryDrawer`.
