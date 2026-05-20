@@ -47,6 +47,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   }, [sources, onSourcesChange]);
 
   useEffect(() => {
+    if (adGenOn) setAdGenCount(selectedRows.size);
+  }, [adGenOn, selectedRows]);
+
+  useEffect(() => {
     onAdGenChange?.(adGenOn, adGenOn ? adGenCount : 0);
   }, [adGenOn, adGenCount, onAdGenChange]);
 
