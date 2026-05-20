@@ -43,6 +43,12 @@ export default function RowDetailDrawer({ row, onClose, onRunRow, variant = "det
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {variant === "preview" && (
+            <div className="w-full rounded-xl border border-border bg-muted/30 overflow-hidden" style={{ aspectRatio: "4/5" }}>
+              <img src={img} alt={row.headline} className="w-full h-full object-cover" />
+            </div>
+          )}
+
           {/* Brand header */}
           <div className="flex items-center gap-2.5">
             {row.brandAvatar && (
