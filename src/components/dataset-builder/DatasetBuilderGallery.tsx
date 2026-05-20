@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, Play, Image as ImageIcon, Layers, Wand2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Info, Play, Image as ImageIcon, Layers, Wand2, ArrowUpDown } from "lucide-react";
 import type { DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import { oyAdImages } from "@/data/oyImages";
@@ -18,6 +19,8 @@ interface Props {
   totalRowCount?: number;
   adGenOn?: boolean;
   onAdGenToggle?: (on: boolean) => void;
+  launchedSortAsc?: boolean;
+  onToggleLaunchedSort?: () => void;
 }
 
 function FormatIcon({ format }: { format: string }) {
@@ -28,12 +31,40 @@ function FormatIcon({ format }: { format: string }) {
 
 export default function DatasetBuilderGallery({
   rows, selectedRows, onToggleRow, onToggleAll, onRowClick, totalRowCount, adGenOn, onAdGenToggle,
+  launchedSortAsc, onToggleLaunchedSort,
 }: Props) {
   const allSelected = rows.length > 0 && rows.every(r => selectedRows.has(r.id));
   const someSelected = selectedRows.size > 0 && !allSelected;
+  const sortValue = launchedSortAsc ? "longest" : "recent";
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-muted/20">
+      {/* Sort toolbar */}
+      <div className="flex items-center justify-between px-5 py-2.5 border-b border-border/60 bg-card/40 shrink-0">
+        <div className="text-xs text-muted-foreground">
+          {rows.length} {rows.length === 1 ? "ad" : "ads"}
+          {totalRowCount !== undefined && totalRowCount !== rows.length && (
+            <span> of {totalRowCount}</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5">
+          <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+          <Select
+            value={sortValue}
+            onValueChange={(v) => {
+              if ((v === "longest") !== !!launchedSortAsc) onToggleLaunchedSort?.();
+            }}
+          >
+            <SelectTrigger className="h-7 w-[180px] text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent" className="text-xs">Most recent</SelectItem>
+              <SelectItem value="longest" className="text-xs">Longest running</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Gallery grid */}
       <div className="flex-1 overflow-auto p-5">
@@ -43,6 +74,7 @@ export default function DatasetBuilderGallery({
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
             {rows.map((row, idx) => {
               const selected = selectedRows.has(row.id);
               const img = oyAdImages[(parseInt(row.id, 10) || idx) % oyAdImages.length];
