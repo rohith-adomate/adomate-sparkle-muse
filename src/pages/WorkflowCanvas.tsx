@@ -446,6 +446,7 @@ export default function WorkflowCanvas() {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (manualAdGen.on && n.type === "schedule") return false;
       if (n.type === "dataset") return datasetEmpty;
       if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
