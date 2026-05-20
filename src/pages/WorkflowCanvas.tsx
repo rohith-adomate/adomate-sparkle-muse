@@ -645,6 +645,15 @@ export default function WorkflowCanvas() {
         n.type === "top-select" ? { ...n, description: desc } : n
       )
     );
+    // If user picks manual selection, bounce them to the dataset drawer
+    // so they can mark rows with "Use for ad generation".
+    if (config.mode === "manual-selection") {
+      setTopSelectDrawerOpen(false);
+      setTimeout(() => {
+        if (isReviewsWorkflow) setReviewDatasetDrawerOpen(true);
+        else setDatasetDrawerOpen(true);
+      }, 150);
+    }
   }, [buildSelectDesc, isReviewsWorkflow]);
 
   // React to manual ad-gen toggle from dataset drawers
