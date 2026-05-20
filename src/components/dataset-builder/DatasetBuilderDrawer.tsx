@@ -537,9 +537,11 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
 
       <RowDetailDrawer
         row={detailRow}
+        variant={detailVariant}
         onClose={() => setDetailRow(null)}
         onRunRow={(id) => handleRunRows([id])}
       />
+
 
       <EnrichDataModal
         open={enrichOpen}
