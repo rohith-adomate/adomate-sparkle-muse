@@ -387,7 +387,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                 onToggleAll={handleToggleAll}
                 onColumnClick={setInspectorColumn}
                 onRunRows={handleRunRows}
-                onRowClick={setDetailRow}
+                onRowClick={(r) => { setDetailVariant("preview"); setDetailRow(r); }}
                 activeColumnId={inspectorColumn?.id}
                 onReorderColumns={setColumns}
                 activeFilters={activeFilters}
