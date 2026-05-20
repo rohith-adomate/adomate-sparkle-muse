@@ -551,12 +551,13 @@ export default function WorkflowCanvas() {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (manualAdGen.on && n.type === "schedule") return false;
       if (n.type === "dataset") return datasetEmpty;
       if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
-    const hasAnyConfigurable = nodes.some((n) => UNCONFIGURED_TYPES.includes(n.type));
+    const hasAnyConfigurable = nodes.some((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
     const fullyConfigured = hasAnyConfigurable && unconfiguredCount === 0;
     // On first evaluation after mount, just sync the ref — don't celebrate
     // an already-configured workflow that the user just opened.
