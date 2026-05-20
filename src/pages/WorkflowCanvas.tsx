@@ -635,6 +635,7 @@ export default function WorkflowCanvas() {
   // React to manual ad-gen toggle from dataset drawers
   const handleAdGenChange = useCallback((on: boolean, count: number) => {
     setManualAdGen({ on, count });
+    if (on) setScheduleDrawerOpen(false);
     setTopSelectConfig((prev) => {
       const next = on
         ? { ...prev, mode: "manual-selection" as const, manualCount: count }
@@ -896,14 +897,19 @@ export default function WorkflowCanvas() {
   /* ── Filtered catalog ── */
   const filteredCatalog = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    if (!q) return NODE_CATALOG;
-    return NODE_CATALOG.map((group) => ({
+    const base = NODE_CATALOG.map((group) => ({
+      ...group,
+      // Hide Schedule from catalog when user has manually picked rows for ad gen
+      items: group.items.filter((item) => !(manualAdGen.on && item.type === "schedule")),
+    })).filter((g) => g.items.length > 0);
+    if (!q) return base;
+    return base.map((group) => ({
       ...group,
       items: group.items.filter(
         (item) => item.label.toLowerCase().includes(q) || item.description.toLowerCase().includes(q)
       ),
     })).filter((g) => g.items.length > 0);
-  }, [searchQuery]);
+  }, [searchQuery, manualAdGen.on]);
 
   // Select first run when switching to runs tab
   const selectRun = useCallback((exec: WorkflowRun) => {
