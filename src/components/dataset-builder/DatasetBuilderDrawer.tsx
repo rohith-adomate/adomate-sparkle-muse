@@ -271,6 +271,40 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
+              <div className="inline-flex items-center rounded-md border border-border bg-muted/40 p-0.5">
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setView("table")}
+                      className={cn(
+                        "inline-flex items-center justify-center h-7 w-7 rounded transition-colors",
+                        view === "table" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+                      )}
+                      aria-label="Table view"
+                    >
+                      <TableIcon className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Table view</TooltipContent>
+                </Tooltip>
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setView("gallery")}
+                      className={cn(
+                        "inline-flex items-center justify-center h-7 w-7 rounded transition-colors",
+                        view === "gallery" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+                      )}
+                      aria-label="Gallery view"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Gallery view — visual ad previews</TooltipContent>
+                </Tooltip>
+              </div>
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
