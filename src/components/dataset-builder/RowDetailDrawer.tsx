@@ -3,12 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { X, Play, Image as ImageIcon, Video, LayoutGrid, ExternalLink } from "lucide-react";
 import type { DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
+import { oyAdImages } from "@/data/oyImages";
 import { cn } from "@/lib/utils";
 
 interface Props {
   row: DatasetRow | null;
   onClose: () => void;
   onRunRow: (rowId: string) => void;
+  variant?: "preview" | "details";
 }
 
 const formatIcon: Record<string, typeof ImageIcon> = { Image: ImageIcon, Video, Carousel: LayoutGrid };
@@ -22,10 +24,12 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function RowDetailDrawer({ row, onClose, onRunRow }: Props) {
+export default function RowDetailDrawer({ row, onClose, onRunRow, variant = "details" }: Props) {
   if (!row) return null;
   const FormatIcon = formatIcon[row.format] || ImageIcon;
   const days = daysOnline(row.firstLaunched);
+  const img = oyAdImages[(parseInt(row.id, 10) || 0) % oyAdImages.length];
+
 
   return (
     <div className="fixed inset-0 z-[60] flex justify-end">
