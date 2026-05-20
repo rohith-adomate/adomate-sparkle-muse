@@ -446,6 +446,7 @@ export default function WorkflowCanvas() {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (manualAdGen.on && n.type === "schedule") return false;
       if (n.type === "dataset") return datasetEmpty;
       if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
@@ -550,12 +551,13 @@ export default function WorkflowCanvas() {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
     const unconfiguredCount = nodes.filter((n) => {
       if (!UNCONFIGURED_TYPES.includes(n.type)) return false;
+      if (manualAdGen.on && n.type === "schedule") return false;
       if (n.type === "dataset") return datasetEmpty;
       if (n.type === "review-dataset") return reviewDatasetEmpty;
       if (n.type === "product-data") return selectedProductCount === 0;
       return !configuredTypes.has(n.type);
     }).length;
-    const hasAnyConfigurable = nodes.some((n) => UNCONFIGURED_TYPES.includes(n.type));
+    const hasAnyConfigurable = nodes.some((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
     const fullyConfigured = hasAnyConfigurable && unconfiguredCount === 0;
     // On first evaluation after mount, just sync the ref — don't celebrate
     // an already-configured workflow that the user just opened.
@@ -874,7 +876,7 @@ export default function WorkflowCanvas() {
   // Fully-configured = every configurable node in this workflow is configured.
   const fullyConfigured = useMemo(() => {
     const UNCONFIGURED_TYPES = ["schedule", "dataset", "ad-account", "reddit-subreddit", "top-select", "product-data", "generate-concepts", "reddit-ad-generator", "manual-image-input"];
-    const configurableNodes = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+    const configurableNodes = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
     if (configurableNodes.length === 0) return false;
     return configurableNodes.every((n) => {
       if (n.type === "dataset") return !datasetEmpty;
@@ -882,7 +884,7 @@ export default function WorkflowCanvas() {
       if (n.type === "manual-image-input") return (nodeImages[n.id] || []).length > 0 || configuredTypes.has("manual-image-input");
       return configuredTypes.has(n.type);
     });
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages]);
+  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages, manualAdGen.on]);
 
   // Force agent off when manual image input node exists
   useEffect(() => {
@@ -1133,7 +1135,7 @@ export default function WorkflowCanvas() {
           }
           if (activeTab !== "editor") return null;
           const UNCONFIGURED_TYPES = ["schedule", "dataset", "review-dataset", "top-select", "product-data", "generate-concepts"];
-          const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type));
+          const tracked = nodes.filter((n) => UNCONFIGURED_TYPES.includes(n.type) && !(manualAdGen.on && n.type === "schedule"));
           const total = tracked.length;
           const remaining = tracked.filter((n) => {
             if (n.type === "dataset") return datasetEmpty;
