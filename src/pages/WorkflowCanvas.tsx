@@ -1094,7 +1094,7 @@ export default function WorkflowCanvas() {
             </div>
           </div>
           <div className="flex items-center justify-end gap-3">
-            {!manualAdGen.on && (
+            {!manualAdGen.on && !hasManualImageInput && (
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <div className="flex items-center gap-2">
