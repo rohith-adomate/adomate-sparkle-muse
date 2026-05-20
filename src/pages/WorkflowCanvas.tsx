@@ -1638,7 +1638,7 @@ export default function WorkflowCanvas() {
                                   {node.type === "schedule" && (nextRunDate
                                     ? nextRunDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
                                     : "—")}
-                                  {node.type === "dataset" && (manualAdGen.on ? `${manualAdGen.count} selected` : "641 ads")}
+                                  {node.type === "dataset" && (manualAdGen.on ? `${manualAdGen.count} ${isReviewsWorkflow ? "reviews" : "ads"}` : "641 ads")}
                                   {node.type === "top-select" && (topSelectConfig.mode === "manual-selection"
                                     ? `${topSelectConfig.manualCount ?? manualAdGen.count} ${isReviewsWorkflow ? "reviews" : "ads"}`
                                     : isAllNew ? "All new" : `Top ${topSelectConfig.count ?? 5}`)}
