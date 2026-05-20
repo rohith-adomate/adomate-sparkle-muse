@@ -7,15 +7,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Info, ListFilter, CalendarClock } from "lucide-react";
+import { Info, ListFilter, CalendarClock, MousePointerClick } from "lucide-react";
 
-export type SelectionMode = "all-new" | "top-n";
+export type SelectionMode = "all-new" | "top-n" | "manual-selection";
 
 export interface SelectConfig {
   mode: SelectionMode;
   count: number;
   maxAgeEnabled: boolean;
   maxAgeMonths: number;
+  manualCount?: number;
 }
 
 interface TopAdsSelectionDrawerProps {
@@ -25,13 +26,19 @@ interface TopAdsSelectionDrawerProps {
   onConfigChange?: (config: SelectConfig) => void;
   onContinue?: () => void;
   continueLabel?: string;
+  itemLabel?: string;
+  manualSelectionAvailable?: boolean;
 }
 
-function buildSummary(config: SelectConfig): string {
-  if (config.mode === "all-new") {
-    return "All new ads since last scheduled run";
+function buildSummary(config: SelectConfig, itemLabel = "ads"): string {
+  if (config.mode === "manual-selection") {
+    const n = config.manualCount ?? 0;
+    return `${n} manually selected ${itemLabel}`;
   }
-  let s = `Top ${config.count} ads by days online`;
+  if (config.mode === "all-new") {
+    return `All new ${itemLabel} since last scheduled run`;
+  }
+  let s = `Top ${config.count} ${itemLabel} by days online`;
   if (config.maxAgeEnabled) {
     s += ` (last ${config.maxAgeMonths}mo)`;
   }
