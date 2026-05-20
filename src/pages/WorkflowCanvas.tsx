@@ -635,6 +635,7 @@ export default function WorkflowCanvas() {
   // React to manual ad-gen toggle from dataset drawers
   const handleAdGenChange = useCallback((on: boolean, count: number) => {
     setManualAdGen({ on, count });
+    if (on) setScheduleDrawerOpen(false);
     setTopSelectConfig((prev) => {
       const next = on
         ? { ...prev, mode: "manual-selection" as const, manualCount: count }
