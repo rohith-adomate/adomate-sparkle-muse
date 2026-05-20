@@ -11,7 +11,7 @@ import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
   PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
-  Upload, X, Pencil, MousePointerClick,
+  Upload, X, Pencil, MousePointerClick, Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
@@ -1483,7 +1483,7 @@ export default function WorkflowCanvas() {
                                 <span className="text-[11px] font-medium text-muted-foreground/70">Set cadence</span>
                               </div>
                             )}
-                            {node.type === "dataset" && (
+                            {(node.type === "dataset" || node.type === "review-dataset") && (
                               <div className="h-12 flex items-center justify-start -space-x-2">
                                 {Array.from({ length: 3 }).map((_, i) => (
                                   <div key={i} className="h-9 w-9 rounded-full border border-dashed border-muted-foreground/30 bg-muted/30 ring-2 ring-card" />
@@ -1574,6 +1574,22 @@ export default function WorkflowCanvas() {
                                     {brands.map((b) => (
                                       <div key={b.initials} className="h-9 w-9 rounded-full ring-2 ring-card flex items-center justify-center text-[11px] font-bold text-white" style={{ background: b.bg }}>
                                         {b.initials}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                                {node.type === "review-dataset" && (
+                                  <div className="h-12 flex items-center justify-start -space-x-2">
+                                    {brands.map((b, idx) => (
+                                      <div key={b.initials} className="relative">
+                                        <div className="h-9 w-9 rounded-full ring-2 ring-card flex items-center justify-center text-[11px] font-bold text-white" style={{ background: b.bg }}>
+                                          {b.initials}
+                                        </div>
+                                        {idx === 0 && (
+                                          <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-card ring-2 ring-card flex items-center justify-center">
+                                            <Star className="h-2.5 w-2.5" fill="#00B67A" stroke="#00B67A" />
+                                          </div>
+                                        )}
                                       </div>
                                     ))}
                                   </div>
