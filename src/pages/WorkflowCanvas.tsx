@@ -656,7 +656,7 @@ export default function WorkflowCanvas() {
         else setDatasetDrawerOpen(true);
       }, 150);
     }
-  }, [buildSelectDesc, isReviewsWorkflow]);
+  }, [buildSelectDesc, isReviewsWorkflow, manualAdGen.count]);
 
   // React to manual ad-gen toggle from dataset drawers
   const handleAdGenChange = useCallback((on: boolean, count: number) => {
