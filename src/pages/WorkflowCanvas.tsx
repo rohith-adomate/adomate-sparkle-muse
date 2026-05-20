@@ -1640,7 +1640,7 @@ export default function WorkflowCanvas() {
                                     : "—")}
                                   {node.type === "dataset" && (manualAdGen.on ? `${manualAdGen.count} selected` : "641 ads")}
                                   {node.type === "top-select" && (topSelectConfig.mode === "manual-selection"
-                                    ? `${topSelectConfig.manualCount ?? manualAdGen.count} selected`
+                                    ? `${topSelectConfig.manualCount ?? manualAdGen.count} ${isReviewsWorkflow ? "reviews" : "ads"}`
                                     : isAllNew ? "All new" : `Top ${topSelectConfig.count ?? 5}`)}
                                   {node.type === "product-data" && (selectedProductCount > 0 ? selectedProductCount : "—")}
                                   {node.type === "generate-concepts" && "~75 concepts"}
