@@ -438,7 +438,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                     <TooltipTrigger asChild>
                       <label
                         htmlFor="ad-gen-toggle-floating"
-                        className="flex items-center gap-2.5 h-9 pl-3 pr-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer select-none transition-colors shadow-sm"
+                        className="flex items-center gap-2.5 h-9 pl-3 pr-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/15 cursor-pointer select-none transition-colors"
                       >
                         <span className="text-[12px] font-semibold">Use for ad generation</span>
                         <Switch
@@ -451,7 +451,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                               toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
                             }
                           }}
-                          className="data-[state=checked]:bg-primary-foreground data-[state=unchecked]:bg-primary-foreground/30 [&>span]:bg-primary scale-90"
+                          className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary/25 [&>span]:bg-card scale-90"
                         />
                       </label>
                     </TooltipTrigger>
