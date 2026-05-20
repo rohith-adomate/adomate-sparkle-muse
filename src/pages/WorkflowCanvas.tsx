@@ -370,17 +370,32 @@ export default function WorkflowCanvas() {
       return next;
     });
     const idx = pipeline.indexOf(currentType);
-    if (idx === -1 || idx === pipeline.length - 1) return;
-    const next = pipeline[idx + 1];
+    if (idx === -1) return;
+    // Find next pipeline step, skipping Schedule when user has manually picked rows
+    let nextIdx = idx + 1;
+    while (nextIdx < pipeline.length && manualAdGen.on && pipeline[nextIdx] === "schedule") {
+      nextIdx++;
+    }
+    if (nextIdx >= pipeline.length) {
+      // End of pipeline → open final-step summary
+      setTimeout(() => setSetupSummaryOpen(true), 150);
+      return;
+    }
+    const next = pipeline[nextIdx];
     // Defer so the current drawer's onOpenChange(false) can complete first
     setTimeout(() => openDrawerFor(next), 50);
-  }, [pipeline, openDrawerFor, markConfigured]);
+  }, [pipeline, openDrawerFor, markConfigured, manualAdGen.on]);
 
   const continueLabelFor = useCallback((currentType: string) => {
     if (editingFromSummary === currentType) return "Back to summary";
     const idx = pipeline.indexOf(currentType);
-    return idx === pipeline.length - 1 ? "Finish" : "Continue";
-  }, [pipeline, editingFromSummary]);
+    // Determine effective last step (skip schedule under manual mode)
+    let lastIdx = pipeline.length - 1;
+    while (lastIdx >= 0 && manualAdGen.on && pipeline[lastIdx] === "schedule") {
+      lastIdx--;
+    }
+    return idx >= lastIdx ? "Finish" : "Continue";
+  }, [pipeline, editingFromSummary, manualAdGen.on]);
 
   const returnToSummary = useCallback(() => {
     setEditingFromSummary(null);
