@@ -11,7 +11,7 @@ import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
   PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
-  Upload, X, Pencil, MousePointerClick,
+  Upload, X, Pencil, MousePointerClick, Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
