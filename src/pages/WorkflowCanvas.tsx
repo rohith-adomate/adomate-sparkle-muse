@@ -643,6 +643,24 @@ export default function WorkflowCanvas() {
       return next;
     });
   }, [buildSelectDesc, isReviewsWorkflow]);
+
+  // Apply persisted Select node description on mount / when nodes load
+  useEffect(() => {
+    const itemLabel = isReviewsWorkflow ? "reviews" : "ads";
+    const desc = buildSelectDesc(topSelectConfig, itemLabel);
+    setNodes((curr) => {
+      let changed = false;
+      const next = curr.map((n) => {
+        if (n.type === "top-select" && n.description !== desc) {
+          changed = true;
+          return { ...n, description: desc };
+        }
+        return n;
+      });
+      return changed ? next : curr;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topSelectConfig, isReviewsWorkflow, buildSelectDesc]);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
