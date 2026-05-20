@@ -380,49 +380,60 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                 const canRun = aiColumns.length > 0 && runnableCount > 0;
                 return (
                   <>
-                    <span className="text-[11px] font-semibold text-primary px-1">
-                      {selectedRows.size} of {filteredRows.length} selected
-                    </span>
-                    <Tooltip delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <span>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={!canRun}
-                            className="h-8 text-xs gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                            onClick={() => setEnrichOpen(true)}
-                          >
-                            <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
-                            {canRun && runnableCount !== selectedRows.size && (
-                              <span className="text-muted-foreground">({runnableCount})</span>
-                            )}
-                          </Button>
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-[220px]">
-                        {canRun
-                          ? `Runs on ${runnableCount} review${runnableCount === 1 ? "" : "s"} with empty AI cells`
-                          : aiColumns.length === 0
-                            ? "Add an AI column to enrich the selected reviews"
-                            : "All selected reviews already have AI values"}
-                      </TooltipContent>
-                    </Tooltip>
-                    <div className="flex items-center gap-1.5 px-2 h-8 rounded-md border border-border">
-                      <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
-                        Use for ad generation
-                      </label>
-                      <Switch
-                        id="review-ad-gen-toggle"
-                        checked={adGenOn}
-                        onCheckedChange={(v) => {
-                          setAdGenOn(!!v);
-                          if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
-                        }}
-                        className="data-[state=checked]:bg-primary"
-                      />
+                    <div className="flex items-center gap-1.5 h-8 pl-2.5 pr-1 rounded-full border border-primary/30 bg-primary/5">
+                      <span className="text-[11px] font-semibold text-primary">
+                        {selectedRows.size} of {filteredRows.length} selected
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRows(new Set())}
+                        className="inline-flex items-center gap-0.5 text-[11px] text-primary/70 hover:text-primary px-1.5 py-0.5 rounded-full hover:bg-primary/10 transition-colors"
+                      >
+                        <X className="h-3 w-3" /> Clear
+                      </button>
+                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
+                      <Tooltip delayDuration={200}>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              disabled={!canRun}
+                              className="h-7 text-[11px] gap-1.5 text-primary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-2.5"
+                              onClick={() => setEnrichOpen(true)}
+                            >
+                              <Wand2 className="h-3 w-3" /> Run AI analysis
+                              {canRun && runnableCount !== selectedRows.size && (
+                                <span className="text-primary/60">({runnableCount})</span>
+                              )}
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs max-w-[220px]">
+                          {canRun
+                            ? `Runs on ${runnableCount} review${runnableCount === 1 ? "" : "s"} with empty AI cells`
+                            : aiColumns.length === 0
+                              ? "Add an AI column to enrich the selected reviews"
+                              : "All selected reviews already have AI values"}
+                        </TooltipContent>
+                      </Tooltip>
+                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
+                      <div className="flex items-center gap-1.5 pr-2 pl-1">
+                        <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-primary cursor-pointer select-none">
+                          Use for ad generation
+                        </label>
+                        <Switch
+                          id="review-ad-gen-toggle"
+                          checked={adGenOn}
+                          onCheckedChange={(v) => {
+                            setAdGenOn(!!v);
+                            if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                          }}
+                          className="data-[state=checked]:bg-primary scale-75"
+                        />
+                      </div>
                     </div>
-                    <span className="mx-1 h-5 w-px bg-border" />
+                    <span className="mx-1 h-6 w-px bg-border" />
                   </>
                 );
               })()}
