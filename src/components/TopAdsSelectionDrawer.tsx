@@ -108,7 +108,9 @@ export default function TopAdsSelectionDrawer({
           <div className="rounded-xl border border-border bg-muted/30 p-5 mb-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="rounded-lg bg-primary/10 p-2">
-                {mode === "all-new" ? (
+                {mode === "manual-selection" ? (
+                  <MousePointerClick className="h-4 w-4 text-primary" />
+                ) : mode === "all-new" ? (
                   <CalendarClock className="h-4 w-4 text-primary" />
                 ) : (
                   <ListFilter className="h-4 w-4 text-primary" />
@@ -116,19 +118,33 @@ export default function TopAdsSelectionDrawer({
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">
-                  {mode === "all-new" ? "All new ads" : `Top ${count} ads`}
+                  {mode === "manual-selection"
+                    ? `${manualCount} manually selected ${itemLabel}`
+                    : mode === "all-new"
+                      ? `All new ${itemLabel}`
+                      : `Top ${count} ${itemLabel}`}
                 </p>
                 <p className="text-[11px] text-muted-foreground">
-                  {mode === "all-new"
-                    ? "since last scheduled run"
-                    : "by days online"}
+                  {mode === "manual-selection"
+                    ? "from the dataset"
+                    : mode === "all-new"
+                      ? "since last scheduled run"
+                      : "by days online"}
                 </p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              {mode === "all-new" ? (
+              {mode === "manual-selection" ? (
                 <>
-                  Every ad added to your dataset since the last scheduled run will be selected and passed to the next node for ad generation.
+                  Only the{" "}
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 mx-0.5 font-semibold">
+                    {manualCount}
+                  </Badge>{" "}
+                  {itemLabel} you manually marked with <span className="font-medium text-foreground">Use for ad generation</span> in the dataset will be passed to the next node.
+                </>
+              ) : mode === "all-new" ? (
+                <>
+                  Every {itemLabel.replace(/s$/, "")} added to your dataset since the last scheduled run will be selected and passed to the next node for ad generation.
                 </>
               ) : (
                 <>
@@ -136,10 +152,10 @@ export default function TopAdsSelectionDrawer({
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 mx-0.5 font-semibold">
                     {count}
                   </Badge>{" "}
-                  ads with the most days online will be selected and passed to the next node for ad generation.
+                  {itemLabel} with the most days online will be selected and passed to the next node for ad generation.
                   {maxAgeEnabled && (
                     <>
-                      {" "}Ads older than{" "}
+                      {" "}Older than{" "}
                       <span className="font-medium text-foreground">{months} month{months !== 1 ? "s" : ""}</span>{" "}
                       will be excluded.
                     </>
