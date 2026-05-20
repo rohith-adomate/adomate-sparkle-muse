@@ -177,7 +177,6 @@ export default function DatasetBuilderGallery({
           selectedRows={selectedRows}
           onChangeIndex={setLightboxIndex}
           onToggleSelect={onToggleRow}
-          onOpenInfo={(r) => { setLightboxIndex(null); onRowClick(r); }}
           onClose={() => setLightboxIndex(null)}
         />
       )}
