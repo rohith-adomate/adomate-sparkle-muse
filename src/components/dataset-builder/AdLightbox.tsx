@@ -72,10 +72,6 @@ export default function AdLightbox({
       {/* Click-out */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* Counter */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 text-xs text-white/80 tabular-nums bg-black/40 px-2.5 py-1 rounded-full backdrop-blur">
-        {index + 1} / {total}
-      </div>
 
       {/* Prev arrow */}
       <button
