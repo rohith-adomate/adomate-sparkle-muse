@@ -1,14 +1,12 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Info, Play, Image as ImageIcon, Layers, Wand2, ArrowUpDown } from "lucide-react";
+import { Info, Play, Image as ImageIcon, Layers, ArrowUpDown } from "lucide-react";
 import type { DatasetRow } from "./types";
 import { daysOnline, formatDate } from "./mockData";
 import { oyAdImages } from "@/data/oyImages";
+import AdLightbox from "./AdLightbox";
 
 interface Props {
   rows: DatasetRow[];
@@ -33,9 +31,9 @@ export default function DatasetBuilderGallery({
   rows, selectedRows, onToggleRow, onToggleAll, onRowClick, totalRowCount, adGenOn, onAdGenToggle,
   launchedSortAsc, onToggleLaunchedSort,
 }: Props) {
-  const allSelected = rows.length > 0 && rows.every(r => selectedRows.has(r.id));
-  const someSelected = selectedRows.size > 0 && !allSelected;
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sortValue = launchedSortAsc ? "longest" : "recent";
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-muted/20">
