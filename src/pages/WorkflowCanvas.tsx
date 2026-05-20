@@ -323,10 +323,10 @@ export default function WorkflowCanvas() {
   // Pipeline order per workflow type — drives Continue chaining in drawers
   const pipeline = useMemo<string[]>(() => {
     if (isManualWorkflow) return ["manual-image-input", "product-data", "generate-concepts"];
-    if (isAdAccountWorkflow) return ["schedule", "ad-account", "top-select", "product-data", "generate-concepts"];
-    if (isRedditWorkflow) return ["schedule", "reddit-subreddit", "product-data", "reddit-ad-generator"];
-    if (isReviewsWorkflow) return ["schedule", "review-dataset", "top-select", "product-data", "generate-concepts"];
-    return ["schedule", "dataset", "top-select", "product-data", "generate-concepts"];
+    if (isAdAccountWorkflow) return ["ad-account", "top-select", "product-data", "generate-concepts", "schedule"];
+    if (isRedditWorkflow) return ["reddit-subreddit", "product-data", "reddit-ad-generator", "schedule"];
+    if (isReviewsWorkflow) return ["review-dataset", "top-select", "product-data", "generate-concepts", "schedule"];
+    return ["dataset", "top-select", "product-data", "generate-concepts", "schedule"];
   }, [isManualWorkflow, isAdAccountWorkflow, isRedditWorkflow, isReviewsWorkflow]);
 
   // Tracks which node-type drawers should currently show the Continue CTA.
