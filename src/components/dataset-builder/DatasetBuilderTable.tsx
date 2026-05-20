@@ -110,86 +110,11 @@ export default function DatasetBuilderTable({
     setDragOverColId(null);
   }, [dragColId, allColumns, factsColumns, aiColumns, onReorderColumns]);
 
-  const selectionCount = selectedRows.size;
-
-  const handleClearSelection = useCallback(() => {
-    rows.forEach(r => { if (selectedRows.has(r.id)) onToggleRow(r.id); });
-  }, [rows, selectedRows, onToggleRow]);
-
-  const rowHasEmptyAi = useCallback((row: DatasetRow) => {
-    if (aiColumns.length === 0) return false;
-    return aiColumns.some(col => {
-      const tplId = col.templateId || col.id;
-      const v = row.aiValues[tplId];
-      return !v || v === "—";
-    });
-  }, [aiColumns]);
-
-  const runnableRowIds = rows
-    .filter(r => selectedRows.has(r.id) && rowHasEmptyAi(r))
-    .map(r => r.id);
-  const canRunAi = runnableRowIds.length > 0;
-  const runDisabledReason = aiColumns.length === 0
-    ? "Add an AI column first"
-    : "All selected rows already have AI values — nothing to run";
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="px-4 py-1.5 text-[10px] text-muted-foreground border-b border-border/50 shrink-0">
         <span>Showing {rows.length} / {totalRowCount ?? rows.length} rows</span>
       </div>
-
-      {selectionCount > 0 && (
-        <div className="mx-4 my-2 flex items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 shadow-sm shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-[11px] font-semibold text-primary">
-              {selectionCount} row{selectionCount === 1 ? "" : "s"} selected
-            </span>
-            <span className="text-muted-foreground/40">·</span>
-            <button
-              type="button"
-              onClick={handleClearSelection}
-              className="text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
-            >
-              Clear
-            </button>
-            <Tooltip delayDuration={200}>
-              <TooltipTrigger asChild>
-                <span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    disabled={!canRunAi}
-                    className="h-7 text-[11px] gap-1.5 text-foreground hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => onRunRows(runnableRowIds)}
-                  >
-                    <Wand2 className="h-3 w-3" /> Run AI analysis
-                    {canRunAi && runnableRowIds.length !== selectionCount && (
-                      <span className="text-muted-foreground">({runnableRowIds.length})</span>
-                    )}
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent className="text-xs max-w-[220px]">
-                {canRunAi
-                  ? `Runs on ${runnableRowIds.length} row${runnableRowIds.length === 1 ? "" : "s"} with empty AI cells`
-                  : runDisabledReason}
-              </TooltipContent>
-            </Tooltip>
-          </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="ad-gen-toggle" className="text-[11px] font-medium text-foreground cursor-pointer select-none">
-              Use for ad generation
-            </label>
-            <Switch
-              id="ad-gen-toggle"
-              checked={!!adGenOn}
-              onCheckedChange={(v) => onAdGenToggle?.(!!v)}
-              className="data-[state=checked]:bg-primary"
-            />
-          </div>
-        </div>
-      )}
 
       <div className="flex-1 overflow-auto">
         <table className="w-full text-xs border-collapse">
