@@ -884,7 +884,7 @@ export default function WorkflowCanvas() {
       if (n.type === "manual-image-input") return (nodeImages[n.id] || []).length > 0 || configuredTypes.has("manual-image-input");
       return configuredTypes.has(n.type);
     });
-  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages]);
+  }, [nodes, datasetEmpty, selectedProductCount, configuredTypes, nodeImages, manualAdGen.on]);
 
   // Force agent off when manual image input node exists
   useEffect(() => {
