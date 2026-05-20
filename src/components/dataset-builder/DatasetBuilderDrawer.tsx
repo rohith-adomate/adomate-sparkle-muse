@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles, Wand2, X, CheckSquare } from "lucide-react";
+import { ArrowLeft, Download, Loader2, CheckCircle2, AlertCircle, ExternalLink, Sparkles, Wand2, X, CheckSquare, Table as TableIcon, LayoutGrid } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import type { DatasetColumn, DatasetFilter, DatasetSource, DatasetRow, ActiveFilter } from "./types";
 import { INITIAL_SOURCES, FACTS_COLUMNS, DEFAULT_AI_COLUMN, INITIAL_ROWS, MOCK_AI_VALUES, daysOnline } from "./mockData";
 import DatasetBuilderLeftPanel, { DATA_ROOM_COMPETITORS } from "./DatasetBuilderLeftPanel";
 import DatasetBuilderTable from "./DatasetBuilderTable";
+import DatasetBuilderGallery from "./DatasetBuilderGallery";
 import ColumnInspectorPanel from "./ColumnInspectorPanel";
 import AddColumnModal from "./AddColumnModal";
 import RowDetailDrawer from "./RowDetailDrawer";
@@ -41,6 +42,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [launchedSortAsc, setLaunchedSortAsc] = useState(true);
   const [enrichOpen, setEnrichOpen] = useState(false);
   const [enrichBanner, setEnrichBanner] = useState<{ columnId: string; columnName: string; processed: number; remaining: number } | null>(null);
+  const [view, setView] = useState<"table" | "gallery">("table");
 
   useEffect(() => {
     onSourcesChange?.(sources.length);
@@ -269,6 +271,40 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               <h1 className="text-sm font-bold">Competitor Dataset — Skincare Q1</h1>
             </div>
             <div className="flex items-center gap-2">
+              <div className="inline-flex items-center rounded-md border border-border bg-muted/40 p-0.5">
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setView("table")}
+                      className={cn(
+                        "inline-flex items-center justify-center h-7 w-7 rounded transition-colors",
+                        view === "table" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+                      )}
+                      aria-label="Table view"
+                    >
+                      <TableIcon className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Table view</TooltipContent>
+                </Tooltip>
+                <Tooltip delayDuration={200}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setView("gallery")}
+                      className={cn(
+                        "inline-flex items-center justify-center h-7 w-7 rounded transition-colors",
+                        view === "gallery" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+                      )}
+                      aria-label="Gallery view"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Gallery view — visual ad previews</TooltipContent>
+                </Tooltip>
+              </div>
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
@@ -340,31 +376,50 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               onApplyFilter={handleApplyFilter}
             />
 
-            <DatasetBuilderTable
-              columns={columns}
-              rows={filteredRows}
-              selectedRows={selectedRows}
-              onToggleRow={handleToggleRow}
-              onToggleAll={handleToggleAll}
-              onColumnClick={setInspectorColumn}
-              onRunRows={handleRunRows}
-              onRowClick={setDetailRow}
-              activeColumnId={inspectorColumn?.id}
-              onReorderColumns={setColumns}
-              activeFilters={activeFilters}
-              onApplyFilter={handleApplyFilter}
-              totalRowCount={rows.length}
-              launchedSortAsc={launchedSortAsc}
-              onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
-              adGenOn={adGenOn}
-              onAdGenToggle={(on) => {
-                setAdGenOn(on);
-                if (on) {
-                  setAdGenCount(selectedRows.size);
-                  toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
-                }
-              }}
-            />
+            {view === "table" ? (
+              <DatasetBuilderTable
+                columns={columns}
+                rows={filteredRows}
+                selectedRows={selectedRows}
+                onToggleRow={handleToggleRow}
+                onToggleAll={handleToggleAll}
+                onColumnClick={setInspectorColumn}
+                onRunRows={handleRunRows}
+                onRowClick={setDetailRow}
+                activeColumnId={inspectorColumn?.id}
+                onReorderColumns={setColumns}
+                activeFilters={activeFilters}
+                onApplyFilter={handleApplyFilter}
+                totalRowCount={rows.length}
+                launchedSortAsc={launchedSortAsc}
+                onToggleLaunchedSort={() => setLaunchedSortAsc(prev => !prev)}
+                adGenOn={adGenOn}
+                onAdGenToggle={(on) => {
+                  setAdGenOn(on);
+                  if (on) {
+                    setAdGenCount(selectedRows.size);
+                    toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                  }
+                }}
+              />
+            ) : (
+              <DatasetBuilderGallery
+                rows={filteredRows}
+                selectedRows={selectedRows}
+                onToggleRow={handleToggleRow}
+                onToggleAll={handleToggleAll}
+                onRowClick={setDetailRow}
+                totalRowCount={rows.length}
+                adGenOn={adGenOn}
+                onAdGenToggle={(on) => {
+                  setAdGenOn(on);
+                  if (on) {
+                    setAdGenCount(selectedRows.size);
+                    toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                  }
+                }}
+              />
+            )}
 
             {inspectorColumn && (
               <ColumnInspectorPanel
