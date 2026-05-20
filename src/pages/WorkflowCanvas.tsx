@@ -11,7 +11,7 @@ import {
   ArrowLeft, Play, Plus, Minus, Maximize2, Grid3X3,
   Package, Database, Clock, ListFilter,
   PanelLeftClose, PanelLeft, Trash2, Sparkles, ImagePlus, Megaphone,
-  Upload, X, Pencil,
+  Upload, X, Pencil, MousePointerClick,
 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
@@ -1571,7 +1571,14 @@ export default function WorkflowCanvas() {
                                   </div>
                                 )}
                                 {node.type === "top-select" && (
-                                  isAllNew ? (
+                                  topSelectConfig.mode === "manual-selection" ? (
+                                    <div className="h-12 rounded-md border border-dashed border-primary/30 bg-primary/5 flex items-center justify-center gap-1.5">
+                                      <MousePointerClick className="h-3.5 w-3.5 text-primary" />
+                                      <span className="text-[11px] font-semibold text-primary">
+                                        {topSelectConfig.manualCount ?? manualAdGen.count} hand-picked
+                                      </span>
+                                    </div>
+                                  ) : isAllNew ? (
                                     <div className="h-12 rounded-md flex items-center justify-center gap-2">
                                       <span className="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-bold uppercase tracking-wide">New</span>
                                       <span className="text-[12px] font-semibold">Since last run</span>
