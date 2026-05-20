@@ -363,7 +363,7 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
     <TooltipProvider>
       <div className="fixed inset-0 z-50 flex">
         <div className="w-[5%] bg-black/20" onClick={onClose} />
-        <div className="w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
+        <div className="relative w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
           {/* Top bar */}
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
             <div className="flex items-center gap-3">
@@ -378,78 +378,6 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
               <h1 className="text-sm font-bold">Reviews Dataset — Voice of Customer</h1>
             </div>
             <div className="flex items-center gap-2">
-              {hasSelected && (() => {
-                const runnableCount = aiColumns.length === 0
-                  ? 0
-                  : [...selectedRows].filter(rid =>
-                      aiColumns.some(c => {
-                        const v = aiValues[c.id]?.[rid];
-                        return !v || v === "—";
-                      })
-                    ).length;
-                const canRun = aiColumns.length > 0 && runnableCount > 0;
-                return (
-                  <>
-                    <div className="flex items-center gap-1.5 h-8 pl-2.5 pr-1 rounded-full border border-primary/30 bg-primary/5">
-                      <span className="text-[11px] font-semibold text-primary">
-                        {selectedRows.size} of {filteredRows.length} selected
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRows(new Set())}
-                        className="inline-flex items-center gap-0.5 text-[11px] text-primary/70 hover:text-primary px-1.5 py-0.5 rounded-full hover:bg-primary/10 transition-colors"
-                      >
-                        <X className="h-3 w-3" /> Clear
-                      </button>
-                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
-                      <Tooltip delayDuration={200}>
-                        <TooltipTrigger asChild>
-                          <span>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              disabled={!canRun}
-                              className="h-7 text-[11px] gap-1.5 text-primary hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-2.5"
-                              onClick={() => setEnrichOpen(true)}
-                            >
-                              <Wand2 className="h-3 w-3" /> Run AI analysis
-                              {canRun && runnableCount !== selectedRows.size && (
-                                <span className="text-primary/60">({runnableCount})</span>
-                              )}
-                            </Button>
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs max-w-[220px]">
-                          {canRun
-                            ? `Runs on ${runnableCount} review${runnableCount === 1 ? "" : "s"} with empty AI cells`
-                            : aiColumns.length === 0
-                              ? "Add an AI column to enrich the selected reviews"
-                              : "All selected reviews already have AI values"}
-                        </TooltipContent>
-                      </Tooltip>
-                      <span className="mx-0.5 h-4 w-px bg-primary/20" />
-                      <div className="flex items-center gap-1.5 pr-2 pl-1">
-                        <label htmlFor="review-ad-gen-toggle" className="text-[11px] font-medium text-primary cursor-pointer select-none">
-                          Use for ad generation
-                        </label>
-                        <Switch
-                          id="review-ad-gen-toggle"
-                          checked={adGenOn}
-                          onCheckedChange={(v) => {
-                            setAdGenOn(!!v);
-                            if (v) {
-                              setAdGenCount(selectedRows.size);
-                              toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
-                            }
-                          }}
-                          className="data-[state=checked]:bg-primary scale-75"
-                        />
-                      </div>
-                    </div>
-                    <span className="mx-1 h-6 w-px bg-border" />
-                  </>
-                );
-              })()}
               <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 border-primary text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setEnrichOpen(true)}>
                 <Sparkles className="h-3.5 w-3.5" /> Enrich data
               </Button>
@@ -646,6 +574,92 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
               </div>
             </div>
           </div>
+
+          {hasSelected && (() => {
+            const runnableCount = aiColumns.length === 0
+              ? 0
+              : [...selectedRows].filter(rid =>
+                  aiColumns.some(c => {
+                    const v = aiValues[c.id]?.[rid];
+                    return !v || v === "—";
+                  })
+                ).length;
+            const canRun = aiColumns.length > 0 && runnableCount > 0;
+            const reason = aiColumns.length === 0 ? "Add an AI column first" : "All selected reviews already have AI values";
+            return (
+              <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-8 z-40 animate-fade-in">
+                <div className="pointer-events-auto flex items-center gap-1 h-12 pl-1.5 pr-1.5 rounded-2xl bg-card/95 backdrop-blur-sm text-foreground shadow-[0_10px_40px_-10px_rgba(0,0,0,0.18)] border border-border/60 ring-1 ring-black/[0.02]">
+                  <span className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-muted/60">
+                    <span className="text-[13px] font-semibold tabular-nums text-foreground">{selectedRows.size}</span>
+                    <span className="text-[11px] font-medium text-muted-foreground">of {filteredRows.length} selected</span>
+                  </span>
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRows(new Set())}
+                        className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground active:scale-95 transition-all"
+                        aria-label="Clear selection"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs">Clear selection</TooltipContent>
+                  </Tooltip>
+                  <span className="h-6 w-px bg-border mx-0.5" />
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={!canRun}
+                          className="h-9 text-[12px] font-medium text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-3"
+                          onClick={() => setEnrichOpen(true)}
+                        >
+                          Run AI analysis
+                          {canRun && runnableCount !== selectedRows.size && (
+                            <span className="ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-muted text-foreground text-[10px] font-bold">
+                              {runnableCount}
+                            </span>
+                          )}
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[220px]">
+                      {canRun ? `Runs on ${runnableCount} review${runnableCount === 1 ? "" : "s"} with empty AI cells` : reason}
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="h-6 w-px bg-border mx-0.5" />
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <label
+                        htmlFor="review-ad-gen-toggle-floating"
+                        className="flex items-center gap-2.5 h-9 pl-3 pr-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/15 cursor-pointer select-none transition-colors"
+                      >
+                        <span className="text-[12px] font-semibold">Use for ad generation</span>
+                        <Switch
+                          id="review-ad-gen-toggle-floating"
+                          checked={adGenOn}
+                          onCheckedChange={(v) => {
+                            setAdGenOn(!!v);
+                            if (v) {
+                              setAdGenCount(selectedRows.size);
+                              toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            }
+                          }}
+                          className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary/25 [&>span]:bg-card scale-90"
+                        />
+                      </label>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[220px]">
+                      Mark these reviews as inputs for the ad generation step
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
