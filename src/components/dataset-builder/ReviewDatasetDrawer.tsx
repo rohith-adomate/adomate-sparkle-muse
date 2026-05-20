@@ -363,7 +363,7 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
     <TooltipProvider>
       <div className="fixed inset-0 z-50 flex">
         <div className="w-[5%] bg-black/20" onClick={onClose} />
-        <div className="w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
+        <div className="relative w-[95%] bg-card flex flex-col animate-slide-in-right shadow-2xl border-l border-border">
           {/* Top bar */}
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
             <div className="flex items-center gap-3">
