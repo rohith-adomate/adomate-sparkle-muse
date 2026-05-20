@@ -245,10 +245,6 @@ export default function AdLightbox({
         )}
       </div>
 
-      {/* Bottom hint */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 text-[11px] text-white/60 bg-black/30 px-3 py-1 rounded-full backdrop-blur">
-        ← → navigate · Space to select · Esc to close
-      </div>
     </div>
   );
 }
