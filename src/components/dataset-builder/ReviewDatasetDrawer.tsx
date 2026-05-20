@@ -433,7 +433,10 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                           checked={adGenOn}
                           onCheckedChange={(v) => {
                             setAdGenOn(!!v);
-                            if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            if (v) {
+                              setAdGenCount(selectedRows.size);
+                              toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            }
                           }}
                           className="data-[state=checked]:bg-primary scale-75"
                         />
