@@ -391,20 +391,20 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
             const reason = aiCols.length === 0 ? "Add an AI column first" : "All selected rows already have AI values";
             return (
               <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-20 z-40 animate-fade-in">
-                <div className="pointer-events-auto flex items-center gap-2 h-12 pl-2 pr-2 rounded-xl bg-foreground text-background shadow-2xl border border-foreground/10">
-                  <span className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-background/10">
-                    <span className="text-[13px] font-semibold tabular-nums">{selectedRows.size}</span>
-                    <span className="text-[11px] text-background/70">of {filteredRows.length} selected</span>
+                <div className="pointer-events-auto flex items-center gap-1.5 h-12 pl-2 pr-2 rounded-2xl bg-card/95 backdrop-blur-sm text-foreground shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-border/60">
+                  <span className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-muted/60">
+                    <span className="text-[13px] font-semibold tabular-nums text-foreground">{selectedRows.size}</span>
+                    <span className="text-[11px] text-muted-foreground">of {filteredRows.length} selected</span>
                   </span>
                   <button
                     type="button"
                     onClick={() => setSelectedRows(new Set())}
-                    className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-background/10 transition-colors"
+                    className="inline-flex items-center justify-center h-8 w-8 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                     title="Clear selection"
                   >
                     <X className="h-4 w-4" />
                   </button>
-                  <span className="h-6 w-px bg-background/15" />
+                  <span className="h-5 w-px bg-border" />
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <span>
@@ -412,12 +412,12 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                           size="sm"
                           variant="ghost"
                           disabled={!canRun}
-                          className="h-8 text-[12px] gap-1.5 text-background hover:bg-background/10 hover:text-background disabled:opacity-40 disabled:cursor-not-allowed rounded-lg px-3"
+                          className="h-8 text-[12px] gap-1.5 text-primary hover:bg-primary/10 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-3"
                           onClick={() => handleRunRows(runnableIds)}
                         >
                           <Wand2 className="h-3.5 w-3.5" /> Run AI analysis
                           {canRun && runnableIds.length !== selectedRows.size && (
-                            <span className="opacity-60">({runnableIds.length})</span>
+                            <span className="text-primary/60">({runnableIds.length})</span>
                           )}
                         </Button>
                       </span>
@@ -426,9 +426,9 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                       {canRun ? `Runs on ${runnableIds.length} row${runnableIds.length === 1 ? "" : "s"} with empty AI cells` : reason}
                     </TooltipContent>
                   </Tooltip>
-                  <span className="h-6 w-px bg-background/15" />
+                  <span className="h-5 w-px bg-border" />
                   <div className="flex items-center gap-2 pr-2 pl-1.5">
-                    <label htmlFor="ad-gen-toggle-floating" className="text-[12px] font-medium cursor-pointer select-none">
+                    <label htmlFor="ad-gen-toggle-floating" className="text-[12px] font-medium text-foreground cursor-pointer select-none">
                       Use for ad generation
                     </label>
                     <Switch
