@@ -285,7 +285,8 @@ export default function WorkflowCanvas() {
   const [workflowNameOverride, setWorkflowNameOverride] = useState<string | null>(null);
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
+  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3, manualCount: 0 });
+  const [manualAdGen, setManualAdGen] = useState<{ on: boolean; count: number }>({ on: false, count: 0 });
   // Tracks node types the user has configured (for visual unconfigured state)
   const [configuredTypes, setConfiguredTypes] = useState<Set<string>>(
     () => new Set(isAnyNew || isReviewsWorkflow ? [] : ["schedule", "top-select", "generate-concepts", "ad-account", "reddit-subreddit", "reddit-ad-generator", "manual-image-input"])
