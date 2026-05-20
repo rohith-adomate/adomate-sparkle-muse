@@ -1086,28 +1086,30 @@ export default function WorkflowCanvas() {
             </div>
           </div>
           <div className="flex items-center justify-end gap-3">
-            <Tooltip delayDuration={200}>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={agentEnabled}
-                    onCheckedChange={(v) => { if (canActivate && fullyConfigured) setAgentEnabled(v); }}
-                    disabled={!canActivate || !fullyConfigured}
-                    className={(!canActivate || !fullyConfigured) ? "opacity-50 cursor-not-allowed" : ""}
-                  />
-                  <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
-                </div>
-              </TooltipTrigger>
-              {(!canActivate || !fullyConfigured) && (
-                <TooltipContent side="bottom" className="text-xs max-w-[220px]">
-                  {hasManualImageInput
-                    ? "Manual Image Input nodes require manual runs. Scheduling is disabled."
-                    : !canActivate
-                    ? "Add a Dataset node to activate this workflow."
-                    : "Configure all nodes first."}
-                </TooltipContent>
-              )}
-            </Tooltip>
+            {!manualAdGen.on && (
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={agentEnabled}
+                      onCheckedChange={(v) => { if (canActivate && fullyConfigured) setAgentEnabled(v); }}
+                      disabled={!canActivate || !fullyConfigured}
+                      className={(!canActivate || !fullyConfigured) ? "opacity-50 cursor-not-allowed" : ""}
+                    />
+                    <span className="text-xs text-muted-foreground">{agentEnabled ? "Active" : "Inactive"}</span>
+                  </div>
+                </TooltipTrigger>
+                {(!canActivate || !fullyConfigured) && (
+                  <TooltipContent side="bottom" className="text-xs max-w-[220px]">
+                    {hasManualImageInput
+                      ? "Manual Image Input nodes require manual runs. Scheduling is disabled."
+                      : !canActivate
+                      ? "Add a Dataset node to activate this workflow."
+                      : "Configure all nodes first."}
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            )}
             <Button
               size="sm"
               disabled={!fullyConfigured}
