@@ -1954,14 +1954,14 @@ export default function WorkflowCanvas() {
         workflowName={workflowNameOverride ?? agentName}
         onWorkflowNameChange={(n) => setWorkflowNameOverride(n)}
         rows={[
-          {
+          ...(manualAdGen.on ? [] : [{
             key: "schedule",
-            icon: "schedule",
+            icon: "schedule" as const,
             label: "Schedule",
             value: scheduleSummary || "Not set — workflow will be manual",
             isMissing: !configuredTypes.has("schedule"),
             onEdit: () => editFromSummary("schedule", () => setScheduleDrawerOpen(true)),
-          },
+          }]),
           {
             key: "source",
             icon: "source",
@@ -1974,11 +1974,13 @@ export default function WorkflowCanvas() {
             key: "selection",
             icon: "selection",
             label: "Selection rule",
-            value: topSelectConfig.mode === "top-n"
-              ? `Top ${topSelectConfig.count} ads by new reach`
-              : "All new ads since last run",
-            isMissing: !configuredTypes.has("top-select"),
-            onEdit: () => editFromSummary("top-select", () => setTopSelectDrawerOpen(true)),
+            value: manualAdGen.on
+              ? `${manualAdGen.count} hand-picked ad${manualAdGen.count === 1 ? "" : "s"}`
+              : topSelectConfig.mode === "top-n"
+                ? `Top ${topSelectConfig.count} ads by new reach`
+                : "All new ads since last run",
+            isMissing: manualAdGen.on ? false : !configuredTypes.has("top-select"),
+            onEdit: manualAdGen.on ? undefined : () => editFromSummary("top-select", () => setTopSelectDrawerOpen(true)),
           },
           {
             key: "products",
@@ -2003,9 +2005,9 @@ export default function WorkflowCanvas() {
         ]}
         variationsPerProduct={8}
         productCount={Math.max(selectedProductCount, 1)}
-        selectionCount={topSelectConfig.mode === "top-n" ? topSelectConfig.count : undefined}
+        selectionCount={manualAdGen.on ? manualAdGen.count : topSelectConfig.mode === "top-n" ? topSelectConfig.count : undefined}
         outputDestination={`Concepts gallery → "${workflowNameOverride ?? agentName}"`}
-        mode={configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual"}
+        mode={manualAdGen.on ? "manual" : configuredTypes.has("schedule") && scheduleSummary ? "scheduled" : "manual"}
         scheduleSummary={scheduleSummary}
         nextRunLabel={nextRunDate ? nextRunDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) : undefined}
         estimatedCredits={120}
