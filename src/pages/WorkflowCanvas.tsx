@@ -285,7 +285,8 @@ export default function WorkflowCanvas() {
   const [workflowNameOverride, setWorkflowNameOverride] = useState<string | null>(null);
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3 });
+  const [topSelectConfig, setTopSelectConfig] = useState<import("@/components/TopAdsSelectionDrawer").SelectConfig>({ mode: "top-n", count: 10, maxAgeEnabled: false, maxAgeMonths: 3, manualCount: 0 });
+  const [manualAdGen, setManualAdGen] = useState<{ on: boolean; count: number }>({ on: false, count: 0 });
   // Tracks node types the user has configured (for visual unconfigured state)
   const [configuredTypes, setConfiguredTypes] = useState<Set<string>>(
     () => new Set(isAnyNew || isReviewsWorkflow ? [] : ["schedule", "top-select", "generate-concepts", "ad-account", "reddit-subreddit", "reddit-ad-generator", "manual-image-input"])
@@ -592,17 +593,36 @@ export default function WorkflowCanvas() {
   }, []);
 
   // Update top-select node description when config changes
+  const buildSelectDesc = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig, itemLabel: string) => {
+    if (config.mode === "manual-selection") return `${config.manualCount ?? 0} manually selected ${itemLabel}`;
+    if (config.mode === "all-new") return `All new ${itemLabel} since last run`;
+    return `Top ${config.count} ${itemLabel} by days online${config.maxAgeEnabled ? ` (last ${config.maxAgeMonths}mo)` : ""}`;
+  }, []);
+
   const handleTopSelectChange = useCallback((config: import("@/components/TopAdsSelectionDrawer").SelectConfig) => {
     setTopSelectConfig(config);
-    const desc = config.mode === "all-new"
-      ? "All new ads since last run"
-      : `Top ${config.count} by days online${config.maxAgeEnabled ? ` (last ${config.maxAgeMonths}mo)` : ""}`;
+    const itemLabel = isReviewsWorkflow ? "reviews" : "ads";
+    const desc = buildSelectDesc(config, itemLabel);
     setNodes((prev) =>
       prev.map((n) =>
         n.type === "top-select" ? { ...n, description: desc } : n
       )
     );
-  }, []);
+  }, [buildSelectDesc, isReviewsWorkflow]);
+
+  // React to manual ad-gen toggle from dataset drawers
+  const handleAdGenChange = useCallback((on: boolean, count: number) => {
+    setManualAdGen({ on, count });
+    setTopSelectConfig((prev) => {
+      const next = on
+        ? { ...prev, mode: "manual-selection" as const, manualCount: count }
+        : { ...prev, mode: prev.mode === "manual-selection" ? ("top-n" as const) : prev.mode, manualCount: 0 };
+      const itemLabel = isReviewsWorkflow ? "reviews" : "ads";
+      const desc = buildSelectDesc(next, itemLabel);
+      setNodes((curr) => curr.map((n) => n.type === "top-select" ? { ...n, description: desc } : n));
+      return next;
+    });
+  }, [buildSelectDesc, isReviewsWorkflow]);
   const [outputDrawerOpen, setOutputDrawerOpen] = useState(false);
   const [outputDrawerNode, setOutputDrawerNode] = useState<{ label: string; type: string; status?: "success" | "running" | "error" } | null>(null);
   // Auto-collapse main sidebar on mount (user can still expand it manually)
@@ -1770,6 +1790,7 @@ export default function WorkflowCanvas() {
         onSourcesChange={(count) => setDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("dataset") ? () => { setDatasetDrawerOpen(false); openNextDrawerFor("dataset"); } : undefined}
         continueLabel={continueLabelFor("dataset")}
+        onAdGenChange={handleAdGenChange}
       />
       <ReviewDatasetDrawer
         open={reviewDatasetDrawerOpen}
@@ -1778,6 +1799,7 @@ export default function WorkflowCanvas() {
         onSourcesChange={(count) => setReviewDatasetEmpty(count === 0)}
         onContinue={showContinueFor.has("review-dataset") ? () => { setReviewDatasetDrawerOpen(false); openNextDrawerFor("review-dataset"); } : undefined}
         continueLabel={continueLabelFor("review-dataset")}
+        onAdGenChange={handleAdGenChange}
       />
       <DatasetRunResultsDrawer
         open={datasetRunResultsOpen}
@@ -1837,10 +1859,12 @@ export default function WorkflowCanvas() {
       <TopAdsSelectionDrawer
         open={topSelectDrawerOpen}
         onOpenChange={setTopSelectDrawerOpen}
-        config={topSelectConfig}
+        config={{ ...topSelectConfig, manualCount: manualAdGen.count }}
         onConfigChange={handleTopSelectChange}
         onContinue={continueHandlerFor("top-select", () => setTopSelectDrawerOpen(false))}
         continueLabel={continueLabelFor("top-select")}
+        itemLabel={isReviewsWorkflow ? "reviews" : "ads"}
+        manualSelectionAvailable={manualAdGen.on && manualAdGen.count > 0}
       />
       <ManualImageInputDrawer
         open={manualImageDrawerOpen}

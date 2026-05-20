@@ -202,9 +202,10 @@ interface Props {
   onSourcesChange?: (count: number) => void;
   onContinue?: () => void;
   continueLabel?: string;
+  onAdGenChange?: (on: boolean, count: number) => void;
 }
 
-export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = false, onSourcesChange, onContinue, continueLabel = "Continue" }: Props) {
+export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = false, onSourcesChange, onContinue, continueLabel = "Continue", onAdGenChange }: Props) {
   const OY_BRAND: Brand = { id: "oycare", name: "Oy Care", isOwn: true };
   const [addedBrands, setAddedBrands] = useState<Brand[]>(initialEmpty ? [] : [OY_BRAND]);
   const [addBrandOpen, setAddBrandOpen] = useState(false);
@@ -215,6 +216,7 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
   const [activeFilters, setActiveFilters] = useState<ReviewActiveFilter[]>([]);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [adGenOn, setAdGenOn] = useState(false);
+  const [adGenCount, setAdGenCount] = useState(0);
   const [aiColumns, setAiColumns] = useState<AiColumn[]>([]);
   const [aiValues, setAiValues] = useState<Record<string, Record<string, string>>>({}); // colId -> rowId -> value
   const [runningRows, setRunningRows] = useState<Set<string>>(new Set());
@@ -224,6 +226,10 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
   useEffect(() => {
     onSourcesChange?.(addedBrands.length);
   }, [addedBrands.length, onSourcesChange]);
+
+  useEffect(() => {
+    onAdGenChange?.(adGenOn, adGenOn ? adGenCount : 0);
+  }, [adGenOn, adGenCount, onAdGenChange]);
 
   const availableToAdd = [...ALL_BRANDS, ...ADDITIONAL_BRANDS].filter(b => !addedBrands.find(x => x.id === b.id));
   const addBrand = (b: Brand) => { setAddedBrands(prev => [...prev, b]); setAddBrandOpen(false); };
@@ -427,7 +433,10 @@ export default function ReviewDatasetDrawer({ open, onClose, initialEmpty = fals
                           checked={adGenOn}
                           onCheckedChange={(v) => {
                             setAdGenOn(!!v);
-                            if (v) toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            if (v) {
+                              setAdGenCount(selectedRows.size);
+                              toast.success(`${selectedRows.size} review${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            }
                           }}
                           className="data-[state=checked]:bg-primary scale-75"
                         />

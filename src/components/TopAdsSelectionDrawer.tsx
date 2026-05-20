@@ -7,15 +7,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Info, ListFilter, CalendarClock } from "lucide-react";
+import { Info, ListFilter, CalendarClock, MousePointerClick } from "lucide-react";
 
-export type SelectionMode = "all-new" | "top-n";
+export type SelectionMode = "all-new" | "top-n" | "manual-selection";
 
 export interface SelectConfig {
   mode: SelectionMode;
   count: number;
   maxAgeEnabled: boolean;
   maxAgeMonths: number;
+  manualCount?: number;
 }
 
 interface TopAdsSelectionDrawerProps {
@@ -25,13 +26,19 @@ interface TopAdsSelectionDrawerProps {
   onConfigChange?: (config: SelectConfig) => void;
   onContinue?: () => void;
   continueLabel?: string;
+  itemLabel?: string;
+  manualSelectionAvailable?: boolean;
 }
 
-function buildSummary(config: SelectConfig): string {
-  if (config.mode === "all-new") {
-    return "All new ads since last scheduled run";
+function buildSummary(config: SelectConfig, itemLabel = "ads"): string {
+  if (config.mode === "manual-selection") {
+    const n = config.manualCount ?? 0;
+    return `${n} manually selected ${itemLabel}`;
   }
-  let s = `Top ${config.count} ads by days online`;
+  if (config.mode === "all-new") {
+    return `All new ${itemLabel} since last scheduled run`;
+  }
+  let s = `Top ${config.count} ${itemLabel} by days online`;
   if (config.maxAgeEnabled) {
     s += ` (last ${config.maxAgeMonths}mo)`;
   }
@@ -45,6 +52,8 @@ export default function TopAdsSelectionDrawer({
   onConfigChange,
   onContinue,
   continueLabel,
+  itemLabel = "ads",
+  manualSelectionAvailable = false,
 }: TopAdsSelectionDrawerProps) {
   const defaultConfig: SelectConfig = {
     mode: "top-n",
@@ -53,6 +62,7 @@ export default function TopAdsSelectionDrawer({
     maxAgeMonths: 3,
   };
   const init = initialConfig ?? defaultConfig;
+  const manualCount = init.manualCount ?? 0;
 
   const [mode, setMode] = useState<SelectionMode>(init.mode);
   const [topCount, setTopCount] = useState(String(init.count));
@@ -63,7 +73,7 @@ export default function TopAdsSelectionDrawer({
   const months = parseInt(maxAgeMonths) || 3;
 
   const emitChange = (m: SelectionMode, c: number, ageEnabled: boolean, ageMo: number) => {
-    onConfigChange?.({ mode: m, count: c, maxAgeEnabled: ageEnabled, maxAgeMonths: ageMo });
+    onConfigChange?.({ mode: m, count: c, maxAgeEnabled: ageEnabled, maxAgeMonths: ageMo, manualCount });
   };
 
   const handleModeChange = (m: SelectionMode) => {
@@ -98,7 +108,9 @@ export default function TopAdsSelectionDrawer({
           <div className="rounded-xl border border-border bg-muted/30 p-5 mb-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="rounded-lg bg-primary/10 p-2">
-                {mode === "all-new" ? (
+                {mode === "manual-selection" ? (
+                  <MousePointerClick className="h-4 w-4 text-primary" />
+                ) : mode === "all-new" ? (
                   <CalendarClock className="h-4 w-4 text-primary" />
                 ) : (
                   <ListFilter className="h-4 w-4 text-primary" />
@@ -106,19 +118,33 @@ export default function TopAdsSelectionDrawer({
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">
-                  {mode === "all-new" ? "All new ads" : `Top ${count} ads`}
+                  {mode === "manual-selection"
+                    ? `${manualCount} manually selected ${itemLabel}`
+                    : mode === "all-new"
+                      ? `All new ${itemLabel}`
+                      : `Top ${count} ${itemLabel}`}
                 </p>
                 <p className="text-[11px] text-muted-foreground">
-                  {mode === "all-new"
-                    ? "since last scheduled run"
-                    : "by days online"}
+                  {mode === "manual-selection"
+                    ? "from the dataset"
+                    : mode === "all-new"
+                      ? "since last scheduled run"
+                      : "by days online"}
                 </p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              {mode === "all-new" ? (
+              {mode === "manual-selection" ? (
                 <>
-                  Every ad added to your dataset since the last scheduled run will be selected and passed to the next node for ad generation.
+                  Only the{" "}
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 mx-0.5 font-semibold">
+                    {manualCount}
+                  </Badge>{" "}
+                  {itemLabel} you manually marked with <span className="font-medium text-foreground">Use for ad generation</span> in the dataset will be passed to the next node.
+                </>
+              ) : mode === "all-new" ? (
+                <>
+                  Every {itemLabel.replace(/s$/, "")} added to your dataset since the last scheduled run will be selected and passed to the next node for ad generation.
                 </>
               ) : (
                 <>
@@ -126,10 +152,10 @@ export default function TopAdsSelectionDrawer({
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 mx-0.5 font-semibold">
                     {count}
                   </Badge>{" "}
-                  ads with the most days online will be selected and passed to the next node for ad generation.
+                  {itemLabel} with the most days online will be selected and passed to the next node for ad generation.
                   {maxAgeEnabled && (
                     <>
-                      {" "}Ads older than{" "}
+                      {" "}Older than{" "}
                       <span className="font-medium text-foreground">{months} month{months !== 1 ? "s" : ""}</span>{" "}
                       will be excluded.
                     </>
@@ -146,25 +172,33 @@ export default function TopAdsSelectionDrawer({
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Selection mode
               </Label>
-              <div className="flex items-center gap-1.5">
-                {(
-                  [
-                    { value: "all-new" as SelectionMode, label: "All new since last run" },
-                    { value: "top-n" as SelectionMode, label: "Top N by days online" },
-                  ] as const
-                ).map((opt) => (
-                  <div
-                    key={opt.value}
-                    className={cn(
-                      "flex-1 rounded-md border px-3 py-2 text-center cursor-pointer transition-colors text-[11px] font-medium",
-                      mode === opt.value
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:bg-muted/40"
+              <div className="flex flex-col gap-1.5">
+                {([
+                  { value: "all-new" as SelectionMode, label: "All new since last run", available: true },
+                  { value: "top-n" as SelectionMode, label: "Top N by days online", available: true },
+                  { value: "manual-selection" as SelectionMode, label: `Manually selected ${itemLabel}${manualSelectionAvailable ? ` (${manualCount})` : ""}`, available: manualSelectionAvailable },
+                ] as const).map((opt) => (
+                  <Tooltip key={opt.value} delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "rounded-md border px-3 py-2 text-center transition-colors text-[11px] font-medium",
+                          opt.available ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                          mode === opt.value
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:bg-muted/40",
+                        )}
+                        onClick={() => opt.available && handleModeChange(opt.value)}
+                      >
+                        {opt.label}
+                      </div>
+                    </TooltipTrigger>
+                    {!opt.available && opt.value === "manual-selection" && (
+                      <TooltipContent side="left" className="max-w-[240px] text-xs">
+                        Mark {itemLabel} with "Use for ad generation" in the dataset to enable this option.
+                      </TooltipContent>
                     )}
-                    onClick={() => handleModeChange(opt.value)}
-                  >
-                    {opt.label}
-                  </div>
+                  </Tooltip>
                 ))}
               </div>
             </div>

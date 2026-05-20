@@ -23,9 +23,10 @@ interface Props {
   onSourcesChange?: (count: number) => void;
   onContinue?: () => void;
   continueLabel?: string;
+  onAdGenChange?: (on: boolean, count: number) => void;
 }
 
-export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSourcesChange, onContinue, continueLabel }: Props) {
+export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSourcesChange, onContinue, continueLabel, onAdGenChange }: Props) {
   const [sources, setSources] = useState<DatasetSource[]>(initialEmpty ? [] : INITIAL_SOURCES);
   const [columns, setColumns] = useState<DatasetColumn[]>([...FACTS_COLUMNS, DEFAULT_AI_COLUMN]);
   const [filters, setFilters] = useState<DatasetFilter[]>([]);
@@ -33,6 +34,7 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   const [rows, setRows] = useState<DatasetRow[]>(INITIAL_ROWS);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [adGenOn, setAdGenOn] = useState(false);
+  const [adGenCount, setAdGenCount] = useState(0);
   const [inspectorColumn, setInspectorColumn] = useState<DatasetColumn | null>(null);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
   const [detailRow, setDetailRow] = useState<DatasetRow | null>(null);
@@ -43,6 +45,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
   useEffect(() => {
     onSourcesChange?.(sources.length);
   }, [sources, onSourcesChange]);
+
+  useEffect(() => {
+    onAdGenChange?.(adGenOn, adGenOn ? adGenCount : 0);
+  }, [adGenOn, adGenCount, onAdGenChange]);
 
 
   const handleAddSource = useCallback((src: DatasetSource) => {
@@ -319,7 +325,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                           checked={adGenOn}
                           onCheckedChange={(v) => {
                             setAdGenOn(!!v);
-                            if (v) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            if (v) {
+                              setAdGenCount(selectedRows.size);
+                              toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            }
                           }}
                           className="data-[state=checked]:bg-primary scale-75"
                         />
@@ -419,7 +428,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
               adGenOn={adGenOn}
               onAdGenToggle={(on) => {
                 setAdGenOn(on);
-                if (on) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                if (on) {
+                  setAdGenCount(selectedRows.size);
+                  toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                }
               }}
             />
 
