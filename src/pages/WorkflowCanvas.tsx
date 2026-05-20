@@ -671,7 +671,13 @@ export default function WorkflowCanvas() {
       setNodes((curr) => curr.map((n) => n.type === "top-select" ? { ...n, description: desc } : n));
       return next;
     });
-  }, [buildSelectDesc, isReviewsWorkflow]);
+    // When manual rows are picked, the Select node is implicitly configured
+    // (mode = manual-selection). Mark it so it doesn't show as missing and
+    // the next pipeline step jumps straight to product-data.
+    if (on && count > 0) {
+      markConfigured("top-select");
+    }
+  }, [buildSelectDesc, isReviewsWorkflow, markConfigured]);
 
   // Apply persisted Select node description on mount / when nodes load
   useEffect(() => {
