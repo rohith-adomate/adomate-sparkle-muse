@@ -1985,20 +1985,24 @@ export default function WorkflowCanvas() {
           {
             key: "source",
             icon: "source",
-            label: "Source · Ad library",
-            value: datasetEmpty ? "No competitor brands selected" : "Nike Meta ads · 4 brands",
-            isMissing: datasetEmpty,
-            onEdit: () => editFromSummary("dataset", () => setDatasetDrawerOpen(true)),
+            label: isReviewsWorkflow ? "Source · Reviews" : "Source · Ad library",
+            value: isReviewsWorkflow
+              ? (reviewDatasetEmpty ? "No review sources selected" : "Trustpilot · 4 brands")
+              : (datasetEmpty ? "No competitor brands selected" : "Nike Meta ads · 4 brands"),
+            isMissing: isReviewsWorkflow ? reviewDatasetEmpty : datasetEmpty,
+            onEdit: () => isReviewsWorkflow
+              ? editFromSummary("review-dataset", () => setReviewDatasetDrawerOpen(true))
+              : editFromSummary("dataset", () => setDatasetDrawerOpen(true)),
           },
           {
             key: "selection",
             icon: "selection",
             label: "Selection rule",
             value: manualAdGen.on
-              ? `${manualAdGen.count} hand-picked ad${manualAdGen.count === 1 ? "" : "s"}`
+              ? `${manualAdGen.count} hand-picked ${isReviewsWorkflow ? "review" : "ad"}${manualAdGen.count === 1 ? "" : "s"}`
               : topSelectConfig.mode === "top-n"
-                ? `Top ${topSelectConfig.count} ads by new reach`
-                : "All new ads since last run",
+                ? `Top ${topSelectConfig.count} ${isReviewsWorkflow ? "reviews by relevance" : "ads by new reach"}`
+                : `All new ${isReviewsWorkflow ? "reviews" : "ads"} since last run`,
             isMissing: manualAdGen.on ? false : !configuredTypes.has("top-select"),
             onEdit: manualAdGen.on ? undefined : () => editFromSummary("top-select", () => setTopSelectDrawerOpen(true)),
           },
