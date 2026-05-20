@@ -325,7 +325,10 @@ export default function DatasetBuilderDrawer({ open, onClose, initialEmpty, onSo
                           checked={adGenOn}
                           onCheckedChange={(v) => {
                             setAdGenOn(!!v);
-                            if (v) toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            if (v) {
+                              setAdGenCount(selectedRows.size);
+                              toast.success(`${selectedRows.size} row${selectedRows.size === 1 ? "" : "s"} set for ad generation`);
+                            }
                           }}
                           className="data-[state=checked]:bg-primary scale-75"
                         />
