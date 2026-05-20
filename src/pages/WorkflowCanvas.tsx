@@ -1225,6 +1225,8 @@ export default function WorkflowCanvas() {
                   const fromNode = nodes.find((n) => n.id === edge.from);
                   const toNode = nodes.find((n) => n.id === edge.to);
                   if (!fromNode || !toNode) return null;
+                  // Hide schedule node & its edges when user has manually picked rows for ad gen
+                  if (manualAdGen.on && (fromNode.type === "schedule" || toNode.type === "schedule")) return null;
                   const fromPos = getPortPos(fromNode, "output", edge.fromPort, fromNode.outputs.length, getNodeHeight(fromNode));
                   const toPos = getPortPos(toNode, "input", edge.toPort, toNode.inputs.length, getNodeHeight(toNode));
                   const path = cubicPath(fromPos.x, fromPos.y, toPos.x, toPos.y);
